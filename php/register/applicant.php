@@ -78,7 +78,7 @@ try {
     $stmt = $conn->prepare("
         INSERT INTO applicants (
             last_name, first_name, middle_name, gender, age, civil_status,
-            birth_date, citizenship, birth_place, living_arrangement, status, date_created
+            birth_date, citizenship, birth_place, living_arrangement, pension_status, date_created
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'On Process', NOW())
     ");
     $stmt->execute([

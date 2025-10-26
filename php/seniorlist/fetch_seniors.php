@@ -6,6 +6,7 @@ include '../db.php';
 try {
     $mode = $_GET['mode'] ?? 'seniors';
 
+    // --- Fetch barangays only ---
     if ($mode === 'barangays') {
         $stmt = $conn->query("
             SELECT DISTINCT barangay 
@@ -17,7 +18,7 @@ try {
         exit;
     }
 
-    // Pagination params
+    // --- Pagination setup ---
     $page = max(1, intval($_GET['page'] ?? 1));
     $limit = 10;
     $offset = ($page - 1) * $limit;
@@ -28,13 +29,18 @@ try {
     $conditions = [];
     $params = [];
 
-    if ($search) {
+    // --- Filter: Active applicants only ---
+    $conditions[] = "a.status = 'Active'";
+
+    // --- Search filter ---
+    if ($search !== '') {
         $conditions[] = "(a.first_name LIKE ? OR a.last_name LIKE ? OR a.middle_name LIKE ?)";
         $params[] = "%$search%";
         $params[] = "%$search%";
         $params[] = "%$search%";
     }
 
+    // --- Barangay filter ---
     if (!empty($barangays)) {
         $in = implode(',', array_fill(0, count($barangays), '?'));
         $conditions[] = "ad.barangay IN ($in)";
@@ -43,7 +49,7 @@ try {
 
     $where = count($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
-    // Get total count
+    // --- Get total count ---
     $countStmt = $conn->prepare("
         SELECT COUNT(*) 
         FROM applicants a
@@ -51,9 +57,9 @@ try {
         $where
     ");
     $countStmt->execute($params);
-    $total = $countStmt->fetchColumn();
+    $total = (int)$countStmt->fetchColumn();
 
-    // Fetch paginated data
+    // --- Fetch paginated data ---
     $query = "
         SELECT 
             (@rownum := @rownum + 1) AS rownum,
@@ -66,6 +72,7 @@ try {
             ad.barangay,
             a.date_created,
             a.date_modified,
+            a.pension_status,
             a.status
         FROM applicants a
         LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id,
@@ -74,6 +81,7 @@ try {
         ORDER BY a.date_created DESC
         LIMIT $limit OFFSET $offset
     ";
+
     $stmt = $conn->prepare($query);
     $stmt->bindValue(1, $offset, PDO::PARAM_INT);
 
@@ -84,6 +92,7 @@ try {
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // --- Pagination metadata ---
     $start = $offset + 1;
     $end = min($offset + $limit, $total);
     $totalPages = ceil($total / $limit);
