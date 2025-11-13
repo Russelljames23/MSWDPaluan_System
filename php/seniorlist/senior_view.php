@@ -56,25 +56,7 @@ try {
     $stmt = $conn->prepare("SELECT * FROM addresses WHERE applicant_id = ?");
     $stmt->execute([$id]);
     $address = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($address) {
-        // Combine into full_address for convenience
-        $address['full_address'] = trim(
-            ($address['house_no'] ?? '') . ' ' .
-                ($address['street'] ?? '') . ' ' .
-                ($address['barangay'] ?? '') . ' ' .
-                ($address['city'] ?? '') . ' ' .
-                ($address['province'] ?? '')
-        );
-
-        // Keep individual fields as well
-        $address['house_no'] = $address['house_no'] ?? '';
-        $address['street'] = $address['street'] ?? '';
-        $address['barangay'] = $address['barangay'] ?? '';
-        $address['city'] = $address['city'] ?? '';
-        $address['province'] = $address['province'] ?? '';
-    }
-
+    
     // Fetch economic status
     $stmt = $conn->prepare("SELECT * FROM economic_status WHERE applicant_id = ?");
     $stmt->execute([$id]);

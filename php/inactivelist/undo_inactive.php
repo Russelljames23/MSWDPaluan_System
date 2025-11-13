@@ -13,7 +13,7 @@ try {
     // Update status to Active and clear date_of_death
     $stmt = $conn->prepare("
         UPDATE applicants 
-        SET status = 'Active', date_of_death = NULL 
+        SET status = 'Active', date_of_inactive = NULL , inactive_reason = NULL
         WHERE applicant_id = ?
     ");
     $stmt->execute([$id]);

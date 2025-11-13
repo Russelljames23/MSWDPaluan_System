@@ -5,37 +5,36 @@ include '../db.php';
 
 try {
     $id = isset($_POST['id']) ? intval($_POST['id']) : (isset($_GET['id']) ? intval($_GET['id']) : 0);
+    if ($id <= 0) throw new Exception("Missing applicant ID.");
 
-    if ($id <= 0) {
-        throw new Exception("Missing applicant ID.");
-    }
+    // ✅ Start transaction
+    if (!$conn->inTransaction()) $conn->beginTransaction();
 
-    // ✅ Start a transaction safely
-    if (!$conn->inTransaction()) {
-        $conn->beginTransaction();
-    }
-
-    // 1️⃣ Fetch the deceased applicant
-    $stmt = $conn->prepare("SELECT * FROM applicants WHERE applicant_id = ? AND status = 'Deceased'");
+    // 1️⃣ Fetch the applicant
+    $stmt = $conn->prepare("SELECT * FROM applicants WHERE applicant_id = ?");
     $stmt->execute([$id]);
     $applicant = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$applicant) {
-        throw new Exception("Applicant not found or not marked as deceased.");
-    }
+    if (!$applicant) throw new Exception("Applicant not found.");
 
-    // 2️⃣ Insert into archived_applicants
+    // 2️⃣ Determine archived status based on original status
+    $archivedStatus = $applicant['status'] === 'Deceased' ? 'Deceased' : 
+                      ($applicant['status'] === 'Inactive' ? 'Inactive' : 'Archived');
+
+    // 3️⃣ Ensure archived_applicants table exists
     $conn->exec("CREATE TABLE IF NOT EXISTS archived_applicants LIKE applicants");
+    $conn->exec("ALTER TABLE archived_applicants ADD COLUMN IF NOT EXISTS archived_date DATETIME DEFAULT CURRENT_TIMESTAMP");
 
+    // 4️⃣ Insert applicant into archived_applicants
     $insertApplicant = $conn->prepare("
         INSERT INTO archived_applicants 
         (applicant_id, last_name, first_name, middle_name, gender, age, civil_status,
          birth_date, citizenship, birth_place, living_arrangement, pension_status,
-         status, date_of_death, inactive_reason, remarks, date_created, date_modified)
+         status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified, archived_date)
         VALUES
         (:applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :civil_status,
          :birth_date, :citizenship, :birth_place, :living_arrangement, :pension_status,
-         :status, :date_of_death, :inactive_reason, :remarks, :date_created, :date_modified)
+         :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, :date_modified, NOW())
     ");
 
     $insertApplicant->execute([
@@ -51,15 +50,16 @@ try {
         ':birth_place' => $applicant['birth_place'],
         ':living_arrangement' => $applicant['living_arrangement'],
         ':pension_status' => $applicant['pension_status'],
-        ':status' => 'Archived',
+        ':status' => $archivedStatus, // ✅ Set based on original status
         ':date_of_death' => $applicant['date_of_death'],
         ':inactive_reason' => $applicant['inactive_reason'],
+        ':date_of_inactive' => $applicant['date_of_inactive'],
         ':remarks' => $applicant['remarks'],
         ':date_created' => $applicant['date_created'],
         ':date_modified' => $applicant['date_modified']
     ]);
 
-    // 3️⃣ Archive related records
+    // 5️⃣ Archive related records
     $tables = [
         "addresses" => "archived_addresses",
         "economic_status" => "archived_economic_status",
@@ -69,11 +69,16 @@ try {
 
     foreach ($tables as $source => $archive) {
         $conn->exec("CREATE TABLE IF NOT EXISTS $archive LIKE $source");
-        $stmt = $conn->prepare("INSERT INTO $archive SELECT * FROM $source WHERE applicant_id = ?");
+        $conn->exec("ALTER TABLE $archive ADD COLUMN IF NOT EXISTS archived_date DATETIME DEFAULT CURRENT_TIMESTAMP");
+
+        $columns = $conn->query("SHOW COLUMNS FROM $source")->fetchAll(PDO::FETCH_COLUMN);
+        $columnList = implode(',', $columns);
+
+        $stmt = $conn->prepare("INSERT INTO $archive ($columnList, archived_date) SELECT $columnList, NOW() FROM $source WHERE applicant_id = ?");
         $stmt->execute([$id]);
     }
 
-    // 4️⃣ Delete from original tables (in reverse dependency order)
+    //  Delete original records
     foreach (array_keys(array_reverse($tables)) as $table) {
         $stmt = $conn->prepare("DELETE FROM $table WHERE applicant_id = ?");
         $stmt->execute([$id]);
@@ -82,24 +87,15 @@ try {
     $stmt = $conn->prepare("DELETE FROM applicants WHERE applicant_id = ?");
     $stmt->execute([$id]);
 
-    // 5️⃣ Commit safely
-    if ($conn->inTransaction()) {
-        $conn->commit();
-    }
-
-    // ✅ Ensure commit is visible before frontend refreshes
-    usleep(200000); // wait 0.2s
+    //  Commit
+    if ($conn->inTransaction()) $conn->commit();
 
     echo json_encode([
         "success" => true,
-        "message" => "✅ Applicant and all related data archived successfully."
+        "message" => "Senior archived successfully."
     ]);
-    exit;
 } catch (Exception $e) {
-    if ($conn->inTransaction()) {
-        $conn->rollBack();
-    }
-
+    if ($conn->inTransaction()) $conn->rollBack();
     http_response_code(500);
     echo json_encode([
         "success" => false,

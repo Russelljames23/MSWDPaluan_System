@@ -284,8 +284,8 @@
 
         <main class="p-4 md:ml-64 pt-20">
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg ">
+                <div class="mx-auto  max-w-screen-5xl ">
+                    <div class="bg-white  dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <h4 class="text-xl font-medium dark:text-white">Active List</h4>
@@ -309,38 +309,58 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="relative w-full md:w-auto">
-                                <!-- ✅ Filter Button -->
-                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Filter
-                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
+                            <div class="flex flex-row gap-5 ">
+                                <!-- Pension Status Btn  -->
+                                <button id="showcolumnSelection"
+                                    class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
+                                    Select Senior
                                 </button>
+                                <div id="openModalbtn" class="flex flex-row gap-2 hidden">
+                                    <button id="bulkPensionCancelBtn"
+                                        class="px-3  py-2 cursor-pointer text-xs font-medium text-white bg-green-600 rounded-sm hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
+                                        Cancel
+                                    </button>
+                                    <button id="bulkPensionBtn"
+                                        class="px-3  py-2 cursor-pointer text-xs font-medium text-white bg-blue-600 rounded-sm hover:bg-ble-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                        Update Pension Status
+                                    </button>
+                                </div>
 
-                                <!-- ✅ Dynamic Dropdown -->
-                                <div id="filterDropdown"
-                                    class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
-                                        Barangay
-                                    </h6>
-                                    <ul id="barangayList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
-                                        <li class="text-gray-400 text-sm text-center">Loading...</li>
-                                    </ul>
+                                <!-- Filter  -->
+                                <div class="relative w-full md:w-auto">
+                                    <!--  Filter Button -->
+                                    <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
+                                        class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                            class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Filter
+                                        <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </button>
+
+                                    <!--  Dynamic Dropdown -->
+                                    <div id="filterDropdown"
+                                        class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                        <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+                                            Barangay
+                                        </h6>
+                                        <ul id="barangayList" class="space-y-2 text-sm"
+                                            aria-labelledby="dropdownDefault">
+                                            <li class="text-gray-400 text-sm text-center">Loading...</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="relative">
+                        <div class="">
                             <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -359,9 +379,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="seniorBody">
-                                    <tr class="border-b border-gray-200 dark:border-gray-200">
-                                        <td colspan="11" class="text-center py-4 text-gray-500">Loading...</td>
-                                    </tr>
+                                    <tr class="border-b text-xs font-medium text-center border-gray-200"></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -372,12 +390,152 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Pension Status Modal -->
+            <div id="pensionModal"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-600/50 bg-opacity-50">
+                <div id="pensionBox"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4 relative  scale-95 opacity-0 transition-all">
+                    <h2 class="text-lg font-semibold mb-4">Update Pension Status</h2>
+                    <form id="pensionForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Select Status</label>
+                            <select id="pensionStatusSelect"
+                                class="bg-gray-50 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">-- Select --</option>
+                                <option>On Process</option>
+                                <option value="Pensioner">Pensioner</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" id="cancelPension"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-blue-600 text-white  hover:bg-blue-700">Cancel</button>
+                            <button type="submit"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-green-600 text-white  hover:bg-green-700">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Multi-Applicant Pension Modal -->
+            <div id="multiPensionModal"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-600/50 bg-opacity-50">
+                <div id="multiPensionBox"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4 relative  scale-95 opacity-0 transition-all">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Update Pension Status</h2>
+
+                    <p class="mb-2 text-gray-700 dark:text-gray-200">Select applicants to update:</p>
+                    <div id="multiApplicantList"
+                        class="max-h-60 overflow-y-auto mb-4 border rounded p-2 dark:border-gray-600">
+                        <!-- Applicants checkboxes will be added dynamically -->
+                    </div>
+
+                    <label class="block mb-2 text-gray-700 dark:text-gray-200">Select new Pension Status:</label>
+                    <select id="multiPensionSelect"
+                        class="w-full mb-4 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">--Select Status--</option>
+                        <option value="Pensioner">Pensioner</option>
+                        <option value="On Process">On Process</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+
+                    <div class="flex justify-end space-x-2">
+                        <button id="cancelMultiPension"
+                            class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
+                        <button id="confirmMultiPension"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update Selected</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inactive Modal -->
+            <div id="inactiveModal"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-600/50 bg-opacity-50">
+                <div id="inactiveBox"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4 relative">
+                    <h2 class="text-lg font-semibold mb-4">Mark as Inactive</h2>
+                    <form id="inactiveForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Inactive Date</label>
+                            <input type="date" id="inactiveDate"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Reason</label>
+                            <textarea id="inactiveReason"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                                placeholder="Enter reason..."></textarea>
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" id="cancelInactive"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-blue-600 text-white  hover:bg-blue-700">Cancel</button>
+                            <button type="submit"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-green-600 text-white  hover:bg-green-700">Mark
+                                Inactive</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Deceased Modal -->
+            <div id="deceasedModal" tabindex="-1"
+                class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-600/50 bg-opacity-50">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4 relative">
+                    <div class="flex items-start justify-between dark:border-gray-600 border-gray-200">
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                                ☠ Mark as Deceased
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                                Please specify the <b>date of death</b> for <span id="deceasedName"
+                                    class="font-medium"></span>.
+                            </p>
+                        </div>
+                    </div>
+                    <form id="deceasedForm" class="space-y-4">
+                        <div>
+                            <label for="deathDate"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Date of Death
+                            </label>
+                            <input type="date" id="deathDate" name="deathDate"
+                                class="w-full px-3 py-2 border cursor-pointer border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                required>
+                        </div>
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button type="button" id="cancelDeceased"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-blue-600 text-white  hover:bg-blue-700">Cancel</button>
+                            <button type="submit"
+                                class="px-3 py-1 text-sm rounded-sm cursor-pointer bg-red-600 text-white  hover:bg-red-700">
+                                Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- PopUp Message  -->
+            <div id="popupModal"
+                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div id="popupBox"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
+                    <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
+                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
+                    <div class="flex justify-end">
+                        <button id="popupCloseBtn"
+                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <!-- Senior List Table  -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            window.globalSelectedApplicants = new Map();
+            window.globalPensionStatus = new Map();
             const tableBody = document.getElementById("seniorBody");
             const barangayList = document.getElementById("barangayList");
             const searchInput = document.getElementById("simple-search");
@@ -389,7 +547,47 @@
             let lastSearch = "";
             let selectedBarangays = [];
 
-            // ✅ Fetch Barangays
+            // ---------------- POPUP MODAL ----------------
+            function showPopup(message, type = "info", redirect = false) {
+                const modal = document.getElementById("popupModal");
+                const box = document.getElementById("popupBox");
+                const title = document.getElementById("popupTitle");
+                const msg = document.getElementById("popupMessage");
+                const closeBtn = document.getElementById("popupCloseBtn");
+
+                msg.textContent = message;
+                title.className = "text-lg font-semibold mb-2";
+
+                switch (type) {
+                    case "success":
+                        title.textContent = "✅ Success";
+                        closeBtn.style.backgroundColor = "#27AE60";
+                        break;
+                    case "error":
+                        title.textContent = "❌ Error";
+                        closeBtn.style.backgroundColor = "#E74C3C";
+                        break;
+                    default:
+                        title.textContent = "ℹ️ Notice";
+                        closeBtn.style.backgroundColor = "#3498DB";
+                }
+
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                    box.classList.remove("scale-95", "opacity-0");
+                    box.classList.add("scale-100", "opacity-100");
+                }, 10);
+
+                closeBtn.onclick = () => {
+                    box.classList.add("scale-95", "opacity-0");
+                    setTimeout(() => {
+                        modal.classList.add("hidden");
+                        if (redirect) window.location.href = redirect;
+                    }, 200);
+                };
+            }
+
+            // ---------------- FETCH BARANGAYS ----------------
             fetch("../../php/seniorlist/fetch_seniors.php?mode=barangays")
                 .then(res => res.json())
                 .then(barangays => {
@@ -397,16 +595,16 @@
                     barangays.forEach((b, i) => {
                         const id = `barangay-${i}`;
                         barangayList.insertAdjacentHTML("beforeend", `
-                    <li class="flex items-center">
-                        <input id="${id}" type="checkbox" value="${b}"
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 
-                                   focus:ring-primary-500 dark:focus:ring-primary-600 
-                                   dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="${id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                            ${b}
-                        </label>
-                    </li>
-                `);
+                        <li class="flex items-center">
+                            <input id="${id}" type="checkbox" value="${b}"
+                                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 
+                                    focus:ring-primary-500 dark:focus:ring-primary-600 
+                                    dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                            <label for="${id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                ${b}
+                            </label>
+                        </li>
+                        `);
                     });
 
                     barangayList.querySelectorAll("input[type='checkbox']").forEach(cb => {
@@ -421,9 +619,10 @@
                 .catch(err => {
                     console.error("Error loading barangays:", err);
                     barangayList.innerHTML = `<li class='text-red-500 text-center'>Error loading barangays</li>`;
+                    showPopup("Failed to load barangays.", "error");
                 });
 
-            // ✅ Fetch Seniors
+            // ---------------- FETCH SENIORS ----------------
             const fetchSeniors = () => {
                 const params = new URLSearchParams({
                     page: currentPage,
@@ -449,104 +648,112 @@
                             return;
                         }
 
-                        data.seniors.forEach((senior) => {
+                        data.seniors.forEach((senior, index) => {
+                            window.globalPensionStatus.set(String(senior.applicant_id), senior.pension_status);
                             const statusColor =
-                                senior.status === "Pending" ? "text-yellow-600"
-                                    : senior.status === "On Process" ? "text-red-600"
-                                        : "text-green-600";
+                                senior.pension_status === "Pensioner" ? "text-green-600"
+                                    : senior.pension_status === "On Process" ? "text-red-600"
+                                        : "text-red-600";
 
                             const createdAt = senior.date_created ? new Date(senior.date_created).toLocaleDateString() : "";
                             const modifiedAt = senior.date_modified ? new Date(senior.date_modified).toLocaleDateString() : "";
 
-                            const dropdownId = `dropdown-${senior.applicant_id}`;
-                            const buttonId = `btn-${senior.applicant_id}`;
+                            const buttonId = `dropdownBtn-${index}`;
+                            const dropdownId = `dropdownMenu-${index}`;
 
-                            const row = `
-                        <tr class="border-b text-xs w-full font-medium text-center border-gray-200 dark:border-gray-700 relative">
-                            <td class="px-2 py-1">${senior.rownum}</td>
-                            <td class="px-2 py-1 w-50">${senior.full_name || ""}</td>
-                            <td class="px-2 py-1">${senior.birth_date || ""}</td>
-                            <td class="px-2 py-1">${senior.age || ""}</td>
-                            <td class="px-2 py-1">${senior.gender || ""}</td>
-                            <td class="px-2 py-1">${senior.civil_status || ""}</td>
-                            <td class="px-2 py-1">${senior.barangay || ""}</td>
-                            <td class="px-2 py-1">${createdAt}</td>
-                            <td class="px-2 py-1">${modifiedAt}</td>
-                            <td class="px-2 py-1 ${statusColor}">${senior.pension_status}</td>
-                            <td class="px-2 py-1 flex items-center justify-end relative">
-                                <button id="${buttonId}" 
-                                    class="inline-flex cursor-pointer items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" 
-                                    type="button">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                        d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                                        clip-rule="evenodd" />
-                                    </svg>
-                                </button>
+                            const tr = document.createElement("tr");
+                            tr.className = "border-b text-xs font-medium text-center border-gray-200";
+                            tr.innerHTML = `
+                                <td class="relative">
+                                    <input type="checkbox" class="multiSelectCheckbox border-gray-600 hidden" 
+                                        value="${senior.applicant_id}" data-name="${senior.full_name}">
+                                    ${senior.rownum}
+                                </td>
+                                <td>${senior.full_name || ""}</td>
+                                <td>${senior.birth_date || ""}</td>
+                                <td>${senior.age || ""}</td>
+                                <td>${senior.gender || ""}</td>
+                                <td>${senior.civil_status || ""}</td>
+                                <td>${senior.barangay || ""}</td>
+                                <td>${createdAt}</td>
+                                <td>${modifiedAt}</td>
+                                <td class="${statusColor}">${senior.pension_status}</td>
+                                <td class="relative">
+                                    <button id="${buttonId}" 
+                                        class="inline-flex cursor-pointer items-center p-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd"
+                                                d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                                                clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>
 
-                                <div id="${dropdownId}" 
-                                    class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm items-start justify-start flex flex-col text-gray-700 dark:text-gray-200">
-                                         <li class="w-full">
-                                            <a href="#" 
-                                               class="block py-2 px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                👁 Send to Inactive
-                                            </a>
-                                        </li>
-                                        <li class="w-full">
-                                            <button onclick="markDeceased('${senior.applicant_id}')"
-                                                    class="w-full cursor-pointer text-left py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400 dark:hover:text-white">
-                                                ☠ Send to Deceased
-                                            </button>
-                                        </li>
-                                        <li class="w-full">
-                                            <a href="#" 
-                                               class="block flex  flex-row py-2 px-4 items-center gap-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-red">
-                                                <svg class="w-4 h-4 text-red-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                                </svg>
-                                                Archive
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>`;
+                                    <div id="${dropdownId}" 
+                                        class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
+                                            <li>
+                                                <button onclick="updatePensionStatus('${senior.applicant_id}')" class="w-full cursor-pointer text-left py-2 px-4 text-sm text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400 dark:hover:text-white">
+                                                    ⏳ Pension Status
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button onclick="markInactive('${senior.applicant_id}')"
+                                                class="block py-2 cursor-pointer px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                    ⚪ Send to Inactive
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button onclick="markDeceased('${senior.applicant_id}', '${senior.full_name}')"
+                                                        class="w-full cursor-pointer text-left py-2 px-4 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400 dark:hover:text-white">
+                                                    ☠ Send to Deceased
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>`;
 
-                            tableBody.insertAdjacentHTML("beforeend", row);
+                            tableBody.appendChild(tr);
 
-                            const btn = document.getElementById(buttonId);
-                            const dropdown = document.getElementById(dropdownId);
+                            const checkbox = tr.querySelector(".multiSelectCheckbox");
+                            checkbox.checked = globalSelectedApplicants.has(senior.applicant_id);
 
-                            btn.addEventListener("click", (e) => {
-                                e.stopPropagation();
-                                document.querySelectorAll("[id^='dropdown-']").forEach(d => {
-                                    if (d !== dropdown) d.classList.add("hidden");
-                                });
-                                dropdown.classList.toggle("hidden");
-                            });
+                            checkbox.addEventListener("change", () => {
+                                const seniorId = checkbox.value;
+                                const seniorName = checkbox.dataset.name?.trim() || "Unknown";
 
-                            document.addEventListener("click", (e) => {
-                                if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                                    dropdown.classList.add("hidden");
+                                if (checkbox.checked) {
+                                    globalSelectedApplicants.set(seniorId, seniorName);
+                                } else {
+                                    globalSelectedApplicants.delete(seniorId);
                                 }
                             });
+
+                            const button = document.getElementById(buttonId);
+                            const menu = document.getElementById(dropdownId);
+
+                            button.addEventListener("click", (e) => {
+                                e.stopPropagation();
+                                document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => { if (m !== menu) m.classList.add("hidden"); });
+                                menu.classList.toggle("hidden");
+                            });
+                        });
+
+                        document.addEventListener("click", () => {
+                            document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => m.classList.add("hidden"));
                         });
 
                         renderPagination(data.start, data.end);
                     })
                     .catch(err => {
                         console.error("Error fetching seniors:", err);
-                        tableBody.innerHTML = `
-                    <tr><td colspan="11" class="text-center py-4 text-red-500">
-                        Error loading data.
-                    </td></tr>`;
+                        tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-4 text-red-500">Error loading data.</td></tr>`;
+                        showPopup("Failed to fetch senior records.", "error");
                     });
             };
 
-            // ✅ Render Pagination
+            // ---------------- PAGINATION ----------------
+            //  Render Pagination (with Tailwind tooltips)
             const renderPagination = (start, end) => {
                 if (totalPages <= 1) {
                     paginationNav.innerHTML = "";
@@ -554,83 +761,83 @@
                 }
 
                 let html = `
-            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span>–
-                <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
-                <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
-            </span>
-            <ul class="inline-flex items-stretch -space-x-px">
-        `;
+                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
+                        <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
+                        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
+                    </span>
+                    <ul class="inline-flex items-stretch -space-x-px">
+                `;
 
+                // Previous Button with Tooltip
                 html += `
-            <li>
-                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
-                    class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
-                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 
-                    dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" 
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
-                            01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
-                            011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-            </li>
-        `;
+                    <li>
+                        <div class="relative group inline-flex items-center justify-center">
+                            <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
+                                class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
+                                hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
+                                    01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
+                                    011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                                text-xs text-black text-center font-medium w-[95px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                                Previous page
+                            </span>
+                        </div>
+                    </li>
+                `;
 
-                const maxToShow = 5;
-                const startPage = Math.max(1, currentPage - 2);
-                const endPage = Math.min(totalPages, startPage + maxToShow - 1);
-
-                for (let i = startPage; i <= endPage; i++) {
+                // Page Numbers
+                for (let i = 1; i <= totalPages; i++) {
                     html += `
-                <li>
-                    <button data-page="${i}"
-                        class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                        ${i === currentPage
-                            ? 'z-10 py-2 px-3 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                            : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                        ${i}
-                    </button>
-                </li>
-            `;
+                        <li>
+                            <button data-page="${i}"
+                                class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                                ${i === currentPage
+                            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                                ${i}
+                            </button>
+                        </li>
+                    `;
                 }
 
-                if (endPage < totalPages) {
-                    html += `
-                <li><span class="flex items-center justify-center text-sm py-2 px-3 text-gray-500">...</span></li>
-                <li>
-                    <button data-page="${totalPages}" class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                        ${totalPages}
-                    </button>
-                </li>
-            `;
-                }
-
+                // Next Button with Tooltip
                 html += `
-            <li>
-                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
-                    class="flex items-center justify-center h-full py-1.5 px-3 text-gray-500 bg-white rounded-r-sm border border-gray-300 
-                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 
-                    dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" 
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
-                            011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
-                            01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-            </li>
-        </ul>`;
+                    <li>
+                        <div class="relative group inline-flex items-center justify-center">
+                            <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
+                                class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
+                                hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
+                                    011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
+                                    01-1.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                                text-xs text-black text-center font-medium w-[74px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                                Next page
+                            </span>
+                        </div>
+                    </li>
+                </ul>`;
 
                 paginationNav.innerHTML = html;
 
+                // Event listeners
                 paginationNav.querySelectorAll("[data-page]").forEach(btn => {
                     btn.addEventListener("click", () => {
                         currentPage = parseInt(btn.dataset.page);
                         fetchSeniors();
                     });
                 });
+
                 paginationNav.querySelectorAll("[data-nav]").forEach(btn => {
                     btn.addEventListener("click", () => {
                         if (btn.dataset.nav === "prev" && currentPage > 1) currentPage--;
@@ -640,7 +847,8 @@
                 });
             };
 
-            // ✅ Search (debounce)
+
+            // ---------------- SEARCH ----------------
             let searchTimeout;
             searchInput.addEventListener("input", (e) => {
                 clearTimeout(searchTimeout);
@@ -651,29 +859,314 @@
                 }, 400);
             });
 
-            // ✅ Mark as Deceased
-            window.markDeceased = async (id) => {
-                if (!confirm("Are you sure you want to mark this senior as deceased?")) return;
+            // ---------------- SINGLE-APPLICANT PENSION MODAL ----------------
+            let currentPensionId = null;
+            const pensionModal = document.getElementById("pensionModal");
+            const pensionBox = document.getElementById("pensionBox");
+            const pensionForm = document.getElementById("pensionForm");
+            const pensionSelect = document.getElementById("pensionStatusSelect");
+            const cancelPensionBtn = document.getElementById("cancelPension");
+
+            window.updatePensionStatus = (id) => {
+                currentPensionId = id;
+                pensionSelect.value = ""; // reset selection
+
+                // Find the selected senior's row
+                const row = document.querySelector(`.multiSelectCheckbox[value='${id}']`)?.closest("tr");
+                const currentStatus = row?.querySelector("td:nth-child(10)")?.textContent?.trim() || "";
+
+                // If senior is already a Pensioner, disable pension select
+                if (currentStatus === "Pensioner") {
+                    pensionSelect.disabled = true;
+                    pensionSelect.classList.add("opacity-60", "cursor-not-allowed");
+                    showPopup("This senior is already a Pensioner. Status cannot be changed.", "info");
+                } else {
+                    pensionSelect.disabled = false;
+                    pensionSelect.classList.remove("opacity-60", "cursor-not-allowed");
+                }
+
+                // Show the modal
+                pensionModal.classList.remove("hidden");
+                setTimeout(() => {
+                    pensionBox.classList.remove("scale-95", "opacity-0");
+                    pensionBox.classList.add("scale-100", "opacity-100");
+                }, 10);
+            };
+
+
+            cancelPensionBtn.addEventListener("click", () => pensionModal.classList.add("hidden"));
+
+            pensionForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const status = pensionSelect.value;
+                if (!status) return showPopup("Please select a pension status.", "error");
+
+                try {
+                    const res = await fetch("../../php/activelist/update_pension_status.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ applicant_id: currentPensionId, pension_status: status })
+                    });
+
+                    const result = await res.json();
+                    showPopup(result.message || result.error || "Pension status updated.", "success");
+                    pensionModal.classList.add("hidden");
+                    fetchSeniors();
+                } catch (err) {
+                    showPopup("Error: " + err.message, "error");
+                }
+            });
+
+            // ---------------- MULTI-APPLICANT PENSION MODAL ----------------
+            const bulkPensionBtn = document.getElementById("bulkPensionBtn");
+            const multiModal = document.getElementById("multiPensionModal");
+            const multiBox = document.getElementById("multiPensionBox");
+            const multiList = document.getElementById("multiApplicantList");
+            const multiSelect = document.getElementById("multiPensionSelect");
+            const cancelMulti = document.getElementById("cancelMultiPension");
+            const confirmMulti = document.getElementById("confirmMultiPension");
+
+
+            bulkPensionBtn.addEventListener("click", () => {
+                if (globalSelectedApplicants.size === 0)
+                    return showPopup("Please select at least one applicant.", "error");
+
+                multiList.innerHTML = "";
+
+                globalSelectedApplicants.forEach((name, id) => {
+                    const currentStatus = (window.globalPensionStatus.get(String(id)) || "").trim().toLowerCase();
+                    const isPensioner = currentStatus === "pensioner";
+
+                    multiList.insertAdjacentHTML("beforeend", `
+        <label class="flex items-center space-x-2 mb-1">
+            <input type="checkbox" 
+                class="multiApplicantCheckbox" 
+                value="${id}" 
+                ${isPensioner ? "disabled" : "checked"}>
+            <span class="${isPensioner ? 'text-gray-400 line-through' : ''}">
+                ${name} ${isPensioner ? '(Already Pensioner)' : ''}
+            </span>
+        </label>
+    `);
+
+                    // Show a notification if this senior is already a Pensioner
+                    if (isPensioner) {
+                        showPopup(`ℹ️ Notice\n${name} is already a Pensioner. Status cannot be changed.`, "info");
+                    }
+                });
+
+
+                multiSelect.disabled = false;
+                multiSelect.classList.remove("opacity-60", "cursor-not-allowed");
+
+                multiModal.classList.remove("hidden");
+                setTimeout(() => {
+                    multiBox.classList.remove("scale-95", "opacity-0");
+                    multiBox.classList.add("scale-100", "opacity-100");
+                }, 10);
+            });
+
+
+            cancelMulti.addEventListener("click", () => multiModal.classList.add("hidden"));
+
+            confirmMulti.addEventListener("click", async () => {
+                // Get currently checked applicants in the modal
+                const selected = Array.from(document.querySelectorAll(".multiApplicantCheckbox:checked"))
+                    .map(cb => cb.value);
+
+                // Remove any unchecked applicants from global selection
+                Array.from(document.querySelectorAll(".multiApplicantCheckbox")).forEach(cb => {
+                    if (!cb.checked) globalSelectedApplicants.delete(cb.value);
+                });
+
+                const status = multiSelect.value;
+
+                if (!status) return showPopup("Please select a pension status.", "error");
+                if (selected.length === 0) return showPopup("No applicants selected.", "error");
+
+                try {
+                    const res = await fetch("../../php/activelist/update_pension_status.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ applicant_id: selected, pension_status: status })
+                    });
+
+                    const result = await res.json();
+                    if (result.error) return showPopup(result.error, "error");
+
+                    showPopup(result.message || "Pension status updated.", "success");
+                    multiModal.classList.add("hidden");
+
+
+                    // Update table rows without refetching everything
+                    selected.forEach(id => {
+                        const rowCheckbox = document.querySelector(`.multiSelectCheckbox[value="${id}"]`);
+                        if (rowCheckbox) {
+                            const row = rowCheckbox.closest("tr");
+                            const statusCell = row.querySelector("td:nth-child(10)");
+                            statusCell.textContent = status;
+                            statusCell.className = status === "Pensioner" ? "text-green-600"
+                                : status === "On Process" ? "text-red-600"
+                                    : "text-red-600";
+                        }
+                    });
+                    window.location.href = ("activelist.html");
+
+                } catch (err) {
+                    showPopup("Error: " + err.message, "error");
+                }
+            });
+
+
+
+            // ---------------- INACTIVE MODAL ----------------
+            let currentInactiveId = null;
+            const inactiveModal = document.getElementById("inactiveModal");
+            const inactiveBox = document.getElementById("inactiveBox");
+            const inactiveForm = document.getElementById("inactiveForm");
+            const inactiveReasonInput = document.getElementById("inactiveReason");
+            const inactiveDateInput = document.getElementById("inactiveDate");
+            const cancelInactiveBtn = document.getElementById("cancelInactive");
+
+            window.markInactive = (id) => {
+                currentInactiveId = id;
+                inactiveReasonInput.value = "";
+                inactiveDateInput.valueAsDate = new Date();
+                inactiveModal.classList.remove("hidden");
+                setTimeout(() => {
+                    inactiveBox.classList.remove("scale-95", "opacity-0");
+                    inactiveBox.classList.add("scale-100", "opacity-100");
+                }, 10);
+            };
+
+            cancelInactiveBtn.addEventListener("click", () => {
+                inactiveModal.classList.add("hidden");
+            });
+
+            inactiveForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const reason = inactiveReasonInput.value.trim();
+                const date = inactiveDateInput.value;
+
+                if (!date) return showPopup("Please enter the inactive date.", "error");
+                if (!reason) return showPopup("Please enter the reason.", "error");
+
+                try {
+                    const res = await fetch("../../php/activelist/mark_inactive.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ applicant_id: currentInactiveId, date_of_inactive: date, reason })
+                    });
+
+                    const result = await res.json();
+                    showPopup(result.message || result.error || "Marked as inactive.", "success");
+                    inactiveModal.classList.add("hidden");
+                    fetchSeniors(); // refresh table
+                } catch (err) {
+                    showPopup("Error: " + err.message, "error");
+                }
+            });
+
+            // ---------------- DECEASED MODAL ----------------
+            let currentDeceasedId = null;
+            const deceasedModal = document.getElementById("deceasedModal");
+            const deceasedNameSpan = document.getElementById("deceasedName");
+            const deceasedForm = document.getElementById("deceasedForm");
+            const cancelDeceased = document.getElementById("cancelDeceased");
+
+            window.markDeceased = (id, fullName = "") => {
+                currentDeceasedId = id;
+                deceasedNameSpan.textContent = fullName || "this senior";
+                document.getElementById("deathDate").value = "";
+                deceasedModal.classList.remove("hidden");
+            };
+
+            cancelDeceased.addEventListener("click", () => deceasedModal.classList.add("hidden"));
+
+            deceasedForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const deathDate = document.getElementById("deathDate").value;
+                if (!deathDate) return showPopup("Please enter the date of death.", "error");
 
                 try {
                     const res = await fetch(`../../php/seniorlist/mark_deceased.php`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ applicant_id: id })
+                        body: JSON.stringify({ applicant_id: currentDeceasedId, date_of_death: deathDate })
                     });
-
                     const result = await res.json();
-                    alert(result.message || result.error || "Action completed.");
+                    showPopup(result.message || result.error || "Marked as deceased.", "success");
+                    deceasedModal.classList.add("hidden");
                     fetchSeniors();
                 } catch (err) {
-                    alert("Error marking deceased: " + err.message);
+                    showPopup("Error: " + err.message, "error");
                 }
-            };
+            });
 
-            // ✅ Initial Load
+            // ---------------- INITIAL LOAD ----------------
             fetchSeniors();
         });
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectSeniorBtn = document.getElementById("showcolumnSelection");
+            const bulkActionDiv = document.getElementById("openModalbtn");
+            const tableBody = document.getElementById("seniorBody");
+            const cancelBulkBtn = document.getElementById("bulkPensionCancelBtn");
+
+            // Keep track of selection mode
+            let isMultiSelectMode = false;
+
+            // Function to toggle multi-select mode
+            const toggleMultiSelect = (enable) => {
+                isMultiSelectMode = enable;
+
+                // Toggle checkbox visibility
+                tableBody.querySelectorAll(".multiSelectCheckbox").forEach(cb => {
+                    cb.classList.toggle("hidden", !enable);
+                });
+
+                // Toggle header buttons
+                selectSeniorBtn.classList.toggle("hidden", enable);
+                bulkActionDiv.classList.toggle("hidden", !enable);
+            };
+
+            // Show checkboxes and bulk buttons when clicking "Select Senior"
+            selectSeniorBtn.addEventListener("click", () => {
+                toggleMultiSelect(true);
+            });
+
+            // Cancel button reverts the table back to normal
+            cancelBulkBtn.addEventListener("click", () => {
+                // Uncheck all
+                tableBody.querySelectorAll(".multiSelectCheckbox").forEach(cb => cb.checked = false);
+                // Clear global selections
+                if (window.globalSelectedApplicants) window.globalSelectedApplicants.clear();
+                toggleMultiSelect(false);
+            });
+
+            // Keep selection mode active when table reloads (pagination / search)
+            const observer = new MutationObserver(() => {
+                if (isMultiSelectMode) {
+                    // Keep showing checkboxes on new rows
+                    tableBody.querySelectorAll(".multiSelectCheckbox").forEach(cb => {
+                        cb.classList.remove("hidden");
+
+                        // Restore checked state for globally selected IDs
+                        if (window.globalSelectedApplicants?.has(cb.value)) {
+                            cb.checked = true;
+                        }
+                    });
+                }
+            });
+
+            // Observe table changes (when new seniors are fetched)
+            observer.observe(tableBody, { childList: true, subtree: true });
+        });
+    </script>
+
+
 </body>
 
 </html>

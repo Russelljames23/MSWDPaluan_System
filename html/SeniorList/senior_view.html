@@ -413,27 +413,35 @@
                                             <h5
                                                 class="text-[14px] text-center font-medium text-gray-900  dark:text-white">
                                                 Address:</h5>
-                                            <div class="w-full">
-                                                <input type="text" readonly name="addresses"
+                                            <div class="w-full flex flex-row">
+                                                <input type="text" readonly name="houseno"
+                                                    class="block w-17 text-sm h-5 text-center text-gray-900 bg-transparent border-0 border-b border-gray-900 appearance-none ">
+                                                <input type="text" readonly name="street"
+                                                    class="block w-34 text-sm h-5 text-center text-gray-900 bg-transparent border-0 border-b border-gray-900 appearance-none ">
+                                                <input type="text" readonly name="barangay"
                                                     class="block w-full text-sm h-5 text-center text-gray-900 bg-transparent border-0 border-b border-gray-900 appearance-none ">
+                                                <input type="text" readonly name="municipality"
+                                                    class="block w-40 text-sm h-5 text-center text-gray-900 bg-transparent border-0 border-b border-gray-900 appearance-none ">
+                                                <input type="text" readonly name="province"
+                                                    class="block w-40 text-sm h-5 text-center text-gray-900 bg-transparent border-0 border-b border-gray-900 appearance-none ">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex flex-row mt-[-3px] ml-20 w-175 justify-between ">
+                                    <div class="flex flex-row mt-[-3px] ml-16.5 w-187 border">
                                         <h5
-                                            class="text-[13px] text-start italic      font-normal text-gray-900  dark:text-white">
+                                            class="text-[13px] text-start italic font-normal text-gray-900  dark:text-white">
                                             (House No</h5>
                                         <h5
-                                            class="text-[13px] text-start  italic font-normal text-gray-900  dark:text-white">
+                                            class="text-[13px] text-start ml-15 italic  font-normal text-gray-900  dark:text-white">
                                             Street</h5>
                                         <h5
-                                            class="text-[13px] text-start  italic font-normal text-gray-900  dark:text-white">
+                                            class="text-[13px] text-start ml-34  italic font-normal text-gray-900  dark:text-white">
                                             Barangay</h5>
                                         <h5
-                                            class="text-[13px] text-start  italic font-normal text-gray-900  dark:text-white">
+                                            class="text-[13px] text-start ml-30  italic font-normal text-gray-900  dark:text-white">
                                             City/Municipality</h5>
                                         <h5
-                                            class="text-[13px] text-start  italic font-normal text-gray-900  dark:text-white">
+                                            class="text-[13px] text-start ml-20  italic font-normal text-gray-900  dark:text-white">
                                             Province)</h5>
                                     </div>
                                 </div>
@@ -1285,18 +1293,22 @@
                         setField('input[name="gender"]', applicant.gender);
                         setField('input[name="civil_status"]', applicant.civil_status);
                         setField('input[name="birth_date"]', applicant.birth_date);
-                        setField('input[name="birth_place"]', applicant.birth_place);
+                        setField('input[name="houseno"]', address.house_no);
+                        setField('input[name="street"]', address.street);
+                        setField('input[name="barangay"]', address.barangay);
+                        setField('input[name="municipality"]', address.municipality);
+                        setField('input[name="province"]', address.province);
                         setLivingArrangement(applicant.living_arrangement);
                     }
 
                     // ---------- Address Info ----------
-                    if (address) {
-                        const fullAddress = [
-                            address.house_no, address.street, address.barangay,
-                            address.municipality, address.province
-                        ].filter(Boolean).join(', ');
-                        setField('input[name="addresses"]', fullAddress);
-                    }
+                    // if (address) {
+                    //     const fullAddress = [
+                    //         address.house_no, address.street, address.barangay,
+                    //         address.municipality, address.province
+                    //     ].filter(Boolean).join(', ');
+                    //     setField('input[name="addresses"]', fullAddress);
+                    // }
 
                     // ---------- Economic Info ----------
                     if (economic) {
