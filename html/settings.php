@@ -1269,7 +1269,6 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
-
     <script>
         let sidebar = document.querySelector(".sidebar");
         let closeBtn = document.querySelector("#btn");
@@ -1379,7 +1378,6 @@
             });
         }
     </script>
-
     <script>
         const editBtn = document.getElementById("editBtn");
         const cancelBtn = document.getElementById("cancelBtn");
@@ -1409,7 +1407,6 @@
             editBtn.classList.remove("hidden");
         });
     </script>
-
     <script>
         const table = document.getElementById("deceasedTable");
         const dropdownButton = document.getElementById("filterDropdownButton");
@@ -1477,7 +1474,6 @@
                 dropdownMenu.classList.add("hidden");
             }
         });
-
     </script>
 </body>
 

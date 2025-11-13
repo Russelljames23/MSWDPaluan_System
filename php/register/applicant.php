@@ -76,23 +76,26 @@ try {
 
     // STEP 1: Applicants
     $stmt = $conn->prepare("
-        INSERT INTO applicants (
-            last_name, first_name, middle_name, gender, age, civil_status,
-            birth_date, citizenship, birth_place, living_arrangement, pension_status, date_created
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'On Process', NOW())
-    ");
+    INSERT INTO applicants (
+        last_name, first_name, middle_name, gender, age, current_age, civil_status,
+        birth_date, citizenship, birth_place, living_arrangement, pension_status, date_created
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'On Process', NOW())
+");
+
     $stmt->execute([
         $data['lname'] ?? null,
         $data['fname'] ?? null,
         $data['mname'] ?? null,
         $data['gender'] ?? null,
-        $data['age'] ?? null,
+        $data['age'] ?? null,     
+        $data['age'] ?? null,     
         $data['civil_status'] ?? null,
         $data['b_date'] ?? null,
         $data['citizenship'] ?? null,
         $data['birth_place'] ?? null,
         $data['living_arrangement'] ?? null
     ]);
+
 
     $applicant_id = $conn->lastInsertId();
 

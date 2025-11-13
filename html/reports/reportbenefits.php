@@ -125,7 +125,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html"
+                        <a href="../index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -149,7 +149,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.html"
+                        <a href="../register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -186,29 +186,30 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="../SeniorList/seniorlist.html"
+                                <a href="../SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/activelist.html"
+                                <a href="../SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/inactivelist.html"
+                                <a href="../SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/deceasedlist.html"
+                                <a href="../SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
+
                     <li>
-                        <a href="../benefits.html"
+                        <a href="../benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -223,7 +224,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.html"
+                        <a href="../generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -251,7 +252,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.html"
+                        <a href="../archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -265,7 +266,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../settings.html"
+                        <a href="../settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -314,7 +315,7 @@
                         V
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part6()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         VI
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part7to9()"
@@ -322,7 +323,7 @@
                         VII-IX
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="benefits()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         Benefits
                     </button>
                 </div>
@@ -333,8 +334,7 @@
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">VI. List of Deceased Registered
-                                Senior Citizens</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">Benefits</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
                                 <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -420,88 +420,277 @@
                             <table id="deceasedTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
-                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Name</th>
+                                    <tr class="flex w-full border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 w-[40%] text-sm text-left"></th>
                                         <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Date of Death</th>
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Male</th>
                                         <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Barangay</th>
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Female</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Total</th>
                                     </tr>
                                 </thead>
-                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                                    [&::-webkit-scrollbar]:hidden">
+                                <tbody
+                                    class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of OSCA ID (New)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            48
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            85
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            133
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of SP
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            715
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            583
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1298
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of LSP (SSS/GSIS)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            147
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            191
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            338
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-t-0 border-r-0 text-left-20 border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            LSP Non Pensioners
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
+                                            75
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            80
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border-t-0 border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            115
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of AICS
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            124
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            139
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            263
+                                        </td>
+                                    </tr>
 
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">1. Francisca Rosete
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Birthday Gift
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-02-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubibli
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
                                         </td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">2. Dominador Quiñones
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Milestone
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-15-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            92
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            88
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            180
                                         </td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">3. Berlito Poblete
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of Bedridden SC
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-06-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XI - Harison
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            7
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            16
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            23
                                         </td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">4. recardo Flordeliza
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Burial Assistance
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-11-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XII- Mananao
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            27
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            42
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            69
                                         </td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">5. ricardo Villaroza
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            M</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
-                                            Pag-asa
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            4
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            5
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            9
                                         </td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">6. Beltran Musca
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Centenarian Awardee (Php.50,000.00)
                                         </td>
                                         <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-21-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            32
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            39
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            71
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Christmas Gift
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Christmas Gift
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
@@ -513,28 +702,28 @@
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.html");
+            location.href = ("report.php");
         }
         function part2() {
-            location.href = ("reportpart2.html");
+            location.href = ("reportpart2.php");
         }
         function part3() {
-            location.href = ("reportpart3.html");
+            location.href = ("reportpart3.php");
         }
         function part4() {
-            location.href = ("reportpart4.html");
+            location.href = ("reportpart4.php");
         }
         function part5() {
-            location.href = ("reportpart5.html");
+            location.href = ("reportpart5.php");
         }
         function part6() {
-            // location.href = ("reportpart6.html");
+            location.href = ("reportpart6.php");
         }
         function part7to9() {
-            location.href = ("reportpart7to9.html");
+            location.href = ("reportpart7to9.php");
         }
         function benefits() {
-            location.href = ("reportbenefits.html");
+            // location.href = ("reportbenefits.html");
         }
     </script>
 

@@ -125,7 +125,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html"
+                        <a href="../index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -149,7 +149,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.html"
+                        <a href="../register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -186,29 +186,29 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="../SeniorList/seniorlist.html"
+                                <a href="../SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/activelist.html"
+                                <a href="../SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/inactivelist.html"
+                                <a href="../SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/deceasedlist.html"
+                                <a href="../SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="../benefits.html"
+                        <a href="../benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -223,7 +223,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.html"
+                        <a href="../generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -251,7 +251,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.html"
+                        <a href="../archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -265,7 +265,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="..//settings.html"
+                        <a href="../settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -306,7 +306,7 @@
                         III
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part4()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         IV
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
@@ -318,7 +318,7 @@
                         VI
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part7to9()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         VII-IX
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="benefits()"
@@ -327,14 +327,11 @@
                     </button>
                 </div>
             </div>
-            <!-- Part IV -->
+            <!-- Part VIItoIX -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-                        <div class="flex flex-col md:flex-row items-center justify-between p-2">
-                            <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">IV. Number of Localized
-                                Pensiuoners</h4>
+                        <div class="flex flex-col md:flex-row items-center justify-end p-2">
                             <div class="flex items-center w-full space-x-3 md:w-auto">
                                 <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -416,215 +413,68 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table id="deceasedTable"
-                                class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
-                                <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
-                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Barangay</th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Male
-                                        </th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
-                                            Female</th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                                    [&::-webkit-scrollbar]:hidden">
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            13</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            36</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang
-                                            Tumulong
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            19</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            16</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            35</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
-                                            Pag-asa
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            10</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            9</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            19</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            29</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            12</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            41</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">V - Bagong Silang
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            8</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            9</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            17</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VI - San Jose
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            21</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            11</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            32</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            33</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            16</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            49</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VIII - Marikit
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            15</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            18</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            33</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubili
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            3</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">X - Alipaoy
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            22</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            14</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            36</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XI - harison
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            7</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XII - Mananao
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            3</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                    </tr>
-                                    <tr
-                                        class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
-                                        <td class="flex w-full px-4 py-3  text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">Total</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            117</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            138</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            315</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="overflow-x-auto p-2 max-h-90">
+                            <div class="w-full  mb-5 gap-2 flex flex-col">
+                                <h4 class="text-lg font-medium dark:text-white"
+                                    style="font-family: 'Times New Roman', Times, serif;">VII. Number of Senior Citizens
+                                    who Registered to Philhealth for the Month</h4>
+                                <div
+                                    class="border border-gray-400 dark:border-gray-400 shadow shadow-gray-300 drop-shadow-sm p-2 flex bg-sky-400 w-40 h-20  rounded-lg items-center justify-center ml-10">
+                                    <h4 class="text-6xl font-black dark:text-white"
+                                        style="font-family: 'Times New Roman', Times, serif;">12</h4>
+                                </div>
+                            </div>
+                            <div class="w-full  gap-2 flex flex-col mb-5">
+                                <h4 class="text-lg font-medium dark:text-white"
+                                    style="font-family: 'Times New Roman', Times, serif;">VII. Total Number of Release
+                                    Purchase Booklets</h4>
+                                <div
+                                    class="border border-gray-400 dark:border-gray-400 shadow shadow-gray-300 drop-shadow-sm p-2 flex bg-sky-400 w-40 h-20  rounded-lg items-center justify-center ml-10">
+                                    <h4 class="text-6xl font-black dark:text-white"
+                                        style="font-family: 'Times New Roman', Times, serif;">9</h4>
+                                </div>
+                            </div>
+                            <div class="w-full  gap-2 flex flex-col">
+                                <h4 class="text-lg font-medium dark:text-white"
+                                    style="font-family: 'Times New Roman', Times, serif;">IX. Activities</h4>
+                                <form action="">
+                                    <div class="flex flex-row gap-5 w-full items-center  px-2 mb-2">
+                                        <div class="w-full">
+                                            <input type="text" id="first_name"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Type activities here" required />
+                                        </div>
+                                        <div class="w-full">
+                                            <button type="submit"
+                                                class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add
+                                                activities</button>
+                                        </div>
+
+                                    </div>
+                                    <div class="px-2  w-full ">
+                                        <h2 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Listed
+                                            activities:</h2>
+                                        <div class="">
+                                            <ul
+                                                class="overflow-x-auto h-40 space-y-1 w-144 text-gray-700 list-disc list-inside  bg-gray-50 border border-gray-300  text-sm rounded-lg   p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white ">
+                                                <li>
+                                                    Registration of qualified Senior Citizen with reliable documents.
+                                                </li>
+                                                <li>
+                                                    Monthly meetings of Senior Citizen Federattion updates.
+                                                </li>
+                                                <li>
+                                                    Celebration of Valentines Party.
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
                         </div>
                     </div>
-                </div>
             </section>
         </main>
     </div>
@@ -633,28 +483,28 @@
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.html");
+            location.href = ("report.php");
         }
         function part2() {
-            location.href = ("reportpart2.html");
+            location.href = ("reportpart2.php");
         }
         function part3() {
-            location.href = ("reportpart3.html");
+            location.href = ("reportpart3.php");
         }
         function part4() {
-            // location.href = ("reportpart4.html");
+            location.href = ("reportpart4.php");
         }
         function part5() {
-            location.href = ("reportpart5.html");
+            location.href = ("reportpart5.php");
         }
         function part6() {
-            location.href = ("reportpart6.html");
+            location.href = ("reportpart6.php");
         }
         function part7to9() {
-            location.href = ("reportpart7to9.html");
+            // location.href = ("reportpart7to9.php");
         }
         function benefits() {
-            location.href = ("reportbenefits.html");
+            location.href = ("reportbenefits.php");
         }
     </script>
 

@@ -33,10 +33,8 @@
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
-                            alt="MSWD LOGO" />
+                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4">
+                        <img src="../../img/MSWD_LOGO-removebg-preview.png" class="mr-3 h-8" alt="Flowbite Logo" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
                             PALUAN</span>
                     </a>
@@ -127,7 +125,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="index.html"
+                        <a href="../index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -151,7 +149,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./register.html"
+                        <a href="../register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -167,6 +165,7 @@
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
+                    
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
@@ -188,29 +187,29 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.html"
+                                <a href="../SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.html"
+                                <a href="../SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.html"
+                                <a href="../SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.html"
+                                <a href="../SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="./benefits.html"
+                        <a href="../benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -225,7 +224,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href=".//generate_id.html"
+                        <a href="../generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -236,25 +235,26 @@
                             </svg>
                             <span class="ml-3">Generate ID</span>
                         </a>
-                    </li>
                     <li>
-                        <a href="./reports/report.html"
+                    <li>
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
                             </svg>
+
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="#" style="color: blue;"
+                        <a href="../archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-blue-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -266,7 +266,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./settings.html"
+                        <a href="../settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -282,374 +282,218 @@
             </div>
         </aside>
 
-        <main class="p-4 md:ml-64 pt-20">
+        <main class="p-4 md:ml-64 pt-17">
+            <div class="w-full flex  justify-end">
+                <button type="button"
+                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
+                    Report</button>
+            </div>
+            <div class="w-full items-center justify-center">
+                <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
+            </div>
+            <div class="flex flex-row items-center justify-center gap-5 mt-2">
+                <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
+                <div>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        I
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part2()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        II
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part3()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        III
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part4()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        IV
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        V
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part6()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        VI
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part7to9()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        VII-IX
+                    </button>
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="benefits()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        Benefits
+                    </button>
+                </div>
+            </div>
+            <!-- Part II -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
-                        <!-- Header, Search, and Filter -->
-                        <div
-                            class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Archived List</h4>
-
-                            <!-- Search -->
-                            <div class="w-full md:w-1/2">
-                                <form class="flex items-center">
-                                    <label for="archived-search" class="sr-only">Search</label>
-                                    <div class="relative w-full">
-                                        <div
-                                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <input type="text" id="archived-search"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Search archived senior..." />
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- Filter -->
-                            <div class="relative w-full md:w-auto">
-                                <button id="archivedFilterDropdownButton"
-                                    class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                        <div class="flex flex-col md:flex-row items-center justify-between p-2">
+                            <h4 class="text-lg font-medium dark:text-white"
+                                style="font-family: 'Times New Roman', Times, serif;">II. Number of Newly Registered
+                                Senior
+                                Citizens</h4>
+                            <div class="flex items-center w-full space-x-3 md:w-auto">
+                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                    Category
+                                </button>
+                                <div id="actionsDropdown2"
+                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="actionsDropdownButton2">
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                January</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                February</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                March</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                April</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                        class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd"
                                             d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                             clip-rule="evenodd" />
                                     </svg>
                                     Filter
-                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                     </svg>
                                 </button>
-
                                 <!-- Dropdown menu -->
-                                <div id="archivedFilterDropdownMenu"
-                                    class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li><button data-filter="az"
-                                                class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">A-Z</button>
+                                <div id="filterDropdown2"
+                                    class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2025</a>
                                         </li>
-                                        <li><button data-filter="recent"
-                                                class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">Most
-                                                Recent</button></li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2024</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2023</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2022</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Table -->
-                        <div class="">
-                            <table id="archivedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
-                                <thead
-                                    class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
-                                        <th scope="col" class="px-4 py-3">No.</th>
-                                        <th scope="col" class="px-4 py-3">Name</th>
-                                        <th scope="col" class="px-4 py-3">Birthdate</th>
-                                        <th scope="col" class="px-4 py-3">Age</th>
-                                        <th scope="col" class="px-4 py-3">Gender</th>
-                                        <th scope="col" class="px-4 py-3">Civil Status</th>
-                                        <th scope="col" class="px-4 py-3">Archive Date</th>
-                                        <th scope="col" class="px-4 py-3">Pension Status</th>
-                                        <th scope="col" class="px-4 py-3">Action</th>
+                        <div class="overflow-x-auto">
+                            <table id="deceasedTable"
+                                class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
+                                <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
+                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Name</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Date of Birth
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
+                                            Age</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Sex</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Barangay</th>
                                     </tr>
                                 </thead>
-                                <tbody id="archivedBody">
-                                    <tr class="border-b text-xs font-medium text-center border-gray-200"></tr>
-                                    <!-- Dynamic Rows -->
+                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+                                                    [&::-webkit-scrollbar]:hidden">
+                                    <tr class="flex w-full  font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">1. Reynaldo V. Robles
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            02-08-1964</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            60</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            M</td>
+                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <nav id="paginationNav"
-                            class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-3"
-                            aria-label="Table navigation">
-                        </nav>
                     </div>
                 </div>
             </section>
-
         </main>
-        <!-- ✅ Popup Modal -->
-        <div id="popupModal"
-            class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
-            <div id="popupBox"
-                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
-                <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
-                <div class="flex justify-end">
-                    <button id="popupCloseBtn"
-                        class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        OK
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!--  Confirmation Modal -->
-        <div id="confirmModal"
-            class="fixed inset-0 bg-gray-600/50 bg-opacity-40 hidden flex z-50 items-center justify-center">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
-                id="confirmBox">
-                <h2 id="confirmTitle" class="text-xl font-semibold mb-3 text-gray-800">Please Confirm</h2>
-                <p id="confirmMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
-                <div class="flex justify-center gap-3">
-                    <button id="confirmCancelBtn"
-                        class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-300">
-                        Cancel
-                    </button>
-                    <button id="confirmOkBtn"
-                        class="px-4 py-1 bg-green-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400">
-                        Confirm
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-
+    <script src="../../js/tailwind.config.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const tbody = document.getElementById("archivedBody");
-            const paginationNav = document.getElementById("paginationNav");
-
-            const popupModal = document.getElementById("popupModal");
-            const popupBox = document.getElementById("popupBox");
-            const popupTitle = document.getElementById("popupTitle");
-            const popupMessage = document.getElementById("popupMessage");
-            const popupCloseBtn = document.getElementById("popupCloseBtn");
-
-            const confirmModal = document.getElementById("confirmModal");
-            const confirmBox = document.getElementById("confirmBox");
-            const confirmTitle = document.getElementById("confirmTitle");
-            const confirmMessage = document.getElementById("confirmMessage");
-            const confirmCancelBtn = document.getElementById("confirmCancelBtn");
-            const confirmOkBtn = document.getElementById("confirmOkBtn");
-
-            let currentPage = 1;
-            let totalPages = 1;
-            let totalRecords = 0;
-            const recordsPerPage = 10;
-
-            // ---------- POPUP MODAL ----------
-            function showPopup(title, message, autoReload = false, autoHide = false) {
-                popupTitle.textContent = title;
-                popupMessage.textContent = message;
-                popupCloseBtn.textContent = "OK";
-
-                popupModal.classList.remove("hidden");
-                setTimeout(() => {
-                    popupBox.classList.remove("scale-95", "opacity-0");
-                    popupBox.classList.add("scale-100", "opacity-100");
-                }, 50);
-
-                const closePopup = () => {
-                    popupBox.classList.add("scale-95", "opacity-0");
-                    setTimeout(() => {
-                        popupModal.classList.add("hidden");
-                        if (autoReload) fetchArchived();
-                    }, 300);
-                };
-
-                popupCloseBtn.onclick = closePopup;
-
-                if (autoHide) setTimeout(closePopup, 2000);
-            }
-
-            // ---------- CONFIRM MODAL ----------
-            function showConfirm(title, message, onConfirm) {
-                confirmTitle.textContent = title;
-                confirmMessage.textContent = message;
-
-                confirmModal.classList.remove("hidden");
-                setTimeout(() => {
-                    confirmBox.classList.remove("scale-95", "opacity-0");
-                    confirmBox.classList.add("scale-100", "opacity-100");
-                }, 50);
-
-                const closeConfirm = () => {
-                    confirmBox.classList.add("scale-95", "opacity-0");
-                    setTimeout(() => confirmModal.classList.add("hidden"), 300);
-                };
-
-                confirmCancelBtn.onclick = closeConfirm;
-                confirmOkBtn.onclick = () => {
-                    closeConfirm();
-                    if (onConfirm) onConfirm();
-                };
-            }
-
-            // ---------- FETCH ARCHIVED DATA ----------
-            async function fetchArchived() {
-                try {
-                    const res = await fetch("/mswdpaluan_system-main/php/archived/fetch_archived.php");
-                    const data = await res.json();
-                    tbody.innerHTML = "";
-
-                    if (!data.archived || data.archived.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No archived records found.</td></tr>`;
-                        paginationNav.innerHTML = "";
-                        return;
-                    }
-
-                    totalRecords = data.archived.length;
-                    totalPages = Math.ceil(totalRecords / recordsPerPage);
-
-                    const start = (currentPage - 1) * recordsPerPage;
-                    const end = start + recordsPerPage;
-                    const paginatedData = data.archived.slice(start, end);
-
-                    paginatedData.forEach((row, index) => {
-                        const tr = document.createElement("tr");
-                        tr.className = "border-b text-xs font-medium text-center border-gray-200 dark:border-gray-700 relative";
-                        tr.setAttribute("data-id", row.applicant_id);
-                        tr.innerHTML = `
-                    <td class="px-2 py-1">${start + index + 1}</td>
-                    <td class="px-2 py-1">${row.full_name}</td>
-                    <td class="px-2 py-1">${row.birth_date || ""}</td>
-                    <td class="px-2 py-1">${row.age || ""}</td>
-                    <td class="px-2 py-1">${row.gender || ""}</td>
-                    <td class="px-2 py-1">${row.civil_status || ""}</td>
-                    <td class="px-2 py-1">${row.archived_date || ""}</td>
-                    <td class="px-2 py-1 text-red-600">${row.pension_status}</td>
-                    <td class="px-2 py-1 text-center">
-                        <button onclick="restoreArchived(${row.applicant_id}, '${row.full_name}')"
-                            class="px-3 py-1 cursor-pointer bg-green-600 text-white text-xs rounded hover:bg-green-700 transition">
-                            ♻️ Restore
-                        </button>
-                    </td>`;
-                        tbody.appendChild(tr);
-                    });
-
-                    renderPagination(start + 1, Math.min(end, totalRecords));
-                } catch (err) {
-                    console.error(err);
-                    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-red-500 py-4">⚠️ Error loading data.</td></tr>`;
-                    paginationNav.innerHTML = "";
-                }
-            }
-
-            // ---------- PAGINATION WITH TOOLTIP ----------
-            function renderPagination(start, end) {
-                if (totalPages <= 1) {
-                    paginationNav.innerHTML = "";
-                    return;
-                }
-
-                let html = `<span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                        Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
-                        <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
-                        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
-                    </span>
-                    <ul class="inline-flex items-stretch -space-x-px">`;
-
-                // Previous
-                html += `
-            <li class="relative group">
-                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
-                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-l-sm border border-gray-300 
-                        hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
-                        01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
-                        011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                    text-xs text-black text-center font-medium w-24 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Previous page
-                </span>
-            </li>`;
-
-                // Page numbers
-                for (let i = 1; i <= totalPages; i++) {
-                    html += `<li>
-                        <button data-page="${i}" class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                            ${i === currentPage
-                            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                            ${i}
-                        </button>
-                    </li>`;
-                }
-
-                // Next
-                html += `
-            <li class="relative group">
-                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
-                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
-                        hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
-                        011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
-                        01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                    text-xs text-black text-center font-medium w-20 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Next page
-                </span>
-            </li></ul>`;
-
-                paginationNav.innerHTML = html;
-
-                paginationNav.querySelectorAll("[data-page]").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        currentPage = parseInt(btn.dataset.page);
-                        fetchArchived();
-                    });
-                });
-
-                paginationNav.querySelectorAll("[data-nav]").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        if (btn.dataset.nav === "prev" && currentPage > 1) currentPage--;
-                        else if (btn.dataset.nav === "next" && currentPage < totalPages) currentPage++;
-                        fetchArchived();
-                    });
-                });
-            }
-
-            // ---------- RESTORE RECORD ----------
-            window.restoreArchived = async function (id, name) {
-                showConfirm("Restore Record", `Do you want to restore ${name} to the Active List?`, async () => {
-                    try {
-                        const formData = new FormData();
-                        formData.append("id", id);
-
-                        const res = await fetch("/mswdpaluan_system-main/php/archived/restore_archived.php", {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        if (!res.ok) {
-                            const text = await res.text();
-                            throw new Error(`Server error: ${text}`);
-                        }
-
-                        const data = await res.json();
-                        if (!data.success) throw new Error(data.message || "Failed to restore record.");
-
-                        fetchArchived();
-                        showPopup("Success ✅", data.message || "Record restored successfully!");
-                    } catch (err) {
-                        console.error(err);
-                        showPopup("Error ⚠️", err.message || "Failed to restore record.");
-                    }
-                });
-            };
-
-            fetchArchived();
-        });
+        function part1() {
+            location.href = ("report.php");
+        }
+        function part2() {
+            // location.href = ("reportpart2.php");
+        }
+        function part3() {
+            location.href = ("reportpart3.php");
+        }
+        function part4() {
+            location.href = ("reportpart4.php");
+        }
+        function part5() {
+            location.href = ("reportpart5.php");
+        }
+        function part6() {
+            location.href = ("reportpart6.php");
+        }
+        function part7to9() {
+            location.href = ("reportpart7to9.php");
+        }
+        function benefits() {
+            location.href = ("reportbenefits.php");
+        }
     </script>
 
 </body>

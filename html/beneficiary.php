@@ -127,7 +127,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="./index.html"
+                        <a href="./index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -151,7 +151,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./register.html"
+                        <a href="./register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -186,22 +186,22 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.html"
+                                <a href="./SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.html"
+                                <a href="./SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.html"
+                                <a href="./SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.html"
+                                <a href="./SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
@@ -224,7 +224,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href=".//generate_id.html"
+                        <a href=".//generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -238,7 +238,7 @@
                     </li>
 
                     <li>
-                        <a href="./reports/report.html"
+                        <a href="./reports/report.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -252,7 +252,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.html"
+                        <a href="./archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -265,7 +265,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./settings.html"
+                        <a href="./settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -284,7 +284,7 @@
         <main class="p-4 md:ml-64 pt-20 flex flex-col" >
             <div class="flex items-center flex-row ">
                 <div class="border border-t-0 border-l-0">
-                    <a href="./benefits.html" type="button" class="cursor-pointer" >
+                    <a href="./benefits.php" type="button" class="cursor-pointer" >
                         <h4 class="text-xl font-medium  px-2">Benefits</h4>
                     </a>
                 </div>

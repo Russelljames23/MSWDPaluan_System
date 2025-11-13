@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deceased List</title>
+    <title>Senior List</title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -34,7 +34,7 @@
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
                     <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
+                        <img src="../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -127,7 +127,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html"
+                        <a href="index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -151,7 +151,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.html"
+                        <a href="./register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -186,31 +186,31 @@
                                     clip-rule="evenodd"></path>
                             </svg>
                         </button>
-                        <ul id="dropdown-pages" class="py-2 space-y-2">
+                        <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./seniorlist.html"
+                                <a href="./SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./activelist.html"
+                                <a href="./SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./inactivelist.html"
+                                <a href="./SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="#" style="color: blue;"
+                                <a href="./SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="../benefits.html"
+                        <a href="./benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -225,7 +225,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.html"
+                        <a href=".//generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -236,9 +236,9 @@
                             </svg>
                             <span class="ml-3">Generate ID</span>
                         </a>
+                    </li>
                     <li>
-                    <li>
-                        <a href="../reports/report.html"
+                        <a href="./reports/report.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -246,16 +246,15 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
                             </svg>
-
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.html"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -267,7 +266,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../settings.html"
+                        <a href="./settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -287,44 +286,43 @@
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
+                        <!-- Header, Search, and Filter -->
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Deceased List</h4>
-                            <!-- Search  -->
+                            <h4 class="text-xl font-medium dark:text-white">Archived List</h4>
+
+                            <!-- Search -->
                             <div class="w-full md:w-1/2">
                                 <form class="flex items-center">
-                                    <label for="deceased-search" class="sr-only">Search</label>
+                                    <label for="archived-search" class="sr-only">Search</label>
                                     <div class="relative w-full">
                                         <div
                                             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                fill="currentColor" viewbox="0 0 20 20"
+                                                fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 
-                                                    4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                <path fill-rule="evenodd"
+                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                                                     clip-rule="evenodd" />
                                             </svg>
                                         </div>
-                                        <input type="text" id="deceased-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                            focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2
-                                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-                                            dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Search deceased..." />
+                                        <input type="text" id="archived-search"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Search archived senior..." />
                                     </div>
                                 </form>
                             </div>
-                            <!-- Filter  -->
+
+                            <!-- Filter -->
                             <div class="relative w-full md:w-auto">
-                                <button id="filterDropdownButton" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium 
-                                    text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 
-                                    hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 
-                                    dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+                                <button id="archivedFilterDropdownButton"
+                                    class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                         class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 
-                                            01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 
-                                            2A1 1 0 018 17v-5.586L3.293 
-                                            6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd"
+                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                     Filter
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
@@ -333,22 +331,16 @@
                                     </svg>
                                 </button>
 
-                                <!-- Dropdown -->
-                                <div id="filterDropdownMenu"
+                                <!-- Dropdown menu -->
+                                <div id="archivedFilterDropdownMenu"
                                     class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
                                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li>
-                                            <button data-filter="az"
-                                                class="block w-full cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
-                                                A–Z
-                                            </button>
+                                        <li><button data-filter="az"
+                                                class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">A-Z</button>
                                         </li>
-                                        <li>
-                                            <button data-filter="recent"
-                                                class="block w-full px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
-                                                Recently Deceased
-                                            </button>
-                                        </li>
+                                        <li><button data-filter="recent"
+                                                class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">Most
+                                                Recent</button></li>
                                     </ul>
                                 </div>
                             </div>
@@ -356,364 +348,309 @@
 
                         <!-- Table -->
                         <div class="">
-                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
+                            <table id="archivedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th class="px-4 py-3">No.</th>
-                                        <th class="px-4 py-3">Name</th>
-                                        <th class="px-4 py-3">Birthdate</th>
-                                        <th class="px-4 py-3">Age</th>
-                                        <th class="px-4 py-3">Gender</th>
-                                        <th class="px-4 py-3">Civil Status</th>
-                                        <th class="px-4 py-3">Date of Death</th>
-                                        <th class="px-4 py-3">Status</th>
-                                        <th class="px-4 py-3">Action</th>
+                                        <th scope="col" class="px-4 py-3">No.</th>
+                                        <th scope="col" class="px-4 py-3">Name</th>
+                                        <th scope="col" class="px-4 py-3">Birthdate</th>
+                                        <th scope="col" class="px-4 py-3">Age</th>
+                                        <th scope="col" class="px-4 py-3">Gender</th>
+                                        <th scope="col" class="px-4 py-3">Civil Status</th>
+                                        <th scope="col" class="px-4 py-3">Archive Date</th>
+                                        <th scope="col" class="px-4 py-3">Pension Status</th>
+                                        <th scope="col" class="px-4 py-3">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="deceasedBody"></tbody>
+                                <tbody id="archivedBody">
+                                    <tr class="border-b text-xs font-medium text-center border-gray-200"></tr>
+                                    <!-- Dynamic Rows -->
+                                </tbody>
                             </table>
                         </div>
-                        <nav id="deceasedPagination" class="flex flex-col md:flex-row justify-between items-start md:items-center 
-                            space-y-3 md:space-y-0 p-3" aria-label="Table navigation"></nav>
+                        <nav id="paginationNav"
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-3"
+                            aria-label="Table navigation">
+                        </nav>
                     </div>
                 </div>
             </section>
-            <!-- PopUp Message  -->
-            <div id="popupModal"
-                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
-                <div id="popupBox"
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
-                    <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
-                    <div class="flex justify-end">
-                        <button id="popupCloseBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            OK
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--  Confirmation Modal -->
-            <div id="confirmModal"
-                class="fixed inset-0 bg-gray-600/50 bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
-                    id="confirmBox">
-                    <h2 id="confirmTitle" class="text-xl font-semibold mb-3 text-gray-800">Please Confirm</h2>
-                    <p id="confirmMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
-                    <div class="flex justify-center gap-3">
-                        <button id="confirmCancelBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            Cancel
-                        </button>
-                        <button id="confirmOkBtn"
-                            class="px-4 py-1 bg-green-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400">
-                            Confirm
-                        </button>
-                    </div>
-                </div>
-            </div>
+
         </main>
+        <!-- ✅ Popup Modal -->
+        <div id="popupModal"
+            class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div id="popupBox"
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
+                <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
+                <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
+                <div class="flex justify-end">
+                    <button id="popupCloseBtn"
+                        class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!--  Confirmation Modal -->
+        <div id="confirmModal"
+            class="fixed inset-0 bg-gray-600/50 bg-opacity-40 hidden flex z-50 items-center justify-center">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
+                id="confirmBox">
+                <h2 id="confirmTitle" class="text-xl font-semibold mb-3 text-gray-800">Please Confirm</h2>
+                <p id="confirmMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+                <div class="flex justify-center gap-3">
+                    <button id="confirmCancelBtn"
+                        class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        Cancel
+                    </button>
+                    <button id="confirmOkBtn"
+                        class="px-4 py-1 bg-green-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const tbody = document.getElementById("deceasedBody");
-            const searchInput = document.getElementById("deceased-search");
-            const pagination = document.getElementById("deceasedPagination");
-            const filterMenu = document.getElementById("filterDropdownMenu");
-            const filterBtn = document.getElementById("filterDropdownButton");
+            const tbody = document.getElementById("archivedBody");
+            const paginationNav = document.getElementById("paginationNav");
+
+            const popupModal = document.getElementById("popupModal");
+            const popupBox = document.getElementById("popupBox");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupMessage = document.getElementById("popupMessage");
+            const popupCloseBtn = document.getElementById("popupCloseBtn");
+
+            const confirmModal = document.getElementById("confirmModal");
+            const confirmBox = document.getElementById("confirmBox");
+            const confirmTitle = document.getElementById("confirmTitle");
+            const confirmMessage = document.getElementById("confirmMessage");
+            const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+            const confirmOkBtn = document.getElementById("confirmOkBtn");
 
             let currentPage = 1;
             let totalPages = 1;
             let totalRecords = 0;
-            let currentSearch = "";
-            let currentFilter = "";
+            const recordsPerPage = 10;
 
-            // ---------------- POPUP MODAL ----------------
-            function showPopup(message, type = "info", redirect = false) {
-                const modal = document.getElementById("popupModal");
-                const box = document.getElementById("popupBox");
-                const title = document.getElementById("popupTitle");
-                const msg = document.getElementById("popupMessage");
-                const closeBtn = document.getElementById("popupCloseBtn");
+            // ---------- POPUP MODAL ----------
+            function showPopup(title, message, autoReload = false, autoHide = false) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupCloseBtn.textContent = "OK";
 
-                msg.textContent = message;
-
-                title.className = "text-xl font-semibold mb-3";
-                msg.style.color = "#333333";
-
-                if (type === "success") {
-                    title.textContent = "✅ Success";
-                    closeBtn.style.background = "#27AE60";
-                } else if (type === "error") {
-                    title.textContent = "❌ Error";
-                    closeBtn.style.background = "#E74C3C";
-                } else {
-                    title.textContent = "ℹ️ Notice";
-                    closeBtn.style.background = "#3498DB";
-                }
-
-                modal.classList.remove("hidden");
+                popupModal.classList.remove("hidden");
                 setTimeout(() => {
-                    box.classList.remove("scale-95", "opacity-0");
-                    box.classList.add("scale-100", "opacity-100");
-                }, 10);
+                    popupBox.classList.remove("scale-95", "opacity-0");
+                    popupBox.classList.add("scale-100", "opacity-100");
+                }, 50);
 
-                closeBtn.onclick = () => {
-                    box.classList.add("scale-95", "opacity-0");
+                const closePopup = () => {
+                    popupBox.classList.add("scale-95", "opacity-0");
                     setTimeout(() => {
-                        modal.classList.add("hidden");
-                        if (redirect) window.location.href = redirect;
-                    }, 200);
+                        popupModal.classList.add("hidden");
+                        if (autoReload) fetchArchived();
+                    }, 300);
+                };
+
+                popupCloseBtn.onclick = closePopup;
+
+                if (autoHide) setTimeout(closePopup, 2000);
+            }
+
+            // ---------- CONFIRM MODAL ----------
+            function showConfirm(title, message, onConfirm) {
+                confirmTitle.textContent = title;
+                confirmMessage.textContent = message;
+
+                confirmModal.classList.remove("hidden");
+                setTimeout(() => {
+                    confirmBox.classList.remove("scale-95", "opacity-0");
+                    confirmBox.classList.add("scale-100", "opacity-100");
+                }, 50);
+
+                const closeConfirm = () => {
+                    confirmBox.classList.add("scale-95", "opacity-0");
+                    setTimeout(() => confirmModal.classList.add("hidden"), 300);
+                };
+
+                confirmCancelBtn.onclick = closeConfirm;
+                confirmOkBtn.onclick = () => {
+                    closeConfirm();
+                    if (onConfirm) onConfirm();
                 };
             }
 
-            // ---------------- CONFIRM MODAL ----------------
-            function showConfirm(message, title = "Please Confirm") {
-                return new Promise((resolve) => {
-                    const modal = document.getElementById("confirmModal");
-                    const box = document.getElementById("confirmBox");
-                    const titleEl = document.getElementById("confirmTitle");
-                    const msg = document.getElementById("confirmMessage");
-                    const okBtn = document.getElementById("confirmOkBtn");
-                    const cancelBtn = document.getElementById("confirmCancelBtn");
-
-                    titleEl.textContent = title;
-                    msg.textContent = message;
-
-                    modal.classList.remove("hidden");
-                    setTimeout(() => {
-                        box.classList.remove("scale-95", "opacity-0");
-                        box.classList.add("scale-100", "opacity-100");
-                    }, 10);
-
-                    const closeModal = (result) => {
-                        box.classList.add("scale-95", "opacity-0");
-                        setTimeout(() => {
-                            modal.classList.add("hidden");
-                            resolve(result);
-                        }, 200);
-                    };
-
-                    okBtn.onclick = () => closeModal(true);
-                    cancelBtn.onclick = () => closeModal(false);
-                });
-            }
-
-            // ---------------- FILTER & SEARCH ----------------
-            filterBtn.addEventListener("click", () => filterMenu.classList.toggle("hidden"));
-            filterMenu.querySelectorAll("[data-filter]").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    currentFilter = btn.dataset.filter;
-                    filterMenu.classList.add("hidden");
-                    fetchDeceased();
-                });
-            });
-
-            let searchTimeout;
-            searchInput.addEventListener("input", e => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    currentSearch = e.target.value.trim();
-                    currentPage = 1;
-                    fetchDeceased();
-                }, 400);
-            });
-
-            // ---------------- PAGINATION WITH TOOLTIP ----------------
-            function renderPagination(start, end) {
-                if (totalPages <= 1) {
-                    pagination.innerHTML = "";
-                    return;
-                }
-
-                let html = `
-            <span class="text-sm text-gray-600 dark:text-gray-400">
-                Showing <b>${start}</b>–<b>${end}</b> of <b>${totalRecords}</b>
-            </span>
-            <ul class="inline-flex items-stretch -space-x-px">
-        `;
-
-                // Previous button with tooltip
-                html += `
-            <li class="relative group">
-                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
-                    class="flex items-center cursor-pointer justify-center py-[7px] px-2 text-gray-500 bg-white border border-gray-300 rounded-l-sm hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-xs text-black text-center font-medium w-24 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Previous page
-                </span>
-            </li>
-        `;
-
-                // Page numbers
-                for (let i = 1; i <= totalPages; i++) {
-                    html += `
-                <li>
-                    <button data-page="${i}" class="flex items-center justify-center text-sm py-2 px-3 leading-tight ${i === currentPage
-                            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                        ${i}
-                    </button>
-                </li>
-            `;
-                }
-
-                // Next button with tooltip
-                html += `
-            <li class="relative group">
-                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
-                    class="flex items-center cursor-pointer justify-center py-[7px] px-2 text-gray-500 bg-white border border-gray-300 rounded-r-sm hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-xs text-black text-center font-medium w-20 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Next page
-                </span>
-            </li>
-        </ul>`;
-
-                pagination.innerHTML = html;
-
-                pagination.querySelectorAll("[data-page]").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        currentPage = parseInt(btn.dataset.page);
-                        fetchDeceased();
-                    });
-                });
-
-                pagination.querySelectorAll("[data-nav]").forEach(btn => {
-                    btn.addEventListener("click", () => {
-                        if (btn.dataset.nav === "prev" && currentPage > 1) currentPage--;
-                        else if (btn.dataset.nav === "next" && currentPage < totalPages) currentPage++;
-                        fetchDeceased();
-                    });
-                });
-            }
-
-            // ---------------- FETCH DECEASED ----------------
-            function fetchDeceased() {
-                const params = new URLSearchParams({ page: currentPage, search: currentSearch, filter: currentFilter });
-                fetch(`../../php/deceasedlist/fetch_deceased.php?${params}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        tbody.innerHTML = "";
-                        totalRecords = data.total_records;
-                        totalPages = data.total_pages;
-
-                        if (!data.deceased || data.deceased.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No deceased records found.</td></tr>`;
-                            pagination.innerHTML = "";
-                            return;
-                        }
-
-                        data.deceased.forEach((row, index) => {
-                            const buttonId = `dropdownBtn-${index}`;
-                            const dropdownId = `dropdownMenu-${index}`;
-                            const tr = `
-                        <tr class="border-b text-xs font-medium text-center border-gray-200 relative">
-                            <td>${row.rownum}</td>
-                            <td>${row.full_name}</td>
-                            <td>${row.birth_date || ""}</td>
-                            <td>${row.age || ""}</td>
-                            <td>${row.gender || ""}</td>
-                            <td>${row.civil_status || ""}</td>
-                            <td>${row.date_of_death || ""}</td>
-                            <td class="text-red-600">${row.pension_status}</td>
-                            <td class="relative">
-                                <button id="${buttonId}" class="inline-flex cursor-pointer items-center p-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                                <div id="${dropdownId}" class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded shadow-lg">
-                                    <ul class="py-1 text-sm text-gray-700">
-                                        <li><button onclick="undoDeceased('${row.applicant_id}', '${row.full_name}')" class="block cursor-pointer w-full text-left px-4 py-2 hover:bg-gray-100" title="Return to active list">↩️ Undo</button></li>
-                                        <li><button onclick="archiveDeceased('${row.applicant_id}')" class="block w-full text-left cursor-pointer px-4 py-2 hover:bg-gray-100" title="Send to archive">🗃️ Archive</button></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>`;
-                            tbody.insertAdjacentHTML("beforeend", tr);
-
-                            const button = document.getElementById(buttonId);
-                            const menu = document.getElementById(dropdownId);
-                            button.addEventListener("click", (e) => {
-                                e.stopPropagation();
-                                document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => { if (m !== menu) m.classList.add("hidden"); });
-                                menu.classList.toggle("hidden");
-                            });
-                        });
-
-                        document.addEventListener("click", () => {
-                            document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => m.classList.add("hidden"));
-                        });
-
-                        renderPagination(data.start, data.end);
-                    })
-                    .catch(() => {
-                        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-red-500 py-4">Error loading data.</td></tr>`;
-                    });
-            }
-
-            // ---------------- UNDO & ARCHIVE ----------------
-            window.undoDeceased = async (id, name) => {
-                const confirm = await showConfirm(`Return ${name} to the active list?`, "Confirm Undo");
-                if (!confirm) return;
+            // ---------- FETCH ARCHIVED DATA ----------
+            async function fetchArchived() {
                 try {
-                    const res = await fetch(`../../php/deceasedlist/undo_deceased.php?id=${id}`, { method: "POST" });
+                    const res = await fetch("/mswdpaluan_system-main/php/archived/fetch_archived.php");
                     const data = await res.json();
-                    showPopup(data.message || "Status updated successfully.", "success");
-                    fetchDeceased();
-                } catch {
-                    showPopup("Error updating record.", "error");
-                }
-            };
+                    tbody.innerHTML = "";
 
-            window.archiveDeceased = async (id) => {
-                const confirm = await showConfirm("Are you sure you want to archive this record?", "Confirm Archive");
-                if (!confirm) return;
-
-                const loader = document.createElement("div");
-                loader.textContent = "Archiving...";
-                loader.className = "fixed bottom-5 right-5 bg-gray-800 text-white px-4 py-2 rounded shadow-md text-sm z-50";
-                document.body.appendChild(loader);
-
-                try {
-                    const formData = new FormData();
-                    formData.append("id", id);
-
-                    const response = await fetch(`../../php/archived/archived.php`, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    const result = await response.json();
-                    loader.remove();
-
-                    if (!response.ok || !result.success) {
-                        showPopup(result.message || "Failed to archive record.", "error");
+                    if (!data.archived || data.archived.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No archived records found.</td></tr>`;
+                        paginationNav.innerHTML = "";
                         return;
                     }
 
-                    showPopup(result.message || "Record archived successfully.", "success");
-                    fetchDeceased();
-                } catch {
-                    loader.remove();
-                    showPopup("Network or server error while archiving record.", "error");
+                    totalRecords = data.archived.length;
+                    totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+                    const start = (currentPage - 1) * recordsPerPage;
+                    const end = start + recordsPerPage;
+                    const paginatedData = data.archived.slice(start, end);
+
+                    paginatedData.forEach((row, index) => {
+                        const tr = document.createElement("tr");
+                        tr.className = "border-b text-xs font-medium text-center border-gray-200 dark:border-gray-700 relative";
+                        tr.setAttribute("data-id", row.applicant_id);
+                        tr.innerHTML = `
+                    <td class="px-2 py-1">${start + index + 1}</td>
+                    <td class="px-2 py-1">${row.full_name}</td>
+                    <td class="px-2 py-1">${row.birth_date || ""}</td>
+                    <td class="px-2 py-1">${row.age || ""}</td>
+                    <td class="px-2 py-1">${row.gender || ""}</td>
+                    <td class="px-2 py-1">${row.civil_status || ""}</td>
+                    <td class="px-2 py-1">${row.archived_date || ""}</td>
+                    <td class="px-2 py-1 text-red-600">${row.pension_status}</td>
+                    <td class="px-2 py-1 text-center">
+                        <button onclick="restoreArchived(${row.applicant_id}, '${row.full_name}')"
+                            class="px-3 py-1 cursor-pointer bg-green-600 text-white text-xs rounded hover:bg-green-700 transition">
+                            ♻️ Restore
+                        </button>
+                    </td>`;
+                        tbody.appendChild(tr);
+                    });
+
+                    renderPagination(start + 1, Math.min(end, totalRecords));
+                } catch (err) {
+                    console.error(err);
+                    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-red-500 py-4">⚠️ Error loading data.</td></tr>`;
+                    paginationNav.innerHTML = "";
                 }
+            }
+
+            // ---------- PAGINATION WITH TOOLTIP ----------
+            function renderPagination(start, end) {
+                if (totalPages <= 1) {
+                    paginationNav.innerHTML = "";
+                    return;
+                }
+
+                let html = `<span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
+                        <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
+                        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
+                    </span>
+                    <ul class="inline-flex items-stretch -space-x-px">`;
+
+                // Previous
+                html += `
+            <li class="relative group">
+                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
+                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-l-sm border border-gray-300 
+                        hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
+                        01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
+                        011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                    text-xs text-black text-center font-medium w-24 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                    Previous page
+                </span>
+            </li>`;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `<li>
+                        <button data-page="${i}" class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                            ${i === currentPage
+                            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                            ${i}
+                        </button>
+                    </li>`;
+                }
+
+                // Next
+                html += `
+            <li class="relative group">
+                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
+                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
+                        hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
+                        011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
+                        01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                    text-xs text-black text-center font-medium w-20 dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                    Next page
+                </span>
+            </li></ul>`;
+
+                paginationNav.innerHTML = html;
+
+                paginationNav.querySelectorAll("[data-page]").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        currentPage = parseInt(btn.dataset.page);
+                        fetchArchived();
+                    });
+                });
+
+                paginationNav.querySelectorAll("[data-nav]").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        if (btn.dataset.nav === "prev" && currentPage > 1) currentPage--;
+                        else if (btn.dataset.nav === "next" && currentPage < totalPages) currentPage++;
+                        fetchArchived();
+                    });
+                });
+            }
+
+            // ---------- RESTORE RECORD ----------
+            window.restoreArchived = async function (id, name) {
+                showConfirm("Restore Record", `Do you want to restore ${name} to the Active List?`, async () => {
+                    try {
+                        const formData = new FormData();
+                        formData.append("id", id);
+
+                        const res = await fetch("/mswdpaluan_system-main/php/archived/restore_archived.php", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (!res.ok) {
+                            const text = await res.text();
+                            throw new Error(`Server error: ${text}`);
+                        }
+
+                        const data = await res.json();
+                        if (!data.success) throw new Error(data.message || "Failed to restore record.");
+
+                        fetchArchived();
+                        showPopup("Success ✅", data.message || "Record restored successfully!");
+                    } catch (err) {
+                        console.error(err);
+                        showPopup("Error ⚠️", err.message || "Failed to restore record.");
+                    }
+                });
             };
 
-            fetchDeceased();
+            fetchArchived();
         });
     </script>
-
 
 </body>
 

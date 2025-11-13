@@ -125,7 +125,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html"
+                        <a href="../index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -149,7 +149,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.html"
+                        <a href="../register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -165,7 +165,6 @@
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
-                    
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
@@ -187,29 +186,29 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="../SeniorList/seniorlist.html"
+                                <a href="../SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/activelist.html"
+                                <a href="../SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/inactivelist.html"
+                                <a href="../SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/deceasedlist.html"
+                                <a href="../SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="../benefits.html"
+                        <a href="../benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -224,7 +223,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.html"
+                        <a href="../generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -252,7 +251,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.html"
+                        <a href="../archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -266,7 +265,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../settings.html"
+                        <a href="..//settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -303,11 +302,11 @@
                         II
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part3()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         III
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part4()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         IV
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
@@ -328,14 +327,14 @@
                     </button>
                 </div>
             </div>
-            <!-- Part III -->
+            <!-- Part IV -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">III. Number of Pensiuoners /
-                                Barangay</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">IV. Number of Localized
+                                Pensiuoners</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
                                 <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -443,13 +442,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            72</td>
+                                            13</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            60</td>
+                                            23</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            132</td>
+                                            36</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -458,13 +457,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            11</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
+                                            19</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
                                             16</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            35</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -473,13 +472,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            10</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            9</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            46</td>
+                                            19</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -487,13 +486,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            109</td>
+                                            29</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            100</td>
+                                            12</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            209</td>
+                                            41</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -501,13 +500,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            38</td>
+                                            8</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            40</td>
+                                            9</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            78</td>
+                                            17</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -515,13 +514,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            35</td>
+                                            21</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            50</td>
+                                            11</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            85</td>
+                                            32</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -529,13 +528,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            78</td>
+                                            33</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            109</td>
+                                            16</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            187</td>
+                                            49</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -543,13 +542,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            73</td>
+                                            15</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            87</td>
+                                            18</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            160</td>
+                                            33</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -557,13 +556,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            15</td>
+                                            3</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            28</td>
+                                            2</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            43</td>
+                                            5</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -571,13 +570,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            22</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            54</td>
+                                            14</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            77</td>
+                                            36</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -585,13 +584,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            30</td>
+                                            2</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            47</td>
+                                            5</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            77</td>
+                                            7</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -599,13 +598,13 @@
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            104</td>
+                                            2</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            93</td>
+                                            3</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            197</td>
+                                            5</td>
                                     </tr>
                                     <tr
                                         class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
@@ -613,13 +612,13 @@
                                             style="font-family: 'Times New Roman', Times, serif;">Total</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            610</td>
+                                            117</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            696</td>
+                                            138</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            1306</td>
+                                            315</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -634,28 +633,28 @@
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.html");
+            location.href = ("report.php");
         }
         function part2() {
-            location.href = ("reportpart2.html");
+            location.href = ("reportpart2.php");
         }
         function part3() {
-            // location.href = ("reportpart3.html");
+            location.href = ("reportpart3.php");
         }
         function part4() {
-            location.href = ("reportpart4.html");
+            // location.href = ("reportpart4.php");
         }
         function part5() {
-            location.href = ("reportpart5.html");
+            location.href = ("reportpart5.php");
         }
         function part6() {
-            location.href = ("reportpart6.html");
+            location.href = ("reportpart6.php");
         }
         function part7to9() {
-            location.href = ("reportpart7to9.html");
+            location.href = ("reportpart7to9.php");
         }
         function benefits() {
-            location.href = ("reportbenefits.html");
+            location.href = ("reportbenefits.php");
         }
     </script>
 

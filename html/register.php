@@ -129,7 +129,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="index.html"
+                        <a href="index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -188,29 +188,29 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.html"
+                                <a href="./SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.html"
+                                <a href="./SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.html"
+                                <a href="./SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.html"
+                                <a href="./SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="./benefits.html"
+                        <a href="./benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -225,7 +225,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./generate_id.html"
+                        <a href="./generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -238,7 +238,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./reports/report.html"
+                        <a href="./reports/report.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -253,7 +253,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.html"
+                        <a href="./archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -266,7 +266,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./settings.html"
+                        <a href="./settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -669,7 +669,7 @@
 
     <!-- disabled/enabled toggles input -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             // --- Pensioner ---
             const pensionerRadios = document.querySelectorAll('input[name="is_pensioner"]');
             const pensionAmount = document.querySelector('input[name="pension_amount"]');
@@ -760,7 +760,7 @@
                 box.classList.add("scale-95", "opacity-0");
                 setTimeout(() => {
                     modal.classList.add("hidden");
-                    if (redirect) window.location.href = "register.html";
+                    if (redirect) window.location.href = "register.php";
                 }, 200);
             };
         }
@@ -800,7 +800,9 @@
             try {
                 const res = await fetch("/mswdpaluan_system-main/php/register/applicant.php", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify(data),
                 });
 
@@ -837,6 +839,34 @@
             }
         }
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const birthDateInput = document.querySelector('input[name="b_date"]');
+            const ageInput = document.getElementById("age");
+
+            if (birthDateInput && ageInput) {
+                birthDateInput.addEventListener("change", () => {
+                    const birthDate = new Date(birthDateInput.value);
+                    const today = new Date();
+
+                    if (!isNaN(birthDate.getTime())) {
+                        let age = today.getFullYear() - birthDate.getFullYear();
+                        const m = today.getMonth() - birthDate.getMonth();
+
+                        // Adjust if birthday hasn't occurred yet this year
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+
+                        ageInput.value = age >= 0 ? age : "";
+                    } else {
+                        ageInput.value = "";
+                    }
+                });
+            }
+        });
+    </script>
+
 
 </body>
 

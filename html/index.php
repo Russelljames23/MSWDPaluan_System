@@ -99,8 +99,9 @@
                                 <rect x="13" y="11" width="8" height="10" rx="1.5" />
                             </svg>
                             Dashboard
-                        </a></li>
-                    <li><a href="./register.html"
+                        </a>
+                    </li>
+                    <li><a href="./register.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="w-6 h-6 text-[#005A70] mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -110,7 +111,7 @@
                         </a></li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center p-2 w-full text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
+                            class="flex items-center cursor-pointer p-2 w-full text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="w-6 h-6 text-[#005A70] mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                                     d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
@@ -125,25 +126,25 @@
                             </svg>
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
-                            <li><a href="./SeniorList/seniorlist.html"
+                            <li><a href="./SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 font-medium text-base hover:bg-[#FFF4E5]">Senior
                                     List</a>
                             </li>
-                            <li><a href="./SeniorList/activelist.html"
+                            <li><a href="./SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 font-medium text-base hover:bg-[#FFF4E5]">Active
                                     List</a>
                             </li>
-                            <li><a href="./SeniorList/inactivelist.html"
+                            <li><a href="./SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 font-medium text-base hover:bg-[#FFF4E5]">Inactive
                                     List</a>
                             </li>
-                            <li><a href="./SeniorList/deceasedlist.html"
+                            <li><a href="./SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 font-medium text-base hover:bg-[#FFF4E5]">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
-                    <li><a href="./benefits.html"
+                    <li><a href="./benefits.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="flex-shrink-0 w-6 h-6 text-[#005A70] mr-2 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -156,7 +157,7 @@
                             </svg>
                             Benefits
                         </a></li>
-                    <li><a href="./generate_id.html"
+                    <li><a href="./generate_id.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="flex-shrink-0 w-6 h-6 text-[#005A70] mr-2 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -167,7 +168,7 @@
                             </svg>
                             Generate ID
                         </a></li>
-                    <li><a href="./reports/report.html"
+                    <li><a href="./reports/report.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="w-6 h-6 text-[#005A70] mr-2" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -176,7 +177,7 @@
                         </a></li>
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-[#E2E0D5]">
-                    <li><a href="./archived.html"
+                    <li><a href="./archived.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="w-6 h-6 text-[#005A70] mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -184,7 +185,7 @@
                                     clip-rule="evenodd" />
                             </svg>Archived
                         </a></li>
-                    <li><a href="./settings.html"
+                    <li><a href="./settings.php"
                             class="flex items-center p-2 text-lg font-medium text-[#222] rounded-lg hover:bg-[#FFF4E5] transition">
                             <svg class="w-6 h-6 text-[#005A70] mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"

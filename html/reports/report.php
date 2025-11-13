@@ -79,8 +79,10 @@
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Russell James T.
+                                Adalan</span>
+                            <span
+                                class="block text-sm text-gray-900 truncate dark:text-white">russelljamestadalan23@gmail.com</span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
@@ -125,7 +127,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html"
+                        <a href="../index.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -149,7 +151,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.html"
+                        <a href="../register.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -164,6 +166,7 @@
 
                             <span class="ml-3">Register</span>
                         </a>
+
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
@@ -186,29 +189,30 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="../SeniorList/seniorlist.html"
+                                <a href="../SeniorList/seniorlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/activelist.html"
+                                <a href="../SeniorList/activelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/inactivelist.html"
+                                <a href="../SeniorList/inactivelist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="../SeniorList/deceasedlist.html"
+                                <a href="../SeniorList/deceasedlist.php"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
+
                     <li>
-                        <a href="../benefits.html"
+                        <a href="../benefits.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -223,7 +227,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.html"
+                        <a href="../generate_id.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -251,7 +255,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.html"
+                        <a href="../archived.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -265,7 +269,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="..//settings.html"
+                        <a href="../settings.php"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -294,7 +298,7 @@
                 <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
                 <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         I
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part2()"
@@ -310,7 +314,7 @@
                         IV
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         V
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part6()"
@@ -327,16 +331,16 @@
                     </button>
                 </div>
             </div>
-            <!-- Part V -->
+            <!-- Part I -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+                <div class="mx-auto max-w-screen-xl px-4 lg:px-12 ">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">V. List of Bedridden Senior
+                                style="font-family: 'Times New Roman', Times, serif;">I. Number of Registered Senior
                                 Citizens</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
+                                <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
@@ -346,10 +350,10 @@
                                     </svg>
                                     Category
                                 </button>
-                                <div id="actionsDropdown2"
+                                <div id="actionsDropdown"
                                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton2">
+                                        aria-labelledby="actionsDropdownButton">
                                         <li>
                                             <a href="#"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -372,7 +376,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
+                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
@@ -389,9 +393,9 @@
                                     </svg>
                                 </button>
                                 <!-- Dropdown menu -->
-                                <div id="filterDropdown2"
+                                <div id="filterDropdown"
                                     class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
                                         <li>
                                             <a href="#"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -421,83 +425,204 @@
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                     <tr class="flex w-full  border-gray-300 dark:border-gray-600">
-                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Name</th>
+                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Barangay</th>
                                         <th scope="col"
                                             class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Sex</th>
+                                            Male
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
+                                            Female</th>
                                         <th scope="col"
                                             class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Barangay</th>
+                                            Total</th>
                                     </tr>
                                 </thead>
                                 <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
                                                     [&::-webkit-scrollbar]:hidden">
                                     <tr class="flex w-full  font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">1. Rodolfo Padilia
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            M</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
                                             style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
                                         </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
+                                    <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">2. Leonardo Poblete
+                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang
+                                            Tumulong
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            M</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">3. Ligaya Terrenal
-                                        </td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            F</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">4. Elvira Paglicawan
-                                        </td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            F</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang Tumulong
-                                        </td>
+                                            2</td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
+                                    <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">5. ricardo Villaroza
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            M</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
                                             style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
                                             Pag-asa
                                         </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
                                     </tr>
-                                    <tr class="flex w-full  font-semibold">
+                                    <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">6. Corazon Alfaro
+                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            F</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">V - Bagong Silang
                                         </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VI - San Jose
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VIII - Marikit
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubili
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">X - Alipaoy
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">XI - harison
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">XII - Mananao
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            1</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                    </tr>
+                                    <tr
+                                        class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
+                                        <td class="flex w-full px-4 py-3  text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">Total</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            8</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            7</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            15</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -512,28 +637,28 @@
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.html");
+            // location.href=("report.php");
         }
         function part2() {
-            location.href = ("reportpart2.html");
+            location.href = ("reportpart2.php");
         }
         function part3() {
-            location.href = ("reportpart3.html");
+            location.href = ("reportpart3.php");
         }
         function part4() {
-            location.href = ("reportpart4.html");
+            location.href = ("reportpart4.php");
         }
         function part5() {
-            // location.href = ("reportpart5.html");
+            location.href = ("reportpart5.php");
         }
         function part6() {
-            location.href = ("reportpart6.html");
+            location.href = ("reportpart6.php");
         }
         function part7to9() {
-            location.href = ("reportpart7to9.html");
+            location.href = ("reportpart7to9.php");
         }
         function benefits() {
-            location.href = ("reportbenefits.html");
+            location.href = ("reportbenefits.php");
         }
     </script>
 
