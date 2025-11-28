@@ -293,7 +293,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Deceased List</h4>
+                            <h4 class="text-xl font-medium dark:text-white">Inactive List</h4>
                             <!-- Search  -->
                             <div class="w-full md:w-1/2">
                                 <form class="flex items-center">
@@ -624,8 +624,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                         data.deceased.forEach((row, index) => {
                             const statusColor =
-                                row.validation === "Pensioner" ? "text-green-600" :
-                                row.validation === "On Process" ? "text-red-600" :
+                                row.validation === "Validated" ? "text-green-600" :
+                                row.validation === "For Validation" ? "text-red-600" :
                                 "text-red-600";
                             const buttonId = `dropdownBtn-${index}`;
                             const dropdownId = `dropdownMenu-${index}`;

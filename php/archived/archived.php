@@ -15,37 +15,60 @@ try {
     $applicant = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$applicant) throw new Exception("Applicant not found.");
 
-    // 2️⃣ Determine archived status
-    $archivedStatus = match ($applicant['status']) {
-        'Deceased' => 'Deceased',
-        'Inactive' => 'Inactive',
-        default => 'Archived',
-    };
+    // 2️⃣ Check if already archived
+    $checkArchived = $conn->prepare("SELECT COUNT(*) FROM archived_applicants WHERE applicant_id = ? AND restored_date IS NULL");
+    $checkArchived->execute([$id]);
+    if ($checkArchived->fetchColumn() > 0) {
+        throw new Exception("Applicant is already archived.");
+    }
 
-    // 3️⃣ Archive applicant
+    // 3️⃣ Ensure archived_applicants table exists with proper structure
     $conn->exec("
-        CREATE TABLE IF NOT EXISTS archived_applicants LIKE applicants;
-    ");
-    $conn->exec("
-        ALTER TABLE archived_applicants 
-        ADD COLUMN IF NOT EXISTS archived_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        ADD COLUMN IF NOT EXISTS restored_date DATETIME NULL;
+        CREATE TABLE IF NOT EXISTS archived_applicants (
+            applicant_id int(11) NOT NULL,
+            last_name varchar(100) NOT NULL,
+            first_name varchar(100) NOT NULL,
+            middle_name varchar(100) DEFAULT NULL,
+            gender enum('Male','Female') NOT NULL,
+            age int(11) DEFAULT NULL,
+            current_age int(11) DEFAULT NULL,
+            civil_status enum('Single','Married','Separated','Widowed','Divorced') DEFAULT NULL,
+            birth_date date DEFAULT NULL,
+            citizenship varchar(100) DEFAULT NULL,
+            birth_place varchar(255) DEFAULT NULL,
+            living_arrangement enum('Owned','Living alone','Living with relatives','Rent') DEFAULT NULL,
+            validation enum('Validated','For Validation') DEFAULT 'For Validation',
+            status enum('Active','Inactive','Deceased') NOT NULL DEFAULT 'Active',
+            date_of_death date DEFAULT NULL,
+            inactive_reason varchar(255) DEFAULT NULL,
+            date_of_inactive date DEFAULT NULL,
+            remarks text DEFAULT NULL,
+            date_created timestamp NOT NULL DEFAULT current_timestamp(),
+            date_modified datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+            control_number varchar(50) DEFAULT NULL,
+            age_last_updated date DEFAULT NULL,
+            archived_date datetime DEFAULT current_timestamp(),
+            restored_date datetime DEFAULT NULL,
+            PRIMARY KEY (applicant_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
     ");
 
+    // 4️⃣ Archive applicant - explicitly list columns to avoid column count mismatch
     $insertApplicant = $conn->prepare("
         INSERT INTO archived_applicants (
-            applicant_id, last_name, first_name, middle_name, gender, age, current_age, civil_status,
-            birth_date, citizenship, birth_place, living_arrangement, validation,
-            status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified, 
-            control_number, archived_date
+            applicant_id, last_name, first_name, middle_name, gender, age, current_age, 
+            civil_status, birth_date, citizenship, birth_place, living_arrangement, 
+            validation, status, date_of_death, inactive_reason, date_of_inactive, 
+            remarks, date_created, date_modified, control_number, age_last_updated, archived_date
         )
         VALUES (
-            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :current_age, :civil_status,
-            :birth_date, :citizenship, :birth_place, :living_arrangement, :validation,
-            :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, :date_modified,
-            :control_number, NOW()
+            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :current_age, 
+            :civil_status, :birth_date, :citizenship, :birth_place, :living_arrangement, 
+            :validation, :status, :date_of_death, :inactive_reason, :date_of_inactive, 
+            :remarks, :date_created, :date_modified, :control_number, :age_last_updated, NOW()
         )
     ");
+
     $insertApplicant->execute([
         ':applicant_id' => $applicant['applicant_id'],
         ':last_name' => $applicant['last_name'],
@@ -60,17 +83,18 @@ try {
         ':birth_place' => $applicant['birth_place'],
         ':living_arrangement' => $applicant['living_arrangement'],
         ':validation' => $applicant['validation'],
-        ':status' => $archivedStatus,
+        ':status' => $applicant['status'],
         ':date_of_death' => $applicant['date_of_death'],
         ':inactive_reason' => $applicant['inactive_reason'],
         ':date_of_inactive' => $applicant['date_of_inactive'],
         ':remarks' => $applicant['remarks'],
         ':date_created' => $applicant['date_created'],
         ':date_modified' => $applicant['date_modified'],
-        ':control_number' => $applicant['control_number']
+        ':control_number' => $applicant['control_number'],
+        ':age_last_updated' => $applicant['age_last_updated'] ?? null
     ]);
 
-    // 4️⃣ Archive related records
+    // 5️⃣ Archive related records with explicit column listing
     $tables = [
         "addresses" => "archived_addresses",
         "economic_status" => "archived_economic_status",
@@ -79,17 +103,25 @@ try {
     ];
 
     foreach ($tables as $source => $archive) {
-        $conn->exec("CREATE TABLE IF NOT EXISTS $archive LIKE $source;");
+        // Ensure archive table exists with proper structure
+        $conn->exec("CREATE TABLE IF NOT EXISTS $archive LIKE $source");
         $conn->exec("
             ALTER TABLE $archive 
             ADD COLUMN IF NOT EXISTS archived_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            ADD COLUMN IF NOT EXISTS restored_date DATETIME NULL;
+            ADD COLUMN IF NOT EXISTS restored_date DATETIME NULL
         ");
 
-        $columns = $conn->query("SHOW COLUMNS FROM $source")->fetchAll(PDO::FETCH_COLUMN);
-        $columnList = implode(',', $columns);
+        // Get column names from source table (excluding auto_increment columns)
+        $stmt = $conn->query("SHOW COLUMNS FROM $source");
+        $columns = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($row['Extra'] !== 'auto_increment') {
+                $columns[] = $row['Field'];
+            }
+        }
+        $columnList = implode(', ', $columns);
 
-        // Insert with archived_date timestamp
+        // Archive with explicit column names
         $stmt = $conn->prepare("
             INSERT INTO $archive ($columnList, archived_date)
             SELECT $columnList, NOW() FROM $source WHERE applicant_id = ?
@@ -97,14 +129,23 @@ try {
         $stmt->execute([$id]);
     }
 
-    // 5️⃣ Delete originals (maintaining referential order)
-    foreach (array_reverse(array_keys($tables)) as $table) {
-        $stmt = $conn->prepare("DELETE FROM $table WHERE applicant_id = ?");
-        $stmt->execute([$id]);
-    }
+    // 6️⃣ Delete from original tables (in reverse order to maintain referential integrity)
+    $deleteOrder = [
+        "senior_illness",
+        "health_condition",
+        "economic_status",
+        "addresses",
+        "applicants"
+    ];
 
-    $stmt = $conn->prepare("DELETE FROM applicants WHERE applicant_id = ?");
-    $stmt->execute([$id]);
+    foreach ($deleteOrder as $table) {
+        $deleteStmt = $conn->prepare("DELETE FROM $table WHERE applicant_id = ?");
+        $deleteResult = $deleteStmt->execute([$id]);
+
+        if (!$deleteResult) {
+            throw new Exception("Failed to delete from $table for applicant $id");
+        }
+    }
 
     if ($conn->inTransaction()) $conn->commit();
 

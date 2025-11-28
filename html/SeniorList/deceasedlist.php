@@ -623,8 +623,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                         data.deceased.forEach((row, index) => {
                             const statusColor =
-                                row.validation === "Pensioner" ? "text-green-600" :
-                                row.validation === "On Process" ? "text-red-600" :
+                                row.validation === "Validated" ? "text-green-600" :
+                                row.validation === "For Validation" ? "text-red-600" :
                                 "text-red-600";
                             const buttonId = `dropdownBtn-${index}`;
                             const dropdownId = `dropdownMenu-${index}`;
