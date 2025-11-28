@@ -1,3 +1,7 @@
+<?php
+require_once "../../php/login/admin_header.php";
+$ctx = urlencode($_GET['session_context'] ?? session_id());
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -130,7 +134,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.php"
+                        <a href="../index.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -154,7 +158,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../register.php"
+                        <a href="../register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -192,28 +196,28 @@
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
                                 <a href="#" style="color: blue;"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./activelist.php"
+                                <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./inactivelist.php"
+                                <a href="./inactivelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./deceasedlist.php"
+                                <a href="./deceasedlist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="../benefits.php"
+                        <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -228,7 +232,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../generate_id.php"
+                        <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -241,7 +245,7 @@
                         </a>
                     <li>
                     <li>
-                        <a href="../reports/report.php"
+                        <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -257,7 +261,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="../archived.php"
+                        <a href="../archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -271,7 +275,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../settings.php"
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -289,7 +293,7 @@
 
         <main class="p-4 md:ml-64 pt-18">
             <div class="w-full flex  justify-between ">
-                <a href="./seniorlist.html"
+                <a href="./seniorlist.php?session_context=<?php echo $ctx; ?>"
                     class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800  font-medium rounded-sm text-xs px-2   dark:bg-blue-600 dark:hover:bg-blue-700 ">
                     <svg class="w-4.5 h-5 text-white dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -1253,7 +1257,12 @@
                         return;
                     }
 
-                    const { applicant, address, economic, health } = data;
+                    const {
+                        applicant,
+                        address,
+                        economic,
+                        health
+                    } = data;
 
                     // ---------- Helper Functions ----------
                     const setField = (selector, value) => {
@@ -1365,7 +1374,12 @@
 
             // --- Fill form with fetched data ---
             function fillForm(data) {
-                const { applicant, address, economic, health } = data;
+                const {
+                    applicant,
+                    address,
+                    economic,
+                    health
+                } = data;
 
                 if (applicant) {
                     setField('lname', applicant.last_name);
@@ -1426,7 +1440,7 @@
             loadApplicant();
 
             // --- Submit form (update applicant) ---
-            window.submitForm = async function () {
+            window.submitForm = async function() {
                 const fd = new FormData(form);
                 fd.append('id', applicantId);
 

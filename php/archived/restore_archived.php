@@ -16,7 +16,7 @@ try {
         $transactionStarted = true;
     }
 
-    //  Check if applicant already active
+    // Check if applicant already active
     $stmt = $conn->prepare("SELECT COUNT(*) FROM applicants WHERE applicant_id = ?");
     $stmt->execute([$id]);
     if ($stmt->fetchColumn() > 0) {
@@ -24,25 +24,27 @@ try {
         exit;
     }
 
-    //  Fetch archived applicant
+    // Fetch archived applicant
     $stmt = $conn->prepare("SELECT * FROM archived_applicants WHERE applicant_id = ?");
     $stmt->execute([$id]);
     $archivedApplicant = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$archivedApplicant) throw new Exception("Archived applicant not found.");
 
-    //  Restore applicant
+    // Restore applicant
     $conn->exec("CREATE TABLE IF NOT EXISTS applicants LIKE archived_applicants;");
 
     $insert = $conn->prepare("
         INSERT INTO applicants (
-            applicant_id, last_name, first_name, middle_name, gender, age, civil_status,
-            birth_date, citizenship, birth_place, living_arrangement, pension_status,
-            status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified
+            applicant_id, last_name, first_name, middle_name, gender, age, current_age, civil_status,
+            birth_date, citizenship, birth_place, living_arrangement, validation,
+            status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified,
+            control_number
         )
         VALUES (
-            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :civil_status,
-            :birth_date, :citizenship, :birth_place, :living_arrangement, :pension_status,
-            :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, NOW()
+            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :current_age, :civil_status,
+            :birth_date, :citizenship, :birth_place, :living_arrangement, :validation,
+            :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, NOW(),
+            :control_number
         )
     ");
     $insert->execute([
@@ -52,21 +54,23 @@ try {
         ':middle_name' => $archivedApplicant['middle_name'],
         ':gender' => $archivedApplicant['gender'],
         ':age' => $archivedApplicant['age'],
+        ':current_age' => $archivedApplicant['current_age'],
         ':civil_status' => $archivedApplicant['civil_status'],
         ':birth_date' => $archivedApplicant['birth_date'],
         ':citizenship' => $archivedApplicant['citizenship'],
         ':birth_place' => $archivedApplicant['birth_place'],
         ':living_arrangement' => $archivedApplicant['living_arrangement'],
-        ':pension_status' => $archivedApplicant['pension_status'],
+        ':validation' => $archivedApplicant['validation'],
         ':status' => $archivedApplicant['status'] ?? 'Active',
         ':date_of_death' => $archivedApplicant['date_of_death'],
         ':inactive_reason' => $archivedApplicant['inactive_reason'],
         ':date_of_inactive' => $archivedApplicant['date_of_inactive'],
         ':remarks' => $archivedApplicant['remarks'],
-        ':date_created' => $archivedApplicant['date_created']
+        ':date_created' => $archivedApplicant['date_created'],
+        ':control_number' => $archivedApplicant['control_number']
     ]);
 
-    //  Restore related data
+    // Restore related data
     $tables = [
         "addresses" => "archived_addresses",
         "economic_status" => "archived_economic_status",
@@ -96,7 +100,7 @@ try {
         $conn->prepare("DELETE FROM $archive WHERE applicant_id = ?")->execute([$id]);
     }
 
-    //  Delete applicant from archive after restore
+    // Delete applicant from archive after restore
     $conn->prepare("DELETE FROM archived_applicants WHERE applicant_id = ?")->execute([$id]);
 
     if ($transactionStarted && $conn->inTransaction()) $conn->commit();
@@ -107,3 +111,4 @@ try {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "⚠️ Error restoring record: " . $e->getMessage()]);
 }
+?>

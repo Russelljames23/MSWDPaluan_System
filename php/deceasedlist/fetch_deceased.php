@@ -43,7 +43,7 @@ try {
             a.gender,
             a.civil_status,
             a.date_of_death,
-            a.pension_status
+            a.validation
         FROM applicants a, (SELECT @rownum := ?) r
         $where
         $orderBy

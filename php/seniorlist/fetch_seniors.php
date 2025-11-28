@@ -1,3 +1,4 @@
+
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -25,6 +26,7 @@ try {
 
     $search = trim($_GET['search'] ?? '');
     $barangays = !empty($_GET['barangays']) ? explode(',', $_GET['barangays']) : [];
+    $status = $_GET['status'] ?? 'all'; // Get status filter
 
     $conditions = [];
     $params = [];
@@ -45,6 +47,12 @@ try {
         $in = implode(',', array_fill(0, count($barangays), '?'));
         $conditions[] = "ad.barangay IN ($in)";
         $params = array_merge($params, $barangays);
+    }
+
+    // --- Status filter ---
+    if ($status !== 'all') {
+        $conditions[] = "a.validation = ?";
+        $params[] = $status;
     }
 
     $where = count($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
@@ -72,8 +80,9 @@ try {
             ad.barangay,
             a.date_created,
             a.date_modified,
-            a.pension_status,
-            a.status
+            a.validation,
+            a.status,
+            a.control_number
         FROM applicants a
         LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id,
         (SELECT @rownum := ?) r

@@ -1,3 +1,7 @@
+<?php
+require_once "../../php/login/admin_header.php";
+$ctx = urlencode($_GET['session_context'] ?? session_id());
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,6 +86,26 @@
             position: relative;
             display: flex;
             width: 100%;
+        }
+
+        .nav-list li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #333;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            height: 35px;
+            width: 100%;
+            padding: 0 10px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .nav-list li a:hover {
+            background: #e4e9f7;
         }
 
         .nav-list li button {
@@ -173,7 +197,7 @@
         }
 
         /* Highlight active sidebar link */
-        .nav-list li #button.active-link {
+        .nav-list li #accounts.active-link {
             color: #1d4ed8;
             /* Tailwind blue-700 */
             font-weight: 600;
@@ -181,44 +205,7 @@
             background: #eff6ff;
         }
 
-        .nav-list li #button.active-link svg {
-            color: #1d4ed8;
-        }
-
-        /* Highlight active sidebar link */
-        .nav-list li #button1.active-link {
-            color: #1d4ed8;
-            /* Tailwind blue-700 */
-            font-weight: 600;
-            border-color: #1d4ed8;
-            background: #eff6ff;
-        }
-
-        .nav-list li #button1.active-link svg {
-            color: #1d4ed8;
-        }
-
-        .nav-list li #button2.active-link {
-            color: #1d4ed8;
-            /* Tailwind blue-700 */
-            font-weight: 600;
-            border-color: #1d4ed8;
-            background: #eff6ff;
-        }
-
-        .nav-list li #button2.active-link svg {
-            color: #1d4ed8;
-        }
-
-        .nav-list li #button3.active-link {
-            color: #1d4ed8;
-            /* Tailwind blue-700 */
-            font-weight: 600;
-            border-color: #1d4ed8;
-            background: #eff6ff;
-        }
-
-        .nav-list li #button3.active-link svg {
+        .nav-list li #accounts.active-link svg {
             color: #1d4ed8;
         }
     </style>
@@ -248,7 +235,7 @@
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
                     <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../img/MSWD_LOGO-removebg-preview.png"
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -256,7 +243,7 @@
                     </a>
                     <form action="#" method="GET" class="hidden md:block md:pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64">
+                        <div class="relative md:w-64 md:w-96">
                             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -295,8 +282,12 @@
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white"></span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'User'); ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php echo htmlspecialchars($_SESSION['user_type'] ?? 'User Type'); ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
@@ -307,7 +298,7 @@
                         </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -316,6 +307,7 @@
                 </div>
             </div>
         </nav>
+
         <!-- Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -340,7 +332,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="./index.html"
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/index.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -364,8 +356,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./register.html"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -380,7 +372,7 @@
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -399,30 +391,30 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.html"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/seniorlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.html"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.html"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.html"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="./benefits.html"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/benefits.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -436,8 +428,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./generate_id.html"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/generate_id.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -449,8 +441,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./reports/report.html"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/reports/report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -463,7 +455,7 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.html"
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -476,11 +468,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center p-2 text-base font-medium text-blue-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group"
-                            style="color: blue;">
-                            <svg style="color: blue;" aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        <a href="#"  style="color: blue;"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                            <svg aria-hidden="true"
+                                class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
                                     d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
@@ -494,10 +485,10 @@
         </aside>
 
         <!-- Main content -->
-        <main class="p-4 md:ml-64  pt-20">
-            <div class="flex flex-row justify-between gap-2">
+        <main class="p-4 md:ml-64 pt-20">
+            <div class="flex flex-row justify-between">
                 <!-- partial:index.partial.html -->
-                <div class="sidebar">
+                <div class="sidebar open">
                     <div class="logo-details">
                         <button type="button" class="border" id="btn">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
@@ -509,7 +500,7 @@
                     </div>
                     <ul class="nav-list">
                         <li>
-                            <button id="button" class="cursor-pointer">
+                            <a href="profile.php?session_context=<?php echo $ctx; ?>" id="profile" class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-gray-900" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
@@ -518,11 +509,11 @@
                                         clip-rule="evenodd" />
                                 </svg>
                                 <span class="links_name">My Profile</span>
-                            </button>
+                            </a>
                             <span class="tooltip">My Profile</span>
                         </li>
                         <li>
-                            <button class="cursor-pointer">
+                            <button class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
@@ -537,7 +528,7 @@
                         </li>
 
                         <li>
-                            <button type="button" class="cursor-pointer" id="button1">
+                            <a href="#" id="accounts" class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
@@ -547,11 +538,11 @@
                                 </svg>
 
                                 <span class="links_name">Accounts</span>
-                            </button>
+                            </a>
                             <span class="tooltip">Accounts</span>
                         </li>
                         <li>
-                            <button class="cursor-pointer" id="button2">
+                            <a href="historylogs.php?session_context=<?php echo $ctx; ?>" id="history" class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -561,11 +552,11 @@
                                 </svg>
 
                                 <span class="links_name">History Log</span>
-                            </button>
+                            </a>
                             <span class="tooltip">History Log</span>
                         </li>
                         <li>
-                            <button class="cursor-pointer" id="button3">
+                            <a href="activitylogs.php?session_context=<?php echo $ctx; ?>" id="activity" class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -580,169 +571,13 @@
                                 </svg>
 
                                 <span class="links_name">Activity Log</span>
-                            </button>
+                            </a>
                             <span class="tooltip">Activity Log</span>
                         </li>
                     </ul>
                 </div>
-                <!-- profile  -->
-                <section id="profileSection" class="bg-gray-50 hidden dark:bg-gray-900 w-full">
-                    <div class="mx-auto max-w-screen-xl ">
-                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg px-5">
-                            <!-- Close Button (top-right) -->
-                            <div class="absolute top-2 right-2 group w-fit h-fit">
-                                <button type="button"
-                                    class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white "
-                                    data-dismiss-target="#toast-default" aria-label="Close">
-                                    <span class="sr-only">Close</span>
-                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                </button>
-                                <!-- Tooltip -->
-                                <span
-                                    class="absolute -top-7 right-1/2 translate-x-1/2 hidden group-hover:block px-2 py-1 text-[14px] text-gray-900">
-                                    Close
-                                </span>
-                            </div>
-                            <!-- Content -->
-                            <div
-                                class="flex flex-col pb-10 border-b border-gray-200 dark:border-gray-700 md:flex-row justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                                <div class="flex flex-row gap-2 items-center">
-                                    <div class="relative inline-block">
-                                        <img class="w-20 h-20 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
-                                            src="https://spng.pngfind.com/pngs/s/378-3780189_member-icon-png-transparent-png.png"
-                                            alt="Bordered avatar" />
-
-                                        <div class="absolute -bottom-4 right-0 group">
-                                            <button type="button"
-                                                class="relative bg-white text-gray-400 hover:text-gray-900 rounded-full cursor-pointer hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 shadow-md">
-                                                <svg class="w-5 h-5 text-blue-800 dark:text-white" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" stroke-linecap="square"
-                                                        stroke-linejoin="round" stroke-width="2"
-                                                        d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z" />
-                                                </svg>
-                                            </button>
-                                            <!-- Tooltip -->
-                                            <span
-                                                class="absolute bottom-10 right-1/2 translate-x-1/2 mb-1 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-700/80 rounded-md shadow-lg whitespace-nowrap">
-                                                Change Photo
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <h2 class="text-sm font-medium dark:text-white">
-                                            Russell James Tadalan
-                                        </h2>
-                                        <h2 class="text-xs font-normal dark:text-white">
-                                            russelljames23@gmail.com
-                                        </h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 ">
-                                <form class="w-full items-center justify-center flex py-4">
-                                    <div class="flex flex-col gap-3 w-full">
-                                        <div class="flex flex-col gap-6 w-full">
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="first_name"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                                <div class="w-full text-right">
-                                                    <label for="first_name"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">Russell
-                                                        James Tadalan</label>
-                                                    <input type="text" id="first_name"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="birthdate"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Birthdate</label>
-                                                <div class="w-full text-right">
-                                                    <label for="birthdate"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">December
-                                                        27,2001</label>
-                                                    <input type="text" id="birthdate"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="email"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Email
-                                                    Account</label>
-                                                <div class="w-full text-right">
-                                                    <label for="email"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">russelljamestadalan23@gmail.com</label>
-                                                    <input type="text" id="email"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="mobile_number"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Mobile
-                                                    number</label>
-                                                <div class="w-full text-right">
-                                                    <label for="mobile_number"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">09664750533</label>
-                                                    <input type="text" id="mobile_number"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="address"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Address</label>
-                                                <div class="w-full text-right">
-                                                    <label for="address"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">Brgy.11
-                                                        Harrison,Paluan Occidental Mindoro</label>
-                                                    <input type="text" id="address"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                            <div class="flex flex-row w-full items-center">
-                                                <label for="password"
-                                                    class="block mb-2 w-full text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                                <div class="w-full text-right">
-                                                    <label for="password"
-                                                        class="profile-label block mb-2 w-full text-sm font-medium text-gray-600 dark:text-white">**********</label>
-                                                    <input type="text" id="password"
-                                                        class="profile-input hidden bg-gray-50  border-gray-300 text-gray-900 text-sm text-right rounded-sm h-8  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                                                        placeholder="" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex justify-end">
-                                            <button id="editBtn" type="button"
-                                                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-[13px] cursor-pointer px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">
-                                                Edit Profile
-                                            </button>
-                                            <div class="flex flex-row gap-2">
-                                                <button type="button" id="cancelBtn"
-                                                    class="hidden text-gray-800 bg-gray-200 hover:bg-gray-300 font-medium rounded-sm text-[13px] cursor-pointer px-3 py-1.5 text-center dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
-                                                    Cancel
-                                                </button>
-                                                <button type="submit" id="updateBtn"
-                                                    class="text-white hidden bg-blue-700 hover:bg-blue-800 font-medium rounded-sm text-[13px] cursor-pointer px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700">
-                                                    Update
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </section>
                 <!-- accounts  -->
-                <section id="accountSection" class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full hidden">
+                <section id="accountSection" class="bg-gray-50 dark:bg-gray-900  w-full">
                     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                             <div class=" py-2">
@@ -798,7 +633,7 @@
                                     <!-- Add Benefits -->
                                     <button id="defaultModalButton" data-modal-target="defaultModal"
                                         data-modal-toggle="defaultModal"
-                                        class="flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 
+                                        class="flex items-center cursor-pointer justify-center text-white bg-blue-700 hover:bg-blue-800 
                                                          font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700">
                                         <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0
@@ -816,8 +651,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-400"
                                                 viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 
-                                                   01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 
-                                                    2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 
+                                                   01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 
                                                     013 6V3z" clip-rule="evenodd" />
                                             </svg>
                                             Filter
@@ -845,7 +679,7 @@
                                     <table id="deceasedTable"
                                         class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                         <thead
-                                            class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                             <tr>
                                                 <th scope="col" class="px-4 py-3">Type</th>
                                                 <th scope="col" class="px-15 py-3">Name</th>
@@ -886,237 +720,6 @@
                         </div>
                     </div>
                 </section>
-                <!-- history log -->
-                <section id="historySection" class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full hidden">
-                    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg ">
-                            <div class=" py-4">
-                                <!-- Close Button (top-right) -->
-                                <div class="absolute top-2 right-2 group w-fit h-fit">
-                                    <button type="button"
-                                        class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white "
-                                        data-dismiss-target="#toast-default" aria-label="Close2">
-                                        <span class="sr-only">Close</span>
-                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                        </svg>
-                                    </button>
-                                    <!-- Tooltip -->
-                                    <span
-                                        class="absolute -top-7 right-1/2 translate-x-1/2 hidden group-hover:block px-2 py-1 text-[14px] text-gray-900">
-                                        Close
-                                    </span>
-                                </div>
-                            </div>
-                            <div
-                                class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                                <h4 class="text-xl font-medium dark:text-white">History log</h4>
-                                <div class="w-full md:w-1/2">
-                                    <form class="flex items-center">
-                                        <label for="simple-search" class="sr-only">Search</label>
-                                        <div class="relative w-full">
-                                            <div
-                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                    fill="currentColor" viewbox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <input type="text" id="simple-search"
-                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search" required="">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="relative w-full md:w-auto">
-                                    <button id="filterDropdownButton"
-                                        class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        Filter
-                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7">
-                                            </path>
-                                        </svg>
-                                    </button>
-
-                                    <!-- Dropdown menu -->
-                                    <div id="filterDropdownMenu"
-                                        class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
-                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">A-Z</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">60-100</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="newlyRegistered"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">Newly
-                                                    Registered</button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table id="deceasedTable"
-                                    class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr>
-                                            <th scope="col" class="px-4 py-3">Type</th>
-                                            <th scope="col" class="px-4 py-3">Name</th>
-                                            <th scope="col" class="px-4 py-3">Duration</th>
-                                            <th scope="col" class="px-4 py-3">Last Seen(?)</th>
-                                            <th scope="col" class="px-15 py-3">Login</th>
-                                            <th scope="col" class="px-15 py-3">Logout</th>
-                                            <th scope="col" class="px-4 py-3">Log Status(?)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b dark:border-gray-700">
-                                            <td class="px-4 py-3">Admin1</td>
-                                            <td class="px-4 py-3">Tadalan,RussellJames</td>
-                                            <td class="px-4 py-3">24 mins</td>
-                                            <td class="px-4 py-3">1 mins ago</td>
-                                            <td class="px-4 py-3">October 11,2025 7:20am</td>
-                                            <td class="px-4 py-3">October 11,2025 7:22am</td>
-                                            <td class="px-4 py-3">Logout</td>
-
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- activity log  -->
-                <section id="activitySection" class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full hidden">
-                    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg ">
-                            <div class=" py-4">
-                                <!-- Close Button (top-right) -->
-                                <div class="absolute top-2 right-2 group w-fit h-fit">
-                                    <button type="button"
-                                        class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white "
-                                        data-dismiss-target="#toast-default" aria-label="Close3">
-                                        <span class="sr-only">Close</span>
-                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                        </svg>
-                                    </button>
-                                    <!-- Tooltip -->
-                                    <span
-                                        class="absolute -top-7 right-1/2 translate-x-1/2 hidden group-hover:block px-2 py-1 text-[14px] text-gray-900">
-                                        Close
-                                    </span>
-                                </div>
-                            </div>
-                            <div
-                                class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                                <h4 class="text-xl font-medium dark:text-white">Activity log</h4>
-                                <div class="w-full md:w-1/2">
-                                    <form class="flex items-center">
-                                        <label for="simple-search" class="sr-only">Search</label>
-                                        <div class="relative w-full">
-                                            <div
-                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                    fill="currentColor" viewbox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <input type="text" id="simple-search"
-                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search" required="">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="relative w-full md:w-auto">
-                                    <button id="activityFilterDropdownButton"
-                                        class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        Filter
-                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7">
-                                            </path>
-                                        </svg>
-                                    </button>
-
-                                    <!-- Dropdown menu -->
-                                    <div id="activityFilterDropdownMenu"
-                                        class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
-                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">A-Z</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">60-100</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="newlyRegistered"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">Newly
-                                                    Registered</button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table id="deceasedTable"
-                                    class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr>
-                                            <th scope="col" class="px-4 py-3">#</th>
-                                            <th scope="col" class="px-4 py-3">Type</th>
-                                            <th scope="col" class="px-25 py-3">Name</th>
-                                            <th scope="col" class="px-10 py-3">Date and Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b dark:border-gray-700">
-                                            <td class="px-4 py-3">1</td>
-                                            <td class="px-4 py-3">Admin1</td>
-                                            <td class="px-15 py-3">Tadalan,RussellJames</td>
-                                            <td class="px-4 py-3">October 11,2025 7:20am</td>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- add account modal -->
                 <div id="defaultModal" tabindex="-1" aria-hidden="true"
@@ -1131,8 +734,8 @@
                                     Add Accounts
                                 </h3>
                                 <button type="button"
-                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    data-modal-toggle="defaultModal">
+                                    class="text-gray-400 cursor-pointer bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                    data-modal-hide="defaultModal"> <!-- Changed from data-modal-toggle to data-modal-hide -->
                                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -1178,22 +781,17 @@
                                         </select>
                                     </div>
                                     <div class="w-full">
-                                        <label for="brand"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sex</label>
-                                        <div
-                                            class="flex flex-row justify-between items-center gap-5 bg-gray-50 border p-2.5 px-10 border-gray-300 text-gray-900 rounded-lg">
-                                            <div class="flex items-center ">
-                                                <input id="default-radio-1" type="radio" value="2" name="default-radio"
+                                        <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sex</label>
+                                        <div class="flex flex-row justify-between items-center gap-5 bg-gray-50 border p-2.5 px-10 border-gray-300 text-gray-900 rounded-lg">
+                                            <div class="flex items-center">
+                                                <input id="default-radio-1" type="radio" value="Male" name="gender"
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-1"
-                                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Male</label>
+                                                <label for="default-radio-1" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Male</label>
                                             </div>
                                             <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="2"
-                                                    name="default-radio"
+                                                <input id="default-radio-2" type="radio" value="Female" name="gender" checked
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">female</label>
+                                                <label for="default-radio-2" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Female</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1205,10 +803,8 @@
                                             placeholder="Enter email" required="">
                                     </div>
                                     <div class="w-full">
-                                        <label for="price"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact
-                                            no.</label>
-                                        <input type="number" name="price" id="price"
+                                        <label for="contact_no" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact no.</label>
+                                        <input type="number" name="contact_no" id="contact_no"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="+639X-XXXX-XXXX" required="">
                                     </div>
@@ -1227,14 +823,11 @@
                                             placeholder="Enter Username" required="">
                                     </div>
                                     <div class="w-full">
-                                        <label for="select-type"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
-                                            Type</label>
-                                        <select id="select-type"
+                                        <label for="select-type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Type</label>
+                                        <select id="select-type" name="user_type" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                            <option selected></option>
-                                            <option value="Admin 1">Admin 1</option>
-                                            <option value="Admin 2">Admin 2</option>
+                                            <option value="" disabled selected>Select user type</option>
+                                            <option value="Admin">Admin</option>
                                             <option value="Staff">Staff</option>
                                         </select>
                                     </div>
@@ -1378,6 +971,7 @@
             });
         }
     </script>
+
     <script>
         const editBtn = document.getElementById("editBtn");
         const cancelBtn = document.getElementById("cancelBtn");
@@ -1407,73 +1001,560 @@
             editBtn.classList.remove("hidden");
         });
     </script>
+
     <script>
-        const table = document.getElementById("deceasedTable");
-        const dropdownButton = document.getElementById("filterDropdownButton");
-        const dropdownMenu = document.getElementById("filterDropdownMenu");
+        class AccountsManager {
+            constructor() {
+                this.accounts = [];
+                this.modal = null;
+                this.isLoading = false;
+                this.searchTimeout = null;
+                this.init();
+            }
 
-        // Toggle dropdown visibility
-        dropdownButton.addEventListener("click", () => {
-            dropdownMenu.classList.toggle("hidden");
-        });
+            init() {
+                this.setupEventListeners();
+                this.initModal();
+                this.loadAccounts();
+            }
 
-        // Filter selection
-        dropdownMenu.querySelectorAll("button").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const filterType = btn.getAttribute("data-filter");
-                const rows = Array.from(table.querySelectorAll("tbody tr"));
+            initModal() {
+                try {
+                    const modalElement = document.getElementById('defaultModal');
+                    if (modalElement && typeof Modal !== 'undefined') {
+                        this.modal = new Modal(modalElement);
+                    }
+                } catch (error) {
+                    console.warn('Modal initialization failed:', error);
+                }
+            }
 
-                if (filterType === "az") {
-                    rows.sort((a, b) => {
-                        const nameA = a.cells[1].textContent.toLowerCase();
-                        const nameB = b.cells[1].textContent.toLowerCase();
-                        return nameA.localeCompare(nameB);
+            setupEventListeners() {
+                // Search functionality with debounce
+                const searchInput = document.getElementById('simple-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.debouncedSearch(e.target.value);
                     });
-                    dropdownButton.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
-                </svg>
-                Filter: A-Z
-                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            `;
-                } else if (filterType === "newlyRegistered") {
-                    rows.sort((a, b) => {
-                        const dateA = new Date(a.cells[6].textContent);
-                        const dateB = new Date(b.cells[6].textContent);
-                        return dateB - dateA; // newest first
-                    });
-                    dropdownButton.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
-                </svg>
-                Filter: Newly Registered
-                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            `;
                 }
 
-                const tbody = table.querySelector("tbody");
-                rows.forEach(row => tbody.appendChild(row));
-                updateNumbers();
+                // Add account form submission
+                const addAccountForm = document.querySelector('#defaultModal form');
+                if (addAccountForm) {
+                    addAccountForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.createAccount();
+                    });
+                }
 
-                dropdownMenu.classList.add("hidden"); // close menu after selection
-            });
-        });
+                // Add account button - show modal
+                const addAccountBtn = document.getElementById('defaultModalButton');
+                if (addAccountBtn) {
+                    addAccountBtn.addEventListener('click', () => {
+                        this.openModal();
+                    });
+                }
 
-        function updateNumbers() {
-            const rows = table.querySelectorAll("tbody tr");
-            rows.forEach((row, index) => row.cells[0].textContent = index + 1);
+                // Modal close buttons
+                const modalCloseButtons = document.querySelectorAll('[data-modal-toggle="defaultModal"], [data-modal-hide="defaultModal"]');
+                modalCloseButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        this.closeModal();
+                    });
+                });
+
+                // Close modal on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isModalOpen()) {
+                        this.closeModal();
+                    }
+                });
+
+                // Real-time form validation
+                this.setupFormValidation();
+            }
+
+            setupFormValidation() {
+                const form = document.querySelector('#defaultModal form');
+                if (!form) return;
+
+                // Password confirmation validation
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirm-password');
+
+                if (password && confirmPassword) {
+                    const validatePasswords = () => {
+                        if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+                            confirmPassword.setCustomValidity('Passwords do not match');
+                        } else {
+                            confirmPassword.setCustomValidity('');
+                        }
+                    };
+
+                    password.addEventListener('input', validatePasswords);
+                    confirmPassword.addEventListener('input', validatePasswords);
+                }
+
+                // Email validation
+                const email = document.getElementById('email');
+                if (email) {
+                    email.addEventListener('blur', () => {
+                        if (email.value && !this.isValidEmail(email.value)) {
+                            email.setCustomValidity('Please enter a valid email address');
+                        } else {
+                            email.setCustomValidity('');
+                        }
+                    });
+                }
+            }
+
+            debouncedSearch(searchTerm) {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.filterAccounts(searchTerm);
+                }, 300);
+            }
+
+            isModalOpen() {
+                const modal = document.getElementById('defaultModal');
+                return modal && !modal.classList.contains('hidden');
+            }
+
+            openModal() {
+                if (this.modal) {
+                    this.modal.show();
+                } else {
+                    const modalElement = document.getElementById('defaultModal');
+                    if (modalElement) {
+                        modalElement.classList.remove('hidden');
+                        modalElement.setAttribute('aria-hidden', 'false');
+                        document.body.style.overflow = 'hidden';
+                    }
+                }
+            }
+
+            closeModal() {
+                // Use Flowbite modal if available
+                if (this.modal) {
+                    this.modal.hide();
+                }
+
+                // Manual cleanup
+                const modalElement = document.getElementById('defaultModal');
+                if (modalElement) {
+                    modalElement.classList.add('hidden');
+                    modalElement.setAttribute('aria-hidden', 'true');
+                }
+
+                this.removeAllBackdrops();
+                this.resetForm();
+                document.body.style.overflow = 'auto';
+            }
+
+            removeAllBackdrops() {
+                const backdropSelectors = [
+                    '[modal-backdrop]',
+                    '.modal-backdrop',
+                    '.fixed.inset-0',
+                    '.bg-gray-900',
+                    '.bg-opacity-50'
+                ];
+
+                backdropSelectors.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(element => element.remove());
+                });
+            }
+
+            resetForm() {
+                const form = document.querySelector('#defaultModal form');
+                if (form) {
+                    form.reset();
+                    // Clear validation states
+                    form.querySelectorAll(':invalid').forEach(element => {
+                        element.setCustomValidity('');
+                    });
+                    // Reset gender selection
+                    const femaleRadio = document.getElementById('default-radio-2');
+                    if (femaleRadio) femaleRadio.checked = true;
+                }
+            }
+
+            async loadAccounts() {
+                if (this.isLoading) return;
+
+                this.isLoading = true;
+                this.showLoadingState();
+
+                try {
+                    // Use absolute path to ensure correct API endpoint
+                    const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php?action=get_accounts';
+                    console.log('Fetching from:', apiUrl);
+
+                    const response = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const text = await response.text();
+                    console.log('Raw response:', text);
+
+                    const data = JSON.parse(text);
+                    console.log('Parsed data:', data);
+
+                    if (data.records) {
+                        this.accounts = data.records;
+                        this.renderAccounts();
+                    } else {
+                        this.accounts = [];
+                        this.renderAccounts();
+                        console.warn('No records found in response');
+                    }
+                } catch (error) {
+                    console.error('Error loading accounts:', error);
+                    this.showNotification('Error loading accounts: ' + error.message, 'error');
+                } finally {
+                    this.isLoading = false;
+                    this.hideLoadingState();
+                }
+            }
+            showLoadingState() {
+                const tbody = document.querySelector('#deceasedTable tbody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-4 py-3 text-center">
+                        <div class="flex justify-center items-center">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                            <span class="ml-2">Loading accounts...</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+                }
+            }
+
+            hideLoadingState() {
+                // Loading state is automatically replaced when rendering
+            }
+
+            renderAccounts(accounts = this.accounts) {
+                const tbody = document.querySelector('#deceasedTable tbody');
+                if (!tbody) return;
+
+                if (accounts.length === 0) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                            </svg>
+                            <span class="text-lg">No accounts found</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+                    return;
+                }
+
+                tbody.innerHTML = accounts.map(account => `
+            <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <td class="px-4 py-3 items-center text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        account.user_type === 'Admin 1' ? 'bg-purple-100 text-purple-800' :
+                        account.user_type === 'Admin 2' ? 'bg-blue-100 text-blue-800' :
+                        'bg-green-100 text-green-800'
+                    }">
+                        ${this.escapeHtml(account.user_type)}
+                    </span>
+                </td>
+                <td class="px-4 py-3 items-center text-center font-medium text-gray-900 dark:text-white">
+                    ${this.escapeHtml(account.fullname)}
+                </td>
+                <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.username)}</td>
+                <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.birthdate)}</td>
+                <td class="px-4 py-3 items-center text-center">
+                    <span class="inline-flex items-center">
+                        ${account.gender === 'Male' ? 
+                            '<svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>' :
+                            '<svg class="w-4 h-4 mr-1 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>'
+                        }
+                        ${this.escapeHtml(account.gender)}
+                    </span>
+                </td>
+                <td class="px-4 py-3">${this.escapeHtml(account.contact_no)}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center justify-end space-x-2">
+                        <button onclick="accountsManager.editAccount(${account.id})" 
+                                class="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded transition-colors"
+                                title="Edit account">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </button>
+                        <button onclick="accountsManager.deleteAccount(${account.id})" 
+                                class="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded transition-colors"
+                                title="Delete account">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+            }
+
+            filterAccounts(searchTerm) {
+                if (!searchTerm.trim()) {
+                    this.renderAccounts();
+                    return;
+                }
+
+                const filtered = this.accounts.filter(account =>
+                    Object.values(account).some(value =>
+                        value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
+                this.renderAccounts(filtered);
+            }
+
+            async createAccount() {
+                if (this.isLoading) return;
+
+                const accountData = this.getFormData();
+                const validation = this.validateFormData(accountData);
+
+                if (!validation.isValid) {
+                    this.showNotification(validation.message, 'error');
+                    return;
+                }
+
+                this.isLoading = true;
+                this.showNotification('Creating account...', 'info');
+
+                try {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(accountData)
+                    });
+
+                    const result = await this.parseResponse(response);
+
+                    if (response.ok) {
+                        this.handleCreateSuccess(result, accountData);
+                    } else {
+                        this.showNotification(result.message || 'Error creating account', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error creating account:', error);
+                    this.showNotification('Error creating account: ' + error.message, 'error');
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+
+            getFormData() {
+                return {
+                    lastname: document.getElementById('lastname').value.trim(),
+                    firstname: document.getElementById('firstname').value.trim(),
+                    middlename: document.getElementById('middlename').value.trim(),
+                    birthdate: document.getElementById('birthdate').value,
+                    gender: this.getSelectedGender(),
+                    email: document.getElementById('email').value.trim(),
+                    contact_no: document.getElementById('contact_no').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    username: document.getElementById('username').value.trim(),
+                    password: document.getElementById('password').value,
+                    user_type: document.getElementById('select-type').value,
+                    created_by: null
+                };
+            }
+
+            validateFormData(data) {
+                const requiredFields = ['lastname', 'firstname', 'email', 'username', 'password', 'user_type'];
+                const missingFields = requiredFields.filter(field => !data[field]);
+
+                if (missingFields.length > 0) {
+                    return {
+                        isValid: false,
+                        message: `Please fill all required fields: ${missingFields.join(', ')}`
+                    };
+                }
+
+                if (!this.isValidEmail(data.email)) {
+                    return {
+                        isValid: false,
+                        message: 'Please enter a valid email address'
+                    };
+                }
+
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (data.password !== confirmPassword) {
+                    return {
+                        isValid: false,
+                        message: 'Passwords do not match'
+                    };
+                }
+
+                if (data.password.length < 6) {
+                    return {
+                        isValid: false,
+                        message: 'Password must be at least 6 characters long'
+                    };
+                }
+
+                return {
+                    isValid: true
+                };
+            }
+
+            async parseResponse(response) {
+                const text = await response.text();
+
+                if (!text.trim()) {
+                    throw new Error('Server returned empty response');
+                }
+
+                try {
+                    return JSON.parse(text);
+                } catch (error) {
+                    console.error('Failed to parse JSON:', text);
+                    throw new Error('Server returned invalid response');
+                }
+            }
+
+            handleCreateSuccess(result, accountData) {
+                let message = 'Account created successfully';
+                let messageType = 'success';
+
+                if (result.email_sent) {
+                    message += ` and credentials sent to ${accountData.email}`;
+                } else {
+                    message += ` (but email notification failed - please provide credentials manually)`;
+                    messageType = 'warning'; // Use warning instead of error
+                }
+
+                this.showNotification(message, messageType);
+                this.closeModal();
+
+                // Reload accounts after a short delay
+                setTimeout(() => this.loadAccounts(), 1000);
+            }
+
+            async deleteAccount(accountId) {
+                const account = this.accounts.find(acc => acc.id == accountId);
+                if (!account) return;
+
+                if (!confirm(`Are you sure you want to delete the account for ${account.fullname}? This action cannot be undone.`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: accountId
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        this.showNotification('Account deleted successfully', 'success');
+                        this.loadAccounts();
+                    } else {
+                        this.showNotification(result.message || 'Error deleting account', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting account:', error);
+                    this.showNotification('Error deleting account', 'error');
+                }
+            }
+
+            editAccount(accountId) {
+                const account = this.accounts.find(acc => acc.id == accountId);
+                if (account) {
+                    // For now, show a notification - implement edit modal later
+                    this.showNotification(`Edit functionality for ${account.fullname} will be implemented soon`, 'info');
+                }
+            }
+
+            getSelectedGender() {
+                const maleRadio = document.getElementById('default-radio-1');
+                return maleRadio && maleRadio.checked ? 'Male' : 'Female';
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            showNotification(message, type = 'info') {
+                // Remove existing notifications
+                document.querySelectorAll('.custom-notification').forEach(notification => notification.remove());
+
+                const notification = document.createElement('div');
+                notification.className = `custom-notification fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
+            type === 'success' ? 'bg-green-500' : 
+            type === 'error' ? 'bg-red-500' : 
+            'bg-blue-500'
+        } text-white max-w-sm`;
+
+                notification.innerHTML = `
+            <div class="flex items-center">
+                <span class="flex-1">${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+                document.body.appendChild(notification);
+
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+
+            escapeHtml(unsafe) {
+                if (unsafe == null) return '';
+                return unsafe.toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
         }
 
-        // Close dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-            if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.add("hidden");
-            }
-        });
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.accountsManager = new AccountsManager();
+            });
+        } else {
+            window.accountsManager = new AccountsManager();
+        }
     </script>
 </body>
 

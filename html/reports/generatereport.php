@@ -1,3 +1,7 @@
+<?php
+require_once "../../php/login/admin_header.php";
+$ctx = urlencode($_GET['session_context'] ?? session_id());
+?>
 <!DOCTYPE html>
 <html lang="en">
 

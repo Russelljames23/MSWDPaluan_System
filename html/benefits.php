@@ -1,3 +1,7 @@
+<?php
+require_once "../php/login/admin_header.php";
+$ctx = urlencode($_GET['session_context'] ?? session_id());
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +12,38 @@
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        /* Make sure the ordered list numbers show even with flex items */
+        #benefitsList {
+            counter-reset: benefit-counter;
+            list-style: none;
+            /* Hide default browser numbering */
+            /* padding-left: 1.5rem; */
+            /* Adds space for custom numbers */
+        }
+
+        #benefitsList li {
+            counter-increment: benefit-counter;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 1.2rem;
+            /* space for the number */
+            margin-bottom: 0.25rem;
+        }
+
+        /* Custom number before each <li> */
+        #benefitsList li::before {
+            content: counter(benefit-counter) ".";
+            position: absolute;
+            left: 0;
+            color: #374151;
+            /* Tailwind gray-700 */
+            font-weight: 600;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -127,7 +163,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="./index.php"
+                        <a href="./index.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -151,8 +187,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./register.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./register.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -167,7 +203,7 @@
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -186,32 +222,32 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
+                                <a href="./SeniorList/seniorlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="./SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                <a href="./SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                <a href="./SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg style="color: blue;"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        <a href="#"   style="color: blue;"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <svg 
+                                class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
@@ -224,8 +260,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href=".//generate_id.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href=".//generate_id.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -238,8 +274,8 @@
                     </li>
 
                     <li>
-                        <a href="./reports/report.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./reports/report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -252,8 +288,8 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./archived.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -265,7 +301,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./settings.php"
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -282,15 +318,15 @@
         </aside>
         <!-- Benefits  -->
         <main class="p-4 md:ml-64 pt-20 flex flex-col">
-            <div class="flex items-center flex-row ">
+            <div class="flex items-center flex-row">
                 <div class="border border-b-0">
-                    <a href="#" type="button" class="cursor-pointer" >
+                    <a href="#" type="button" class="cursor-pointer">
                         <h4 class="text-xl font-medium text-blue-700 px-2">Benefits</h4>
                     </a>
                 </div>
                 <div class="flex items-center flex-row border border-t-0 border-r-0 border-l-0 w-full">
                     <div class="">
-                        <a href="./beneficiary.php" type="button" class="cursor-pointer" >
+                        <a href="./beneficiary.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
                             <h4 class="text-xl font-medium dark:text-blue px-2">Beneficiaries</h4>
                         </a>
                     </div>
@@ -441,52 +477,38 @@
                             </button>
                         </div>
                         <!-- Modal body -->
-                        <form action="#">
-                            <div class="w-120 h-full grid gap-4 mb-4 sm:grid-cols-1">
-                                <div>
-                                    <label for="name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                    <input type="text" name="name" id="name"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Type product name" required="">
+                        <form action="/mswdpaluan_system-main/php/benefits/save_benefits.php" method="POST" id="benefitsForm">
+                            <input type="hidden" name="benefits_json" id="benefits_json">
+                            <div class="w-full h-full grid gap-4 mb-4 sm:grid-cols-1">
+                                <div class="flex flex-row w-full gap-2 justify-end items-end    ">
+                                    <div class="w-full">
+                                        <label for="name"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                                        <input type="text" name="benefitname" id="benfitname"
+                                            class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Type benefit here">
+                                    </div>
+                                    <button type="button" id="benefitBtn" class="flex items-center justify-center px-4 py-2.6 h-10.5 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                                        </svg>
+                                        Add
+                                    </button>
                                 </div>
-                                <button type="submit"
-                                    class="w-20 h-10 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
-                                    style="margin-top: 28px;">
-                                    <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    Add
-                                </button>
                                 <div
-                                    class="sm:col-span-2 block p-2.5 w-96 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                    <ol
-                                        class="max-w-md space-y-1 text-gray-500 list-decimal list-inside dark:text-gray-400">
-                                        <li>
-                                            <span class="font-semibold text-gray-900 dark:text-white">Availed of Social
-                                                Pension</span>
-                                        </li>
-                                        <li>
-                                            <span class="font-semibold text-gray-900 dark:text-white">Availed of
-                                                Birthday Gift</span>
-                                        </li>
-                                        <li>
-                                            <span class="font-semibold text-gray-900 dark:text-white">Availed of
-                                                OSCA</span>
-                                        </li>
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50  rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <ol id="benefitsList"
+                                        class="max-w-md space-y-1 h-20 overflow-y-auto text-gray-500 list-decimal list-inside dark:text-gray-400">
+                                        <!-- <li>
+                                            <span class="font-semibold text-gray-900 dark:text-white"></span>
+                                        </li> -->
                                     </ol>
 
-                                    <button type="submit"
-                                        class=" w-20 h-10 col-end-2 text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
-                                        style="margin-left: 390px; margin-top:30px;">
-                                        <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                                clip-rule="evenodd"></path>
+                                </div>
+                                <div class="flex justify-end w-full">
+                                    <button type="submit" class="flex items-center justify-center px-4 py-2 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                         </svg>
                                         Save
                                     </button>
@@ -494,6 +516,28 @@
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+            <!-- Edit/Add Modal -->
+            <div id="benefitModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-40">
+                <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                    <h3 id="benefitModalTitle" class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Add Benefit</h3>
+                    <input type="text" id="benefitModalInput" placeholder="Type benefit here" class="w-full p-2.5 rounded-lg border border-gray-300 mb-4">
+                    <div class="flex justify-end space-x-2">
+                        <button id="benefitModalCancel" class="px-4 py-2 cursor-pointer bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                        <button id="benefitModalSave" class="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PopUp Message  -->
+            <div id="popupModal" class="fixed inset-0 bg-gray-900/50 bg-opacity-40 hidden flex z-50  items-center justify-center">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
+                    id="popupBox">
+                    <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800"></h2>
+                    <p id="popupMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+                    <button id="popupCloseBtn"
+                        class="px-4 py-1 cursor-pointer bg-blue-600 text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">OK</button>
                 </div>
             </div>
         </main>
@@ -505,6 +549,7 @@
             document.getElementById('benefits').style.display = "flex";
             document.getElementById('beneficiary').style.display = "none";
         }
+
         function beneficiary() {
             document.getElementById('benefits').style.display = "none";
             document.getElementById('beneficiary').style.display = "flex";
@@ -577,7 +622,6 @@
                 dropdownMenu.classList.add("hidden");
             }
         });
-
     </script>
 
     <script>
@@ -626,6 +670,382 @@
                     console.log('Unknown filter:', type);
             }
         }
+    </script>
+
+    <!-- AddBenefits -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const addButton = document.getElementById("benefitBtn");
+            const benefitInput = document.getElementById("benfitname");
+            const benefitsList = document.getElementById("benefitsList");
+            const benefitsForm = document.getElementById("benefitsForm");
+
+            // Popup elements
+            const popupModal = document.getElementById("popupModal");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupMessage = document.getElementById("popupMessage");
+            const popupCloseBtn = document.getElementById("popupCloseBtn");
+
+            // Add benefit to list
+            addButton.addEventListener("click", function() {
+                const benefitText = benefitInput.value.trim();
+                // if (!benefitText) return alert("Please enter a benefit name first.");
+                if (!benefitText) {
+                    showPopup("⚠️ Error", "Please enter a benefit name first.");
+                    return;
+                }
+
+                const newItem = document.createElement("li");
+                newItem.innerHTML = `
+                    <span class="font-semibold text-gray-900 dark:text-white">${benefitText}</span>
+                    <button type="button" class="text-red-600 cursor-pointer hover:text-red-800 dark:text-red-400 dark:hover:text-red-600 font-bold text-lg ml-2" aria-label="Remove Benefit">&times;</button>
+                `;
+                benefitsList.appendChild(newItem);
+                benefitInput.value = "";
+            });
+
+            // Remove benefit
+            benefitsList.addEventListener("click", function(e) {
+                if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
+                    e.target.closest("li").remove();
+                }
+            });
+
+            // Form submission with AJAX
+            benefitsForm.addEventListener("submit", function(e) {
+                e.preventDefault(); // prevent normal submit
+
+                // Collect benefit names
+                const benefitsArray = [];
+                benefitsList.querySelectorAll("li span").forEach(span => {
+                    benefitsArray.push(span.textContent.trim());
+                });
+
+                if (benefitsArray.length === 0) {
+                    showPopup("⚠️ Error", "Please add at least one benefit before saving.");
+                    return;
+                }
+
+                // Send AJAX POST
+                fetch('/mswdpaluan_system-main/php/benefits/save_benefits.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            benefits: benefitsArray
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showPopup("✅ Success", "Benefits added successfully!");
+                            // Clear list after saving
+                            benefitsList.innerHTML = "";
+                        } else {
+                            showPopup("⚠️ Error", data.message || "Something went wrong.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showPopup("⚠️ Error", "Failed to save benefits.");
+                    });
+            });
+
+            // Show popup function
+            function showPopup(title, message) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupModal.classList.remove("hidden");
+                setTimeout(() => {
+                    popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100");
+                }, 10);
+            }
+
+            // Close popup
+            popupCloseBtn.addEventListener("click", function() {
+                popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
+                setTimeout(() => {
+                    popupModal.classList.add("hidden");
+                }, 600);
+                window.location.reload();
+            });
+        });
+    </script>
+
+    <!-- fetchBenefits -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const benefitsTableBody = document.querySelector("#deceasedTable tbody");
+
+            // Popup elements
+            const popupModal = document.getElementById("popupModal");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupMessage = document.getElementById("popupMessage");
+            const popupCloseBtn = document.getElementById("popupCloseBtn");
+
+            function showPopup(title, message) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupModal.classList.remove("hidden");
+                setTimeout(() => {
+                    popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100");
+                }, 10);
+            }
+
+            popupCloseBtn.addEventListener("click", function() {
+                popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
+                setTimeout(() => popupModal.classList.add("hidden"), 300);
+            });
+
+            function loadBenefits() {
+                fetch('/mswdpaluan_system-main/php/benefits/fetch_benefits.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            benefitsTableBody.innerHTML = "";
+                            data.benefits.forEach(benefit => {
+                                const row = document.createElement("tr");
+                                row.classList.add("border-b", "border-gray-200","text-gray-700", "dark:border-gray-700");
+                                row.innerHTML = `
+                                    <td class="px-4 py-3 text-gray-700">${benefit.benefit_name}</td>
+                                    <td class="px-15 py-3 flex items-center justify-end space-x-2">
+                                        <button class="edit-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white" data-id="${benefit.id}" type="button" title="Edit">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-10 10A2 2 0 016 16H4a1 1 0 01-1-1v-2a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0z"/></svg>
+                                        </button>
+                                        <button class="delete-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600" data-id="${benefit.id}" type="button" title="Delete">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h1v10a2 2 0 002 2h8a2 2 0 002-2V6h1a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 4a1 1 0 012 0v8a1 1 0 11-2 0V6zm4 0a1 1 0 112 0v8a1 1 0 11-2 0V6z" clip-rule="evenodd"/></svg>
+                                        </button>
+                                    </td>
+                                `;
+                                benefitsTableBody.appendChild(row);
+                            });
+
+                            attachDeleteButtons();
+                        } else {
+                            showPopup("Error", data.message || "Failed to load benefits.");
+                        }
+                    })
+                    .catch(err => showPopup("Error", "Failed to fetch benefits."));
+            }
+
+            // Delete logic remains unchanged
+            function attachDeleteButtons() {
+                document.querySelectorAll(".delete-btn").forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        const id = this.dataset.id;
+                        showConfirmPopup("Confirm Delete", "Are you sure you want to delete this benefit?", function(confirmed) {
+                            if (!confirmed) return;
+                            fetch(`/mswdpaluan_system-main/php/benefits/delete_benefit.php`, {
+                                    method: "POST",
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        id
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        showPopup("Success", "Benefit deleted successfully!");
+                                        loadBenefits();
+                                    } else {
+                                        showPopup("Error", data.message || "Failed to delete benefit.");
+                                    }
+                                })
+                                .catch(err => showPopup("Error", "Failed to delete benefit."));
+                        });
+                    });
+                });
+            }
+
+            // --- EDIT MODAL HANDLER ONLY ---
+            const benefitModal = document.getElementById("benefitModal");
+            const benefitModalTitle = document.getElementById("benefitModalTitle");
+            const benefitModalInput = document.getElementById("benefitModalInput");
+            const benefitModalSave = document.getElementById("benefitModalSave");
+            const benefitModalCancel = document.getElementById("benefitModalCancel");
+            let currentEditId = null;
+
+            document.body.addEventListener("click", function(e) {
+                if (e.target.closest(".edit-btn")) {
+                    const btn = e.target.closest(".edit-btn");
+                    const row = btn.closest("tr");
+                    const id = btn.dataset.id;
+                    const name = row.querySelector("td:first-child").textContent.trim();
+                    currentEditId = id;
+                    benefitModalTitle.textContent = "Edit Benefit";
+                    benefitModalInput.value = name;
+                    benefitModal.classList.remove("hidden");
+                }
+            });
+
+            benefitModalCancel.addEventListener("click", () => {
+                benefitModal.classList.add("hidden");
+                currentEditId = null;
+                benefitModalInput.value = "";
+            });
+
+            benefitModalSave.addEventListener("click", () => {
+                const newName = benefitModalInput.value.trim();
+                if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
+
+                fetch("/mswdpaluan_system-main/php/benefits/update_benefit.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: currentEditId,
+                            benefit_name: newName
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.success) {
+                            showPopup("Success", data.message || "Benefit updated successfully!");
+                            benefitModal.classList.add("hidden");
+                            currentEditId = null;
+                            benefitModalInput.value = "";
+                            loadBenefits();
+                        } else {
+                            console.error("Update Response:", data);
+                            showPopup("Error", (data && data.message) || "Failed to update benefit.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                        showPopup("Error", "Failed to update benefit.");
+                    });
+            });
+
+            // Keep reusable confirm popup
+            function showConfirmPopup(title, message, callback) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupCloseBtn.textContent = "Cancel";
+                let okBtn = document.createElement("button");
+                okBtn.textContent = "OK";
+                okBtn.className = popupCloseBtn.className;
+                okBtn.style.marginLeft = "10px";
+                okBtn.style.backgroundColor = "#27AE60";
+                popupModal.querySelector("#popupBox").appendChild(okBtn);
+
+                popupModal.classList.remove("hidden");
+                setTimeout(() => popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100"), 10);
+
+                function cleanUp() {
+                    popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
+                    setTimeout(() => {
+                        popupModal.classList.add("hidden");
+                        okBtn.remove();
+                        popupCloseBtn.textContent = "OK";
+                    }, 300);
+                }
+
+                okBtn.onclick = () => {
+                    callback(true);
+                    cleanUp();
+                };
+                popupCloseBtn.onclick = () => {
+                    callback(false);
+                    cleanUp();
+                };
+            }
+
+            loadBenefits();
+        });
+    </script>
+
+    <!-- ediBenefit -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const benefitModal = document.getElementById("benefitModal");
+            const benefitModalTitle = document.getElementById("benefitModalTitle");
+            const benefitModalInput = document.getElementById("benefitModalInput");
+            const benefitModalSave = document.getElementById("benefitModalSave");
+            const benefitModalCancel = document.getElementById("benefitModalCancel");
+
+            // Popup elements
+            const popupModal = document.getElementById("popupModal");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupMessage = document.getElementById("popupMessage");
+            const popupCloseBtn = document.getElementById("popupCloseBtn");
+
+            let currentEditId = null;
+
+            function showPopup(title, message) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popupModal.classList.remove("hidden");
+                setTimeout(() => {
+                    popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100");
+                }, 10);
+            }
+
+            popupCloseBtn.addEventListener("click", function() {
+                popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
+                setTimeout(() => popupModal.classList.add("hidden"), 300);
+            });
+
+            // Edit button click
+            document.body.addEventListener("click", function(e) {
+                if (e.target.closest(".edit-btn")) {
+                    const btn = e.target.closest(".edit-btn");
+                    const row = btn.closest("tr");
+                    const id = btn.dataset.id;
+                    const name = row.querySelector("td:first-child").textContent.trim();
+
+                    currentEditId = id;
+                    benefitModalTitle.textContent = "Edit Benefit";
+                    benefitModalInput.value = name;
+                    benefitModal.classList.remove("hidden");
+                }
+            });
+
+            // Cancel button
+            benefitModalCancel.addEventListener("click", () => {
+                benefitModal.classList.add("hidden");
+                currentEditId = null;
+                benefitModalInput.value = "";
+            });
+
+            // Save button (AJAX update)
+            benefitModalSave.addEventListener("click", () => {
+                const newName = benefitModalInput.value.trim();
+                if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
+
+                fetch("/mswdpaluan_system-main/php/benefits/update_benefit.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: currentEditId,
+                            benefit_name: newName
+                        })
+                    })
+                    .then(res => res.json()) // ensure JSON parsing
+                    .then(data => {
+                        if (data && data.success) { // check data exists and success
+                            showPopup("Success", data.message || "Benefit updated successfully!");
+                            benefitModal.classList.add("hidden");
+                            currentEditId = null;
+                            benefitModalInput.value = "";
+                            loadBenefits(); // refresh table
+                        } else {
+                            console.error("Update Response:", data); // debug log
+                            showPopup("Error", (data && data.message) || "Failed to update benefit.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                        showPopup("Error", "Failed to update benefit.");
+                    });
+
+            });
+        });
     </script>
 </body>
 

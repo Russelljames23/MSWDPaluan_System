@@ -1,3 +1,7 @@
+<?php
+require_once "../php/login/admin_header.php";
+$ctx = urlencode($_GET['session_context'] ?? session_id());
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -129,7 +133,7 @@
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="index.php"
+                        <a href="index.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -154,7 +158,7 @@
                     </li>
                     <li>
                         <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 bg-blue-50 rounded-lg dark:text-blue  dark:hover:bg-blue-700 group">
+                            class="flex items-center p-2 text-base font-medium text-blue-700 bg-blue-100 rounded-lg dark:text-blue  dark:hover:bg-blue-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400  dark:group-hover:text-white">
@@ -169,7 +173,7 @@
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -188,30 +192,30 @@
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
+                                <a href="./SeniorList/seniorlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="./SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                <a href="./SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/deceasedlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                <a href="./SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="./benefits.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./benefits.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -225,8 +229,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./generate_id.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./generate_id.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -238,8 +242,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./reports/report.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./reports/report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -253,8 +257,8 @@
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./archived.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -266,8 +270,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./settings.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -669,51 +673,111 @@
 
     <!-- disabled/enabled toggles input -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // --- Pensioner ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const birthDateInput = document.querySelector('input[name="b_date"]');
+            const ageInput = document.getElementById("age");
+
+            if (birthDateInput && ageInput) {
+                birthDateInput.addEventListener("change", () => {
+                    const birthDate = new Date(birthDateInput.value);
+                    const today = new Date();
+
+                    if (!isNaN(birthDate.getTime())) {
+                        let age = today.getFullYear() - birthDate.getFullYear();
+                        const m = today.getMonth() - birthDate.getMonth();
+
+                        // Adjust if birthday hasn't occurred yet this year
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+
+                        ageInput.value = age >= 0 ? age : "";
+
+                        // Store the calculated age for form submission
+                        sessionStorage.setItem('calculatedAge', age);
+                    } else {
+                        ageInput.value = "";
+                        sessionStorage.removeItem('calculatedAge');
+                    }
+                });
+
+                // Also calculate on page load if birth date is already filled
+                if (birthDateInput.value) {
+                    birthDateInput.dispatchEvent(new Event('change'));
+                }
+            }
+
+            // Enable/disable conditional fields based on radio button selections
+            setupConditionalFields();
+        });
+
+        function setupConditionalFields() {
+            // Pensioner fields
             const pensionerRadios = document.querySelectorAll('input[name="is_pensioner"]');
             const pensionAmount = document.querySelector('input[name="pension_amount"]');
             const pensionSource = document.querySelector('select[name="pension_source"]');
+
             pensionerRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const yesSelected = radio.value === "1" && radio.checked;
-                    pensionAmount.disabled = !yesSelected;
-                    pensionSource.disabled = !yesSelected;
+                radio.addEventListener('change', function() {
+                    const isPensioner = this.value === '1';
+                    pensionAmount.disabled = !isPensioner;
+                    pensionSource.disabled = !isPensioner;
+
+                    if (!isPensioner) {
+                        pensionAmount.value = '';
+                        pensionSource.value = '';
+                    }
                 });
             });
 
-            // --- Permanent Income ---
+            // Permanent Income fields
             const incomeRadios = document.querySelectorAll('input[name="has_permanent_income"]');
             const incomeSource = document.querySelector('input[name="income_source"]');
+
             incomeRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const yesSelected = radio.value === "1" && radio.checked;
-                    incomeSource.disabled = !yesSelected;
+                radio.addEventListener('change', function() {
+                    const hasIncome = this.value === '1';
+                    incomeSource.disabled = !hasIncome;
+
+                    if (!hasIncome) {
+                        incomeSource.value = '';
+                    }
                 });
             });
 
-            // --- Family Support ---
+            // Family Support fields
             const supportRadios = document.querySelectorAll('input[name="has_family_support"]');
             const supportType = document.querySelector('input[name="support_type"]');
             const supportCash = document.querySelector('input[name="support_cash"]');
+
             supportRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const yesSelected = radio.value === "1" && radio.checked;
-                    supportType.disabled = !yesSelected;
-                    supportCash.disabled = !yesSelected;
+                radio.addEventListener('change', function() {
+                    const hasSupport = this.value === '1';
+                    supportType.disabled = !hasSupport;
+                    supportCash.disabled = !hasSupport;
+
+                    if (!hasSupport) {
+                        supportType.value = '';
+                        supportCash.value = '';
+                    }
                 });
             });
 
-            // --- Existing Illness ---
+            // Illness fields
             const illnessRadios = document.querySelectorAll('input[name="has_existing_illness"]');
             const illnessDetails = document.querySelector('input[name="illness_details"]');
+
             illnessRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const yesSelected = radio.value === "1" && radio.checked;
-                    illnessDetails.disabled = !yesSelected;
+                radio.addEventListener('change', function() {
+                    const hasIllness = this.value === '1';
+                    illnessDetails.disabled = !hasIllness;
+
+                    if (!hasIllness) {
+                        illnessDetails.value = '';
+                    }
                 });
             });
-        });
+        }
     </script>
 
     <!-- Insert Applicant  -->
@@ -755,12 +819,18 @@
                 box.classList.add("scale-100", "opacity-100");
             }, 10);
 
-            // Close button
+            // Close button - FIXED: Only redirect on success, stay on page otherwise
             closeBtn.onclick = () => {
                 box.classList.add("scale-95", "opacity-0");
                 setTimeout(() => {
                     modal.classList.add("hidden");
-                    if (redirect) window.location.href = "register.php";
+                    if (redirect && type === "success") {
+                        // Reset form and stay on the same page instead of redirecting
+                        document.getElementById("applicantForm").reset();
+                        prevStep(); // Go back to step 1
+                        // Clear any stored data
+                        sessionStorage.removeItem('calculatedAge');
+                    }
                 }, 200);
             };
         }
@@ -776,10 +846,10 @@
         }
 
         async function submitForm() {
-            if (isSubmitting) return; // Prevent double submission
+            if (isSubmitting) return;
             isSubmitting = true;
 
-            const submitBtn = document.querySelector("#submitBtn");
+            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Submitting...";
@@ -792,10 +862,20 @@
                 if (!el.name) return;
                 if (el.type === "radio") {
                     if (el.checked) data[el.name] = parseInt(el.value, 10);
+                } else if (el.type === "checkbox") {
+                    data[el.name] = el.checked ? 1 : 0;
                 } else {
                     data[el.name] = el.value.trim();
                 }
             });
+
+            // Ensure age consistency - use calculated age if available
+            const calculatedAge = sessionStorage.getItem('calculatedAge');
+            if (calculatedAge && data['age'] && calculatedAge !== data['age']) {
+                console.log(`Age consistency check: Form shows ${data['age']}, calculated ${calculatedAge}`);
+                // Use the calculated age for better accuracy
+                data['age'] = calculatedAge;
+            }
 
             try {
                 const res = await fetch("/mswdpaluan_system-main/php/register/applicant.php", {
@@ -812,6 +892,8 @@
 
                     if (json.success) {
                         showPopup(json.message || "Application submitted successfully!", "success", true);
+                        // Clear stored age after successful submission
+                        sessionStorage.removeItem('calculatedAge');
                     } else {
                         showPopup(json.error || "Submission failed.", "error");
                         isSubmitting = false;
@@ -839,6 +921,7 @@
             }
         }
     </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const birthDateInput = document.querySelector('input[name="b_date"]');

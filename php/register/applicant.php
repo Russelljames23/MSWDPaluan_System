@@ -28,6 +28,17 @@ if (!$data) {
     exit;
 }
 
+// Function to calculate accurate current age from birth date
+function calculateCurrentAge($birth_date)
+{
+    if (!$birth_date) return null;
+
+    $birth = new DateTime($birth_date);
+    $today = new DateTime();
+    $age = $today->diff($birth)->y;
+    return $age;
+}
+
 try {
     $conn->beginTransaction();
 
@@ -74,12 +85,16 @@ try {
         $duplicateWarning = "Note: Another applicant with the same name and birth date already exists.";
     }
 
-    // STEP 1: Applicants
+    // Calculate accurate current_age from birth date
+    $current_age = calculateCurrentAge($data['b_date'] ?? null);
+
+    // STEP 1: Applicants - Updated to include current_age and age_last_updated
     $stmt = $conn->prepare("
     INSERT INTO applicants (
         last_name, first_name, middle_name, gender, age, current_age, civil_status,
-        birth_date, citizenship, birth_place, living_arrangement, pension_status, date_created
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'On Process', NOW())
+        birth_date, citizenship, birth_place, living_arrangement, validation, 
+        age_last_updated, date_created
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'For Validation', CURDATE(), NOW())
 ");
 
     $stmt->execute([
@@ -87,15 +102,14 @@ try {
         $data['fname'] ?? null,
         $data['mname'] ?? null,
         $data['gender'] ?? null,
-        $data['age'] ?? null,     
-        $data['age'] ?? null,     
+        $data['age'] ?? null,
+        $current_age,              // Use calculated current_age from birth date
         $data['civil_status'] ?? null,
         $data['b_date'] ?? null,
         $data['citizenship'] ?? null,
         $data['birth_place'] ?? null,
         $data['living_arrangement'] ?? null
     ]);
-
 
     $applicant_id = $conn->lastInsertId();
 
@@ -153,7 +167,8 @@ try {
         "success" => true,
         "message" => "Application submitted successfully!" .
             ($duplicateWarning ? " $duplicateWarning" : ""),
-        "applicant_id" => $applicant_id
+        "applicant_id" => $applicant_id,
+        "calculated_age" => $current_age
     ]);
 } catch (Exception $e) {
     if ($conn->inTransaction()) $conn->rollBack();

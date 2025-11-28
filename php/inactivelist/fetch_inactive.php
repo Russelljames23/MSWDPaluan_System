@@ -44,7 +44,7 @@ try {
             a.civil_status,
             a.date_of_inactive,
             a.inactive_reason,
-            a.pension_status
+            a.validation
         FROM applicants a, (SELECT @rownum := ?) r
         $where
         $orderBy

@@ -34,14 +34,16 @@ try {
 
     $insertApplicant = $conn->prepare("
         INSERT INTO archived_applicants (
-            applicant_id, last_name, first_name, middle_name, gender, age, civil_status,
-            birth_date, citizenship, birth_place, living_arrangement, pension_status,
-            status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified, archived_date
+            applicant_id, last_name, first_name, middle_name, gender, age, current_age, civil_status,
+            birth_date, citizenship, birth_place, living_arrangement, validation,
+            status, date_of_death, inactive_reason, date_of_inactive, remarks, date_created, date_modified, 
+            control_number, archived_date
         )
         VALUES (
-            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :civil_status,
-            :birth_date, :citizenship, :birth_place, :living_arrangement, :pension_status,
-            :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, :date_modified, NOW()
+            :applicant_id, :last_name, :first_name, :middle_name, :gender, :age, :current_age, :civil_status,
+            :birth_date, :citizenship, :birth_place, :living_arrangement, :validation,
+            :status, :date_of_death, :inactive_reason, :date_of_inactive, :remarks, :date_created, :date_modified,
+            :control_number, NOW()
         )
     ");
     $insertApplicant->execute([
@@ -51,19 +53,21 @@ try {
         ':middle_name' => $applicant['middle_name'],
         ':gender' => $applicant['gender'],
         ':age' => $applicant['age'],
+        ':current_age' => $applicant['current_age'],
         ':civil_status' => $applicant['civil_status'],
         ':birth_date' => $applicant['birth_date'],
         ':citizenship' => $applicant['citizenship'],
         ':birth_place' => $applicant['birth_place'],
         ':living_arrangement' => $applicant['living_arrangement'],
-        ':pension_status' => $applicant['pension_status'],
+        ':validation' => $applicant['validation'],
         ':status' => $archivedStatus,
         ':date_of_death' => $applicant['date_of_death'],
         ':inactive_reason' => $applicant['inactive_reason'],
         ':date_of_inactive' => $applicant['date_of_inactive'],
         ':remarks' => $applicant['remarks'],
         ':date_created' => $applicant['date_created'],
-        ':date_modified' => $applicant['date_modified']
+        ':date_modified' => $applicant['date_modified'],
+        ':control_number' => $applicant['control_number']
     ]);
 
     // 4️⃣ Archive related records
