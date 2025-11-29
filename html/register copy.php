@@ -303,7 +303,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-90">
                                             <label for="email"
                                                 class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Last
-                                                Name: <span class="text-red-500">*</span></label>
+                                                Name:</label>
                                             <input type="text" id="lname" name="lname"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                 placeholder="" required>
@@ -311,7 +311,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-90">
                                             <label for="email"
                                                 class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">First
-                                                Name: <span class="text-red-500">*</span></label>
+                                                Name:</label>
                                             <input type="text" id="fname" name="fname"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                 placeholder="" required>
@@ -319,7 +319,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-90">
                                             <label for="email"
                                                 class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Middle
-                                                Name: <span class="text-red-500">*</span></label>
+                                                Name:</label>
                                             <input type="text" id="mname" name="mname"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                 placeholder="" required>
@@ -336,7 +336,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-full flex flex-row gap-5 ">
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Gender: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Gender:</label>
                                                 <select id="countries" name="gender"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                     <option value=""></option>
@@ -346,14 +346,14 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             </div>
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthdate: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthdate:</label>
                                                 <input type="date" name="b_date"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
                                             </div>
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Age: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Age:</label>
                                                 <input type="text" id="age" name="age"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
@@ -361,7 +361,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             <div class="w-full">
                                                 <label for="email"
                                                     class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Civil
-                                                    Status: <span class="text-red-500">*</span></label>
+                                                    Status:</label>
                                                 <select id="civil_status" name="civil_status"
                                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                     <option selected>Select Civil Status</option>
@@ -377,15 +377,15 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Citizenship: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Citizenship:</label>
                                                 <input type="text" name="citizenship"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
                                             </div>
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Religion: <span class="text-red-500">*</span></label>
-                                                <input type="text" name="religion"
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Religion:</label>
+                                                <input type="text" name="ip_group"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
                                             </div>
@@ -400,7 +400,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-full flex flex-row gap-5">
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthplace: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthplace:</label>
                                                 <input type="text" name="birth_place"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
@@ -409,7 +409,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <div class="w-full flex flex-row gap-5">
                                             <div class="w-full">
                                                 <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Educational Attainment: <span class="text-red-500">*</span></label>
+                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Educational Attainment:</label>
                                                 <input type="text" name="educational_attainment"
                                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                     placeholder="" required>
@@ -421,7 +421,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                     <div class="w-50">
                                         <label for="email"
                                             class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Living
-                                            Arrangement: <span class="text-red-500">*</span></label>
+                                            Arrangement:</label>
                                         <select id="living_arrangement" name="living_arrangement"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             <option value=""></option>
@@ -441,9 +441,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             <input type="text" id="street" name="street"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                                                 placeholder="Street" required>
-                                            <select id="brgy" name="brgy" 
+                                            <select id="brgy" name="brgy"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light">
-                                                <option selected>Barangay <span class="text-red-500">*</span></option>
+                                                <option selected>Barangay</option>
                                                 <option value="I - Mapalad" class="text-gray-900">I - Mapalad</option>
                                                 <option value="II - Handang Tumulong">II - Handang Tumulong</option>
                                                 <option value="III - Silahis ng Pag-asa">III - Silahis ng Pag-asa
@@ -460,10 +460,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             </select>
                                             <input type="text" id="municipality" name="municipality"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="City/Municipality *" required>
+                                                placeholder="City/Municipality" required>
                                             <input type="text" id="province" name="province"
                                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="Province *" required>
+                                                placeholder="Province" required>
                                         </div>
                                     </div>
                                 </div>
@@ -696,73 +696,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         class="px-4 py-1 bg-blue-600 text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">OK</button>
                 </div>
             </div>
-            <!-- Additional Registration Data Modal -->
-            <div id="registrationModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Additional Registration Information</h2>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date of Registration <span class="text-red-500">*</span></label>
-                            <input type="date" id="date_of_registration"
-                                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                value="<?php echo date('Y-m-d'); ?>" required>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ID Number <span class="text-red-500">*</span></label>
-                            <input type="text" id="id_number"
-                                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter ID Number" required>
-                            <p class="text-xs text-gray-500 mt-1">Must be unique for each applicant</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Local Control Number</label>
-                            <div class="flex items-center space-x-2">
-                                <input type="text" id="local_control_number"
-                                    class="flex-1 p-2 border border-gray-300 rounded-lg bg-gray-100"
-                                    value="Auto-generated" readonly>
-                                <button type="button" onclick="generateCustomLocalControlNumber()"
-                                    class="px-3 py-2 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors">
-                                    Custom
-                                </button>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">Separate local reference number (auto-generated or custom)</p>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="hideRegistrationModal()"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
-                            Cancel
-                        </button>
-                        <button type="button" onclick="confirmRegistration()"
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                            Confirm Registration
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal for showing missing required fields -->
-            <div id="requiredFieldsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
-                    <h2 class="text-xl font-semibold mb-4 text-red-600">Missing Required Fields</h2>
-                    <div class="mb-4">
-                        <p class="text-gray-600 mb-3">Please fill in the following required fields:</p>
-                        <ul id="missingFieldsList" class="text-sm text-gray-700 max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-lg">
-                            <!-- Missing fields will be listed here -->
-                        </ul>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" onclick="hideRequiredFieldsModal()"
-                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                            OK, I'll Fix Them
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
@@ -882,138 +815,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script>
         let isSubmitting = false;
 
-        // Required fields configuration (only text/select fields as mentioned)
-        const requiredFields = [{
-                name: 'lname',
-                label: 'Last Name'
-            },
-            {
-                name: 'fname',
-                label: 'First Name'
-            },
-            {
-                name: 'mname',
-                label: 'Middle Name'
-            },
-            {
-                name: 'gender',
-                label: 'Gender'
-            },
-            {
-                name: 'b_date',
-                label: 'Birthdate'
-            },
-            {
-                name: 'age',
-                label: 'Age'
-            },
-            {
-                name: 'civil_status',
-                label: 'Civil Status'
-            },
-            {
-                name: 'citizenship',
-                label: 'Citizenship'
-            },
-            {
-                name: 'religion',
-                label: 'Religion'
-            },
-            {
-                name: 'birth_place',
-                label: 'Birthplace'
-            },
-            {
-                name: 'educational_attainment',
-                label: 'Educational Attainment'
-            },
-            {
-                name: 'living_arrangement',
-                label: 'Living Arrangement'
-            },
-            {
-                name: 'brgy',
-                label: 'Barangay'
-            },
-            {
-                name: 'municipality',
-                label: 'City/Municipality'
-            },
-            {
-                name: 'province',
-                label: 'Province'
-            }
-        ];
-
-        // Function to validate required fields
-        function validateRequiredFields() {
-            const missingFields = [];
-
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    const value = element.value.trim();
-                    const isValid = value !== '' && value !== null && value !== undefined;
-
-                    // Remove existing error styling
-                    element.classList.remove('border-red-500', 'bg-red-50');
-
-                    // Add error styling if field is invalid
-                    if (!isValid) {
-                        element.classList.add('border-red-500', 'bg-red-50');
-                        missingFields.push(field.label);
-                    }
-                }
-            });
-
-            return missingFields;
-        }
-
-        // Function to clear error styling
-        function clearErrorStyling() {
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    element.classList.remove('border-red-500', 'bg-red-50');
-                }
-            });
-        }
-
-        // Function to show required fields modal
-        function showRequiredFieldsModal(missingFields) {
-            const modal = document.getElementById("requiredFieldsModal");
-            const box = modal.querySelector('div');
-            const list = document.getElementById("missingFieldsList");
-
-            // Clear previous list
-            list.innerHTML = '';
-
-            // Add missing fields to list
-            missingFields.forEach(field => {
-                const li = document.createElement('li');
-                li.className = 'py-1 px-2 border-b border-gray-200 last:border-b-0';
-                li.textContent = `• ${field}`;
-                list.appendChild(li);
-            });
-
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                box.classList.remove("scale-95", "opacity-0");
-                box.classList.add("scale-100", "opacity-100");
-            }, 10);
-        }
-
-        // Function to hide required fields modal
-        function hideRequiredFieldsModal() {
-            const modal = document.getElementById("requiredFieldsModal");
-            const box = modal.querySelector('div');
-
-            box.classList.add("scale-95", "opacity-0");
-            setTimeout(() => {
-                modal.classList.add("hidden");
-            }, 200);
-        }
-
         // Modal popup function
         function showPopup(message, type = "info", redirect = false) {
             const modal = document.getElementById("popupModal");
@@ -1060,64 +861,12 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         prevStep(); // Go back to step 1
                         // Clear any stored data
                         sessionStorage.removeItem('calculatedAge');
-                        // Clear error styling
-                        clearErrorStyling();
                     }
                 }, 200);
             };
         }
 
-        // Show registration modal
-        function showRegistrationModal() {
-            const modal = document.getElementById("registrationModal");
-            const box = modal.querySelector('div');
-
-            // Set default values
-            document.getElementById('date_of_registration').value = new Date().toISOString().split('T')[0];
-            document.getElementById('local_control_number').value = "Auto-generated";
-            document.getElementById('local_control_number').classList.remove('bg-yellow-100', 'border-yellow-300');
-            document.getElementById('local_control_number').classList.add('bg-gray-100', 'border-gray-300');
-            document.getElementById('id_number').value = "";
-
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                box.classList.remove("scale-95", "opacity-0");
-                box.classList.add("scale-100", "opacity-100");
-            }, 10);
-        }
-
-        // Hide registration modal
-        function hideRegistrationModal() {
-            const modal = document.getElementById("registrationModal");
-            const box = modal.querySelector('div');
-
-            box.classList.add("scale-95", "opacity-0");
-            setTimeout(() => {
-                modal.classList.add("hidden");
-            }, 200);
-        }
-
-        // Generate custom local control number
-        function generateCustomLocalControlNumber() {
-            const customLocalControlNumber = prompt("Enter custom local control number:", "");
-            if (customLocalControlNumber && customLocalControlNumber.trim() !== "") {
-                document.getElementById('local_control_number').value = customLocalControlNumber.trim();
-                document.getElementById('local_control_number').classList.remove('bg-gray-100', 'border-gray-300');
-                document.getElementById('local_control_number').classList.add('bg-yellow-100', 'border-yellow-300');
-                document.getElementById('local_control_number').readOnly = false;
-            }
-        }
-
         function nextStep() {
-            // Validate step 1 required fields
-            const missingFields = validateRequiredFields();
-
-            if (missingFields.length > 0) {
-                showRequiredFieldsModal(missingFields);
-                return;
-            }
-
-            // If validation passes, proceed to next step
             document.getElementById("step1").classList.add("hidden");
             document.getElementById("step2").classList.remove("hidden");
         }
@@ -1125,12 +874,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         function prevStep() {
             document.getElementById("step2").classList.add("hidden");
             document.getElementById("step1").classList.remove("hidden");
-            // Clear error styling when going back
-            clearErrorStyling();
         }
 
-        // Collect form data
-        function collectFormData() {
+        async function submitForm() {
+            if (isSubmitting) return;
+            isSubmitting = true;
+
+            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Submitting...";
+            }
+
             const form = document.getElementById("applicantForm");
             const data = {};
 
@@ -1145,91 +900,12 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
             });
 
-            return data;
-        }
-
-        // Updated submitForm function - now shows registration modal
-        async function submitForm() {
-            if (isSubmitting) return;
-
-            // Validate required fields in step 2 (radio buttons) - KEEPING YOUR EXISTING VALIDATION
-            const step2Fields = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
-            let hasErrors = false;
-
-            step2Fields.forEach(field => {
-                const radios = document.querySelectorAll(`input[name="${field}"]:checked`);
-                if (radios.length === 0) {
-                    hasErrors = true;
-                    // Highlight the field that's missing
-                    const fieldGroup = document.querySelector(`input[name="${field}"]`).closest('.flex.items-center');
-                    if (fieldGroup) {
-                        fieldGroup.style.border = "1px solid red";
-                        fieldGroup.style.padding = "4px";
-                        fieldGroup.style.borderRadius = "4px";
-                    }
-                }
-            });
-
-            if (hasErrors) {
-                showPopup("Please complete all required fields in Step 2.", "error");
-                return;
-            }
-
-            // Show registration modal instead of submitting directly
-            showRegistrationModal();
-        }
-
-        // Confirm registration and submit form data
-        async function confirmRegistration() {
-            const dateOfRegistration = document.getElementById('date_of_registration').value;
-            const idNumber = document.getElementById('id_number').value.trim();
-            const localControlNumber = document.getElementById('local_control_number').value;
-
-            if (!dateOfRegistration) {
-                showPopup("Please select a date of registration.", "error");
-                return;
-            }
-
-            if (!idNumber) {
-                showPopup("Please enter an ID number.", "error");
-                return;
-            }
-
-            // Validate ID number format
-            const idNumberPattern = /^[A-Za-z0-9-]+$/;
-            if (!idNumberPattern.test(idNumber)) {
-                showPopup("Please enter a valid ID number (letters, numbers, and hyphens only).", "error");
-                return;
-            }
-
-            // Validate local control number if custom
-            if (localControlNumber !== "Auto-generated" && localControlNumber !== "") {
-                const controlNumberPattern = /^[A-Za-z0-9-]+$/;
-                if (!controlNumberPattern.test(localControlNumber)) {
-                    showPopup("Please enter a valid local control number (letters, numbers, and hyphens only).", "error");
-                    return;
-                }
-            }
-
-            // Add the additional data to the form data
-            const formData = collectFormData();
-            formData.date_of_registration = dateOfRegistration;
-            formData.id_number = idNumber;
-            formData.local_control_number = localControlNumber === "Auto-generated" ? "" : localControlNumber;
-
-            hideRegistrationModal();
-            await submitFormData(formData);
-        }
-
-        // Separate function for actual form submission
-        async function submitFormData(formData) {
-            if (isSubmitting) return;
-            isSubmitting = true;
-
-            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Submitting...";
+            // Ensure age consistency - use calculated age if available
+            const calculatedAge = sessionStorage.getItem('calculatedAge');
+            if (calculatedAge && data['age'] && calculatedAge !== data['age']) {
+                console.log(`Age consistency check: Form shows ${data['age']}, calculated ${calculatedAge}`);
+                // Use the calculated age for better accuracy
+                data['age'] = calculatedAge;
             }
 
             try {
@@ -1238,7 +914,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(data),
                 });
 
                 const text = await res.text();
@@ -1246,24 +922,11 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     const json = JSON.parse(text);
 
                     if (json.success) {
-                        let successMessage = "Application submitted successfully!";
-                        if (json.local_control_number) {
-                            successMessage += ` | Local Control Number: ${json.local_control_number}`;
-                        }
-
-                        showPopup(successMessage, "success", true);
+                        showPopup(json.message || "Application submitted successfully!", "success", true);
                         // Clear stored age after successful submission
                         sessionStorage.removeItem('calculatedAge');
-
-                        // RESET THE BUTTON STATE ON SUCCESS
-                        isSubmitting = false;
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = "Submit";
-                        }
                     } else {
                         showPopup(json.error || "Submission failed.", "error");
-                        // RESET THE BUTTON STATE ON ERROR TOO
                         isSubmitting = false;
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1273,7 +936,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 } catch {
                     console.error("Server returned non-JSON:", text);
                     showPopup("Unexpected server response. Check console for details.", "error");
-                    // RESET THE BUTTON STATE ON PARSE ERROR
                     isSubmitting = false;
                     if (submitBtn) {
                         submitBtn.disabled = false;
@@ -1282,7 +944,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
             } catch (err) {
                 showPopup("Network error: " + err.message, "error");
-                // RESET THE BUTTON STATE ON NETWORK ERROR
                 isSubmitting = false;
                 if (submitBtn) {
                     submitBtn.disabled = false;
@@ -1290,42 +951,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
             }
         }
-
-        // Reset field highlighting when user interacts with radio buttons
-        document.addEventListener('change', function(e) {
-            if (e.target.type === 'radio') {
-                const fieldGroup = e.target.closest('.flex.items-center');
-                if (fieldGroup && fieldGroup.style.border === '1px solid red') {
-                    fieldGroup.style.border = '';
-                    fieldGroup.style.padding = '';
-                    fieldGroup.style.borderRadius = '';
-                }
-            }
-        });
-
-        // Add real-time validation for fields (clear errors when user starts typing)
-        document.addEventListener('DOMContentLoaded', function() {
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    element.addEventListener('input', function() {
-                        if (this.value.trim() !== '') {
-                            this.classList.remove('border-red-500', 'bg-red-50');
-                        }
-                    });
-
-                    // For select elements
-                    if (element.tagName === 'SELECT') {
-                        element.addEventListener('change', function() {
-                            if (this.value !== '') {
-                                this.classList.remove('border-red-500', 'bg-red-50');
-                            }
-                        });
-                    }
-                }
-            });
-        });
     </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const birthDateInput = document.querySelector('input[name="b_date"]');
