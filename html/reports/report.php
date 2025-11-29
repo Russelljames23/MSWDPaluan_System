@@ -244,7 +244,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     <li>
                     <li>
-                        <a href="#"  style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -288,21 +288,22 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 </ul>
             </div>
         </aside>
-
         <main class="p-4 md:ml-64 pt-17">
-            <div class="w-full flex  justify-end">
-                <button type="button"
-                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
-                    Report</button>
+            <div class="w-full flex justify-between items-center mb-4">
+                <div></div> <!-- Empty div for spacing -->
+                <button type="button" onclick="generateReport()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Generate Report
+                </button>
             </div>
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
-            <div class="flex flex-row items-center justify-center gap-5 mt-2">
-                <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
-                <div>
-                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-3 mt-2 mb-4">
+                <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">February 2024</h4>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="loadPart1()"
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         I
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part2()"
@@ -335,298 +336,111 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     </button>
                 </div>
             </div>
+
             <!-- Part I -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto max-w-screen-xl px-4 lg:px-12 ">
+                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-                        <div class="flex flex-col md:flex-row items-center justify-between p-2">
-                            <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">I. Number of Registered Senior
-                                Citizens</h4>
-                            <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                    Category
-                                </button>
-                                <div id="actionsDropdown"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                January</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                February</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                March</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                April</a>
-                                        </li>
-                                    </ul>
+                        <div class="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0 p-4">
+                            <h4 class="text-lg font-medium dark:text-white text-center md:text-left" style="font-family: 'Times New Roman', Times, serif;">
+                                I. Number of Registered Senior Citizens
+                            </h4>
+                            <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+                                <!-- Month Filter -->
+                                <div class="relative w-full sm:w-auto">
+                                    <button id="monthDropdownButton" data-dropdown-toggle="monthDropdown"
+                                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        type="button">
+                                        <span class="flex items-center">
+                                            <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path clip-rule="evenodd" fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                            </svg>
+                                            <span id="selectedMonth">Month</span>
+                                        </span>
+                                    </button>
+                                    <div id="monthDropdown"
+                                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
+                                            aria-labelledby="monthDropdownButton">
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('All Months', null)">All Months</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('January', 1)">January</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('February', 2)">February</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('March', 3)">March</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('April', 4)">April</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('May', 5)">May</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('June', 6)">June</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('July', 7)">July</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('August', 8)">August</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('September', 9)">September</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('October', 10)">October</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('November', 11)">November</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('December', 12)">December</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Filter
-                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div id="filterDropdown"
-                                    class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2025</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2024</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2023</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2022</a>
-                                        </li>
-                                    </ul>
+
+                                <!-- Year Filter -->
+                                <div class="relative w-full sm:w-auto">
+                                    <button id="yearDropdownButton" data-dropdown-toggle="yearDropdown"
+                                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        type="button">
+                                        <span class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                                class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            <span id="selectedYear">Year</span>
+                                        </span>
+                                        <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </button>
+                                    <div id="yearDropdown"
+                                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-32 dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
+                                            aria-labelledby="yearDropdownButton">
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2025, 2025)">2025</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2024, 2024)">2024</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2023, 2023)">2023</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2022, 2022)">2022</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2021, 2021)">2021</a></li>
+                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2020, 2020)">2020</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
+
+                                <!-- Clear Filters Button -->
+                                <button type="button" onclick="clearFilters()"
+                                    class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                                    Clear Filters
+                                </button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table id="deceasedTable"
+                            <table id="reportTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
+                                    <tr class="flex w-full border-gray-300 dark:border-gray-600">
                                         <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Barangay</th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Male
                                         </th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Female</th>
-                                        <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Total</th>
                                     </tr>
                                 </thead>
-                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                                    [&::-webkit-scrollbar]:hidden">
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang
-                                            Tumulong
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
-                                            Pag-asa
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">V - Bagong Silang
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VI - San Jose
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VIII - Marikit
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubili
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">X - Alipaoy
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XI - harison
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XII - Mananao
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            1</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                    </tr>
-                                    <tr
-                                        class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
-                                        <td class="flex w-full px-4 py-3  text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">Total</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            8</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            7</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            15</td>
+                                <tbody id="reportTableBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-3 text-center">Loading data...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -639,31 +453,313 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
+
     <script>
-        function part1() {
-            // location.href=("report.php");
+        // Global variables
+        let currentData = null;
+        let currentYear = null;
+        let currentMonth = null;
+        let selectedMonthName = 'All Months';
+        let selectedYearValue = 'All Years';
+        let availableYears = [];
+        let availableMonths = [];
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load available date ranges first, then load data
+            loadDateRanges().then(() => {
+                // Initialize dropdown texts
+                document.getElementById('selectedMonth').textContent = selectedMonthName;
+                document.getElementById('selectedYear').textContent = selectedYearValue;
+
+                loadSeniorCounts(currentYear, currentMonth);
+            });
+        });
+
+        // Fetch available date ranges from backend
+        async function loadDateRanges() {
+            try {
+                const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_date_ranges');
+                const result = await response.json();
+
+                if (result.success) {
+                    availableYears = result.years;
+                    availableMonths = result.months;
+                    populateYearDropdown();
+                } else {
+                    console.error('Failed to load date ranges:', result.message);
+                    // Fallback to default years if API fails
+                    populateYearDropdownWithDefaults();
+                }
+            } catch (error) {
+                console.error('Error loading date ranges:', error);
+                // Fallback to default years if API fails
+                populateYearDropdownWithDefaults();
+            }
         }
+
+        // Populate year dropdown with available years from database
+        function populateYearDropdown() {
+            const yearDropdown = document.getElementById('yearDropdown');
+            const ul = yearDropdown.querySelector('ul');
+            ul.innerHTML = '';
+
+            // Add "All Years" option
+            const allYearsItem = document.createElement('li');
+            allYearsItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a>`;
+            ul.appendChild(allYearsItem);
+
+            // Add available years
+            if (availableYears.length > 0) {
+                availableYears.sort((a, b) => b - a); // Sort descending
+                availableYears.forEach(year => {
+                    const yearItem = document.createElement('li');
+                    yearItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(${year}, ${year})">${year}</a>`;
+                    ul.appendChild(yearItem);
+                });
+            } else {
+                // Fallback if no years found
+                populateYearDropdownWithDefaults();
+            }
+        }
+
+        // Fallback function to populate year dropdown with default years
+        function populateYearDropdownWithDefaults() {
+            const yearDropdown = document.getElementById('yearDropdown');
+            const ul = yearDropdown.querySelector('ul');
+            ul.innerHTML = '';
+
+            // Add "All Years" option
+            const allYearsItem = document.createElement('li');
+            allYearsItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a>`;
+            ul.appendChild(allYearsItem);
+
+            // Add default years (current year and previous 5 years)
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+                const yearItem = document.createElement('li');
+                yearItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(${year}, ${year})">${year}</a>`;
+                ul.appendChild(yearItem);
+            }
+        }
+
+        // Fetch data from backend
+        async function loadSeniorCounts(year = null, month = null) {
+            try {
+                showLoading();
+
+                // Build URL with filters
+                let url = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts';
+                if (year !== null) {
+                    url += `&year=${year}`;
+                }
+                if (month !== null) {
+                    url += `&month=${month}`;
+                }
+
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.success) {
+                    currentData = result;
+                    displayData(result);
+                    updateReportPeriod(result.filters);
+                } else {
+                    showError('Failed to load data: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to load data. Please try again.');
+            }
+        }
+
+        // Update report period display
+        function updateReportPeriod(filters) {
+            const periodElement = document.getElementById('reportPeriod');
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            let displayText = '';
+
+            if (filters.month !== null && filters.year !== null) {
+                const monthName = monthNames[filters.month - 1] || 'Unknown';
+                displayText = `${monthName} ${filters.year}`;
+                currentMonth = filters.month;
+                currentYear = filters.year;
+                selectedMonthName = monthName;
+                selectedYearValue = filters.year;
+            } else if (filters.year !== null) {
+                displayText = `Year ${filters.year}`;
+                currentYear = filters.year;
+                selectedYearValue = filters.year;
+                selectedMonthName = 'All Months';
+            } else if (filters.month !== null) {
+                const monthName = monthNames[filters.month - 1] || 'Unknown';
+                displayText = `${monthName} (All Years)`;
+                currentMonth = filters.month;
+                selectedMonthName = monthName;
+                selectedYearValue = 'All Years';
+            } else {
+                displayText = 'All Time';
+                selectedMonthName = 'All Months';
+                selectedYearValue = 'All Years';
+            }
+
+            // Update dropdown button texts
+            document.getElementById('selectedMonth').textContent = selectedMonthName;
+            document.getElementById('selectedYear').textContent = selectedYearValue;
+
+            periodElement.textContent = displayText;
+        }
+
+        // Month selection handler
+        function selectMonth(monthName, monthNumber) {
+            document.getElementById('selectedMonth').textContent = monthName;
+            selectedMonthName = monthName;
+            currentMonth = monthNumber;
+            loadSeniorCounts(currentYear, currentMonth);
+
+            // Close dropdown
+            const dropdown = document.getElementById('monthDropdown');
+            dropdown.classList.add('hidden');
+        }
+
+        // Year selection handler
+        function selectYear(yearName, yearNumber) {
+            document.getElementById('selectedYear').textContent = yearName;
+            selectedYearValue = yearName;
+            currentYear = yearNumber;
+            loadSeniorCounts(currentYear, currentMonth);
+
+            // Close dropdown
+            const dropdown = document.getElementById('yearDropdown');
+            dropdown.classList.add('hidden');
+        }
+
+        // Display data in table
+        function displayData(data) {
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = '';
+
+            data.data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'flex w-full font-semibold';
+                row.innerHTML = `
+                <td class="px-4 py-3 flex w-full border-b-0 border-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
+                    ${item.barangay}
+                </td>
+                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                    ${item.male}
+                </td>
+                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                    ${item.female}
+                </td>
+                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                    ${item.total}
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+
+            // Add totals row
+            const totalsRow = document.createElement('tr');
+            totalsRow.className = 'flex w-full font-semibold bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-500';
+            totalsRow.innerHTML = `
+            <td class="flex w-full px-4 py-3 text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
+                Total
+            </td>
+            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
+                ${data.totals.male}
+            </td>
+            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
+                ${data.totals.female}
+            </td>
+            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
+                ${data.totals.total}
+            </td>
+        `;
+            tbody.appendChild(totalsRow);
+        }
+
+        // Utility functions
+        function showLoading() {
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-center">Loading data...</td></tr>';
+        }
+
+        function showError(message) {
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-3 text-center text-red-500">${message}</td></tr>`;
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            currentYear = null;
+            currentMonth = null;
+            selectedMonthName = 'All Months';
+            selectedYearValue = 'All Years';
+
+            document.getElementById('selectedMonth').textContent = selectedMonthName;
+            document.getElementById('selectedYear').textContent = selectedYearValue;
+
+            loadSeniorCounts();
+        }
+
+        // Generate report function
+        function generateReport() {
+            const periodText = document.getElementById('reportPeriod').textContent;
+            alert(`Generating report for: ${periodText}\nThis feature would export the current data as PDF.`);
+        }
+
+        // Navigation functions
+        function loadPart1() {
+            loadSeniorCounts(currentYear, currentMonth);
+        }
+
         function part2() {
-            location.href = ("reportpart2.php");
+            location.href = "reportpart2.php?session_context=<?php echo $ctx; ?>";
         }
+
         function part3() {
-            location.href = ("reportpart3.php");
+            location.href = "reportpart3.php?session_context=<?php echo $ctx; ?>";
         }
+
         function part4() {
-            location.href = ("reportpart4.php");
+            location.href = "reportpart4.php?session_context=<?php echo $ctx; ?>";
         }
+
         function part5() {
-            location.href = ("reportpart5.php");
+            location.href = "reportpart5.php?session_context=<?php echo $ctx; ?>";
         }
+
         function part6() {
-            location.href = ("reportpart6.php");
+            location.href = "reportpart6.php?session_context=<?php echo $ctx; ?>";
         }
+
         function part7to9() {
-            location.href = ("reportpart7to9.php");
+            location.href = "reportpart7to9.php?session_context=<?php echo $ctx; ?>";
         }
+
         function benefits() {
-            location.href = ("reportbenefits.php");
+            location.href = "reportbenefits.php?session_context=<?php echo $ctx; ?>";
         }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const monthDropdown = document.getElementById('monthDropdown');
+            const yearDropdown = document.getElementById('yearDropdown');
+            const monthButton = document.getElementById('monthDropdownButton');
+            const yearButton = document.getElementById('yearDropdownButton');
+
+            if (!monthButton.contains(event.target) && !monthDropdown.contains(event.target)) {
+                monthDropdown.classList.add('hidden');
+            }
+            if (!yearButton.contains(event.target) && !yearDropdown.contains(event.target)) {
+                yearDropdown.classList.add('hidden');
+            }
+        });
     </script>
 
 </body>

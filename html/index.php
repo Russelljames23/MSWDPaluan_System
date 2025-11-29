@@ -53,6 +53,21 @@ while ($row = mysqli_fetch_assoc($result)) {
     $stats['status'][$row['status']] = $row['count'];
 }
 
+// Calculate percentages for status
+$active_count = $stats['status']['Active'] ?? 0;
+$inactive_count = $stats['status']['Inactive'] ?? 0;
+$deceased_count = $stats['status']['Deceased'] ?? 0;
+
+if ($stats['total'] > 0) {
+    $active_percentage = round(($active_count / $stats['total']) * 100, 1);
+    $inactive_percentage = round(($inactive_count / $stats['total']) * 100, 1);
+    $deceased_percentage = round(($deceased_count / $stats['total']) * 100, 1);
+} else {
+    $active_percentage = 0;
+    $inactive_percentage = 0;
+    $deceased_percentage = 0;
+}
+
 // Validation status
 $query = "SELECT validation, COUNT(*) as count FROM applicants GROUP BY validation";
 $result = mysqli_query($conn, $query);
@@ -94,26 +109,64 @@ while ($row = mysqli_fetch_assoc($result)) {
     $stats['age_groups'][$row['age_group']] = $row['count'];
 }
 
-// Barangay distribution (top 5)
+// Barangay distribution (ALL barangays)
 $query = "SELECT a.barangay, COUNT(*) as count 
           FROM addresses a 
           JOIN applicants ap ON a.applicant_id = ap.applicant_id
           WHERE a.barangay IS NOT NULL AND a.barangay != ''
           GROUP BY a.barangay 
-          ORDER BY count DESC 
-          LIMIT 5";
+          ORDER BY 
+            CASE a.barangay
+                WHEN 'I - Mapalad' THEN 1
+                WHEN 'II - Handang Tumulong' THEN 2
+                WHEN 'III - Silahis ng Pag-asa' THEN 3
+                WHEN 'IV - Pag-asa ng Bayan' THEN 4
+                WHEN 'V - Bagong Silang' THEN 5
+                WHEN 'VI - San Jose' THEN 6
+                WHEN 'VII - Lumang Bayan' THEN 7
+                WHEN 'VIII - Marikit' THEN 8
+                WHEN 'IX - Tubili' THEN 9
+                WHEN 'X - Alipaoy' THEN 10
+                WHEN 'XI - Harison' THEN 11
+                WHEN 'XII - Mananao' THEN 12
+                ELSE 13
+            END";
 $result = mysqli_query($conn, $query);
 $stats['barangays'] = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $stats['barangays'][$row['barangay']] = $row['count'];
 }
 
+// Ensure all 12 barangays are included, even with 0 count
+$all_barangays = [
+    'I - Mapalad' => 0,
+    'II - Handang Tumulong' => 0,
+    'III - Silahis ng Pag-asa' => 0,
+    'IV - Pag-asa ng Bayan' => 0,
+    'V - Bagong Silang' => 0,
+    'VI - San Jose' => 0,
+    'VII - Lumang Bayan' => 0,
+    'VIII - Marikit' => 0,
+    'IX - Tubili' => 0,
+    'X - Alipaoy' => 0,
+    'XI - Harison' => 0,
+    'XII - Mananao' => 0
+];
+
+// Merge with actual data
+foreach ($all_barangays as $barangay => $count) {
+    if (isset($stats['barangays'][$barangay])) {
+        $all_barangays[$barangay] = $stats['barangays'][$barangay];
+    }
+}
+
+$stats['barangays'] = $all_barangays;
+
 // Recent registrations (last 30 days)
 $query = "SELECT COUNT(*) as count FROM applicants WHERE date_created >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
 $result = mysqli_query($conn, $query);
 $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -282,38 +335,94 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
             var ageChart = new google.visualization.PieChart(document.getElementById('age-chart'));
             ageChart.draw(ageData, ageOptions);
 
-            // Barangay Distribution Bar Chart
+            // Barangay Distribution Bar Chart - Fixed Labels
             var barangayData = new google.visualization.DataTable();
             barangayData.addColumn('string', 'Barangay');
             barangayData.addColumn('number', 'Count');
+            barangayData.addColumn({
+                type: 'string',
+                role: 'style'
+            });
 
             <?php
+            $barangayColors = ['#34A853', '#4285F4', '#FBBC05', '#EA4335', '#8E44AD', '#FF6D01', '#46BDC6', '#E91E63', '#795548', '#607D8B', '#9C27B0', '#009688'];
+
             if (!empty($stats['barangays'])) {
                 echo "barangayData.addRows([\n";
+                $i = 0;
                 foreach ($stats['barangays'] as $barangay => $count) {
-                    // Shorten long barangay names for better display
-                    $shortBarangay = strlen($barangay) > 15 ? substr($barangay, 0, 15) . '...' : $barangay;
-                    echo "['$shortBarangay', $count],\n";
+                    // Use abbreviated names for better visibility
+                    $formattedBarangay = str_replace(
+                        ['I - ', 'II - ', 'III - ', 'IV - ', 'V - ', 'VI - ', 'VII - ', 'VIII - ', 'IX - ', 'X - ', 'XI - ', 'XII - '],
+                        ['I\n', 'II\n', 'III\n', 'IV\n', 'V\n', 'VI\n', 'VII\n', 'VIII\n', 'IX\n', 'X\n', 'XI\n', 'XII\n'],
+                        $barangay
+                    );
+                    $color = $barangayColors[$i];
+                    echo "['$formattedBarangay', $count, 'fill-color: $color; stroke-color: $color; fill-opacity: 0.8; stroke-width: 2'],\n";
+                    $i++;
                 }
                 echo "]);";
             } else {
-                echo "barangayData.addRows([['No Data', 0]]);";
+                echo "barangayData.addRows([['No Data', 0, 'fill-color: #CCCCCC']]);";
             }
             ?>
 
             var barangayOptions = {
-                title: 'Top 5 Barangays',
-                colors: ['#34A853'],
+                title: 'Barangay Distribution',
+                titleTextStyle: {
+                    fontSize: 16,
+                    bold: true
+                },
                 backgroundColor: 'transparent',
                 chartArea: {
-                    width: '80%',
-                    height: '70%'
+                    left: 100, // More space for y-axis labels
+                    top: 80, // More space for title
+                    width: '85%',
+                    height: '65%',
+                    backgroundColor: 'transparent'
                 },
                 hAxis: {
-                    title: 'Barangay'
+                    title: '',
+                    textStyle: {
+                        fontSize: 11,
+                        color: '#4B5563',
+                        bold: true
+                    },
+                    slantedText: true,
+                    slantedTextAngle: 45,
+                    showTextEvery: 1,
+                    textPosition: 'out'
                 },
                 vAxis: {
-                    title: 'Count'
+                    title: 'Number of Seniors',
+                    titleTextStyle: {
+                        color: '#4B5563',
+                        fontSize: 12,
+                        bold: true
+                    },
+                    minValue: 0,
+                    textStyle: {
+                        color: '#4B5563',
+                        fontSize: 11
+                    },
+                    gridlines: {
+                        color: '#E5E7EB',
+                        count: 6
+                    },
+                    minorGridlines: {
+                        count: 0
+                    }
+                },
+                legend: {
+                    position: 'none'
+                },
+                bar: {
+                    groupWidth: '60%'
+                },
+                tooltip: {
+                    textStyle: {
+                        fontSize: 12
+                    }
                 }
             };
 
@@ -657,7 +766,6 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
                                     <p class="text-2xl font-semibold text-gray-900 dark:text-white"><?php echo $stats['gender']['Male'] ?? 0; ?></p>
                                     <p class="text-sm text-blue-600 dark:text-blue-400 font-medium mt-1"><?php echo $male_percentage; ?>%</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -696,6 +804,63 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
                                         <?php $recent_percentage = round(($stats['recent_registrations'] / $stats['total']) * 100, 1); ?>
                                         <p class="text-sm text-green-600 dark:text-green-400 font-medium mt-1"><?php echo $recent_percentage; ?>% of total</p>
                                     <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Row for Status Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                    <!-- Active Seniors Card -->
+                    <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Seniors</p>
+                                <div class="flex flex-row gap-5">
+                                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><?php echo $active_count; ?></p>
+                                    <p class="text-sm text-green-600 dark:text-green-400 font-medium mt-1"><?php echo $active_percentage; ?>%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inactive Seniors Card -->
+                    <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                                <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Inactive Seniors</p>
+                                <div class="flex flex-row gap-5">
+                                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><?php echo $inactive_count; ?></p>
+                                    <p class="text-sm text-yellow-600 dark:text-yellow-400 font-medium mt-1"><?php echo $inactive_percentage; ?>%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deceased Seniors Card -->
+                    <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-red-100 dark:bg-red-900">
+                                <svg class="w-6 h-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Deceased Seniors</p>
+                                <div class="flex flex-row gap-5">
+                                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><?php echo $deceased_count; ?></p>
+                                    <p class="text-sm text-red-600 dark:text-red-400 font-medium mt-1"><?php echo $deceased_percentage; ?>%</p>
                                 </div>
                             </div>
                         </div>

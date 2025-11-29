@@ -83,8 +83,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Russell James T.
+                                Adalan</span>
+                            <span
+                                class="block text-sm text-gray-900 truncate dark:text-white">russelljamestadalan23@gmail.com</span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
@@ -300,7 +302,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
                 <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         I
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part2()"
@@ -308,7 +310,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         II
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part3()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         III
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part4()"
@@ -333,16 +335,16 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     </button>
                 </div>
             </div>
-            <!-- Part III -->
+            <!-- Part I -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+                <div class="mx-auto max-w-screen-xl px-4 lg:px-12 ">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">III. Number of Pensioners /
-                                Barangay</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">I. Number of Registered Senior
+                                Citizens</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
+                                <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
@@ -352,10 +354,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                     </svg>
                                     Category
                                 </button>
-                                <div id="actionsDropdown2"
+                                <div id="actionsDropdown"
                                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton2">
+                                        aria-labelledby="actionsDropdownButton">
                                         <li>
                                             <a href="#"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -378,7 +380,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </li>
                                     </ul>
                                 </div>
-                                <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
+                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
@@ -395,9 +397,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                     </svg>
                                 </button>
                                 <!-- Dropdown menu -->
-                                <div id="filterDropdown2"
+                                <div id="filterDropdown"
                                     class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
                                         <li>
                                             <a href="#"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -448,13 +450,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            72</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            60</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            132</td>
+                                            1</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -463,13 +465,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            11</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            16</td>
+                                            2</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -478,13 +480,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            46</td>
+                                            0</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -492,13 +494,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            109</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            100</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            209</td>
+                                            1</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -506,13 +508,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            38</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            40</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            78</td>
+                                            0</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -520,13 +522,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            35</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            50</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            85</td>
+                                            1</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -534,13 +536,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            78</td>
+                                            2</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            109</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            187</td>
+                                            2</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -548,13 +550,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            73</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            87</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            160</td>
+                                            2</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -562,13 +564,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            15</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            28</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            43</td>
+                                            0</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -576,13 +578,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
+                                            0</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            54</td>
+                                            2</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            77</td>
+                                            2</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -590,13 +592,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            30</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            47</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            77</td>
+                                            2</td>
                                     </tr>
                                     <tr class="flex w-full   font-semibold">
                                         <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
@@ -604,13 +606,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            104</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            93</td>
+                                            1</td>
                                         <td
                                             class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            197</td>
+                                            2</td>
                                     </tr>
                                     <tr
                                         class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
@@ -618,13 +620,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">Total</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            610</td>
+                                            8</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            696</td>
+                                            7</td>
                                         <td
                                             class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            1306</td>
+                                            15</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -639,33 +641,26 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
+            // location.href=("report.php");
         }
-
         function part2() {
             location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
         }
-
         function part3() {
-            // location.href = ("reportpart3.php");
+            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
         }
-
         function part4() {
             location.href = ("reportpart4.php?session_context=<?php echo $ctx; ?>");
         }
-
         function part5() {
             location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
         }
-
         function part6() {
             location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
         }
-
         function part7to9() {
             location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
         }
-
         function benefits() {
             location.href = ("reportbenefits.php?session_context=<?php echo $ctx; ?>");
         }

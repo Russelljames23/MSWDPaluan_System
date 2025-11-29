@@ -757,7 +757,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="flex justify-end">
                         <button type="button" onclick="hideRequiredFieldsModal()"
                             class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                            OK, I'll Fix Them
+                            Okay
                         </button>
                     </div>
                 </div>

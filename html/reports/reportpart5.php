@@ -518,19 +518,19 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="../../js/tailwind.config.js"></script>
     <script>
         function part1() {
-            location.href = ("report.php");
+            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
         }
 
         function part2() {
-            location.href = ("reportpart2.php");
+            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
         }
 
         function part3() {
-            location.href = ("reportpart3.php");
+            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
         }
 
         function part4() {
-            location.href = ("reportpart4.php");
+            location.href = ("reportpart4.php?session_context=<?php echo $ctx; ?>");
         }
 
         function part5() {
@@ -538,15 +538,15 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         }
 
         function part6() {
-            location.href = ("reportpart6.php");
+            location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
         }
 
         function part7to9() {
-            location.href = ("reportpart7to9.php");
+            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
         }
 
         function benefits() {
-            location.href = ("reportbenefits.php");
+            location.href = ("reportbenefits.php?session_context=<?php echo $ctx; ?>");
         }
     </script>
 
