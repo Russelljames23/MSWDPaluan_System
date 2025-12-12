@@ -16,8 +16,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -37,8 +36,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4">
-                        <img src="../../img/MSWD_LOGO-removebg-preview.png" class="mr-3 h-8" alt="Flowbite Logo" />
+                    <a href="#" class="flex items-center justify-between mr-4 ">
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
                             PALUAN</span>
                     </a>
@@ -83,19 +84,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -242,7 +260,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     <li>
                     <li>
-                        <a href="#"  style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -288,16 +306,45 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </aside>
 
         <main class="p-4 md:ml-64 pt-17">
-            <div class="w-full flex  justify-end">
-                <button type="button"
-                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
-                    Report</button>
+            <div class="w-full flex justify-between items-center mb-4">
+                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
+                <button type="button" onclick="generateReport()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Generate Report
+                </button>
             </div>
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
             <div class="flex flex-row items-center justify-center gap-5 mt-2">
-                <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
+                <?php
+                // Calculate display text
+                $displayText = 'All Time';
+                if ($currentYear && $currentMonth) {
+                    $monthNames = [
+                        1 => 'January',
+                        2 => 'February',
+                        3 => 'March',
+                        4 => 'April',
+                        5 => 'May',
+                        6 => 'June',
+                        7 => 'July',
+                        8 => 'August',
+                        9 => 'September',
+                        10 => 'October',
+                        11 => 'November',
+                        12 => 'December'
+                    ];
+                    $displayText = $monthNames[$currentMonth] . ' ' . $currentYear;
+                } elseif ($currentYear) {
+                    $displayText = 'Year ' . $currentYear;
+                } elseif ($currentMonth) {
+                    $displayText = $monthNames[$currentMonth] . ' (All Years)';
+                }
+                ?>
+                <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">
+                    <?php echo htmlspecialchars($displayText); ?>
+                </h4>
                 <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
                         class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -339,9 +386,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">IV. Number of Localized
-                                Pensioners</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">IV. Number of Localized Pensioners</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
+                                <!-- You can keep or modify the filter buttons as needed -->
                                 <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
@@ -352,279 +399,54 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                     </svg>
                                     Category
                                 </button>
-                                <div id="actionsDropdown2"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton2">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                January</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                February</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                March</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                April</a>
-                                        </li>
-                                    </ul>
+                                <!-- Filter dropdown can be kept for UI consistency -->
+                            </div>
+                        </div>
+
+                        <!-- Summary Statistics (Optional) -->
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                            <div class="flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Total Localized Pensioners:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="totalLocalized">0</span>
                                 </div>
-                                <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Filter
-                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div id="filterDropdown2"
-                                    class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2025</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2024</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2023</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2022</a>
-                                        </li>
-                                    </ul>
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Male:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="totalLocalizedMale">0</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Female:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="totalLocalizedFemale">0</span>
+                                </div>
+                                <div class="flex items-center ml-auto">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Pension Source:</span>
+                                    <span class="font-semibold text-green-600 dark:text-green-400">SSS / GSIS</span>
                                 </div>
                             </div>
                         </div>
+
                         <div class="overflow-x-auto">
-                            <table id="deceasedTable"
+                            <table id="localizedTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
+                                    <tr class="flex w-full border-gray-300 dark:border-gray-600">
                                         <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Barangay</th>
                                         <th scope="col"
                                             class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Male
                                         </th>
                                         <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Female</th>
                                         <th scope="col"
                                             class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Total</th>
                                     </tr>
                                 </thead>
-                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                                    [&::-webkit-scrollbar]:hidden">
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            13</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            23</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            36</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang
-                                            Tumulong
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            19</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            16</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            35</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
-                                            Pag-asa
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            10</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            9</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            19</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            29</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            12</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            41</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">V - Bagong Silang
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            8</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            9</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            17</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VI - San Jose
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            21</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            11</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            32</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            33</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            16</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            49</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VIII - Marikit
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            15</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            18</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            33</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubili
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            3</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">X - Alipaoy
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            22</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            14</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            36</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XI - harison
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            7</td>
-                                    </tr>
-                                    <tr class="flex w-full   font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XII - Mananao
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            2</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            3</td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            5</td>
-                                    </tr>
-                                    <tr
-                                        class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
-                                        <td class="flex w-full px-4 py-3  text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">Total</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            117</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            138</td>
-                                        <td
-                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
-                                            315</td>
+                                <tbody id="localizedBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+                                        [&::-webkit-scrollbar]:hidden">
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-3 text-center">Loading data...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -638,39 +460,309 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        function part1() {
-            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
-        }
+        (function() {
+            'use strict';
 
-        function part2() {
-            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
-        }
+            console.log('Part IV page initialized');
 
-        function part3() {
-            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
-        }
+            // Get current filter values from PHP
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
 
-        function part4() {
-            // location.href = ("reportpart4.php");
-        }
+            // DOM elements for summary
+            const totalLocalizedElement = document.getElementById('totalLocalized');
+            const totalLocalizedMaleElement = document.getElementById('totalLocalizedMale');
+            const totalLocalizedFemaleElement = document.getElementById('totalLocalizedFemale');
 
-        function part5() {
-            location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
-        }
+            // Load data when page is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded. Loading Part IV data...');
+                console.log('Filters - Year:', currentYear, 'Month:', currentMonth);
 
-        function part6() {
-            location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
-        }
+                // Load the data
+                fetchLocalizedPensioners();
+            });
 
-        function part7to9() {
-            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
-        }
+            // Main function to fetch localized pensioners per barangay
+            async function fetchLocalizedPensioners() {
+                try {
+                    showLoading();
 
-        function benefits() {
-            location.href = ("reportbenefits.php?session_context=<?php echo $ctx; ?>");
-        }
+                    // Build API URL
+                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part4_backend.php';
+                    apiUrl += '?';
+
+                    // Add filters if provided
+                    const params = new URLSearchParams();
+
+                    if (currentYear && currentYear !== 'null') {
+                        params.append('year', currentYear);
+                    }
+                    if (currentMonth && currentMonth !== 'null') {
+                        params.append('month', currentMonth);
+                    }
+
+                    apiUrl += params.toString();
+
+                    // Add cache busting
+                    apiUrl += '&_=' + Date.now();
+
+                    console.log('Calling API:', apiUrl);
+
+                    // Fetch data
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('API Response:', result);
+
+                    // Display the data
+                    if (result.success) {
+                        displayLocalizedPensioners(result);
+                        updateLocalizedSummary(result);
+                        updateReportPeriod(result);
+                    } else {
+                        throw new Error(result.message || 'Unknown error from API');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading localized pensioners:', error);
+                    showError('Failed to load data: ' + error.message);
+                }
+            }
+
+            // Function to display localized pensioners in the table
+            function displayLocalizedPensioners(data) {
+                const tbody = document.getElementById('localizedBody');
+                if (!tbody) {
+                    console.error('Table body not found!');
+                    return;
+                }
+
+                // Clear existing content
+                tbody.innerHTML = '';
+
+                // Check if we have data
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-lg">No localized pensioners found</p>
+                        <p class="text-sm mt-1">No pensioners with SSS or GSIS pension source in the selected period</p>
+                    </td>
+                </tr>
+            `;
+                    return;
+                }
+
+                console.log('Displaying', data.data.length, 'records');
+
+                // Create rows for each barangay
+                data.data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+
+                    // Check if this is the total row
+                    const isTotal = item.is_total || item.barangay === 'Total';
+
+                    if (isTotal) {
+                        row.className = 'flex w-full font-semibold bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-500';
+                    } else {
+                        row.className = 'flex w-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-700';
+                    }
+
+                    row.innerHTML = `
+                <td class="px-4 py-3 flex w-full ${isTotal ? 'border' : 'border-b-0 borde-t-0 border-l-0 border-r-0'} border-gray-300 dark:border-gray-600 text-left" 
+                    style="font-family: 'Times New Roman', Times, serif;">
+                    ${item.barangay}
+                </td>
+                <td class="px-4 py-3 flex-l w-full ${isTotal ? 'border' : 'border-b-0 borde-t-0 border-r-0'} border-gray-300 dark:border-gray-600 text-center">
+                    ${item.male}
+                </td>
+                <td class="px-4 py-3 flex-l w-full ${isTotal ? 'border' : 'border-b-0 borde-t-0 border-r-0'} border-gray-300 dark:border-gray-600 text-center">
+                    ${item.female}
+                </td>
+                <td class="px-4 py-3 flex-l w-full ${isTotal ? 'border' : 'border-b-0 borde-t-0 border-r-0'} border-gray-300 dark:border-gray-600 text-center">
+                    ${item.total}
+                </td>
+            `;
+                    tbody.appendChild(row);
+                });
+
+                console.log('Displayed', data.data.length, 'records');
+            }
+
+            // Update summary statistics for localized pensioners
+            function updateLocalizedSummary(data) {
+                if (totalLocalizedElement && data.summary) {
+                    totalLocalizedElement.textContent = data.summary.total_overall || 0;
+                }
+                if (totalLocalizedMaleElement && data.summary) {
+                    totalLocalizedMaleElement.textContent = data.summary.total_male || 0;
+                }
+                if (totalLocalizedFemaleElement && data.summary) {
+                    totalLocalizedFemaleElement.textContent = data.summary.total_female || 0;
+                }
+            }
+
+            // Update report period display
+            function updateReportPeriod(data) {
+                const periodElement = document.getElementById('reportPeriod');
+                if (!periodElement) return;
+
+                const monthNames = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                let displayText = 'All Time';
+                const year = data?.filters?.year;
+                const month = data?.filters?.month;
+
+                if (month && year) {
+                    const monthName = monthNames[month - 1] || 'Unknown';
+                    displayText = `${monthName} ${year}`;
+                } else if (year) {
+                    displayText = `Year ${year}`;
+                } else if (month) {
+                    const monthName = monthNames[month - 1] || 'Unknown';
+                    displayText = `${monthName} (All Years)`;
+                }
+
+                periodElement.textContent = displayText;
+            }
+
+            // Utility functions
+            function showLoading() {
+                const tbody = document.getElementById('localizedBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-4 py-8 text-center">
+                        <div class="flex justify-center">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        </div>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">Loading localized pensioners data...</p>
+                    </td>
+                </tr>
+            `;
+                }
+            }
+
+            function showError(message) {
+                const tbody = document.getElementById('localizedBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-4 py-8 text-center text-red-500">
+                        <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <p class="text-lg">${message}</p>
+                        <button onclick="window.location.reload()" 
+                            class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Retry
+                        </button>
+                    </td>
+                </tr>
+            `;
+                }
+            }
+
+            // Navigation functions (just like reportpart3.php)
+            window.part1 = function() {
+                navigateToReport('report.php');
+            };
+
+            window.part2 = function() {
+                navigateToReport('reportpart2.php');
+            };
+
+            window.part3 = function() {
+                navigateToReport('reportpart3.php');
+            };
+
+            window.part4 = function() {
+                // Already on part 4, reload with current filters
+                if (typeof applyFilters === 'function') {
+                    applyFilters();
+                } else {
+                    window.location.reload();
+                }
+            };
+
+            window.part5 = function() {
+                navigateToReport('reportpart5.php');
+            };
+
+            window.part6 = function() {
+                navigateToReport('reportpart6.php');
+            };
+
+            window.part7to9 = function() {
+                navigateToReport('reportpart7to9.php');
+            };
+
+            window.benefits = function() {
+                navigateToReport('reportbenefits.php');
+            };
+
+            // Helper to navigate between report pages
+            function navigateToReport(pageName) {
+                let url = pageName;
+                const params = new URLSearchParams();
+
+                // Get session context from current URL
+                const currentUrl = new URLSearchParams(window.location.search);
+                const sessionContext = currentUrl.get('session_context');
+
+                if (sessionContext) {
+                    params.append('session_context', sessionContext);
+                }
+
+                // Add current filters
+                if (currentYear && currentYear !== 'null') {
+                    params.append('year', currentYear);
+                }
+                if (currentMonth && currentMonth !== 'null') {
+                    params.append('month', currentMonth);
+                }
+
+                const queryString = params.toString();
+                if (queryString) {
+                    url += '?' + queryString;
+                }
+
+                console.log('Navigating to:', url);
+                window.location.href = url;
+            }
+
+            // Generate report function
+            window.generateReport = function() {
+                const periodText = document.getElementById('reportPeriod').textContent;
+                const totalLocalized = document.getElementById('totalLocalized').textContent;
+
+                alert(`Generating localized pensioners report for: ${periodText}\nTotal Localized Pensioners: ${totalLocalized}\nThis feature would export the current data as PDF.`);
+            };
+
+            // Listen for filter changes from date_filter_component.php
+            if (typeof window !== 'undefined') {
+                window.addEventListener('filtersApplied', function(e) {
+                    console.log('Filters applied in Part IV:', e.detail);
+                    // Reload data with new filters
+                    fetchLocalizedPensioners();
+                });
+            }
+
+        })();
     </script>
-
 </body>
 
 </html>

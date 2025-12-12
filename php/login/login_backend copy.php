@@ -5,6 +5,7 @@ $rawInput = file_get_contents('php://input');
 $parsedInput = json_decode($rawInput, true) ?: [];
 $session_context = $_GET['session_context'] ?? $parsedInput['session_context'] ?? null;
 
+
 if ($session_context) {
     session_name('SESS_' . $session_context);
 }
@@ -14,6 +15,7 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
+
 
 $host = 'localhost';
 $dbname = 'mswd_seniors';
@@ -33,10 +35,12 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = $parsedInput; // already parsed above
 
+
     if (!isset($input['username']) || !isset($input['password']) || !isset($input['user_type'])) {
         echo json_encode(['success' => false, 'message' => 'All fields are required']);
         exit;
     }
+
 
     $username = trim($input['username']);
     $password = trim($input['password']);
@@ -46,17 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare(
             "SELECT id, lastname, firstname, middlename, username, password, user_type, status, is_verified, email
-            FROM users
-            WHERE username = ? AND status = 'active'"
+FROM users
+WHERE username = ? AND status = 'active'"
         );
         $stmt->execute([$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
         if ($user && password_verify($password, $user['password'])) {
             if (!$user['is_verified']) {
                 echo json_encode(['success' => false, 'message' => 'Please verify your email before logging in.']);
                 exit;
             }
+
 
             $db_user_type = $user['user_type'];
             $isValidType = false;
@@ -66,10 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $isValidType = ($db_user_type === 'Staff' || $db_user_type === 'Staff Manager' || $db_user_type === 'Data Entry' || $db_user_type === 'Viewer');
             }
 
+
             if (!$isValidType) {
                 echo json_encode(['success' => false, 'message' => 'Invalid user type for this login']);
                 exit;
             }
+
 
             if (empty($user['email'])) {
                 error_log("User has no email address: " . $username);
@@ -79,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $verification_code = generateVerificationCode();
             $email_sent = sendVerificationCode($user['email'], $verification_code, $user['firstname']);
+
 
             if ($email_sent) {
                 $_SESSION['verification_user_id'] = $user['id'];
@@ -93,16 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'session_context' => $session_context
                 ];
 
+
                 error_log("Verification code sent to: " . $user['email']);
 
-                // Log login attempt
-                require_once '../settings/ActivityLogger.php';
-                $logger = new ActivityLogger($pdo, $user['id'], $user['username']);
-                $logger->log('LOGIN', 'Login verification code sent', [
-                    'email' => $user['email'],
-                    'user_type' => $user['user_type'],
-                    'verification_sent' => true
-                ]);
 
                 echo json_encode([
                     'success' => true,
@@ -111,27 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
             } else {
                 error_log("Failed to send email to: " . $user['email']);
-
-                // Log failed email attempt
-                require_once '../settings/ActivityLogger.php';
-                $logger = new ActivityLogger($pdo, $user['id'], $user['username']);
-                $logger->log('ERROR', 'Failed to send verification email', [
-                    'email' => $user['email'],
-                    'error_type' => 'email_delivery'
-                ]);
-
                 echo json_encode(['success' => false, 'message' => 'Failed to send verification code. Please try again or contact administrator.']);
             }
         } else {
-            // Log failed login attempt
-            require_once '../settings/ActivityLogger.php';
-            $logger = new ActivityLogger($pdo, null, $username);
-            $logger->log('LOGIN', 'Failed login attempt', [
-                'username' => $username,
-                'attempt_time' => date('Y-m-d H:i:s'),
-                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
-            ]);
-
             echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
         }
     } catch (PDOException $e) {
@@ -142,10 +126,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 
+
 function generateVerificationCode()
 {
     return sprintf("%06d", mt_rand(1, 999999));
 }
+
 
 function sendVerificationCode($email, $code, $name)
 {

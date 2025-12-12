@@ -250,8 +250,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -271,7 +270,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4 ">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
@@ -320,19 +319,32 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
-                                <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'User'); ?>
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
-                                <?php echo htmlspecialchars($_SESSION['user_type'] ?? 'User Type'); ?>
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
                             </span>
                         </div>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
@@ -504,8 +516,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="ml-3">Archived</span>
                         </a>
                     </li>
-                    <li> 
-                        <a href="#"  style="color: blue;"
+                    <li>
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
@@ -579,7 +591,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="tooltip">Accounts</span>
                         </li>
                         <li>
-                            <a href="historylogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
+                            <a href="systemlogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
@@ -588,28 +600,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
                                 </svg>
 
-                                <span class="links_name">History Log</span>
+                                <span class="links_name">System Logs</span>
                             </a>
-                            <span class="tooltip">History Log</span>
-                        </li>
-                        <li>
-                            <a href="activitylogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
-                                </svg>
-
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
-                                </svg>
-
-                                <span class="links_name">Activity Log</span>
-                            </a>
-                            <span class="tooltip">Activity Log</span>
+                            <span class="tooltip">System Logs</span>
                         </li>
                     </ul>
                 </div>

@@ -5,33 +5,15 @@ ini_set('display_errors', 1);
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 include '../db.php';
-require_once '../settings/ActivityLogger.php';
 
 try {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     if ($id <= 0) throw new Exception("Missing applicant ID.");
 
-    // Initialize activity logger
-    $logger = null;
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $user_name = $_SESSION['username'] ?? 'Unknown';
-        $logger = new ActivityLogger($conn, $user_id, $user_name);
-    }
-
     $transactionStarted = false;
     if (!$conn->inTransaction()) {
         $conn->beginTransaction();
         $transactionStarted = true;
-    }
-
-    // Get archived applicant info for logging
-    $infoStmt = $conn->prepare("SELECT first_name, last_name, control_number FROM archived_applicants WHERE applicant_id = ?");
-    $infoStmt->execute([$id]);
-    $applicantInfo = $infoStmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$applicantInfo) {
-        throw new Exception("Archived applicant not found.");
     }
 
     // 1️⃣ First, check if applicant exists in applicants table and delete if found
@@ -152,31 +134,11 @@ try {
 
     if ($transactionStarted && $conn->inTransaction()) $conn->commit();
 
-    // Log the restoration activity
-    if ($logger) {
-        $logger->log('RESTORE_SENIOR', 'Archived senior restored to active list', [
-            'applicant_id' => $id,
-            'applicant_name' => ($applicantInfo['first_name'] ?? '') . ' ' . ($applicantInfo['last_name'] ?? ''),
-            'control_number' => $applicantInfo['control_number'] ?? null,
-            'restored_by' => $user_name,
-            'restored_at' => date('Y-m-d H:i:s')
-        ]);
-    }
-
     echo json_encode(["success" => true, "message" => "Applicant successfully restored to active list."]);
 } catch (Exception $e) {
     if (isset($transactionStarted) && $transactionStarted && $conn->inTransaction()) {
         $conn->rollBack();
     }
     http_response_code(500);
-    
-    // Log error
-    if (isset($logger)) {
-        $logger->log('ERROR', 'Failed to restore archived senior', [
-            'applicant_id' => $id,
-            'error_message' => $e->getMessage()
-        ]);
-    }
-    
     echo json_encode(["success" => false, "message" => "⚠️ Error restoring record: " . $e->getMessage()]);
 }

@@ -48,8 +48,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -69,7 +68,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4 ">
                         <img src="../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
@@ -117,19 +116,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -244,9 +260,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </ul>
                     </li>
                     <li>
-                        <a href="#"   style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg 
+                            <svg
                                 class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -806,7 +822,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             benefitsTableBody.innerHTML = "";
                             data.benefits.forEach(benefit => {
                                 const row = document.createElement("tr");
-                                row.classList.add("border-b", "border-gray-200","text-gray-700", "dark:border-gray-700");
+                                row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700");
                                 row.innerHTML = `
                                     <td class="px-4 py-3 text-gray-700">${benefit.benefit_name}</td>
                                     <td class="px-15 py-3 flex items-center justify-end space-x-2">

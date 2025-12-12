@@ -209,12 +209,181 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             color: #1d4ed8;
         }
     </style>
+    <style>
+        /* Responsive table improvements */
+        @media (max-width: 640px) {
+
+            #logsTable th:nth-child(3),
+            #logsTable td:nth-child(3),
+            #logsTable th:nth-child(5),
+            #logsTable td:nth-child(5),
+            #logsTable th:nth-child(6),
+            #logsTable td:nth-child(6),
+            #logsTable th:nth-child(8),
+            #logsTable td:nth-child(8) {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            #logsTable th:nth-child(5),
+            #logsTable td:nth-child(5),
+            #logsTable th:nth-child(6),
+            #logsTable td:nth-child(6) {
+                display: none;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Overlay animations */
+        #logOverlay {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #logOverlay>div {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table hover effects */
+        #logsTableBody tr {
+            transition: all 0.2s ease;
+        }
+
+        #logsTableBody tr:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Loading spinner */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Status badges with pulse animation for active sessions */
+        .status-badge-active {
+            position: relative;
+        }
+
+        .status-badge-active::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: inherit;
+            border-radius: inherit;
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Scrollbar styling for dark mode */
+        #overlayContent::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #overlayContent::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #overlayContent::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        #overlayContent::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .dark #overlayContent::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .dark #overlayContent::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+
+        .dark #overlayContent::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Print styles */
+        @media print {
+            #logOverlay {
+                position: static;
+                background: white;
+                display: block !important;
+            }
+
+            #closeOverlay,
+            #refreshLogs,
+            #exportLogs,
+            #clearFilters {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -234,7 +403,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4 ">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
@@ -283,19 +452,32 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
-                                <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'User'); ?>
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
-                                <?php echo htmlspecialchars($_SESSION['user_type'] ?? 'User Type'); ?>
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
                             </span>
                         </div>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
@@ -468,7 +650,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="#"  style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
@@ -485,8 +667,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </aside>
 
         <!-- Main content -->
-        <main class="p-4 md:ml-64  pt-20">
-            <div class="flex flex-row justify-between gap-2">
+        <main class="p-2 md:ml-64  pt-20">
+            <div class="flex flex-row justify-between gap-1">
                 <!-- partial:index.partial.html -->
                 <div class="sidebar open">
                     <div class="logo-details">
@@ -551,146 +733,249 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
                                 </svg>
 
-                                <span class="links_name">History Log</span>
+                                <span class="links_name">System Logs</span>
                             </a>
-                            <span class="tooltip">History Log</span>
-                        </li>
-                        <li>
-                            <a href="activitylogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer active-link">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z" />
-                                </svg>
-
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
-                                </svg>
-
-                                <span class="links_name">Activity Log</span>
-                            </a>
-                            <span class="tooltip">Activity Log</span>
+                            <span class="tooltip">System Logs</span>
                         </li>
                     </ul>
                 </div>
                 <!-- history log -->
-                <section id="historySection" class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 w-full">
-                    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg ">
-                            <div class=" py-4">
-                                <!-- Close Button (top-right) -->
-                                <div class="absolute top-2 right-2 group w-fit h-fit">
-                                    <button type="button"
-                                        class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white "
-                                        data-dismiss-target="#toast-default" aria-label="Close2">
-                                        <span class="sr-only">Close</span>
-                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                <section id="historySection" class="bg-gray-50 dark:bg-gray-900 w-full">
+                    <div class="mx-auto max-w-screen-xl ">
+                        <!-- Stats Overview Cards -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-2">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
+                                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                    </button>
-                                    <!-- Tooltip -->
-                                    <span
-                                        class="absolute -top-7 right-1/2 translate-x-1/2 hidden group-hover:block px-2 py-1 text-[14px] text-gray-900">
-                                        Close
-                                    </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sessions</p>
+                                        <p id="totalSessions" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div
-                                class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                                <h4 class="text-xl font-medium dark:text-white">History log</h4>
-                                <div class="w-full md:w-1/2">
-                                    <form class="flex items-center">
-                                        <label for="simple-search" class="sr-only">Search</label>
-                                        <div class="relative w-full">
-                                            <div
-                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                    fill="currentColor" viewbox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <input type="text" id="simple-search"
-                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search" required="">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="relative w-full md:w-auto">
-                                    <button id="filterDropdownButton"
-                                        class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        Filter
-                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7">
-                                            </path>
-                                        </svg>
-                                    </button>
 
-                                    <!-- Dropdown menu -->
-                                    <div id="filterDropdownMenu"
-                                        class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
-                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">A-Z</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="az"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">60-100</button>
-                                            </li>
-                                            <li>
-                                                <button data-filter="newlyRegistered"
-                                                    class="block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">Newly
-                                                    Registered</button>
-                                            </li>
-                                        </ul>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                                        <svg class="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Now</p>
+                                        <p id="activeSessions" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
+                                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Activities</p>
+                                        <p id="totalActivities" class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                                        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Duration</p>
+                                        <p id="avgDuration" class="text-2xl font-semibold text-gray-900 dark:text-white">0m</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Container with Overlay Support -->
+                        <div class="relative">
+                            <!-- Overlay -->
+                            <div id="logOverlay" class="hidden fixed inset-0 bg-gray-900/50 bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-hidden">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-auto ">
+                                    <div class="flex justify-between items-center p-6 mb-2 border-b dark:border-gray-700">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="overlayTitle">Log Details</h3>
+                                        <button id="closeOverlay" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="px-4 overflow-y-auto " id="overlayContent">
+                                        <!-- Content will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Card -->
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                                <!-- Header with Filters -->
+                                <div class="border-b dark:border-gray-700">
+                                    <div class="p-2 md:p-2">
+                                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div>
+                                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">System Logs</h2>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                    Track user sessions and system activities
+                                                </p>
+                                            </div>
+
+                                            <div class="flex flex-wrap gap-2">
+                                                <!-- Quick Actions -->
+                                                <button id="exportLogs" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    Export
+                                                </button>
+
+                                                <button id="clearFilters" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                    Clear Filters
+                                                </button>
+
+                                                <button id="refreshLogs" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Advanced Filters -->
+                                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2   ">
+                                            <!-- Search -->
+                                            <div>
+                                                <label for="searchLogs" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
+                                                <div class="relative">
+                                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>
+                                                    </div>
+                                                    <input type="text" id="searchLogs" placeholder="Search logs..."
+                                                        class="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500">
+                                                </div>
+                                            </div>
+
+                                            <!-- Log Type -->
+                                            <div>
+                                                <label for="logTypeFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Log Type</label>
+                                                <select id="logTypeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500">
+                                                    <option value="both">All Logs</option>
+                                                    <option value="session">Sessions Only</option>
+                                                    <option value="activity">Activities Only</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Date Range -->
+                                            <div>
+                                                <label for="dateRangeFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date Range</label>
+                                                <select id="dateRangeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500">
+                                                    <option value="all">All Time</option>
+                                                    <option value="today">Today</option>
+                                                    <option value="week">Last 7 Days</option>
+                                                    <option value="month">Last 30 Days</option>
+                                                    <option value="year">Last Year</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- User Type -->
+                                            <div>
+                                                <label for="userTypeFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User Type</label>
+                                                <select id="userTypeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500">
+                                                    <option value="all">All Users</option>
+                                                    <option value="admin">Admin Only</option>
+                                                    <option value="staff">Staff Only</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table id="deceasedTable"
-                                    class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr>
-                                            <th scope="col" class="px-4 py-3">Type</th>
-                                            <th scope="col" class="px-4 py-3">Name</th>
-                                            <th scope="col" class="px-4 py-3">Duration</th>
-                                            <th scope="col" class="px-4 py-3">Last Seen(?)</th>
-                                            <th scope="col" class="px-15 py-3">Login</th>
-                                            <th scope="col" class="px-15 py-3">Logout</th>
-                                            <th scope="col" class="px-4 py-3">Log Status(?)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b dark:border-gray-700">
-                                            <td class="px-4 py-3">Admin1</td>
-                                            <td class="px-4 py-3">Tadalan,RussellJames</td>
-                                            <td class="px-4 py-3">24 mins</td>
-                                            <td class="px-4 py-3">1 mins ago</td>
-                                            <td class="px-4 py-3">October 11,2025 7:20am</td>
-                                            <td class="px-4 py-3">October 11,2025 7:22am</td>
-                                            <td class="px-4 py-3">Logout</td>
+                                <!-- Loading State -->
+                                <div id="logsLoading" class="p-8 text-center">
+                                    <div class="inline-flex flex-col items-center">
+                                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading logs...</p>
+                                    </div>
+                                </div>
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <!-- Empty State -->
+                                <div id="logsEmpty" class="hidden p-12 text-center">
+                                    <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No logs found</h3>
+                                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                        Try adjusting your search or filter criteria
+                                    </p>
+                                </div>
+
+                                <!-- Table Container -->
+                                <div class="overflow-x-auto">
+                                    <table id="logsTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 hidden">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-2 py-2">Type</th>
+                                                <th scope="col" class="px-2 py-2">User</th>
+                                                <th scope="col" class="px-2 py-2 hidden md:table-cell">Activity</th>
+                                                <th scope="col" class="px-2 py-2">Time</th>
+                                                <th scope="col" class="px-2 py-2 hidden lg:table-cell">IP Address</th>
+                                                <th scope="col" class="px-2 py-2 hidden lg:table-cell">Duration</th>
+                                                <th scope="col" class="px-2 py-2">Status</th>
+                                                <th scope="col" class="px-2 py-2">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="logsTableBody">
+                                            <!-- Data will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div id="logsPagination" class="hidden flex flex-col sm:flex-row items-center justify-between p-4 border-t dark:border-gray-700">
+                                    <div class="mb-4 sm:mb-0">
+                                        <p class="text-sm text-gray-700 dark:text-gray-400">
+                                            Showing <span id="pageStart" class="font-medium">1</span> to
+                                            <span id="pageEnd" class="font-medium">10</span> of
+                                            <span id="totalItems" class="font-medium">0</span> results
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button id="firstPage" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            « First
+                                        </button>
+                                        <button id="prevPage" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            ‹ Prev
+                                        </button>
+                                        <span class="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+                                        </span>
+                                        <button id="nextPage" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            Next ›
+                                        </button>
+                                        <button id="lastPage" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            Last »
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -701,6 +986,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
+    <script src="/MSWDPALUAN_SYSTEM-MAIN/js/logs-manager.js"></script>
 
     <script>
         let sidebar = document.querySelector(".sidebar");
@@ -802,6 +1088,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             });
         }
     </script>
+
+
 </body>
 
 </html>

@@ -19,8 +19,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -40,8 +39,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
+                    <a href="#" class="flex items-center justify-between mr-4 ">
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -88,19 +87,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -195,7 +211,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="#" 
+                                <a href="#"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
                                     List</a>
                             </li>
@@ -296,57 +312,67 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <div class="mx-auto  max-w-screen-5xl ">
                     <div class="bg-white  dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                         <div
-                            class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                            class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <h4 class="text-xl font-medium dark:text-white">Senior List</h4>
-                            <div class="w-full md:w-1/2">
-                                <form class="flex items-center">
-                                    <label for="simple-search" class="sr-only">Search</label>
-                                    <div class="relative w-full">
-                                        <div
-                                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                fill="currentColor" viewbox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
+                            <div class="flex flex-row justify-between mt-2">
+                                <div class="w-full md:w-1/2">
+                                    <form class="flex items-center">
+                                        <label for="simple-search" class="sr-only">Search</label>
+                                        <div class="relative w-full">
+                                            <div
+                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                    fill="currentColor" viewbox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <input type="text" id="simple-search"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                placeholder="Search" required="">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="flex flex-row gap-5">
+                                    <button id="masterbtn"
+                                        class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        type="button">
+                                        Master List
+                                    </button>
+                                    <div class="relative w-full md:w-auto">
+                                        <!--  Filter Button -->
+                                        <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
+                                            class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                            type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                                class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
-                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                    d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                        </div>
-                                        <input type="text" id="simple-search"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Search" required="">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="relative w-full md:w-auto">
-                                <!--  Filter Button -->
-                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Filter
-                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                </button>
+                                            Address
+                                            <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path clip-rule="evenodd" fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                            </svg>
+                                        </button>
 
-                                <!--  Dynamic Dropdown -->
-                                <div id="filterDropdown"
-                                    class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
-                                        Barangay
-                                    </h6>
-                                    <ul id="barangayList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
-                                        <li class="text-gray-400 text-sm text-center">Loading...</li>
-                                    </ul>
+                                        <!--  Dynamic Dropdown -->
+                                        <div id="filterDropdown"
+                                            class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+                                                Barangay
+                                            </h6>
+                                            <ul id="barangayList" class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+                                                <li class="text-gray-400 text-sm text-center">Loading...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div class="">
@@ -363,7 +389,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         <th scope="col" class="px-4 py-3">Barangay</th>
                                         <th scope="col" class="px-4 py-3">Date Registered</th>
                                         <th scope="col" class="px-4 py-3">Date Modified</th>
-                                        <th scope="col" class="px-4 py-3">Pension Status</th>
+                                        <th scope="col" class="px-4 py-3">Status</th>
                                         <th scope="col" class="px-4 py-3">Action</th>
                                     </tr>
                                 </thead>
@@ -693,9 +719,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                         data.seniors.forEach((senior, index) => {
                             const statusColor =
-                                senior.validation === "Validated" ? "text-green-600"
-                                    : senior.validation === "For Validation" ? "text-red-600"
-                                        : "text-red-600";
+                                senior.validation === "Validated" ? "text-green-600" :
+                                senior.validation === "For Validation" ? "text-red-600" :
+                                "text-red-600";
 
                             const createdAt = senior.date_created ? new Date(senior.date_created).toLocaleDateString() : "";
                             const modifiedAt = senior.date_modified ? new Date(senior.date_modified).toLocaleDateString() : "";
@@ -758,7 +784,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                             button.addEventListener("click", (e) => {
                                 e.stopPropagation();
-                                document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => { if (m !== menu) m.classList.add("hidden"); });
+                                document.querySelectorAll("[id^='dropdownMenu-']").forEach(m => {
+                                    if (m !== menu) m.classList.add("hidden");
+                                });
                                 menu.classList.toggle("hidden");
                             });
                         });
@@ -908,8 +936,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 try {
                     const res = await fetch(`../../php/seniorlist/mark_deceased.php`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ applicant_id: currentDeceasedId, date_of_death: deathDate })
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            applicant_id: currentDeceasedId,
+                            date_of_death: deathDate
+                        })
                     });
                     const result = await res.json();
                     showPopup(result.message || result.error || "Marked as deceased.", "success");
@@ -1049,9 +1082,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
                 const hc = data.health_condition || {};
                 const illnessDetails = hc.illness_details || "N/A";
-                const applicationDate = data.application_date
-                    ? new Date(data.application_date).toLocaleDateString("en-US")
-                    : "—";
+                const applicationDate = data.application_date ?
+                    new Date(data.application_date).toLocaleDateString("en-US") :
+                    "—";
 
                 if (illnessDetails !== "N/A" || data.application_date) {
                     tbody.insertAdjacentHTML(
@@ -1072,9 +1105,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
 
                 data.illnesses.forEach(row => {
-                    const date = row.illness_date
-                        ? new Date(row.illness_date).toLocaleDateString("en-US")
-                        : "—";
+                    const date = row.illness_date ?
+                        new Date(row.illness_date).toLocaleDateString("en-US") :
+                        "—";
 
                     tbody.insertAdjacentHTML(
                         "beforeend",
@@ -1104,7 +1137,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             try {
                 const res = await fetch("../../php/seniorlist/senior_illness.php", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         applicant_id: currentApplicantId,
                         illness_name,

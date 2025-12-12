@@ -313,16 +313,14 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     Generate Report
                 </button>
             </div>
-
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
-
-            <div class="flex flex-col md:flex-row items-center justify-center gap-3 mt-2 mb-4">
+            <div class="flex flex-row items-center justify-center gap-5 mt-2">
                 <?php
                 // Calculate display text
                 $displayText = 'All Time';
-                if (isset($currentYear) && $currentYear && isset($currentMonth) && $currentMonth) {
+                if ($currentYear && $currentMonth) {
                     $monthNames = [
                         1 => 'January',
                         2 => 'February',
@@ -338,19 +336,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         12 => 'December'
                     ];
                     $displayText = $monthNames[$currentMonth] . ' ' . $currentYear;
-                } elseif (isset($currentYear) && $currentYear) {
+                } elseif ($currentYear) {
                     $displayText = 'Year ' . $currentYear;
-                } elseif (isset($currentMonth) && $currentMonth) {
+                } elseif ($currentMonth) {
                     $displayText = $monthNames[$currentMonth] . ' (All Years)';
                 }
                 ?>
                 <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">
                     <?php echo htmlspecialchars($displayText); ?>
                 </h4>
-
-                <div class="flex flex-wrap justify-center gap-2">
+                <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         I
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part2()"
@@ -362,7 +359,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         III
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part4()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         IV
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
@@ -383,35 +380,298 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     </button>
                 </div>
             </div>
-
-            <!-- Part I -->
+            <!-- Part IV -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-                        <div class="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0 p-4">
-                            <h4 class="text-lg font-medium dark:text-white text-center md:text-left" style="font-family: 'Times New Roman', Times, serif;">
-                                I. Number of Registered Senior Citizens
-                            </h4>
-
+                        <div class="flex flex-col md:flex-row items-center justify-between p-2">
+                            <h4 class="text-lg font-medium dark:text-white"
+                                style="font-family: 'Times New Roman', Times, serif;">IV. Number of Localized
+                                Pensioners</h4>
+                            <div class="flex items-center w-full space-x-3 md:w-auto">
+                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                    Category
+                                </button>
+                                <div id="actionsDropdown2"
+                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="actionsDropdownButton2">
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                January</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                February</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                March</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                April</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                        class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Filter
+                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                </button>
+                                <!-- Dropdown menu -->
+                                <div id="filterDropdown2"
+                                    class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2025</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2024</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2023</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                2022</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table id="reportTable"
+                            <table id="deceasedTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full border-gray-300 dark:border-gray-600">
+                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
                                         <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Barangay</th>
-                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Male
                                         </th>
-                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm  border-l border-gray-300 dark:border-gray-600">
                                             Female</th>
-                                        <th scope="col" class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
+                                        <th scope="col"
+                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
                                             Total</th>
                                     </tr>
                                 </thead>
-                                <tbody id="reportTableBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-3 text-center">Loading data...</td>
+                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+                                                    [&::-webkit-scrollbar]:hidden">
+                                    <tr class="flex w-full  font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">I - Mapalad
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            13</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            23</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            36</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">II - Handang
+                                            Tumulong
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            19</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            16</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            35</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
+                                            Pag-asa
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            10</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            9</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            19</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">IV - Pag-asa ng Bayan
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            29</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            12</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            41</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">V - Bagong Silang
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            8</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            9</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            17</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VI - San Jose
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            21</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            11</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            32</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            33</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            16</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            49</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">VIII - Marikit
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            15</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            18</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            33</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubili
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            3</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            5</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">X - Alipaoy
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            22</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            14</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            36</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">XI - harison
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            5</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            7</td>
+                                    </tr>
+                                    <tr class="flex w-full   font-semibold">
+                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">XII - Mananao
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            2</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            3</td>
+                                        <td
+                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            5</td>
+                                    </tr>
+                                    <tr
+                                        class="flex w-full font-semibold bg-gray-100 dark:bg-gray-800   border-gray-400 dark:border-gray-500">
+                                        <td class="flex w-full px-4 py-3  text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">Total</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            117</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            138</td>
+                                        <td
+                                            class="flex-l w-full px-4 py-3 border  border-r-0 border-gray-300 dark:border-gray-600">
+                                            315</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -424,308 +684,40 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
-
     <script>
-        // Report Page JavaScript - Single Version (No Conflicts)
-        (function() {
-            'use strict';
+        function part1() {
+            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            console.log('Report page initialized');
+        function part2() {
+            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Get current filter values from PHP (defined at top of page)
-            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
-            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+        function part3() {
+            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Load data when page is ready
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log('DOM loaded. Loading report data...');
-                console.log('Filters - Year:', currentYear, 'Month:', currentMonth);
+        function part4() {
+            // location.href = ("reportpart4.php");
+        }
 
-                // Load the data
-                loadReportData(currentYear, currentMonth);
-            });
+        function part5() {
+            location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Main function to load report data
-            async function loadReportData(year = null, month = null) {
-                try {
-                    // Show loading state
-                    const tbody = document.getElementById('reportTableBody');
-                    if (tbody) {
-                        tbody.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="px-4 py-8 text-center">
-                                <div class="flex justify-center">
-                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                </div>
-                                <p class="mt-2 text-gray-600 dark:text-gray-400">Loading data...</p>
-                            </td>
-                        </tr>
-                    `;
-                    }
+        function part6() {
+            location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
+        }
 
-                    // Build API URL
-                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts';
+        function part7to9() {
+            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
+        }
 
-                    // Add filters if provided
-                    if (year && year !== 'null') {
-                        apiUrl += '&year=' + encodeURIComponent(year);
-                    }
-                    if (month && month !== 'null') {
-                        apiUrl += '&month=' + encodeURIComponent(month);
-                    }
-
-                    // Add cache busting
-                    apiUrl += '&_=' + Date.now();
-
-                    console.log('Calling API:', apiUrl);
-
-                    // Fetch data
-                    const response = await fetch(apiUrl);
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    console.log('API Response:', result);
-
-                    // Display the data
-                    if (result.success) {
-                        displayReportData(result);
-                        updateReportTitle(result);
-                    } else {
-                        throw new Error(result.message || 'Unknown error from API');
-                    }
-
-                } catch (error) {
-                    console.error('Error loading report data:', error);
-
-                    // Show error in table
-                    const tbody = document.getElementById('reportTableBody');
-                    if (tbody) {
-                        tbody.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-red-500">
-                                <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                </svg>
-                                <p class="text-lg">Failed to load data</p>
-                                <p class="text-sm mt-2">Error: ${error.message}</p>
-                                <button onclick="window.location.reload()" 
-                                    class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                    Retry
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    }
-                }
-            }
-
-            // Function to display data in the table
-            function displayReportData(data) {
-                const tbody = document.getElementById('reportTableBody');
-                if (!tbody) {
-                    console.error('Table body not found!');
-                    return;
-                }
-
-                // Clear existing content
-                tbody.innerHTML = '';
-
-                // Check if we have data
-                if (!data.data || data.data.length === 0) {
-                    tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <p class="text-lg">No data found</p>
-                            <p class="text-sm mt-1">Try changing your filters</p>
-                        </td>
-                    </tr>
-                `;
-                    return;
-                }
-
-                // Filter out null/empty barangays and create rows
-                const validData = data.data.filter(item => item.barangay && item.barangay.trim() !== '');
-
-                validData.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.className = 'flex w-full font-semibold text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700';
-                    row.innerHTML = `
-                    <td class="px-4 py-3 flex w-full border-b border-gray-300 dark:border-gray-600 text-left" style="font-family: 'Times New Roman', Times, serif;">
-                        ${item.barangay}
-                    </td>
-                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
-                        ${item.male || 0}
-                    </td>
-                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
-                        ${item.female || 0}
-                    </td>
-                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
-                        ${item.total || 0}
-                    </td>
-                `;
-                    tbody.appendChild(row);
-                });
-
-                // Add totals row
-                if (data.totals) {
-                    const totalsRow = document.createElement('tr');
-                    totalsRow.className = 'flex w-full font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border-t-2 border-gray-300';
-                    totalsRow.innerHTML = `
-                    <td class="flex w-full px-4 py-3 text-left border border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
-                        TOTAL
-                    </td>
-                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
-                        ${data.totals.male || 0}
-                    </td>
-                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
-                        ${data.totals.female || 0}
-                    </td>
-                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
-                        ${data.totals.total || 0}
-                    </td>
-                `;
-                    tbody.appendChild(totalsRow);
-                }
-
-                console.log('Displayed', validData.length, 'records');
-            }
-
-            // Update the report title/period
-            function updateReportTitle(data) {
-                const periodElement = document.getElementById('reportPeriod');
-                if (!periodElement) return;
-
-                const monthNames = [
-                    'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ];
-
-                let displayText = 'All Time';
-                const year = data?.filters?.year;
-                const month = data?.filters?.month;
-
-                if (month && year) {
-                    const monthName = monthNames[month - 1] || 'Unknown';
-                    displayText = `${monthName} ${year}`;
-                } else if (year) {
-                    displayText = `Year ${year}`;
-                } else if (month) {
-                    const monthName = monthNames[month - 1] || 'Unknown';
-                    displayText = `${monthName} (All Years)`;
-                }
-
-                periodElement.textContent = displayText;
-            }
-
-            // Navigation functions for report parts
-            window.part1 = function() {
-                // Already on part 1
-                console.log('Already on Part I');
-            };
-
-            window.part2 = function() {
-                navigateToReport('reportpart2.php');
-            };
-
-            window.part3 = function() {
-                navigateToReport('reportpart3.php');
-            };
-
-            window.part4 = function() {
-                navigateToReport('reportpart4.php');
-            };
-
-            window.part5 = function() {
-                navigateToReport('reportpart5.php');
-            };
-
-            window.part6 = function() {
-                navigateToReport('reportpart6.php');
-            };
-
-            window.part7to9 = function() {
-                navigateToReport('reportpart7to9.php');
-            };
-
-            window.benefits = function() {
-                navigateToReport('reportbenefits.php');
-            };
-
-            // Helper to navigate between report pages
-            function navigateToReport(pageName) {
-                let url = pageName;
-                const params = new URLSearchParams();
-
-                // Get session context from current URL
-                const currentUrl = new URLSearchParams(window.location.search);
-                const sessionContext = currentUrl.get('session_context');
-
-                if (sessionContext) {
-                    params.append('session_context', sessionContext);
-                }
-
-                // Add current filters
-                if (currentYear && currentYear !== 'null') {
-                    params.append('year', currentYear);
-                }
-                if (currentMonth && currentMonth !== 'null') {
-                    params.append('month', currentMonth);
-                }
-
-                const queryString = params.toString();
-                if (queryString) {
-                    url += '?' + queryString;
-                }
-
-                console.log('Navigating to:', url);
-                window.location.href = url;
-            }
-
-            // Generate report function
-            window.generateReport = function() {
-                const periodText = document.getElementById('reportPeriod').textContent;
-                const totalElement = document.querySelector('#reportTableBody tr:last-child td:last-child');
-                const total = totalElement ? totalElement.textContent : '0';
-
-                alert(`Generating report for: ${periodText}\nTotal Senior Citizens: ${total}\nThis feature would export the current data as PDF.`);
-            };
-
-            // Make loadReportData available globally for debugging
-            window.loadReportData = loadReportData;
-
-            // Debug function
-            window.debugReport = function() {
-                console.log('=== DEBUG REPORT ===');
-                console.log('Current Year:', currentYear);
-                console.log('Current Month:', currentMonth);
-                console.log('Table Body:', document.getElementById('reportTableBody'));
-                console.log('API URL Test:', '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts');
-
-                // Test the API
-                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts')
-                    .then(r => r.json())
-                    .then(data => {
-                        console.log('API Test Result:', data);
-                        if (data.success) {
-                            alert('API is working! Found ' + data.data.length + ' records.');
-                        }
-                    })
-                    .catch(err => {
-                        console.error('API Test Failed:', err);
-                        alert('API Test Failed: ' + err.message);
-                    });
-            };
-
-        })();
+        function benefits() {
+            location.href = ("reportbenefits.php?session_context=<?php echo $ctx; ?>");
+        }
     </script>
+
 </body>
 
 </html>

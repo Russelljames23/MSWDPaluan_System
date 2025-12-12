@@ -130,12 +130,12 @@
                             </label>
                             <div class="relative">
                                 <input type="password" placeholder="Enter your password"
-                                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
                                     autocomplete="current-password" />
-                                <button type="button" onclick="togglePassword(this)"
+                                <!-- <button type="button" onclick="togglePassword(this)"
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200">
                                     <i class="fas fa-eye"></i>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
 
@@ -195,12 +195,12 @@
                             </label>
                             <div class="relative">
                                 <input type="password" placeholder="Enter your password"
-                                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                    class="w-full px-4 py-3  border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
                                     autocomplete="current-password" />
-                                <button type="button" onclick="togglePassword(this)"
+                                <!-- <button type="button" onclick="togglePassword(this)"
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200">
                                     <i class="fas fa-eye"></i>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
 

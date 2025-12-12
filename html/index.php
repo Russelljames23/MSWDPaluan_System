@@ -195,7 +195,7 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
             ]);
 
             var statusOptions = {
-                title: 'Status Distribution',
+                // title: 'Status Distribution',
                 pieHole: 0.4,
                 colors: ['#34A853', '#FBBC05', '#EA4335'],
                 backgroundColor: 'transparent',
@@ -216,9 +216,9 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
             ]);
 
             var validationOptions = {
-                title: 'Validation Status',
+                // title: 'Validation Status',
                 pieHole: 0.4,
-                colors: ['#34A853', '#FBBC05'],
+                colors: ['#34A853', '#EA4335'],
                 backgroundColor: 'transparent',
                 chartArea: {
                     width: '90%',
@@ -304,7 +304,7 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
             ?>
 
             var ageOptions = {
-                title: 'Age Distribution',
+                // title: 'Age Distribution',
                 is3D: true,
                 backgroundColor: 'transparent',
                 chartArea: {
@@ -368,7 +368,7 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
             ?>
 
             var barangayOptions = {
-                title: 'Barangay Distribution',
+                // title: 'Barangay Distribution',
                 titleTextStyle: {
                     fontSize: 16,
                     bold: true
@@ -535,13 +535,6 @@ $stats['recent_registrations'] = mysqli_fetch_assoc($result)['count'];
                                 ?>
                             </span>
                         </div>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"

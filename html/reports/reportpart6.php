@@ -16,8 +16,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -37,8 +36,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4">
-                        <img src="../../img/MSWD_LOGO-removebg-preview.png" class="mr-3 h-8" alt="Flowbite Logo" />
+                    <a href="#" class="flex items-center justify-between mr-4 ">
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
                             PALUAN</span>
                     </a>
@@ -83,19 +84,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -242,7 +260,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     <li>
                     <li>
-                        <a href="#"  style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -288,16 +306,45 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </aside>
 
         <main class="p-4 md:ml-64 pt-17">
-            <div class="w-full flex  justify-end">
-                <button type="button"
-                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
-                    Report</button>
+            <div class="w-full flex justify-between items-center mb-4">
+                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
+                <button type="button" onclick="generateReport()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Generate Report
+                </button>
             </div>
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
             <div class="flex flex-row items-center justify-center gap-5 mt-2">
-                <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
+                <?php
+                // Calculate display text
+                $displayText = 'All Time';
+                if ($currentYear && $currentMonth) {
+                    $monthNames = [
+                        1 => 'January',
+                        2 => 'February',
+                        3 => 'March',
+                        4 => 'April',
+                        5 => 'May',
+                        6 => 'June',
+                        7 => 'July',
+                        8 => 'August',
+                        9 => 'September',
+                        10 => 'October',
+                        11 => 'November',
+                        12 => 'December'
+                    ];
+                    $displayText = $monthNames[$currentMonth] . ' ' . $currentYear;
+                } elseif ($currentYear) {
+                    $displayText = 'Year ' . $currentYear;
+                } elseif ($currentMonth) {
+                    $displayText = $monthNames[$currentMonth] . ' (All Years)';
+                }
+                ?>
+                <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">
+                    <?php echo htmlspecialchars($displayText); ?>
+                </h4>
                 <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
                         class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -339,45 +386,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">VI. List of Deceased Registered
-                                Senior Citizens</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">VI. List of Deceased Registered Senior Citizens</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                    Category
-                                </button>
-                                <div id="actionsDropdown2"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton2">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                January</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                February</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                March</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                April</a>
-                                        </li>
-                                    </ul>
-                                </div>
                                 <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
@@ -387,41 +397,42 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Filter
+                                    Filter by Year
                                     <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clip-rule="evenodd" fill-rule="evenodd"
                                             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                     </svg>
                                 </button>
-                                <!-- Dropdown menu -->
+                                <!-- Dropdown menu will be populated dynamically -->
                                 <div id="filterDropdown2"
                                     class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                    <ul class="space-y-2 text-sm" id="yearFilterList" aria-labelledby="dropdownDefault2">
+                                        <!-- Years will be loaded dynamically -->
                                         <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2025</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2024</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2023</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2022</a>
+                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                onclick="applyYearFilter(null)">
+                                                All Years</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Summary Statistics -->
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                            <div class="flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Total Deceased Seniors:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="totalDeceased">0</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Selected Period:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="selectedPeriod">All Time</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="overflow-x-auto">
                             <table id="deceasedTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
@@ -436,75 +447,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             Barangay</th>
                                     </tr>
                                 </thead>
-                                <tbody class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                                    [&::-webkit-scrollbar]:hidden">
-
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">1. Francisca Rosete
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-02-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">IX - Tubibli
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">2. Dominador Quiñones
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-15-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">3. Berlito Poblete
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-06-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XI - Harison
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">4. recardo Flordeliza
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-11-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">XII- Mananao
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">5. ricardo Villaroza
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-21-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">III - Silahis ng
-                                            Pag-asa
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full  font-semibold">
-                                        <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">6. Beltran Musca
-                                        </td>
-                                        <td
-                                            class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            02-21-2024</td>
-                                        <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0  border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">VII - Lumang Bayan
-                                        </td>
+                                <tbody id="deceasedBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
+                                        [&::-webkit-scrollbar]:hidden">
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-3 text-center">Loading data...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -518,37 +464,359 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        function part1() {
-            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
+        // Update navigation functions to preserve filters
+        window.part1 = function() {
+            navigateToReport('report.php');
+        };
+
+        window.part2 = function() {
+            navigateToReport('reportpart2.php');
+        };
+
+        window.part3 = function() {
+            navigateToReport('reportpart3.php');
+        };
+
+        window.part4 = function() {
+            navigateToReport('reportpart4.php');
+        };
+
+        window.part5 = function() {
+            navigateToReport('reportpart5.php');
+        };
+
+        window.part6 = function() {
+            // Already on part 6, reload with current filters
+            window.location.reload();
+        };
+
+        window.part7to9 = function() {
+            navigateToReport('reportpart7to9.php');
+        };
+
+        window.benefits = function() {
+            navigateToReport('reportbenefits.php');
+        };
+
+        // Helper to navigate between report pages
+        function navigateToReport(pageName) {
+            let url = pageName;
+            const params = new URLSearchParams();
+
+            // Get session context from current URL
+            const currentUrl = new URLSearchParams(window.location.search);
+            const sessionContext = currentUrl.get('session_context');
+
+            if (sessionContext) {
+                params.append('session_context', sessionContext);
+            }
+
+            // Add current filters
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+
+            if (currentYear && currentYear !== 'null') {
+                params.append('year', currentYear);
+            }
+            if (currentMonth && currentMonth !== 'null') {
+                params.append('month', currentMonth);
+            }
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            console.log('Navigating to:', url);
+            window.location.href = url;
         }
 
-        function part2() {
-            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
-        }
+        // Part VI specific functions
+        (function() {
+            'use strict';
 
-        function part3() {
-            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
-        }
+            console.log('Part VI page initialized');
 
-        function part4() {
-            location.href = ("reportpart4.php?session_context=<?php echo $ctx; ?>");
-        }
+            // Get current filter values from PHP
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
 
-        function part5() {
-            location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
-        }
+            // Load data when page is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded. Loading Part VI data...');
+                fetchDeceasedSeniors();
+            });
 
-        function part6() {
-            // location.href = ("reportpart6.php");
-        }
+            // Main function to fetch deceased seniors
+            async function fetchDeceasedSeniors() {
+                try {
+                    showLoading();
 
-        function part7to9() {
-            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
-        }
+                    // Build API URL
+                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part6_backend.php';
+                    apiUrl += '?';
 
-        function benefits() {
-            location.href = ("reportbenefits.php?session_context=<?php echo $ctx; ?>");
-        }
+                    // Add filters if provided
+                    const params = new URLSearchParams();
+
+                    if (currentYear && currentYear !== 'null') {
+                        params.append('year', currentYear);
+                    }
+                    if (currentMonth && currentMonth !== 'null') {
+                        params.append('month', currentMonth);
+                    }
+
+                    apiUrl += params.toString();
+
+                    // Add cache busting
+                    apiUrl += '&_=' + Date.now();
+
+                    console.log('Calling API:', apiUrl);
+
+                    // Fetch data
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('API Response:', result);
+
+                    // Display the data
+                    if (result.success) {
+                        displayDeceasedSeniors(result);
+                        updateDeceasedSummary(result);
+                        populateYearFilter(result.available_years || [], result.year_counts || []);
+                    } else {
+                        throw new Error(result.message || 'Unknown error from API');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading deceased seniors:', error);
+                    showError('Failed to load data: ' + error.message);
+                }
+            }
+
+            // Function to display deceased seniors in the table
+            function displayDeceasedSeniors(data) {
+                const tbody = document.getElementById('deceasedBody');
+                if (!tbody) {
+                    console.error('Table body not found!');
+                    return;
+                }
+
+                // Clear existing content
+                tbody.innerHTML = '';
+
+                // Check if we have data
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = `
+        <tr>
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-lg">No deceased seniors found</p>
+                <p class="text-sm mt-1">No deceased seniors in the selected period</p>
+            </td>
+        </tr>
+    `;
+                    return;
+                }
+
+                console.log('Displaying', data.data.length, 'records');
+
+                // Create rows for each senior
+                data.data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'flex w-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-700';
+
+                    // Format name properly
+                    let fullName = '';
+                    if (item.last_name && item.first_name) {
+                        fullName = `${item.first_name} ${item.middle_name || ''} ${item.last_name}`.trim();
+                    } else {
+                        fullName = item.full_name || 'Unknown Name';
+                    }
+
+                    // Format date of death
+                    let deathDate = 'N/A';
+                    if (item.deceased_date && item.deceased_date !== '0000-00-00') {
+                        const dateObj = new Date(item.deceased_date);
+                        if (!isNaN(dateObj)) {
+                            // Format as DD-MM-YYYY
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const year = dateObj.getFullYear();
+                            deathDate = `${day}-${month}-${year}`;
+                        }
+                    }
+
+                    row.innerHTML = `
+            <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600" 
+                style="font-family: 'Times New Roman', Times, serif;">
+                ${index + 1}. ${fullName}
+            </td>
+            <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                ${deathDate}
+            </td>
+            <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                style="font-family: 'Times New Roman', Times, serif;">
+                ${item.barangay || 'N/A'}
+            </td>
+        `;
+                    tbody.appendChild(row);
+                });
+
+                console.log('Displayed', data.data.length, 'records');
+            }
+
+            // Update summary statistics
+            function updateDeceasedSummary(data) {
+                const totalElement = document.getElementById('totalDeceased');
+                const periodElement = document.getElementById('selectedPeriod');
+
+                if (totalElement && data.count !== undefined) {
+                    totalElement.textContent = data.count || 0;
+                }
+
+                if (periodElement && data.filters) {
+                    const monthNames = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+
+                    let periodText = 'All Time';
+                    const year = data.filters.year;
+                    const month = data.filters.month;
+
+                    if (month && year) {
+                        const monthName = monthNames[month - 1] || 'Unknown';
+                        periodText = `${monthName} ${year}`;
+                    } else if (year) {
+                        periodText = `Year ${year}`;
+                    } else if (month) {
+                        const monthName = monthNames[month - 1] || 'Unknown';
+                        periodText = `${monthName} (All Years)`;
+                    }
+
+                    periodElement.textContent = periodText;
+                }
+            }
+
+            // Populate year filter dropdown
+            function populateYearFilter(years, yearCounts) {
+                const yearList = document.getElementById('yearFilterList');
+                if (!yearList) return;
+
+                // Clear existing items
+                yearList.innerHTML = '';
+
+                // Add "All Years" option
+                const allYearsLi = document.createElement('li');
+                allYearsLi.innerHTML = `
+        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            onclick="applyYearFilter(null)">
+            All Years
+        </a>
+    `;
+                yearList.appendChild(allYearsLi);
+
+                // Create a map of year counts for easy lookup
+                const countMap = {};
+                if (yearCounts && Array.isArray(yearCounts)) {
+                    yearCounts.forEach(item => {
+                        if (item.year && item.year > 1900) {
+                            countMap[item.year] = item.count;
+                        }
+                    });
+                }
+
+                // Add available years with counts
+                if (years && years.length > 0) {
+                    years.forEach(year => {
+                        const count = countMap[year] || 0;
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    onclick="applyYearFilter(${year})">
+                    ${year} (${count})
+                </a>
+            `;
+                        yearList.appendChild(li);
+                    });
+                }
+            }
+
+            // Utility functions
+            function showLoading() {
+                const tbody = document.getElementById('deceasedBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+            <tr>
+                <td colspan="3" class="px-4 py-8 text-center">
+                    <div class="flex justify-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    </div>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Loading data...</p>
+                </td>
+            </tr>
+        `;
+                }
+            }
+
+            function showError(message) {
+                const tbody = document.getElementById('deceasedBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+            <tr>
+                <td colspan="3" class="px-4 py-8 text-center text-red-500">
+                    <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <p class="text-lg">${message}</p>
+                    <button onclick="window.location.reload()" 
+                        class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Retry
+                    </button>
+                </td>
+            </tr>
+        `;
+                }
+            }
+
+            // Filter functions
+            window.applyYearFilter = function(year) {
+                const url = new URL(window.location);
+
+                if (year === null) {
+                    url.searchParams.delete('year');
+                    url.searchParams.delete('month');
+                } else {
+                    url.searchParams.set('year', year);
+                    // Keep month filter if it exists
+                    const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+                    if (currentMonth && currentMonth !== 'null') {
+                        url.searchParams.set('month', currentMonth);
+                    }
+                }
+
+                window.location.href = url.toString();
+            };
+
+            // Listen for filter changes from date_filter_component.php
+            if (typeof window !== 'undefined') {
+                window.addEventListener('filtersApplied', function(e) {
+                    console.log('Filters applied in Part VI:', e.detail);
+                    // Reload data with new filters
+                    fetchDeceasedSeniors();
+                });
+            }
+
+        })();
     </script>
 
 </body>

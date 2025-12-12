@@ -5,13 +5,10 @@ if (isset($_GET['session_context'])) {
 }
 session_start();
 
-// Include ActivityLogger for logging
-require_once '../settings/ActivityLogger.php';
 
 // Log logout activity if user was logged in
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    $user_name = $_SESSION['username'] ?? 'Unknown';
     $session_context = $_SESSION['session_context'] ?? 'unknown';
 
     // Database connection for logging
@@ -24,14 +21,6 @@ if (isset($_SESSION['user_id'])) {
         $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Log logout activity
-        $logger = new ActivityLogger($pdo, $user_id, $user_name);
-        $logger->log('LOGOUT', 'User logged out of the system', [
-            'session_id' => session_id(),
-            'session_context' => $session_context,
-            'logout_time' => date('Y-m-d H:i:s')
-        ]);
-
         // Update logout time in user_sessions
         $stmt = $pdo->prepare("
             UPDATE user_sessions 
@@ -41,16 +30,6 @@ if (isset($_SESSION['user_id'])) {
         $stmt->execute([$user_id, session_id()]);
     } catch (PDOException $e) {
         error_log("Failed to update logout time: " . $e->getMessage());
-        
-        // Try to log the error anyway
-        try {
-            $logger = new ActivityLogger($pdo, $user_id, $user_name);
-            $logger->log('ERROR', 'Logout database error', [
-                'error_message' => $e->getMessage()
-            ]);
-        } catch (Exception $ex) {
-            error_log("Failed to log logout error: " . $ex->getMessage());
-        }
     }
 }
 

@@ -16,8 +16,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -37,7 +36,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4 ">
                         <img src="../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
@@ -85,19 +84,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -227,7 +243,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="#"  style="color: blue;"
+                        <a href="#" style="color: blue;"
                             class="flex items-center p-2 text-base font-medium text-blue-700 bg-blue-100 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg class="w-6 h-6 text-blue-700 group-hover:text-blue-700 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -284,11 +300,327 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             </div>
         </aside>
         <main class="p-4 md:ml-64 h-auto pt-20">
+            <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <!-- Page Header -->
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Generate Senior Citizen ID</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Create and print ID cards for registered senior citizens</p>
+                </div>
 
+                <!-- Search and Filter Section -->
+                <div class="mb-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="search-senior" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Search Senior Citizen
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="search-senior"
+                                    class="w-full p-2.5 pl-10 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    placeholder="Search by name or OSCA ID">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-48">
+                            <label for="filter-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Status
+                            </label>
+                            <select id="filter-status"
+                                class="w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ID Card Preview and Form Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- ID Card Preview -->
+                    <div class="bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl p-4 shadow-lg">
+                        <div class="text-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">ID Card Preview</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Preview will update as you edit</p>
+                        </div>
+
+                        <!-- ID Card Design -->
+                        <div class="border-2 border-blue-800 rounded-lg p-4 bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-800 dark:to-gray-900">
+                            <!-- Republic of the Philippines Header -->
+                            <div class="text-center mb-2">
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">Republic of the Philippines</h4>
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">Office for Senior Citizens Affairs (OSCA)</h4>
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">Paluan, Occidental Mindoro</h4>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                                <!-- Photo Area -->
+                                <div class="md:w-1/3 flex flex-col items-center">
+                                    <div class="w-32 h-32 border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center mb-2">
+                                        <span class="text-gray-500 dark:text-gray-400">Photo</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-xs font-medium text-gray-700 dark:text-gray-300">LD No. <span id="ld-number">010726</span></div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">ID Number</div>
+                                    </div>
+                                </div>
+
+                                <!-- Information Area -->
+                                <div class="md:w-2/3">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300">Name:</label>
+                                            <div id="preview-name" class="text-sm font-bold text-gray-900 dark:text-white">LOURDES V. AGUILAR</div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300">Address:</label>
+                                            <div id="preview-address" class="text-sm text-gray-900 dark:text-white">Barangay 1-Mapalad, Paluan, Occidental Mindoro</div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300">Date of Birth:</label>
+                                            <div id="preview-dob" class="text-sm text-gray-900 dark:text-white">01/07/1946</div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-semibold text-gray-700 dark:text-gray-300">Date Issued:</label>
+                                            <div id="preview-issued" class="text-sm text-gray-900 dark:text-white"><?php echo date('m/d/Y'); ?></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Signature Area -->
+                                    <div class="mt-4 pt-2 border-t border-gray-300 dark:border-gray-600">
+                                        <div class="text-center">
+                                            <div class="h-12 border-b border-gray-300 dark:border-gray-600 mb-1"></div>
+                                            <div class="text-xs text-gray-700 dark:text-gray-300">Signature/Thumbmark</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Benefits Section -->
+                            <div class="mt-4 pt-3 border-t border-gray-300 dark:border-gray-600">
+                                <div class="text-center mb-2">
+                                    <div class="text-xs font-bold text-red-600 dark:text-red-400">THIS CARD IS NON-TRANSFERABLE</div>
+                                    <div class="text-xs font-semibold text-gray-900 dark:text-white">Benefits and Privileges Under Republic Act No. 9994</div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-[10px] text-gray-800 dark:text-gray-300">
+                                    <div>• Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
+                                    <div>• 20% Discount in purchase medicines.</div>
+                                    <div>• 20% Discount in Hotels, Restaurants, and Recreation Centers & Funeral Parlors.</div>
+                                    <div>• 20% Discount on theatres, cinema house and concert halls, etc.</div>
+                                    <div>• 20% Discount in medical/dental services, diagnostic & laboratory fees in private facilities.</div>
+                                    <div>• 20% Discount in fare for domestic air, sea travel and public land transportation.</div>
+                                    <div>• 5% Discount in basic necessities and prime commodities.</div>
+                                    <div>• 15% VAT exemption on the purchase of good & service which are entitled to the 20% discount.</div>
+                                    <div>• 5% Discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens.</div>
+                                    <div class="col-span-1 md:col-span-2 mt-1 text-red-600 dark:text-red-400 font-semibold">
+                                        Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens : abuse of privileges is punishable by law.
+                                    </div>
+                                </div>
+
+                                <!-- Signatories -->
+                                <div class="mt-3 pt-2 border-t border-gray-300 dark:border-gray-600 grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <div class="h-8 border-b border-gray-300 dark:border-gray-600 mb-1"></div>
+                                        <div class="text-xs font-semibold text-gray-900 dark:text-white">EVELYN V. BELTRAN</div>
+                                        <div class="text-xs text-gray-700 dark:text-gray-300">OSCA HEAD</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="h-8 border-b border-gray-300 dark:border-gray-600 mb-1"></div>
+                                        <div class="text-xs font-semibold text-gray-900 dark:text-white">MICHAEL D. DIAZ</div>
+                                        <div class="text-xs text-gray-700 dark:text-gray-300">Municipal Mayor</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Print Button -->
+                        <div class="mt-4 flex justify-center">
+                            <button id="print-id-card"
+                                class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg focus:ring-4 focus:ring-blue-300 focus:outline-none inline-flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Print ID Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Senior Citizen Details Form -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Senior Citizen Information</h3>
+
+                        <form id="id-card-form">
+                            <div class="space-y-4">
+                                <!-- Basic Information -->
+                                <div>
+                                    <label for="full-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Full Name
+                                    </label>
+                                    <input type="text" id="full-name"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                        value="LOURDES V. AGUILAR"
+                                        oninput="updatePreview('name', this.value)">
+                                </div>
+
+                                <div>
+                                    <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Complete Address
+                                    </label>
+                                    <textarea id="address" rows="2"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                        oninput="updatePreview('address', this.value)">Barangay 1-Mapalad, Paluan, Occidental Mindoro</textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="date-of-birth" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Date of Birth
+                                        </label>
+                                        <input type="date" id="date-of-birth"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                            value="1946-01-07"
+                                            onchange="updatePreview('dob', formatDate(this.value))">
+                                    </div>
+
+                                    <div>
+                                        <label for="ld-number-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            LD Number
+                                        </label>
+                                        <input type="text" id="ld-number-input"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                            value="010726"
+                                            oninput="updatePreview('ld', this.value)">
+                                    </div>
+                                </div>
+
+                                <!-- Photo Upload -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        ID Photo
+                                    </label>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-20 h-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <button type="button"
+                                                class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                                Upload Photo
+                                            </button>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">JPG, PNG or GIF (Max. 2MB)</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Signatory Selection -->
+                                <div>
+                                    <label for="osca-head" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        OSCA Head
+                                    </label>
+                                    <input type="text" id="osca-head"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                        value="EVELYN V. BELTRAN">
+                                </div>
+
+                                <div>
+                                    <label for="municipal-mayor" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Municipal Mayor
+                                    </label>
+                                    <input type="text" id="municipal-mayor"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                        value="MICHAEL D. DIAZ">
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex flex-wrap gap-3 mt-6">
+                                <button type="submit"
+                                    class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-blue-300 focus:outline-none">
+                                    Save Changes
+                                </button>
+                                <button type="button" id="generate-pdf"
+                                    class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-green-300 focus:outline-none inline-flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Generate PDF
+                                </button>
+                                <button type="button"
+                                    class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg text-sm focus:ring-4 focus:ring-gray-300 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white">
+                                    Clear Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
+
+    <script>
+        function updatePreview(field, value) {
+            switch (field) {
+                case 'name':
+                    document.getElementById('preview-name').textContent = value.toUpperCase();
+                    break;
+                case 'address':
+                    document.getElementById('preview-address').textContent = value;
+                    break;
+                case 'dob':
+                    document.getElementById('preview-dob').textContent = value;
+                    break;
+                case 'ld':
+                    document.getElementById('ld-number').textContent = value;
+                    break;
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        // Set current date as issued date
+        document.getElementById('preview-issued').textContent = formatDate(new Date());
+
+        // Print functionality
+        document.getElementById('print-id-card').addEventListener('click', function() {
+            const printContent = document.querySelector('.border-2.border-blue-800').cloneNode(true);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+        <html>
+            <head>
+                <title>Senior Citizen ID Card - Print</title>
+                <style>
+                    body { margin: 0; padding: 20px; }
+                    @media print {
+                        body { -webkit-print-color-adjust: exact; }
+                    }
+                </style>
+            </head>
+            <body>${printContent.innerHTML}</body>
+        </html>
+    `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        });
+    </script>
 </body>
 
 </html>

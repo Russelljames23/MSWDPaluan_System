@@ -16,8 +16,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav
-            class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -37,8 +36,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
+                    <a href="#" class="flex items-center justify-between mr-4 ">
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -85,19 +84,36 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
-                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
-                            <span class="block text-sm text-gray-900 truncate dark:text-white">name@flowbite.com</span>
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                // Display fullname with fallback
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    // Construct fullname from first and last name if available
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                // Display user type with proper formatting
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    // Fallback to role_name if available
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
-                                <a href="#"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -292,68 +308,70 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                         <div
-                            class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                            class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <h4 class="text-xl font-medium dark:text-white">Deceased List</h4>
-                            <!-- Search  -->
-                            <div class="w-full md:w-1/2">
-                                <form class="flex items-center">
-                                    <label for="deceased-search" class="sr-only">Search</label>
-                                    <div class="relative w-full">
-                                        <div
-                                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                fill="currentColor" viewbox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 
+                            <div class="flex flex-row justify-between mt-2">
+                                <!-- Search  -->
+                                <div class="w-full md:w-1/2">
+                                    <form class="flex items-center">
+                                        <label for="deceased-search" class="sr-only">Search</label>
+                                        <div class="relative w-full">
+                                            <div
+                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                    fill="currentColor" viewbox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 
                                                     4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <input type="text" id="deceased-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <input type="text" id="deceased-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
                                             focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2
                                             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                             dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Search deceased..." />
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- Filter  -->
-                            <div class="relative w-full md:w-auto">
-                                <button id="filterDropdownButton" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium 
+                                                placeholder="Search deceased..." />
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Filter  -->
+                                <div class="relative w-full md:w-auto">
+                                    <button id="filterDropdownButton" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium 
                                     text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 
                                     hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 
                                     dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 
+                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                            class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 
                                             01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 
                                             2A1 1 0 018 17v-5.586L3.293 
                                             6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
-                                    </svg>
-                                    Filter
-                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
+                                        </svg>
+                                        Filter
+                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
 
-                                <!-- Dropdown -->
-                                <div id="filterDropdownMenu"
-                                    class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li>
-                                            <button data-filter="az"
-                                                class="block w-full cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
-                                                A–Z
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button data-filter="recent"
-                                                class="block w-full px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
-                                                Recently Deceased
-                                            </button>
-                                        </li>
-                                    </ul>
+                                    <!-- Dropdown -->
+                                    <div id="filterDropdownMenu"
+                                        class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                            <li>
+                                                <button data-filter="az"
+                                                    class="block w-full cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
+                                                    A–Z
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button data-filter="recent"
+                                                    class="block w-full px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
+                                                    Recently Deceased
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

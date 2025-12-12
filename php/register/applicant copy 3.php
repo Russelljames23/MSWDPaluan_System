@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include '../db.php';
-require_once '../settings/ActivityLogger.php';
 
 // -----------------------------
 // READ JSON BODY
@@ -27,14 +26,6 @@ if (!$data) {
     http_response_code(400);
     echo json_encode(["error" => "Invalid or missing JSON data."]);
     exit;
-}
-
-// Initialize activity logger
-$logger = null;
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-    $user_name = $_SESSION['username'] ?? 'Unknown';
-    $logger = new ActivityLogger($conn, $user_id, $user_name);
 }
 
 // Function to calculate accurate current age from birth date
@@ -276,15 +267,6 @@ try {
 
         $existingName = $existing ? "{$existing['first_name']} {$existing['last_name']}" : "existing applicant";
 
-        // Log duplicate ID attempt
-        if ($logger) {
-            $logger->log('ERROR', 'Attempted to use duplicate ID number', [
-                'attempted_id' => $id_number,
-                'existing_applicant_id' => $existing['applicant_id'] ?? null,
-                'existing_applicant_name' => $existingName
-            ]);
-        }
-
         echo json_encode([
             "error" => "ID Number '{$id_number}' is already assigned to {$existingName} (Born: {$existing['birth_date']}). Please use a different ID Number."
         ]);
@@ -296,14 +278,6 @@ try {
     if (!empty($local_control_number) && $local_control_number !== "Auto-generated") {
         if (!isLocalControlNumberUnique($conn, $local_control_number)) {
             $conn->rollBack();
-            
-            // Log duplicate local control number attempt
-            if ($logger) {
-                $logger->log('ERROR', 'Attempted to use duplicate local control number', [
-                    'attempted_local_control' => $local_control_number
-                ]);
-            }
-            
             echo json_encode([
                 "error" => "Local Control Number '{$local_control_number}' already exists. Please use a different number."
             ]);
@@ -316,16 +290,6 @@ try {
 
     if (!empty($duplicateChecks)) {
         $conn->rollBack();
-
-        // Log duplicate check findings
-        if ($logger) {
-            $logger->log('ERROR', 'Duplicate applicant check failed', [
-                'applicant_name' => trim($data['fname'] ?? '') . ' ' . trim($data['lname'] ?? ''),
-                'birth_date' => $data['b_date'] ?? '',
-                'duplicate_type' => $duplicateChecks[0]['type'] ?? 'unknown',
-                'existing_applicant_id' => $duplicateChecks[0]['applicant_id'] ?? null
-            ]);
-        }
 
         // For exact matches, block submission
         foreach ($duplicateChecks as $check) {
@@ -487,20 +451,6 @@ try {
 
     $conn->commit();
 
-    // Log successful registration
-    if ($logger) {
-        $logger->log('REGISTER_SENIOR', 'New senior citizen registered', [
-            'applicant_id' => $applicant_id,
-            'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
-            'id_number' => $id_number,
-            'local_control_number' => $local_control_number,
-            'age' => $current_age,
-            'birth_date' => $data['b_date'] ?? '',
-            'barangay' => $data['brgy'] ?? '',
-            'registered_by' => $user_name
-        ]);
-    }
-
     echo json_encode([
         "success" => true,
         "message" => "Application submitted successfully!",
@@ -515,15 +465,5 @@ try {
     if ($conn->inTransaction()) $conn->rollBack();
     http_response_code(500);
     error_log("Registration error: " . $e->getMessage());
-    
-    // Log registration error
-    if ($logger) {
-        $logger->log('ERROR', 'Registration failed', [
-            'error_message' => $e->getMessage(),
-            'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
-            'id_number_attempted' => $id_number ?? ''
-        ]);
-    }
-    
     echo json_encode(["error" => "Registration failed: " . $e->getMessage()]);
 }
