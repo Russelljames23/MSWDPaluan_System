@@ -237,8 +237,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
         /* Custom styles for ID cards */
         .id-card {
-            width: 3.17in;
-            height: 2.14in;
+            width: 3.33in;
+            height: 2.13in;
             border: 1px solid #000;
             padding: 2px;
             font-family: Arial, sans-serif;
@@ -251,7 +251,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             text-align: center;
             display: flex;
             flex-direction: row;
-            justify-content: center;
+            justify-content: space-between;
             font-weight: bold;
             margin-bottom: 1px;
             line-height: 1;
@@ -977,9 +977,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             </section>
 
             <!-- Print Preview Modal -->
-            <div id="print-preview-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 bg-opacity-50">
-                <div class="relative min-h-screen flex items-center justify-center p-4">
-                    <div class="relative w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
+            <div id="print-preview-modal" class="hidden fixed inset-0 z-50 overflow-auto bg-gray-900/50 bg-opacity-50">
+                <div class="relative w-full max-w-6xl mx-auto ">
+                    <div class="bg-white rounded-lg shadow-lg">
                         <!-- Modal Header -->
                         <div class="flex items-center justify-between p-4 border-b">
                             <h3 class="text-xl font-bold text-gray-900">ID Cards Print Preview</h3>
@@ -990,15 +990,13 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             </button>
                         </div>
 
-                        <!-- Preview Content - Improved Container -->
-                        <div class="p-4 overflow-x-auto">
-                            <div id="preview-content" class="flex flex-col items-center justify-center min-w-max">
-                                <!-- Preview will be generated here -->
-                            </div>
+                        <!-- Preview Content -->
+                        <div id="preview-content" class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Preview will be generated here -->
                         </div>
 
                         <!-- Modal Footer -->
-                        <div class="flex flex-col sm:flex-row justify-between items-center p-4 border-t gap-4">
+                        <div class="flex justify-between items-center p-4 border-t">
                             <div class="text-sm text-gray-600">
                                 Showing: <span id="preview-count">0</span> IDs | Page <span id="current-page">1</span> of <span id="total-pages">1</span>
                             </div>
@@ -1292,48 +1290,45 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 html += `
                     <div class="id-card">
                         <!-- Republic Header -->
-                        <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                            <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-10 h-10 rounded-full vertical-align-middle">
-                            <div >
-                            <div style="font-size: 7.5pt;" >Republic of the Philippines</div>
-                            <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
-                            <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
+                        <div class="id-header" style="font-size: 6pt; line-height: 1;">
+                            <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-10 h-10 rounded-full mr-[2px] vertical-align-middle">
+                            <div>
+                            <div>Republic of the Philippines</div>
+                            <div>Office for Senior Citizens Affairs (OSCA)</div>
+                            <div>Paluan, Occidental Mindoro</div>
                             </div>
-                            <img src="../img/paluan.png" alt="Mindoro Seal" class="w-10 h-10 rounded-full vertical-align-middle">
+                            <img src="../img/paluan.png" alt="Mindoro Seal" class="w-10 h-10 rounded-full mr-[2px] vertical-align-middle">
                         </div>
                         
                         <!-- ID Content -->
                         <div class="id-content" style="font-size: 6pt;">
-                            <div style="margin-bottom: 1px; text-decoration: underline;" class="flex flex-row gap-1">
+                            <div style="margin-bottom: 1px;">
                                 <div style="font-weight: bold;">Name:</div>
                                 <div class="id-name" style="font-size: 7pt; margin-left: 5px;">${senior.name}</div>
                             </div>
-                            <div style="margin-bottom: 2px; text-decoration: underline;" class="flex flex-row gap-1">
+                            <div style="margin-bottom: 2px;">
                                 <div style="font-weight: bold;">Address:</div>
                                 <div class="id-address" style="font-size: 7pt; margin-left: 5px;">${senior.barangay || ''}</div>
                             </div>
-                            <div class="flex flex-row justify-between align-middle">
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 3px;  class="text-align: left;">
-                                    <div>
-                                        <div style="font-size: 5pt;">Date of Birth</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${dob}</div>
-                                    </div>
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 5pt;">Sex</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${genderCode}</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 5pt;">Date Issued</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${dateIssued}</div>
-                                    </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 3px;">
+                                <div>
+                                    <div style="font-size: 5pt;">Date of Birth</div>
+                                    <div style="font-size: 6pt; font-weight: medium;">${dob}</div>
                                 </div>
-                                <div style="height:1in; width:1in; border: 1px solid #000;"></div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 5pt;">Sex</div>
+                                    <div style="font-size: 6pt; font-weight: medium;">${genderCode}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 5pt;">Date Issued</div>
+                                    <div style="font-size: 6pt; font-weight: medium;">${dateIssued}</div>
+                                </div>
                             </div>
-                            <div style="text-align: left; margin-top: 3px;">
-                                <div style="border-bottom: 1px solid #000; width: 40%;" class="left-0"></div>
+                            <div style="text-align: center; margin-top: 3px;">
                                 <div style="font-size: 5pt;">Signature / Thumbmark</div>
+                                <div style="border-bottom: 1px solid #000; width: 80%; margin: 1px auto;"></div>
                             </div>
-                            <div style="text-align: right; margin-top: 1px;">
+                            <div style="text-align: center; margin-top: 1px;">
                                 <div style="font-size: 6pt; font-weight: medium;">
                                     I.D No. <span style="font-weight: bold;">${idNumber}</span>
                                 </div>
@@ -1425,14 +1420,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         function displayPreviewPage() {
             const previewContent = document.getElementById('preview-content');
             if (allPreviewPages[currentPreviewPage - 1]) {
-                // Create a centered container for the preview
-                const container = document.createElement('div');
-                container.className = 'flex flex-col items-center justify-center w-full';
-                container.innerHTML = allPreviewPages[currentPreviewPage - 1];
-
-                // Clear and add centered content
-                previewContent.innerHTML = '';
-                previewContent.appendChild(container);
+                previewContent.innerHTML = allPreviewPages[currentPreviewPage - 1];
             }
         }
 
@@ -1533,139 +1521,68 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Print preview
         function printPreview() {
             const printWindow = window.open('', '_blank');
-            printWindow.document.title = 'Senior Citizen IDs - Print';
 
             let printHTML = `
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <title>Senior Citizen IDs - Print</title>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                        @page {
-                            size: landscape;
-                            margin: 0;
-                        }
-                        
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            font-family: Arial, sans-serif;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                        
-                        .print-page {
-                            width: 13in;
-                            height: 8.5in;
-                            page-break-after: always;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                        
-                        .id-front-page {
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                        }
-                        
-                        .print-grid {
-                            display: grid;
-                            grid-template-columns: repeat(3, 1fr);
-                            grid-template-rows: repeat(3, 1fr);
-                            gap: 0.1in;
-                            width: 13in;
-                            height: 8.5in;
-                            padding: 0.2in;
-                            box-sizing: border-box;
-                        }
-                        
-                        .id-card {
-                            width: 3.33in;
-                            height: 2.13in;
-                            border: 1px solid #000;
-                            padding: 2px;
-                            background: white;
-                            position: relative;
-                            overflow: hidden;
-                            box-sizing: border-box;
-                            font-size: 6pt;
-                        }
-                        
-                        .id-header {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 1px;
-                            line-height: 1;
-                            font-size: 6pt;
-                        }
-                        
-                        .id-content {
-                            padding: 1px;
-                        }
-                        
-                        .id-name {
-                            font-weight: bold;
-                            text-transform: uppercase;
-                            font-size: 7pt;
-                        }
-                        
-                        .id-address {
-                            text-transform: uppercase;
-                            font-size: 7pt;
-                        }
-                        
-                        .id-footer {
-                            text-align: center;
-                            font-weight: bold;
-                            color: #dc2626;
-                            margin-top: 2px;
-                            font-size: 5pt;
-                        }
-                        
-                        .benefits-page {
-                            width: 13in;
-                            height: 8.5in;
-                            padding: 0.3in;
-                            page-break-after: always;
-                            font-size: 8pt;
-                            box-sizing: border-box;
-                        }
-                        
-                        .benefits-header {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 0.1in;
-                            font-size: 10pt;
-                        }
-                        
-                        .benefits-list {
-                            line-height: 1.2;
-                        }
-                        
-                        .benefits-footer {
-                            margin-top: 0.2in;
-                            text-align: center;
-                        }
-                        
-                        .signature-line {
-                            border-top: 1px solid #000;
-                            width: 2in;
-                            display: inline-block;
-                            margin-top: 0.1in;
-                        }
-                        
                         @media print {
-                            body {
-                                margin: 0 !important;
-                                padding: 0 !important;
+                            @page {
+                                size: landscape;
+                                margin: 0;
                             }
-                            
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
                             .print-page {
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                page-break-after: always !important;
+                                width: 13in;
+                                height: 8.5in;
+                                page-break-after: always;
+                            }
+                            .id-card {
+                                width: 3.33in;
+                                height: 2.13in;
+                                border: 1px solid #000;
+                                padding: 2px;
+                                font-family: Arial, sans-serif;
+                                background: white;
+                                position: relative;
+                                overflow: hidden;
+                            }
+                            .print-grid {
+                                display: grid;
+                                grid-template-columns: repeat(3, 1fr);
+                                grid-template-rows: repeat(3, 1fr);
+                                gap: 0.1in;
+                                width: 13in;
+                                height: 8.5in;
+                                padding: 0.2in;
+                            }
+                            .benefits-page {
+                                width: 13in;
+                                height: 8.5in;
+                                padding: 0.3in;
+                                font-family: Arial, sans-serif;
+                            }
+                            .id-header {
+                                text-align: center;
+                                font-weight: bold;
+                                margin-bottom: 1px;
+                                line-height: 1;
+                            }
+                            .id-footer {
+                                text-align: center;
+                                font-weight: bold;
+                                color: #dc2626;
+                                margin-top: 2px;
+                            }
+                            .benefits-header {
+                                text-align: center;
+                                font-weight: bold;
+                                margin-bottom: 0.1in;
                             }
                         }
                     </style>
@@ -1692,7 +1609,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 printWindow.print();
                 printWindow.close();
                 closePreview();
-            }, 1000);
+            }, 500);
         }
     </script>
 </body>
