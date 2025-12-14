@@ -179,7 +179,7 @@ try {
 // Fetch barangays
 $barangays = [];
 try {
-    $barangay_query = "SELECT DISTINCT barangay FROM addresses WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
+    $barangay_query = "SELECT DISTINCT * FROM addresses WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
     $barangay_stmt = $conn->query($barangay_query);
     if ($barangay_stmt) {
         $barangays = safeFetchAll($barangay_stmt);
@@ -1295,7 +1295,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
                             <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-10 h-10 rounded-full vertical-align-middle">
                             <div >
-                            <div style="font-size: 7.5pt;" >Republic of the Philippines</div>
+                            <div style="font-size: 7.5pt;">Republic of the Philippines</div>
                             <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
                             <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
                             </div>
@@ -1303,45 +1303,49 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         </div>
                         
                         <!-- ID Content -->
-                        <div class="id-content" style="font-size: 6pt;">
+                        <div class="id-content" style="font-size: 8pt;">
                             <div style="margin-bottom: 1px; text-decoration: underline;" class="flex flex-row gap-1">
-                                <div style="font-weight: bold;">Name:</div>
-                                <div class="id-name" style="font-size: 7pt; margin-left: 5px;">${senior.name}</div>
+                                <div style="font-weight: bold; font-size: 8pt;">Name:</div>
+                                <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
                             </div>
-                            <div style="margin-bottom: 2px; text-decoration: underline;" class="flex flex-row gap-1">
-                                <div style="font-weight: bold;">Address:</div>
-                                <div class="id-address" style="font-size: 7pt; margin-left: 5px;">${senior.barangay || ''}</div>
-                            </div>
-                            <div class="flex flex-row justify-between align-middle">
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 3px;  class="text-align: left;">
-                                    <div>
-                                        <div style="font-size: 5pt;">Date of Birth</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${dob}</div>
+                            <div class="flex flex-row justify-between align-middle mt-1">
+                                <div class="flex flex-col  text-align: left;">
+                                    <div style="margin-bottom: 2px; text-decoration: underline;" class="flex flex-row ">
+                                        <div style="font-weight: bold; font-size: 8pt;" >Address:</div>
+                                        <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">Brgy. ${senior.barangay || ''}</div>
                                     </div>
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 5pt;">Sex</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${genderCode}</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 5pt;">Date Issued</div>
-                                        <div style="font-size: 6pt; font-weight: medium; text-decoration: underline;">${dateIssued}</div>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
+                                        <div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
+                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${dob}</div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 8pt; font-weight: bold;">Sex</div>
+                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${genderCode}</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
+                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div style="height:1in; width:1in; border: 1px solid #000;"></div>
                             </div>
-                            <div style="text-align: left; margin-top: 3px;">
-                                <div style="border-bottom: 1px solid #000; width: 40%;" class="left-0"></div>
-                                <div style="font-size: 5pt;">Signature / Thumbmark</div>
-                            </div>
-                            <div style="text-align: right; margin-top: 1px;">
-                                <div style="font-size: 6pt; font-weight: medium;">
-                                    I.D No. <span style="font-weight: bold;">${idNumber}</span>
+                            <div class="flex flex-row justify-between align-middle">
+                                <div style="text-align: left;">
+                                    <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
+                                </div>
+                                <div style="text-align: right; margin-right:0.5in;">
+                                    <div style="font-size: 7pt; font-weight: bold;">
+                                        I.D No. <span style="font-weight: bold;">${idNumber}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Non-Transferable Notice -->
-                        <div class="id-footer" style="font-size: 5pt; margin-top: 2px;">
+                        <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
                             THIS CARD IS NON-TRANSFERABLE
                         </div>
                     </div>
