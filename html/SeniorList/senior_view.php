@@ -12,8 +12,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 
@@ -301,62 +300,48 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </aside>
 
         <main class="p-4 md:ml-64 pt-18">
-            <div class="w-full flex  justify-between ">
+            <!-- Header with navigation -->
+            <div class="w-full flex justify-between items-center mb-6 no-print">
                 <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
-                    class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800  font-medium rounded-sm text-xs px-2   dark:bg-blue-600 dark:hover:bg-blue-700 ">
-                    <svg class="w-4.5 h-5 text-white dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                            d="M5 12h14M5 12l4-4m-4 4 4 4" />
-                    </svg>
-                    Back
+                    class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to List
                 </a>
 
-                <div class="flex items-center flex-row ">
-                    <a href="#" type="button" class="cursor-pointer">
-                        <h4 class="text-xl font-medium text-blue-700  px-2">Application</h4>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-lg font-medium text-blue-700 dark:text-blue-400">
+                        <i class="fas fa-chart-pie mr-2"></i>Applicant
                     </a>
                     <a href="./senior_demographic.php?session_context=<?php echo $ctx; ?>&id=<?php echo htmlspecialchars($_GET['id'] ?? ''); ?>"
-                        type="button" class="cursor-pointer">
-                        <h4 class="text-xl font-medium px-2">Demographic</h4>
+                        class="text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-200">
+                        <i class="fas fa-file-alt mr-2"></i>Demographic
                     </a>
                 </div>
 
-                <button id="dropdownDefaultButton" data-dropdown-toggle="drop"
-                    class="text-white cursor-pointer bg-blue-700 hover:bg-blue-800  font-medium rounded-sm text-xs px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    type="button"> <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                            d="M5 7h14M5 12h14M5 17h14" />
-                    </svg>
-                </button>
-                <!-- Dropdown menu -->
-                <div id="drop"
-                    class="z-10 hidden   bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700">
-                    <div class="flex flex-col gap-2 bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg p-4">
-                        <button data-modal-target="default-modal" data-modal-toggle="default-modal" id="editButton"
-                            class="text-white flex flex-row items-center cursor-pointer bg-blue-700 w-full
-                            hover:bg-blue-800 font-medium rounded-sm text-xs px-2 py-1 dark:bg-blue-600
-                            dark:hover:bg-blue-700 ">
-                            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                            </svg>
-                            Edit
-                        </button>
-                        <button type="button"
-                            class="text-white flex flex-row items-center cursor-pointer bg-blue-700 w-full hover:bg-blue-800  font-medium rounded-sm text-xs px-2 py-1  dark:bg-blue-600 dark:hover:bg-blue-700 ">
-                            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
-                                    d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z" />
-                            </svg>
-                            Print
-                        </button>
+                <div class="relative">
+                    <button id="actionDropdownButton" data-dropdown-toggle="actionDropdown"
+                        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200"
+                        type="button">
+                        <i class="fas fa-ellipsis-v mr-2"></i>
+                        Actions
+                    </button>
+
+                    <div id="actionDropdown"
+                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                            <li>
+                                <a href="#" data-modal-target="default-modal" data-modal-toggle="default-modal" id="editButton"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-edit mr-2"></i>Edit Information
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="window.print()"
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-print mr-2"></i>Print Profile
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

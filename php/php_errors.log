@@ -254,3 +254,5 @@
 [14-Dec-2025 08:27:15 Europe/Berlin] Error restoring addresses: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
 [14-Dec-2025 08:27:15 Europe/Berlin] Error restoring economic_status: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
 [14-Dec-2025 08:27:15 Europe/Berlin] Error restoring health_condition: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
+[14-Dec-2025 14:02:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[14-Dec-2025 14:03:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
