@@ -1,10 +1,5 @@
 <?php
-// -----------------------------
-// HEADERS + DEBUG
-// -----------------------------
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+// applicant.php - Improved version with proper activity logging
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -14,8 +9,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+// Error handling
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', dirname(__FILE__) . '/../php_errors.log');
+
+// Start output buffering
+ob_start();
+
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include '../db.php';
-require_once '../settings/ActivityLogger.php';
+
+// Helper functions
+function sendJsonError($message, $code = 400)
+{
+    http_response_code($code);
+    if (ob_get_length()) ob_clean();
+    echo json_encode([
+        "success" => false,
+        "error" => $message,
+        "timestamp" => date('Y-m-d H:i:s')
+    ]);
+    exit;
+}
+
+function sendJsonSuccess($message, $data = [])
+{
+    if (ob_get_length()) ob_clean();
+    echo json_encode(array_merge([
+        "success" => true,
+        "message" => $message,
+        "timestamp" => date('Y-m-d H:i:s')
+    ], $data));
+    exit;
+}
+
+// Check database connection
+if (!$conn) {
+    sendJsonError("Database connection failed", 500);
+}
+
+// Load ActivityLogger
+$logger = null;
+$activityLoggerPath = dirname(__DIR__) . '/ActivityLogger.php';
+if (file_exists($activityLoggerPath)) {
+    require_once $activityLoggerPath;
+} elseif (file_exists(dirname(__DIR__) . '/settings/ActivityLogger.php')) {
+    require_once dirname(__DIR__) . '/settings/ActivityLogger.php';
+} else {
+    // Try to find ActivityLogger.php in parent directory
+    $activityLoggerPath = dirname(dirname(__DIR__)) . '/ActivityLogger.php';
+    if (file_exists($activityLoggerPath)) {
+        require_once $activityLoggerPath;
+    }
+}
 
 // -----------------------------
 // READ JSON BODY
@@ -24,17 +75,84 @@ $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);
 
 if (!$data) {
-    http_response_code(400);
-    echo json_encode(["error" => "Invalid or missing JSON data."]);
-    exit;
+    sendJsonError("Invalid or missing JSON data.");
 }
 
-// Initialize activity logger
-$logger = null;
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-    $user_name = $_SESSION['username'] ?? 'Unknown';
-    $logger = new ActivityLogger($conn, $user_id, $user_name);
+// Initialize logger
+if (class_exists('ActivityLogger')) {
+    // ActivityLogger constructor only takes $conn parameter
+    $logger = new ActivityLogger($conn);
+} else {
+    // Create minimal logger for debugging
+    class SimpleLogger
+    {
+        public function log($type, $desc, $details = null)
+        {
+            // Log to file for debugging
+            $logMessage = date('Y-m-d H:i:s') . " - Activity: $type - $desc";
+            if ($details) {
+                $logMessage .= " - Details: " . json_encode($details);
+            }
+            error_log($logMessage);
+
+            // Also try to log to database directly for debugging
+            global $conn;
+            if (isset($conn)) {
+                try {
+                    $detailsJson = $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null;
+
+                    // Get user from session
+                    session_start();
+                    $userId = $_SESSION['user_id'] ?? ($_SESSION['id'] ?? 0);
+
+                    // Get user name
+                    $userName = 'Unknown';
+                    if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                        $userName = $_SESSION['fullname'];
+                    } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                        $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+                    } elseif (isset($_SESSION['username'])) {
+                        $userName = $_SESSION['username'];
+                    }
+
+                    $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+
+                    $query = "INSERT INTO activity_logs 
+                             (user_id, activity_type, description, activity_details, ip_address, user_agent, created_at) 
+                             VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([
+                        $userId,
+                        $type,
+                        $desc,
+                        $detailsJson,
+                        $ipAddress,
+                        substr($userAgent, 0, 500)
+                    ]);
+
+                    return $stmt->rowCount() > 0;
+                } catch (Exception $e) {
+                    error_log("Direct DB logging failed: " . $e->getMessage());
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    $logger = new SimpleLogger();
+}
+
+// Get user info for logging
+$userId = $_SESSION['user_id'] ?? ($_SESSION['id'] ?? 0);
+$userName = 'Unknown';
+if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+    $userName = $_SESSION['fullname'];
+} elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+    $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+} elseif (isset($_SESSION['username'])) {
+    $userName = $_SESSION['username'];
 }
 
 // Function to calculate accurate current age from birth date
@@ -84,29 +202,7 @@ function isLocalControlNumberUnique($conn, $local_control_number)
     return $result ? false : true;
 }
 
-// Function to get applicant details including id_number (with better handling)
-function getApplicantWithIdNumber($conn, $applicant_id)
-{
-    $stmt = $conn->prepare("
-        SELECT 
-            a.applicant_id, 
-            a.first_name, 
-            a.last_name, 
-            a.middle_name, 
-            a.birth_date, 
-            a.gender,
-            COALESCE(ard.id_number, 'Not assigned') as id_number,
-            COALESCE(ard.local_control_number, 'Not assigned') as local_control_number
-        FROM applicants a
-        LEFT JOIN applicant_registration_details ard ON a.applicant_id = ard.applicant_id
-        WHERE a.applicant_id = ?
-        LIMIT 1
-    ");
-    $stmt->execute([$applicant_id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-// NEW: Function to check for potential duplicates (more comprehensive)
+// Function to check for potential duplicates (more comprehensive)
 function checkForDuplicates($conn, $data)
 {
     $duplicates = [];
@@ -249,14 +345,23 @@ function checkForDuplicates($conn, $data)
 try {
     $conn->beginTransaction();
 
+    $applicantName = trim($data['fname'] ?? '') . ' ' . trim($data['lname'] ?? '');
+    $birthDate = $data['b_date'] ?? '';
+
     // STEP 0: Check for ID number uniqueness first (since it's required)
     $id_number = trim($data['id_number'] ?? '');
     if (empty($id_number)) {
         $conn->rollBack();
-        echo json_encode([
-            "error" => "ID Number is required. Please enter an ID Number."
+
+        // Log missing ID number
+        $logger->log('ERROR', 'Registration attempt with missing ID number', [
+            'applicant_name' => $applicantName,
+            'birth_date' => $birthDate,
+            'attempted_by' => $userName,
+            'error_type' => 'Missing ID Number'
         ]);
-        exit;
+
+        sendJsonError("ID Number is required. Please enter an ID Number.");
     }
 
     // Check if ID number already exists
@@ -277,18 +382,16 @@ try {
         $existingName = $existing ? "{$existing['first_name']} {$existing['last_name']}" : "existing applicant";
 
         // Log duplicate ID attempt
-        if ($logger) {
-            $logger->log('ERROR', 'Attempted to use duplicate ID number', [
-                'attempted_id' => $id_number,
-                'existing_applicant_id' => $existing['applicant_id'] ?? null,
-                'existing_applicant_name' => $existingName
-            ]);
-        }
-
-        echo json_encode([
-            "error" => "ID Number '{$id_number}' is already assigned to {$existingName} (Born: {$existing['birth_date']}). Please use a different ID Number."
+        $logger->log('ERROR', 'Attempted to use duplicate ID number', [
+            'attempted_id' => $id_number,
+            'applicant_name' => $applicantName,
+            'existing_applicant_id' => $existing['applicant_id'] ?? null,
+            'existing_applicant_name' => $existingName,
+            'existing_birth_date' => $existing['birth_date'] ?? null,
+            'attempted_by' => $userName
         ]);
-        exit;
+
+        sendJsonError("ID Number '{$id_number}' is already assigned to {$existingName} (Born: {$existing['birth_date']}). Please use a different ID Number.");
     }
 
     // STEP 1: Check for local control number uniqueness
@@ -296,18 +399,15 @@ try {
     if (!empty($local_control_number) && $local_control_number !== "Auto-generated") {
         if (!isLocalControlNumberUnique($conn, $local_control_number)) {
             $conn->rollBack();
-            
+
             // Log duplicate local control number attempt
-            if ($logger) {
-                $logger->log('ERROR', 'Attempted to use duplicate local control number', [
-                    'attempted_local_control' => $local_control_number
-                ]);
-            }
-            
-            echo json_encode([
-                "error" => "Local Control Number '{$local_control_number}' already exists. Please use a different number."
+            $logger->log('ERROR', 'Attempted to use duplicate local control number', [
+                'attempted_local_control' => $local_control_number,
+                'applicant_name' => $applicantName,
+                'attempted_by' => $userName
             ]);
-            exit;
+
+            sendJsonError("Local Control Number '{$local_control_number}' already exists. Please use a different number.");
         }
     }
 
@@ -318,14 +418,15 @@ try {
         $conn->rollBack();
 
         // Log duplicate check findings
-        if ($logger) {
-            $logger->log('ERROR', 'Duplicate applicant check failed', [
-                'applicant_name' => trim($data['fname'] ?? '') . ' ' . trim($data['lname'] ?? ''),
-                'birth_date' => $data['b_date'] ?? '',
-                'duplicate_type' => $duplicateChecks[0]['type'] ?? 'unknown',
-                'existing_applicant_id' => $duplicateChecks[0]['applicant_id'] ?? null
-            ]);
-        }
+        $logger->log('ERROR', 'Duplicate applicant check failed', [
+            'applicant_name' => $applicantName,
+            'birth_date' => $birthDate,
+            'duplicate_type' => $duplicateChecks[0]['type'] ?? 'unknown',
+            'existing_applicant_id' => $duplicateChecks[0]['applicant_id'] ?? null,
+            'existing_id_number' => $duplicateChecks[0]['id_number'] ?? null,
+            'existing_local_control' => $duplicateChecks[0]['local_control_number'] ?? null,
+            'attempted_by' => $userName
+        ]);
 
         // For exact matches, block submission
         foreach ($duplicateChecks as $check) {
@@ -337,11 +438,8 @@ try {
                 $local_control_display = !empty($check['local_control_number']) && $check['local_control_number'] !== 'Not assigned' ?
                     " | Local Control: {$check['local_control_number']}" : "";
 
-                echo json_encode([
-                    "error" => "DUPLICATE_ENTRY: " . $check['message'] .
-                        " {$id_number_display}{$local_control_display}. Please check if this is the same person."
-                ]);
-                exit;
+                sendJsonError("DUPLICATE_ENTRY: " . $check['message'] .
+                    " {$id_number_display}{$local_control_display}. Please check if this is the same person.");
             }
         }
 
@@ -355,11 +453,8 @@ try {
             $local_control_display = !empty($check['local_control_number']) && $check['local_control_number'] !== 'Not assigned' ?
                 " | Local Control: {$check['local_control_number']}" : "";
 
-            echo json_encode([
-                "error" => "POTENTIAL_DUPLICATE: " . $check['message'] .
-                    " {$id_number_display}{$local_control_display}. Please verify if this is a new applicant."
-            ]);
-            exit;
+            sendJsonError("POTENTIAL_DUPLICATE: " . $check['message'] .
+                " {$id_number_display}{$local_control_display}. Please verify if this is a new applicant.");
         }
     }
 
@@ -448,6 +543,8 @@ try {
         trim($data['province'] ?? '')
     ]);
 
+    $address_id = $conn->lastInsertId();
+
     // STEP 7: Economic Status
     // Fix: Add support_in_kind field handling
     $support_in_kind = isset($data['support_in_kind']) ? trim($data['support_in_kind']) : (isset($data['support_type']) && strpos(strtolower($data['support_type']), 'kind') !== false ? trim($data['support_type']) : null);
@@ -472,6 +569,8 @@ try {
         $support_in_kind
     ]);
 
+    $economic_status_id = $conn->lastInsertId();
+
     // STEP 8: Health Condition
     $stmt = $conn->prepare("
         INSERT INTO health_condition (
@@ -485,45 +584,107 @@ try {
         $data['hospitalized_last6mos'] ?? 0
     ]);
 
+    $health_condition_id = $conn->lastInsertId();
+
+    // Check for senior illness if applicable
+    $senior_illness_inserted = false;
+    if (isset($data['senior_illness']) && is_array($data['senior_illness'])) {
+        foreach ($data['senior_illness'] as $illness) {
+            if (!empty(trim($illness))) {
+                $stmt = $conn->prepare("
+                    INSERT INTO senior_illness (applicant_id, illness_name)
+                    VALUES (?, ?)
+                ");
+                $stmt->execute([$applicant_id, trim($illness)]);
+                $senior_illness_inserted = true;
+            }
+        }
+    }
+
     $conn->commit();
 
     // Log successful registration
-    if ($logger) {
-        $logger->log('REGISTER_SENIOR', 'New senior citizen registered', [
-            'applicant_id' => $applicant_id,
-            'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
-            'id_number' => $id_number,
-            'local_control_number' => $local_control_number,
-            'age' => $current_age,
-            'birth_date' => $data['b_date'] ?? '',
-            'barangay' => $data['brgy'] ?? '',
-            'registered_by' => $user_name
-        ]);
-    }
+    $logger->log('REGISTER_SENIOR', 'New senior citizen registered successfully', [
+        'applicant_id' => $applicant_id,
+        'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
+        'full_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? '') . ' ' . trim($data['mname'] ?? ''),
+        'id_number' => $id_number,
+        'local_control_number' => $local_control_number,
+        'age' => $current_age,
+        'birth_date' => $birthDate,
+        'gender' => $data['gender'] ?? '',
+        'civil_status' => $data['civil_status'] ?? '',
+        'barangay' => $data['brgy'] ?? '',
+        'municipality' => $data['municipality'] ?? '',
+        'province' => $data['province'] ?? '',
+        'registered_by' => $userName,
+        'registered_by_id' => $userId,
+        'registration_date' => $date_of_registration,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+        'record_ids' => [
+            'registration_id' => $registration_id,
+            'address_id' => $address_id,
+            'economic_status_id' => $economic_status_id,
+            'health_condition_id' => $health_condition_id
+        ],
+        'has_illnesses' => $senior_illness_inserted,
+        'is_pensioner' => $data['is_pensioner'] ?? 0,
+        'has_family_support' => $data['has_family_support'] ?? 0,
+        'validation_status' => 'For Validation',
+        'system_status' => 'Active'
+    ]);
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Application submitted successfully!",
+    // Return success response
+    sendJsonSuccess("Application submitted successfully!", [
         "applicant_id" => $applicant_id,
         "registration_id" => $registration_id,
         "local_control_number" => $local_control_number,
         "id_number" => $id_number,
         "date_of_registration" => $date_of_registration,
-        "calculated_age" => $current_age
+        "calculated_age" => $current_age,
+        "applicant_name" => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
+        "barangay" => $data['brgy'] ?? '',
+        "registered_by" => $userName,
+        "timestamp" => date('Y-m-d H:i:s')
     ]);
-} catch (Exception $e) {
-    if ($conn->inTransaction()) $conn->rollBack();
-    http_response_code(500);
-    error_log("Registration error: " . $e->getMessage());
-    
-    // Log registration error
-    if ($logger) {
-        $logger->log('ERROR', 'Registration failed', [
-            'error_message' => $e->getMessage(),
-            'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
-            'id_number_attempted' => $id_number ?? ''
-        ]);
+} catch (PDOException $e) {
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
     }
-    
-    echo json_encode(["error" => "Registration failed: " . $e->getMessage()]);
+
+    // Log registration error
+    $logger->log('ERROR', 'Registration failed - Database error', [
+        'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
+        'id_number_attempted' => $id_number ?? '',
+        'error_message' => $e->getMessage(),
+        'error_code' => $e->getCode(),
+        'registered_by' => $userName,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+        'error_type' => 'Database Error'
+    ]);
+
+    error_log("Registration database error: " . $e->getMessage());
+    sendJsonError("Registration failed due to a database error. Please try again.");
+} catch (Exception $e) {
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
+    }
+
+    // Log registration error
+    $logger->log('ERROR', 'Registration failed - Application error', [
+        'applicant_name' => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
+        'id_number_attempted' => $id_number ?? '',
+        'error_message' => $e->getMessage(),
+        'registered_by' => $userName,
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+        'error_type' => 'Application Error'
+    ]);
+
+    error_log("Registration error: " . $e->getMessage());
+    sendJsonError("Registration failed: " . $e->getMessage());
+}
+
+// Clean up output buffer
+if (ob_get_length()) {
+    ob_end_flush();
 }

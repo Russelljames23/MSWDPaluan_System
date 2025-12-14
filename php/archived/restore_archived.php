@@ -1,22 +1,150 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+// undarchived.php - Improved version with activity logging
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
+
+// Error handling
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', dirname(__FILE__) . '/../php_errors.log');
+
+// Start output buffering
+ob_start();
+
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include database
 include '../db.php';
-require_once '../settings/ActivityLogger.php';
+
+// Helper functions
+function sendJsonError($message, $code = 400)
+{
+    http_response_code($code);
+    if (ob_get_length()) ob_clean();
+    echo json_encode([
+        "success" => false,
+        "error" => $message,
+        "timestamp" => date('Y-m-d H:i:s')
+    ]);
+    exit;
+}
+
+function sendJsonSuccess($message, $data = [])
+{
+    if (ob_get_length()) ob_clean();
+    echo json_encode(array_merge([
+        "success" => true,
+        "message" => $message,
+        "timestamp" => date('Y-m-d H:i:s')
+    ], $data));
+    exit;
+}
+
+// Check database connection
+if (!$conn) {
+    sendJsonError("Database connection failed", 500);
+}
+
+// Load ActivityLogger
+$logger = null;
+$activityLoggerPath = dirname(__DIR__) . '/ActivityLogger.php';
+if (file_exists($activityLoggerPath)) {
+    require_once $activityLoggerPath;
+} elseif (file_exists(dirname(__DIR__) . '/settings/ActivityLogger.php')) {
+    require_once dirname(__DIR__) . '/settings/ActivityLogger.php';
+} else {
+    // Try to find ActivityLogger.php in parent directory
+    $activityLoggerPath = dirname(dirname(__DIR__)) . '/ActivityLogger.php';
+    if (file_exists($activityLoggerPath)) {
+        require_once $activityLoggerPath;
+    }
+}
+
+// Get ID from POST
+$id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+if ($id <= 0) {
+    sendJsonError("Missing or invalid applicant ID.");
+}
+
+// Initialize logger
+if (class_exists('ActivityLogger')) {
+    // ActivityLogger constructor only takes $conn parameter
+    $logger = new ActivityLogger($conn);
+} else {
+    // Create minimal logger for debugging
+    class SimpleLogger
+    {
+        public function log($type, $desc, $details = null)
+        {
+            // Log to file for debugging
+            $logMessage = date('Y-m-d H:i:s') . " - Activity: $type - $desc";
+            if ($details) {
+                $logMessage .= " - Details: " . json_encode($details);
+            }
+            error_log($logMessage);
+
+            // Also try to log to database directly for debugging
+            global $conn;
+            if (isset($conn)) {
+                try {
+                    $detailsJson = $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null;
+
+                    // Get user from session
+                    session_start();
+                    $userId = $_SESSION['user_id'] ?? ($_SESSION['id'] ?? 0);
+
+                    // Get user name
+                    $userName = 'Unknown';
+                    if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                        $userName = $_SESSION['fullname'];
+                    } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                        $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+                    } elseif (isset($_SESSION['username'])) {
+                        $userName = $_SESSION['username'];
+                    }
+
+                    $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+
+                    $query = "INSERT INTO activity_logs 
+                             (user_id, activity_type, description, activity_details, ip_address, user_agent, created_at) 
+                             VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([
+                        $userId,
+                        $type,
+                        $desc,
+                        $detailsJson,
+                        $ipAddress,
+                        substr($userAgent, 0, 500)
+                    ]);
+
+                    return $stmt->rowCount() > 0;
+                } catch (Exception $e) {
+                    error_log("Direct DB logging failed: " . $e->getMessage());
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    $logger = new SimpleLogger();
+}
 
 try {
-    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    if ($id <= 0) throw new Exception("Missing applicant ID.");
-
-    // Initialize activity logger
-    $logger = null;
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $user_name = $_SESSION['username'] ?? 'Unknown';
-        $logger = new ActivityLogger($conn, $user_id, $user_name);
+    // Get user info for logging
+    $userId = $_SESSION['user_id'] ?? ($_SESSION['id'] ?? 0);
+    $userName = 'Unknown';
+    if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+        $userName = $_SESSION['fullname'];
+    } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+        $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+    } elseif (isset($_SESSION['username'])) {
+        $userName = $_SESSION['username'];
     }
 
     $transactionStarted = false;
@@ -26,12 +154,24 @@ try {
     }
 
     // Get archived applicant info for logging
-    $infoStmt = $conn->prepare("SELECT first_name, last_name, control_number FROM archived_applicants WHERE applicant_id = ?");
+    $infoStmt = $conn->prepare("
+        SELECT first_name, last_name, control_number, status, validation, 
+               archived_date, date_created
+        FROM archived_applicants 
+        WHERE applicant_id = ? AND restored_date IS NULL
+    ");
     $infoStmt->execute([$id]);
     $applicantInfo = $infoStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$applicantInfo) {
-        throw new Exception("Archived applicant not found.");
+        // Check if applicant exists at all
+        $checkExists = $conn->prepare("SELECT COUNT(*) FROM archived_applicants WHERE applicant_id = ?");
+        $checkExists->execute([$id]);
+        if ($checkExists->fetchColumn() > 0) {
+            throw new Exception("Archived applicant has already been restored.");
+        } else {
+            throw new Exception("Archived applicant not found.");
+        }
     }
 
     // 1️⃣ First, check if applicant exists in applicants table and delete if found
@@ -39,6 +179,7 @@ try {
     $checkStmt->execute([$id]);
     $existsInApplicants = $checkStmt->fetchColumn() > 0;
 
+    $deletedFromMain = [];
     if ($existsInApplicants) {
         // Delete any existing records in main tables to avoid conflicts
         $deleteOrder = [
@@ -52,6 +193,7 @@ try {
         foreach ($deleteOrder as $table) {
             $deleteStmt = $conn->prepare("DELETE FROM $table WHERE applicant_id = ?");
             $deleteStmt->execute([$id]);
+            $deletedFromMain[$table] = $deleteStmt->rowCount();
         }
     }
 
@@ -63,6 +205,10 @@ try {
     if (!$archivedApplicant) {
         throw new Exception("Archived applicant not found or already restored.");
     }
+
+    // Calculate archived duration
+    $archivedDate = $archivedApplicant['archived_date'] ?? null;
+    $daysArchived = $archivedDate ? floor((time() - strtotime($archivedDate)) / (60 * 60 * 24)) : 0;
 
     // 3️⃣ Restore applicant to main table with explicit column mapping
     $insertApplicant = $conn->prepare("
@@ -104,6 +250,8 @@ try {
         ':age_last_updated' => $archivedApplicant['age_last_updated'] ?? null
     ]);
 
+    $restoredRecords = ['applicants' => 1];
+
     // 4️⃣ Restore related data with explicit column mapping
     $tables = [
         "addresses" => "archived_addresses",
@@ -113,34 +261,49 @@ try {
     ];
 
     foreach ($tables as $target => $archive) {
-        // Get column names from target table (excluding auto_increment columns)
-        $stmt = $conn->query("SHOW COLUMNS FROM $target");
-        $columns = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if ($row['Extra'] !== 'auto_increment') {
-                $columns[] = $row['Field'];
-            }
+        // Check if archive table exists
+        $checkArchive = $conn->query("SHOW TABLES LIKE '$archive'");
+        if (!$checkArchive->fetch()) {
+            continue; // Skip if archive table doesn't exist
         }
-        $columnList = implode(', ', $columns);
 
-        // Delete any existing records in target table
-        $deleteStmt = $conn->prepare("DELETE FROM $target WHERE applicant_id = ?");
-        $deleteStmt->execute([$id]);
+        // Count records in archive before restoring
+        $countStmt = $conn->prepare("SELECT COUNT(*) FROM $archive WHERE applicant_id = ? AND restored_date IS NULL");
+        $countStmt->execute([$id]);
+        $recordCount = $countStmt->fetchColumn();
 
-        // Copy data from archive to main table
-        $copy = $conn->prepare("
-            INSERT INTO $target ($columnList)
-            SELECT $columnList FROM $archive 
-            WHERE applicant_id = ? AND restored_date IS NULL
-        ");
-        $copy->execute([$id]);
+        if ($recordCount > 0) {
+            // Get column names from target table (excluding auto_increment columns)
+            $stmt = $conn->query("SHOW COLUMNS FROM $target");
+            $columns = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if ($row['Extra'] !== 'auto_increment') {
+                    $columns[] = $row['Field'];
+                }
+            }
+            $columnList = implode(', ', $columns);
 
-        // Mark as restored in archive
-        $updateStmt = $conn->prepare("
-            UPDATE $archive SET restored_date = NOW() 
-            WHERE applicant_id = ? AND restored_date IS NULL
-        ");
-        $updateStmt->execute([$id]);
+            // Delete any existing records in target table
+            $deleteStmt = $conn->prepare("DELETE FROM $target WHERE applicant_id = ?");
+            $deleteStmt->execute([$id]);
+
+            // Copy data from archive to main table
+            $copy = $conn->prepare("
+                INSERT INTO $target ($columnList)
+                SELECT $columnList FROM $archive 
+                WHERE applicant_id = ? AND restored_date IS NULL
+            ");
+            $copy->execute([$id]);
+
+            $restoredRecords[$target] = $copy->rowCount();
+
+            // Mark as restored in archive
+            $updateStmt = $conn->prepare("
+                UPDATE $archive SET restored_date = NOW() 
+                WHERE applicant_id = ? AND restored_date IS NULL
+            ");
+            $updateStmt->execute([$id]);
+        }
     }
 
     // 5️⃣ Mark applicant as restored in archived_applicants
@@ -150,33 +313,83 @@ try {
     ");
     $updateApplicant->execute([$id]);
 
-    if ($transactionStarted && $conn->inTransaction()) $conn->commit();
-
-    // Log the restoration activity
-    if ($logger) {
-        $logger->log('RESTORE_SENIOR', 'Archived senior restored to active list', [
-            'applicant_id' => $id,
-            'applicant_name' => ($applicantInfo['first_name'] ?? '') . ' ' . ($applicantInfo['last_name'] ?? ''),
-            'control_number' => $applicantInfo['control_number'] ?? null,
-            'restored_by' => $user_name,
-            'restored_at' => date('Y-m-d H:i:s')
-        ]);
+    if ($transactionStarted && $conn->inTransaction()) {
+        $conn->commit();
     }
 
-    echo json_encode(["success" => true, "message" => "Applicant successfully restored to active list."]);
-} catch (Exception $e) {
+    // Log the restoration activity
+    $logger->log('RESTORE_SENIOR', 'Archived senior restored to active list', [
+        'applicant_id' => $id,
+        'applicant_name' => $applicantInfo['first_name'] . ' ' . $applicantInfo['last_name'],
+        'control_number' => $applicantInfo['control_number'] ?? null,
+        'previous_status' => $applicantInfo['status'] ?? 'Archived',
+        'validation' => $applicantInfo['validation'] ?? 'For Validation',
+        'restored_by' => $userName,
+        'restored_by_id' => $userId,
+        'restored_at' => date('Y-m-d H:i:s'),
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+        'archived_date' => $applicantInfo['archived_date'] ?? null,
+        'days_archived' => $daysArchived,
+        'original_created_date' => $applicantInfo['date_created'] ?? null,
+        'records_restored' => $restoredRecords,
+        'records_deleted_from_main' => $deletedFromMain,
+        'total_records_restored' => array_sum($restoredRecords),
+        'new_status' => 'Active',
+        'notes' => 'Senior restored from archive to active list'
+    ]);
+
+    // Return success response
+    sendJsonSuccess("Applicant successfully restored to active list.", [
+        'applicant_id' => $id,
+        'applicant_name' => $applicantInfo['first_name'] . ' ' . $applicantInfo['last_name'],
+        'control_number' => $applicantInfo['control_number'] ?? null,
+        'previous_status' => $applicantInfo['status'] ?? 'Archived',
+        'new_status' => 'Active',
+        'restored_at' => date('Y-m-d H:i:s'),
+        'records_restored' => $restoredRecords,
+        'total_records' => array_sum($restoredRecords),
+        'days_archived' => $daysArchived,
+        'archived_since' => $applicantInfo['archived_date'] ?? null
+    ]);
+} catch (PDOException $e) {
+    // Rollback transaction on error
     if (isset($transactionStarted) && $transactionStarted && $conn->inTransaction()) {
         $conn->rollBack();
     }
-    http_response_code(500);
-    
+
     // Log error
-    if (isset($logger)) {
+    if ($logger) {
         $logger->log('ERROR', 'Failed to restore archived senior', [
             'applicant_id' => $id,
-            'error_message' => $e->getMessage()
+            'error_message' => $e->getMessage(),
+            'restored_by' => $userName ?? 'Unknown',
+            'error_type' => 'Database Error'
         ]);
     }
-    
-    echo json_encode(["success" => false, "message" => "⚠️ Error restoring record: " . $e->getMessage()]);
+
+    error_log("Database error in undarchived.php: " . $e->getMessage());
+    sendJsonError("Database error: " . $e->getMessage(), 500);
+} catch (Exception $e) {
+    // Rollback transaction on error
+    if (isset($transactionStarted) && $transactionStarted && $conn->inTransaction()) {
+        $conn->rollBack();
+    }
+
+    // Log error
+    if ($logger) {
+        $logger->log('ERROR', 'Failed to restore archived senior', [
+            'applicant_id' => $id,
+            'error_message' => $e->getMessage(),
+            'restored_by' => $userName ?? 'Unknown',
+            'error_type' => 'Application Error'
+        ]);
+    }
+
+    error_log("Error in undarchived.php: " . $e->getMessage());
+    sendJsonError($e->getMessage(), 400);
+}
+
+// Clean up output buffer
+if (ob_get_length()) {
+    ob_end_flush();
 }
