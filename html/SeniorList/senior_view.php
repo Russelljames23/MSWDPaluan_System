@@ -190,6 +190,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
+
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
@@ -212,12 +213,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
                                 <a href="#" style="color: blue;"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
-                                    List</a>
-                            </li>
-                            <li>
-                                <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
@@ -246,7 +242,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             </svg>
                             <span class="ml-3">Benefits</span>
                         </a>
-                    </li>
                     <li>
                         <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
@@ -260,7 +255,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="ml-3">Generate ID</span>
                         </a>
                     <li>
-                    <li>
                         <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -273,7 +267,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
-
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
@@ -309,7 +302,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
         <main class="p-4 md:ml-64 pt-18">
             <div class="w-full flex  justify-between ">
-                <a href="./seniorlist.php?session_context=<?php echo $ctx; ?>"
+                <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
                     class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800  font-medium rounded-sm text-xs px-2   dark:bg-blue-600 dark:hover:bg-blue-700 ">
                     <svg class="w-4.5 h-5 text-white dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -318,6 +311,16 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     </svg>
                     Back
                 </a>
+
+                <div class="flex items-center flex-row ">
+                    <a href="#" type="button" class="cursor-pointer">
+                        <h4 class="text-xl font-medium text-blue-700  px-2">Application</h4>
+                    </a>
+                    <a href="./senior_demographic.php?session_context=<?php echo $ctx; ?>&id=<?php echo htmlspecialchars($_GET['id'] ?? ''); ?>"
+                        type="button" class="cursor-pointer">
+                        <h4 class="text-xl font-medium px-2">Demographic</h4>
+                    </a>
+                </div>
 
                 <button id="dropdownDefaultButton" data-dropdown-toggle="drop"
                     class="text-white cursor-pointer bg-blue-700 hover:bg-blue-800  font-medium rounded-sm text-xs px-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

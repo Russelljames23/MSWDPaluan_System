@@ -102,7 +102,7 @@ if (class_exists('ActivityLogger')) {
             return true;
         }
     }
-    $logger = new SimpleLogger();
+    $logger = new SimpleLogger($conn);
 }
 
 // Process IDs (supporting both single and array like update_status.php)

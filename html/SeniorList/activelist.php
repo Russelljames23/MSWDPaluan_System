@@ -209,11 +209,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="./seniorlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
-                                    List</a>
-                            </li>
-                            <li>
                                 <a href="#" style="color: blue;"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
@@ -304,11 +299,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
         <main class="p-4 md:ml-64 pt-20">
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto  max-w-screen-5xl ">
-                    <div class="bg-white  dark:bg-gray-800 relative shadow-md sm:rounded-lg">
-                        <div
-                            class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Active List</h4>
+                <div class="mx-auto max-w-screen-5xl">
+                    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
+                        <div class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
+                            <div class="flex flex-row justify-between items-center">
+                                <h4 class="text-xl font-medium dark:text-white">Active List</h4>
+                                <button id="masterbtn"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    Master List
+                                </button>
+                            </div>
                             <div class="flex flex-row justify-between">
                                 <div class="w-full md:w-1/2">
                                     <form class="flex items-center">
@@ -330,17 +331,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                         </div>
                                     </form>
                                 </div>
-                                <div class="flex flex-row gap-5 ">
+                                <div class="flex flex-row gap-5">
                                     <!-- Update Pension Status Button (Initially Hidden) -->
                                     <div id="openModalbtn" class="flex flex-row gap-2 hidden">
                                         <button id="bulkPensionBtn"
-                                            class="px-3  py-2 cursor-pointer text-xs font-medium text-white bg-blue-600 rounded-sm hover:bg-ble-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                            class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-blue-600 rounded-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
                                             Update Pension Status
                                         </button>
                                     </div>
 
                                     <!-- Status Filter -->
-                                    <div class="relative w-full md:w-auto ">
+                                    <div class="relative w-full md:w-auto">
                                         <select id="statusFilter"
                                             class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer appearance-none pr-8">
                                             <option value="all">All Status</option>
@@ -348,9 +349,9 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             <option value="Validated">Validated</option>
                                         </select>
                                     </div>
-                                    <!-- Filter  -->
+                                    <!-- Filter -->
                                     <div class="relative w-full md:w-auto">
-                                        <!--  Filter Button -->
+                                        <!-- Filter Button -->
                                         <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
                                             class="flex items-center cursor-pointer justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                             type="button">
@@ -368,7 +369,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             </svg>
                                         </button>
 
-                                        <!--  Dynamic Dropdown -->
+                                        <!-- Dynamic Dropdown -->
                                         <div id="filterDropdown"
                                             class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                             <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
@@ -449,7 +450,138 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 </div>
             </div>
 
-            <!-- PopUp Message  -->
+            <!-- Illness Modal -->
+            <div id="seniorIllness" tabindex="-1" aria-hidden="true"
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 bg-gray-600/50 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative p-4 w-full max-w-2xl max-h-full">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                        <!-- Modal header -->
+                        <div
+                            class="flex items-start border-b justify-between px-4 py-2 rounded-t dark:border-gray-600 border-gray-200">
+                            <div class="flex flex-col gap-2">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                    Health Condition
+                                </h3>
+                                <h5 id="modalSeniorName" class="text-sm font-semibold text-gray-900 dark:text-white">
+                                    Loading ...
+                                </h5>
+                            </div>
+                            <div class="flex justify-start items-start">
+                                <button type="button" onclick="closeHealthModal()"
+                                    class="text-gray-400 cursor-pointer bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                    data-modal-hide="default-modal">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="p-4 md:p-5 space-y-4">
+                            <div class="w-full flex flex-col justify-between gap-3">
+                                <div class="w-full flex items-center relative p-2">
+                                    <button type="button" onclick="addIllness()"
+                                        class="absolute right-0 text-white bg-blue-700 hover:bg-blue-800 cursor-pointer font-medium rounded-lg text-sm p-1 px-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                        Add
+                                    </button>
+                                </div>
+                                <div class="relative overflow-x-auto">
+                                    <table
+                                        class="w-full text-sm text-center rtl:text-right text-gray-500 dark:text-gray-400">
+                                        <thead
+                                            class="text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Date
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Illness
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    Remarks
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="illnessTableBody">
+                                            <tr
+                                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                                <th scope="row"
+                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    05/05/2025
+                                                </th>
+                                                <td class="px-6 py-4">
+                                                    Diabetic
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    Past illness
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Illness Modal -->
+            <div tabindex="-1" aria-hidden="true" id="illnessModal"
+                class="fixed inset-0 hidden justify-center items-center z-50 bg-gray-600/50 transition-opacity duration-500 ease-out">
+                <div id="illnessModalContent" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-lg gap-3 py-3 px-4 relative
+                                                    transform transition-all duration-700 ease-in-out 
+                                                    opacity-0 -translate-y-full scale-50">
+                    <div class="flex flex-row items-center justify-between mb-2">
+                        <h5 class="mb-1 text-xl text-left font-medium text-gray-900 dark:text-white">
+                            Add Illness</h5>
+                        <button type="button" onclick="closeIllnessModal()" class="absolute right-3 cursor-pointer text-gray-500
+                                                    hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form id="illnessForm" action="">
+                        <div class="flex flex-col gap-2">
+                            <div class="">
+                                <label for="illnessDate"
+                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300 text-left">Date:</label>
+                                <input type="date" id="illnessDate"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                                                        focus:ring-primary-500 focus:border-primary-500 block w-full p-2 
+                                                        dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+                                                        dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                                    placeholder="" required>
+                            </div>
+
+                            <div class="">
+                                <label for="illnessSpecify"
+                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300 text-left">Specify:</label>
+                                <input type="text" id="illnessSpecify"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                                                        focus:ring-primary-500 focus:border-primary-500 block w-full p-2 
+                                                        dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+                                                        dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                                    placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end mt-5">
+                            <button type="submit"
+                                class="relative text-white bg-blue-700 hover:bg-blue-800 cursor-pointer font-medium rounded-lg text-sm py-1 px-3 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PopUp Message -->
             <div id="popupModal"
                 class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
                 <div id="popupBox"
@@ -468,13 +600,14 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <!-- Senior List Table  -->
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Initialize global variables
             window.globalSelectedApplicants = new Map();
             window.globalPensionStatus = new Map();
             window.countdownIntervals = new Map(); // Store countdown intervals
+            window.currentApplicantId = null; // For illness modal
 
             // Load recently updated seniors from localStorage
             window.recentlyUpdatedSeniors = new Map();
@@ -493,6 +626,208 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             let lastSearch = "";
             let selectedBarangays = [];
             let selectedStatus = "all";
+
+            // ---------------- POPUP MODAL ----------------
+            window.showPopup = function(message, type = "info", redirect = false) {
+                const modal = document.getElementById("popupModal");
+                const box = document.getElementById("popupBox");
+                const title = document.getElementById("popupTitle");
+                const msg = document.getElementById("popupMessage");
+                const closeBtn = document.getElementById("popupCloseBtn");
+
+                if (!modal || !box) {
+                    console.error("Popup modal elements not found!");
+                    return;
+                }
+
+                msg.textContent = message;
+                title.className = "text-lg font-semibold mb-2";
+
+                switch (type) {
+                    case "success":
+                        title.textContent = "✅ Success";
+                        closeBtn.style.backgroundColor = "#27AE60";
+                        break;
+                    case "error":
+                        title.textContent = "❌ Error";
+                        closeBtn.style.backgroundColor = "#E74C3C";
+                        break;
+                    default:
+                        title.textContent = "ℹ️ Notice";
+                        closeBtn.style.backgroundColor = "#3498DB";
+                }
+
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                    box.classList.remove("scale-95", "opacity-0");
+                    box.classList.add("scale-100", "opacity-100");
+                }, 10);
+
+                closeBtn.onclick = () => {
+                    box.classList.add("scale-95", "opacity-0");
+                    setTimeout(() => {
+                        modal.classList.add("hidden");
+                        if (redirect) window.location.href = redirect;
+                    }, 200);
+                };
+            };
+
+            // ---------------- ILLNESS MODAL FUNCTIONS ----------------
+            window.openIllnessModal = function(applicantId, seniorName) {
+                window.currentApplicantId = applicantId;
+                const nameField = document.getElementById("modalSeniorName");
+                nameField.textContent = seniorName || "Unknown";
+
+                const modal = document.getElementById("seniorIllness");
+                const content = modal.querySelector(".relative.bg-white.rounded-lg");
+
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+
+                setTimeout(() => {
+                    content.classList.remove("opacity-0", "scale-95");
+                    content.classList.add("opacity-100", "scale-100");
+                }, 10);
+
+                document.body.classList.add("overflow-hidden");
+
+                loadIllnesses(applicantId);
+            };
+
+            window.closeHealthModal = function() {
+                const modal = document.getElementById("seniorIllness");
+                const content = modal.querySelector(".relative.bg-white.rounded-lg");
+
+                content.classList.add("opacity-0", "scale-95");
+
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    modal.classList.remove("flex");
+                    document.body.classList.remove("overflow-hidden");
+                    content.classList.remove("opacity-0", "scale-95");
+                }, 200);
+            };
+
+            window.addIllness = function() {
+                const modal = document.getElementById("illnessModal");
+                const content = document.getElementById("illnessModalContent");
+
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+
+                setTimeout(() => {
+                    content.classList.remove("opacity-0", "-translate-y-10", "scale-90");
+                    content.classList.add("opacity-100", "translate-y-0", "scale-100");
+                }, 10);
+            };
+
+            window.closeIllnessModal = function() {
+                const modal = document.getElementById("illnessModal");
+                const content = document.getElementById("illnessModalContent");
+
+                content.classList.add("opacity-0", "-translate-y-10", "scale-90");
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    modal.classList.remove("flex");
+                }, 250);
+            };
+
+            // ---------------- LOAD ILLNESSES ----------------
+            async function loadIllnesses(applicantId) {
+                const tbody = document.getElementById("illnessTableBody");
+                tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
+
+                try {
+                    const res = await fetch(`../../php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                    const data = await res.json();
+
+                    tbody.innerHTML = "";
+
+                    if (!data.success) {
+                        tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-red-500">Failed to load data: ${data.error}</td></tr>`;
+                        showPopup("Failed to load illness data.", "error");
+                        return;
+                    }
+
+                    const hc = data.health_condition || {};
+                    const illnessDetails = hc.illness_details || "N/A";
+                    const applicationDate = data.application_date ?
+                        new Date(data.application_date).toLocaleDateString("en-US") :
+                        "—";
+
+                    if (illnessDetails !== "N/A" || data.application_date) {
+                        tbody.insertAdjacentHTML(
+                            "beforeend",
+                            `<tr class="bg-blue-50 border-b border-gray-200 dark:bg-gray-200 dark:border-gray-700">
+                        <td class="px-6 py-3">${applicationDate}</td>
+                        <td class="px-6 py-3">${illnessDetails}</td>
+                        <td class="px-6 py-3 font-semibold text-blue-600">Application Illness</td>
+                    </tr>`
+                        );
+                    }
+
+                    if (!data.illnesses || data.illnesses.length === 0) {
+                        if (tbody.innerHTML === "") {
+                            tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">No illness records found.</td></tr>`;
+                        }
+                        return;
+                    }
+
+                    data.illnesses.forEach(row => {
+                        const date = row.illness_date ?
+                            new Date(row.illness_date).toLocaleDateString("en-US") :
+                            "—";
+
+                        tbody.insertAdjacentHTML(
+                            "beforeend",
+                            `<tr class="bg-white border-b border-gray-200 dark:bg-gray-200 dark:border-gray-700">
+                        <td class="px-6 py-3">${date}</td>
+                        <td class="px-6 py-3">${row.illness_name}</td>
+                        <td class="px-6 py-3 text-gray-500">Illness</td>
+                    </tr>`
+                        );
+                    });
+                } catch (err) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-red-500">Error loading data: ${err.message}</td></tr>`;
+                    showPopup("Error loading illness data: " + err.message, "error");
+                }
+            }
+
+            // ---------------- ADD ILLNESS SUBMISSION ----------------
+            document.getElementById("illnessForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const illness_name = document.getElementById("illnessSpecify").value.trim();
+                const illness_date = document.getElementById("illnessDate").value;
+
+                if (!illness_name || !illness_date) {
+                    return showPopup("Please fill in all fields.", "error");
+                }
+
+                try {
+                    const res = await fetch("../../php/seniorlist/senior_illness.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            applicant_id: window.currentApplicantId,
+                            illness_name,
+                            illness_date,
+                        }),
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        showPopup("Illness added successfully!", "success");
+                        closeIllnessModal();
+                        loadIllnesses(window.currentApplicantId);
+                    } else {
+                        showPopup("Error: " + data.error, "error");
+                    }
+                } catch (err) {
+                    showPopup("Failed to add illness: " + err.message, "error");
+                }
+            });
 
             // ---------------- COUNTDOWN MANAGEMENT ----------------
             function startCountdown(seniorId, displayElement) {
@@ -614,51 +949,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
                 return true; // For other statuses like "Denied"
             }
-
-            // ---------------- POPUP MODAL ----------------
-            window.showPopup = function(message, type = "info", redirect = false) {
-                const modal = document.getElementById("popupModal");
-                const box = document.getElementById("popupBox");
-                const title = document.getElementById("popupTitle");
-                const msg = document.getElementById("popupMessage");
-                const closeBtn = document.getElementById("popupCloseBtn");
-
-                if (!modal || !box) {
-                    console.error("Popup modal elements not found!");
-                    return;
-                }
-
-                msg.textContent = message;
-                title.className = "text-lg font-semibold mb-2";
-
-                switch (type) {
-                    case "success":
-                        title.textContent = "✅ Success";
-                        closeBtn.style.backgroundColor = "#27AE60";
-                        break;
-                    case "error":
-                        title.textContent = "❌ Error";
-                        closeBtn.style.backgroundColor = "#E74C3C";
-                        break;
-                    default:
-                        title.textContent = "ℹ️ Notice";
-                        closeBtn.style.backgroundColor = "#3498DB";
-                }
-
-                modal.classList.remove("hidden");
-                setTimeout(() => {
-                    box.classList.remove("scale-95", "opacity-0");
-                    box.classList.add("scale-100", "opacity-100");
-                }, 10);
-
-                closeBtn.onclick = () => {
-                    box.classList.add("scale-95", "opacity-0");
-                    setTimeout(() => {
-                        modal.classList.add("hidden");
-                        if (redirect) window.location.href = redirect;
-                    }, 200);
-                };
-            };
 
             // ---------------- UPDATE BUTTON VISIBILITY ----------------
             function updateBulkActionVisibility() {
@@ -808,6 +1098,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                 <div id="${dropdownId}" 
                                     class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
+                                        <li>
+                                            <a href="senior_view.php?session_context=<?php echo $ctx; ?>&id=${senior.applicant_id}" 
+                                               class="block py-2 cursor-pointer px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                👁 View
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <button onclick="openIllnessModal('${senior.applicant_id}', '${senior.full_name || 'Unknown'}')"
+                                               class="block cursor-pointer py-2 px-4 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                ⚕️ Illness
+                                            </button>
+                                        </li>
                                         <li>
                                             <button onclick="markInactive('${senior.applicant_id}')"
                                             class="block py-2 cursor-pointer px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -992,7 +1294,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }, 400);
             });
 
-            // ---------------- STATUS FILTER - ADD THIS NEW SECTION ----------------
+            // ---------------- STATUS FILTER ----------------
             if (statusFilter) {
                 statusFilter.addEventListener("change", (e) => {
                     selectedStatus = e.target.value;

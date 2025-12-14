@@ -208,11 +208,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="./seniorlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
-                                    List</a>
-                            </li>
-                            <li>
                                 <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>

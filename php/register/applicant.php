@@ -141,7 +141,7 @@ if (class_exists('ActivityLogger')) {
             return true;
         }
     }
-    $logger = new SimpleLogger();
+    $logger = new SimpleLogger($conn);
 }
 
 // Get user info for logging

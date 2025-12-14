@@ -440,11 +440,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/seniorlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
-                                    List</a>
-                            </li>
-                            <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
