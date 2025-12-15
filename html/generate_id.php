@@ -201,6 +201,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
     <style>
         @media print {
             body * {
@@ -210,6 +211,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             .print-page,
             .print-page * {
                 visibility: visible;
+                font-family: "Times New Roman", Times, serif !important;
             }
 
             .print-page {
@@ -224,6 +226,10 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 page-break-after: always;
             }
 
+            .benefits-page {
+                page-break-after: always;
+            }
+
             @page {
                 size: landscape;
                 margin: 0;
@@ -232,6 +238,24 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             body {
                 margin: 0;
                 padding: 0;
+                font-family: "Times New Roman", Times, serif !important;
+            }
+
+            /* Ensure benefits page prints correctly */
+            .benefits-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                grid-template-rows: repeat(3, 1fr) !important;
+                gap: 0.1in !important;
+                width: 13in !important;
+                height: 8.5in !important;
+                padding: 0.2in !important;
+                box-sizing: border-box !important;
+            }
+
+            /* Maiandra GD font for notice in print */
+            .benefits-notice {
+                font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
             }
         }
 
@@ -240,11 +264,12 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             width: 3.17in;
             height: 2.14in;
             border: 1px solid #000;
-            padding: 2px;
-            font-family: Arial, sans-serif;
+            padding: 3px;
+            font-family: "Times New Roman", Times, serif;
             background: white;
             position: relative;
             overflow: hidden;
+            box-sizing: border-box;
         }
 
         .id-header {
@@ -255,26 +280,29 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             font-weight: bold;
             margin-bottom: 1px;
             line-height: 1;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .id-content {
             padding: 1px;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .id-name {
             font-weight: bold;
             text-transform: uppercase;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .id-address {
-            text-transform: uppercase;
+            font-family: "Times New Roman", Times, serif;
         }
 
         .id-footer {
             text-align: center;
             font-weight: bold;
             color: #dc2626;
-            margin-top: 2px;
+            font-family: "Times New Roman", Times, serif;
         }
 
         /* For print layout */
@@ -286,38 +314,102 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             width: 13in;
             height: 8.5in;
             padding: 0.2in;
+            font-family: "Times New Roman", Times, serif;
+            box-sizing: border-box;
         }
 
         /* Benefits page styling */
         .benefits-page {
             width: 13in;
             height: 8.5in;
-            padding: 0.3in;
+            padding: 0.2in;
             page-break-after: always;
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
+            box-sizing: border-box;
+        }
+
+        .benefits-card {
+            width: 3.17in;
+            height: 2.14in;
+            border: 1px solid #000;
+            padding: 10px 8px 8px 8px;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         .benefits-header {
             text-align: center;
             font-weight: bold;
-            margin-bottom: 0.1in;
+            margin-bottom: 6px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 6.5pt;
+            line-height: 1.1;
+            text-transform: uppercase;
         }
 
         .benefits-list {
-            font-size: 8pt;
-            line-height: 1.2;
+            font-size: 5pt;
+            line-height: 1.1;
+            font-family: "Times New Roman", Times, serif;
+            flex-grow: 1;
+            margin-bottom: 4px;
+        }
+
+        .benefits-list div {
+            margin-bottom: 1px;
+            text-indent: -10px;
+            padding-left: 10px;
         }
 
         .benefits-footer {
-            margin-top: 0.2in;
             text-align: center;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 5pt;
+            margin-top: 28pt;
         }
 
         .signature-line {
             border-top: 1px solid #000;
-            width: 2in;
+            width: 1.3in;
             display: inline-block;
-            margin-top: 0.1in;
+        }
+
+        .benefits-notice {
+            font-family: "Maiandra GD", "Times New Roman", Times, serif;
+            font-style: italic;
+            font-size: 5pt;
+            margin-top: 5pt;
+            text-align: center;
+            color: red;
+            line-height: 1.1;
+        }
+
+        .signatures-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 4px;
+        }
+
+        .signature-item {
+            text-align: center;
+            width: 48%;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            font-size: 6pt;
+            text-decoration: underline;
+            min-height: 8px;
+        }
+
+        .signature-title {
+            font-size: 6pt;
+            font-weight: bold;
         }
 
         /* Pagination styles */
@@ -339,6 +431,17 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             color: white;
             border-color: #3b82f6;
         }
+
+        /* Add this to ensure all text uses Times New Roman */
+        body,
+        html,
+        .preview-content,
+        #preview-content {
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        /* Add Maiandra GD font fallback in the head section too */
+        @import url('https://fonts.cdnfonts.com/css/maiandra-gd');
     </style>
 </head>
 
@@ -1063,6 +1166,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             age: checkbox.dataset.age,
                             gender: checkbox.dataset.gender,
                             barangay: checkbox.dataset.barangay,
+                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
+                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
                             idNumber: checkbox.dataset.idNumber,
                             dateIssued: checkbox.dataset.dateIssued, // This is date_of_registration from database
                             localControl: checkbox.dataset.localControl
@@ -1129,15 +1234,15 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             let html = '<div class="space-y-1 max-h-32 overflow-y-auto">';
             selectedSeniors.forEach((senior, id) => {
                 html += `
-                    <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
-                        <span class="truncate">${senior.name}</span>
-                        <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                `;
+            <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                <span class="truncate">${senior.name}</span>
+                <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
             });
             html += '</div>';
             listContainer.innerHTML = html;
@@ -1169,8 +1274,10 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             age: checkbox.dataset.age,
                             gender: checkbox.dataset.gender,
                             barangay: checkbox.dataset.barangay,
+                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
+                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
                             idNumber: checkbox.dataset.idNumber,
-                            dateIssued: checkbox.dataset.dateIssued, // This is date_of_registration from database
+                            dateIssued: checkbox.dataset.dateIssued,
                             localControl: checkbox.dataset.localControl
                         });
                     }
@@ -1272,9 +1379,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Generate front page with ID cards
         function generateFrontPage(seniors) {
             let html = `
-                <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
-                    <div class="print-grid">
-            `;
+        <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
+            <div class="print-grid">
+    `;
 
             seniors.forEach(senior => {
                 // Format birth date
@@ -1289,67 +1396,79 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
                 const genderCode = senior.gender === 'Male' ? 'M' : senior.gender === 'Female' ? 'F' : '';
 
+                // Build full address
+                let fullAddress = '';
+                if (senior.barangay && senior.barangay !== 'N/A') {
+                    fullAddress = `Brgy. ${senior.barangay}`;
+                }
+                if (senior.municipality && senior.municipality !== 'N/A') {
+                    fullAddress += fullAddress ? ', ' + senior.municipality : senior.municipality;
+                }
+                if (senior.province && senior.province !== 'N/A') {
+                    fullAddress += fullAddress ? ', ' + senior.province : senior.province;
+                }
+
                 html += `
-                    <div class="id-card">
-                        <!-- Republic Header -->
-                        <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                            <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-10 h-10 rounded-full vertical-align-middle">
-                            <div >
-                            <div style="font-size: 7.5pt;">Republic of the Philippines</div>
-                            <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
-                            <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
+            <div class="id-card">
+                <!-- Republic Header -->
+                <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.49in] h-[.49in] rounded-full vertical-align-middle">
+                    <div>
+                        <div style="font-size: 7.5pt;">Republic of the Philippines</div>
+                        <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
+                        <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
+                    </div>
+                    <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.49in] h-[.49in] rounded-full vertical-align-middle">
+                </div>
+                
+                <!-- ID Content -->
+                <div class="id-content" style="font-size: 8pt;">
+                    <div style="margin-bottom: 1px;" class="name flex flex-row gap-1">
+                        <div style="font-weight: bold; font-size: 8pt;">Name:</div>
+                        <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
+                    </div>
+                    <div class="3rdrow flex flex-row justify-between align-middle mt-1">
+                        <div class="dsd flex flex-col text-align: left; w-[2.15in]">
+                            <div style="margin-bottom: 2px; " class="address flex flex-row">
+                                <div style="font-weight: bold; font-size: 8pt;">Address:</div>
+                                <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${fullAddress || 'N/A'}</div>
                             </div>
-                            <img src="../img/paluan.png" alt="Mindoro Seal" class="w-10 h-10 rounded-full vertical-align-middle">
-                        </div>
-                        
-                        <!-- ID Content -->
-                        <div class="id-content" style="font-size: 8pt;">
-                            <div style="margin-bottom: 1px; text-decoration: underline;" class="flex flex-row gap-1">
-                                <div style="font-weight: bold; font-size: 8pt;">Name:</div>
-                                <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
-                            </div>
-                            <div class="flex flex-row justify-between align-middle mt-1">
-                                <div class="flex flex-col  text-align: left;">
-                                    <div style="margin-bottom: 2px; text-decoration: underline;" class="flex flex-row ">
-                                        <div style="font-weight: bold; font-size: 8pt;" >Address:</div>
-                                        <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">Brgy. ${senior.barangay || ''}</div>
-                                    </div>
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
-                                        <div>
-                                            <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
-                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${dob}</div>
-                                        </div>
-                                        <div style="text-align: center;">
-                                            <div style="font-size: 8pt; font-weight: bold;">Sex</div>
-                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${genderCode}</div>
-                                        </div>
-                                        <div>
-                                            <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
-                                            <div style="font-size: 8pt; font-weight: bold; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
-                                        </div>
-                                    </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
+                                <div class="dob text-center">
+                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dob}</div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
                                 </div>
-                                <div style="height:1in; width:1in; border: 1px solid #000;"></div>
-                            </div>
-                            <div class="flex flex-row justify-between align-middle">
-                                <div style="text-align: left;">
-                                    <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
+                                <div  class="gender text-center">
+                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${genderCode}</div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Sex</div>
                                 </div>
-                                <div style="text-align: right; margin-right:0.5in;">
-                                    <div style="font-size: 7pt; font-weight: bold;">
-                                        I.D No. <span style="font-weight: bold;">${idNumber}</span>
-                                    </div>
+                                <div  class="dateissued text-center">
+                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Non-Transferable Notice -->
-                        <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
-                            THIS CARD IS NON-TRANSFERABLE
+                        <div style="height:1in; width:1in; border: 1px solid #000;" class="idpicture"></div>
+                    </div>
+                    <div class="flex flex-row justify-between align-middle">
+                        <div style="text-align: left;">
+                            <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
+                            <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
+                        </div>
+                        <div style="text-align: right; margin-right:0.5in;">
+                            <div style="font-size: 7pt; font-weight: bold;">
+                                I.D No. <span style="font-weight: bold;">${idNumber}</span>
+                            </div>
                         </div>
                     </div>
-                `;
+                </div>
+                
+                <!-- Non-Transferable Notice -->
+                <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
+                    THIS CARD IS NON-TRANSFERABLE
+                </div>
+            </div>
+        `;
             });
 
             // Fill empty spots with blank ID cards (to maintain 9 per page)
@@ -1358,53 +1477,57 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
 
             html += `
-                    </div>
-                </div>
-            `;
+            </div>
+        </div>
+    `;
 
             return html;
         }
 
-        // Generate back page with benefits (one back page for each 9 IDs)
+        // Generate back page with benefits (9 copies, one for each ID on front page)
         function generateBackPage(oscaHead, municipalMayor) {
             return `
-                <div class="print-page benefits-page">
-                    <div class="benefits-header" style="font-size: 10pt;">
-                        <div>Benefits and Privileges under Republic Act No. 9994</div>
+        <div class="print-page benefits-page">
+            <div class="print-grid">
+                ${Array(9).fill().map(() => `
+                <div class="benefits-card">
+                    <div class="benefits-header">
+                        Benefits and Privileges under Republic Act No. 9994
                     </div>
                     
                     <div class="benefits-list">
-                        <div style="margin-bottom: 2px;">• Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
-                        <div style="margin-bottom: 2px;">• 20% discount in purchase medicines</div>
-                        <div style="margin-bottom: 2px;">• 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
-                        <div style="margin-bottom: 2px;">• 20% discount on theatres, cinema houses and concert halls, etc.</div>
-                        <div style="margin-bottom: 2px;">• 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
-                        <div style="margin-bottom: 2px;">• 20% discount in fare for domestic air, sea travel and public land transportation</div>
-                        <div style="margin-bottom: 2px;">• 5% discount in basic necessities and prime commodities</div>
-                        <div style="margin-bottom: 2px;">• 12% VAT- exemption on the purchase of goods & service which are entitled to the 20% discount</div>
-                        <div style="margin-bottom: 2px;">• 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
+                        <div>• Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
+                        <div>• 20% discount in purchase medicines</div>
+                        <div>• 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
+                        <div>• 20% discount on theatres, cinema houses and concert halls, etc.</div>
+                        <div>• 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
+                        <div>• 20% discount in fare for domestic air, sea travel and public land transportation</div>
+                        <div>• 5% discount in basic necessities and prime commodities</div>
+                        <div>• 12% VAT- exemption on the purchase of goods & service which are entitled to the 20% discount</div>
+                        <div>• 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
                         
-                        <div style="margin-top: 10px; font-style: italic;">
+                        <div class="benefits-notice">
                             Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
                         </div>
                     </div>
                     
                     <div class="benefits-footer">
-                        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                            <div style="text-align: center;">
-                                <div style="font-weight: bold; font-size: 9pt;">${oscaHead}</div>
-                                <div class="signature-line"></div>
-                                <div style="font-size: 8pt;">OSCA HEAD</div>
+                        <div class="signatures-container">
+                            <div class="signature-item">
+                                <div class="signature-name">${oscaHead}</div>
+                                <div class="signature-title">OSCA HEAD</div>
                             </div>
-                            <div style="text-align: center;">
-                                <div style="font-weight: bold; font-size: 9pt;">${municipalMayor}</div>
-                                <div class="signature-line"></div>
-                                <div style="font-size: 8pt;">Municipal Mayor</div>
+                            <div class="signature-item">
+                                <div class="signature-name">${municipalMayor}</div>
+                                <div class="signature-title">Municipal Mayor</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            `;
+                `).join('')}
+            </div>
+        </div>
+    `;
         }
 
         // Format date to MM/DD/YYYY
@@ -1534,7 +1657,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             document.getElementById('print-preview-modal').classList.add('hidden');
         }
 
-        // Print preview
+        // Print Preview
+        // Print Preview
         function printPreview() {
             const printWindow = window.open('', '_blank');
             printWindow.document.title = 'Senior Citizen IDs - Print';
@@ -1546,6 +1670,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     <title>Senior Citizen IDs - Print</title>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <!-- Import Maiandra GD font -->
+                    <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
                     <style>
                         @page {
                             size: landscape;
@@ -1555,7 +1681,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         body {
                             margin: 0;
                             padding: 0;
-                            font-family: Arial, sans-serif;
+                            font-family: "Times New Roman", Times, serif;
                             -webkit-print-color-adjust: exact !important;
                             print-color-adjust: exact !important;
                         }
@@ -1568,96 +1694,243 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             overflow: hidden;
                         }
                         
-                        .id-front-page {
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                        }
-                        
                         .print-grid {
-                            display: grid;
-                            grid-template-columns: repeat(3, 1fr);
-                            grid-template-rows: repeat(3, 1fr);
-                            gap: 0.1in;
-                            width: 13in;
-                            height: 8.5in;
-                            padding: 0.2in;
-                            box-sizing: border-box;
+                            display: grid !important;
+                            grid-template-columns: repeat(3, 1fr) !important;
+                            grid-template-rows: repeat(3, 1fr) !important;
+                            gap: 0.1in !important;
+                            width: 13in !important;
+                            height: 8.5in !important;
+                            padding: 0.2in !important;
+                            box-sizing: border-box !important;
                         }
                         
                         .id-card {
-                            width: 3.33in;
-                            height: 2.13in;
-                            border: 1px solid #000;
-                            padding: 2px;
-                            background: white;
-                            position: relative;
-                            overflow: hidden;
-                            box-sizing: border-box;
-                            font-size: 6pt;
+                            width: 3.17in !important;
+                            height: 2.14in !important;
+                            border: 1px solid #000 !important;
+                            padding: 3px !important;
+                            background: white !important;
+                            position: relative !important;
+                            overflow: hidden !important;
+                            box-sizing: border-box !important;
+                            font-family: "Times New Roman", Times, serif !important;
                         }
                         
+                        /* ID Header - exactly matches generateFrontPage() */
                         .id-header {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 1px;
-                            line-height: 1;
-                            font-size: 6pt;
+                            display: flex !important;
+                            justify-content: space-between !important;
+                            align-items: center !important;
+                            margin-bottom: 2px !important;
+                            width: 100% !important;
+                            font-size: 6pt !important;
                         }
                         
+                        .id-header img {
+                            width: 0.49in !important;
+                            height: 0.49in !important;
+                            object-fit: contain !important;
+                            vertical-align: middle !important;
+                            display: block !important;
+                        }
+                        
+                        /* ID Content - exactly matches generateFrontPage() */
                         .id-content {
-                            padding: 1px;
+                            font-size: 8pt !important;
                         }
                         
-                        .id-name {
-                            font-weight: bold;
-                            text-transform: uppercase;
-                            font-size: 7pt;
+                        .name {
+                            display: flex !important;
+                            flex-direction: row !important;
+                            gap: 1px !important;
+                            margin-bottom: 1px !important;
                         }
                         
-                        .id-address {
-                            text-transform: uppercase;
-                            font-size: 7pt;
+                        .address {
+                            display: flex !important;
+                            flex-direction: row !important;
+                            margin-bottom: 2px !important;
+                        }
+                        
+                        /* 3rdrow class from generateFrontPage() */
+                        .3rdrow {
+                            display: flex !important;
+                            flex-direction: row !important;
+                            justify-content: space-between !important;
+                            margin-top: 1px !important;
+                        }
+                        
+                        /* dsd class from generateFrontPage() */
+                        .dsd {
+                            display: flex !important;
+                            flex-direction: column !important;
+                            text-align: left !important;
+                            width: 2.15in !important;
+                        }
+                        
+                        /* ID picture alignment */
+                        .idpicture {
+                            height: 1in !important;
+                            width: 1in !important;
+                            border: 1px solid #000 !important;
+                        }
+                        
+                        /* Grid for date sections */
+                        [style*="display: grid"] {
+                            display: grid !important;
+                            grid-template-columns: repeat(3, 1fr) !important;
+                            gap: 1px !important;
+                        }
+                        
+                        .text-center {
+                            text-align: center !important;
+                        }
+                        
+                        /* ID name and address styling */
+                        [style*="font-weight: bold"] {
+                            font-weight: bold !important;
+                        }
+                        
+                        [style*="font-size: 8pt"] {
+                            font-size: 8pt !important;
+                        }
+                        
+                        [style*="text-decoration: underline"] {
+                            text-decoration: underline !important;
+                        }
+                        
+                        [style*="margin-left: 5px"] {
+                            margin-left: 5px !important;
+                        }
+                        
+                        /* Signature section */
+                        [style*="border-bottom: 1px solid #000"] {
+                            border-bottom: 1px solid #000 !important;
+                            width: 100% !important;
+                        }
+                        
+                        [style*="text-align: left"] {
+                            text-align: left !important;
+                        }
+                        
+                        [style*="text-align: right"] {
+                            text-align: right !important;
+                        }
+                        
+                        [style*="margin-right:0.5in"] {
+                            margin-right: 0.5in !important;
                         }
                         
                         .id-footer {
-                            text-align: center;
-                            font-weight: bold;
-                            color: #dc2626;
-                            margin-top: 2px;
-                            font-size: 5pt;
+                            font-size: 7pt !important;
+                            font-weight: bold !important;
+                            color: red !important;
+                            text-align: center !important;
                         }
                         
-                        .benefits-page {
-                            width: 13in;
-                            height: 8.5in;
-                            padding: 0.3in;
-                            page-break-after: always;
-                            font-size: 8pt;
-                            box-sizing: border-box;
+                        /* Benefits card styles - keep as is since they work */
+                        .benefits-card {
+                            width: 3.17in !important;
+                            height: 2.14in !important;
+                            border: 1px solid #000 !important;
+                            padding: 10px 8px 8px 8px !important;
+                            background: white !important;
+                            position: relative !important;
+                            overflow: hidden !important;
+                            box-sizing: border-box !important;
+                            display: flex !important;
+                            flex-direction: column !important;
                         }
                         
                         .benefits-header {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 0.1in;
-                            font-size: 10pt;
+                            text-align: center !important;
+                            font-weight: bold !important;
+                            margin-bottom: 6px !important;
+                            font-family: "Times New Roman", Times, serif !important;
+                            font-size: 6.5pt !important;
+                            line-height: 1.1 !important;
+                            text-transform: uppercase !important;
                         }
                         
                         .benefits-list {
-                            line-height: 1.2;
+                            font-size: 5pt !important;
+                            line-height: 1.1 !important;
+                            font-family: "Times New Roman", Times, serif !important;
+                            flex-grow: 1 !important;
+                            margin-bottom: 4px !important;
+                        }
+                        
+                        .benefits-list div {
+                            margin-bottom: 1px !important;
+                            text-indent: -10px !important;
+                            padding-left: 10px !important;
                         }
                         
                         .benefits-footer {
-                            margin-top: 0.2in;
-                            text-align: center;
+                            text-align: center !important;
+                            font-family: "Times New Roman", Times, serif !important;
+                            font-size: 5pt !important;
+                            margin-top: 2px !important;
                         }
                         
-                        .signature-line {
-                            border-top: 1px solid #000;
-                            width: 2in;
-                            display: inline-block;
-                            margin-top: 0.1in;
+                        .benefits-notice {
+                            font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
+                            font-style: italic !important;
+                            font-size: 5.5pt !important;
+                            margin-top: 4px !important;
+                            text-align: center !important;
+                            line-height: 1.1 !important;
+                            margin-bottom: 4px !important;
+                            color: #ff0000 !important;
+                        }
+                        
+                        .signatures-container {
+                            display: flex !important;
+                            justify-content: space-between !important;
+                            align-items: flex-end !important;
+                            margin-top: 4px !important;
+                        }
+                        
+                        .signature-item {
+                            text-align: center !important;
+                            width: 48% !important;
+                        }
+                        
+                        .signature-name {
+                            font-weight: bold !important;
+                            font-size: 7pt !important;
+                            text-decoration: underline !important;
+                            margin-bottom: 2px !important;
+                            min-height: 8px !important;
+                        }
+                        
+                        .signature-title {
+                            font-size: 6.5pt !important;
+                            font-weight: bold !important;
+                        }
+                        
+                        /* Additional flex utilities to match Tailwind classes */
+                        .flex {
+                            display: flex !important;
+                        }
+                        
+                        .flex-row {
+                            flex-direction: row !important;
+                        }
+                        
+                        .flex-col {
+                            flex-direction: column !important;
+                        }
+                        
+                        .justify-between {
+                            justify-content: space-between !important;
+                        }
+                        
+                        
+                        
+                        .mt-1 {
+                            margin-top: 1px !important;
                         }
                         
                         @media print {
@@ -1671,11 +1944,41 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                 height: 8.5in !important;
                                 page-break-after: always !important;
                             }
+                            
+                            .print-grid {
+                                display: grid !important;
+                                grid-template-columns: repeat(3, 1fr) !important;
+                                grid-template-rows: repeat(3, 1fr) !important;
+                                gap: 0.1in !important;
+                                width: 13in !important;
+                                height: 8.5in !important;
+                                padding: 0.2in !important;
+                                box-sizing: border-box !important;
+                            }
+                            
+                            .id-card {
+                                width: 3.17in !important;
+                                height: 2.14in !important;
+                                border: 1px solid #000 !important;
+                                padding: 3px !important;
+                                background: white !important;
+                                position: relative !important;
+                                overflow: hidden !important;
+                                box-sizing: border-box !important;
+                                font-family: "Times New Roman", Times, serif !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            
+                            .id-header img {
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
                         }
                     </style>
                 </head>
                 <body>
-            `;
+                `;
 
             // Add all pages
             allPreviewPages.forEach(page => {
