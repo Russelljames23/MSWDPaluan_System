@@ -999,6 +999,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             </div>
                         </div>
                     </div>
+
                 </div>
             </section>
 
@@ -1682,7 +1683,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             flex-direction: row !important;
                             justify-content: space-between !important;
                             margin-top: 1px !important;
-                            border:solid 1px black 
                         }
                         
                         /* dsd class from generateFrontPage() */
@@ -1851,9 +1851,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             justify-content: space-between !important;
                         }
                         
-                        .align-middle {
-                            align-items: center !important;
-                        }
+                        
                         
                         .mt-1 {
                             margin-top: 1px !important;
