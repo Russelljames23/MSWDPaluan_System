@@ -549,6 +549,20 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <span class="tooltip">Accounts</span>
                         </li>
                         <li>
+                            <a href="sms.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M5 5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H5Zm2.5 5.5a1 1 0 1 0 0 2h9a1 1 0 1 0 0-2h-9Zm0 3a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2h-5Z"
+                                        clip-rule="evenodd" />
+                                    <path d="M8.707 4.293A1 1 0 0 0 8 4H6a1 1 0 0 0-1 1v1.382a1 1 0 0 0 .553.894l2.618 1.309a1 1 0 0 0 .894 0L12.447 7.276A1 1 0 0 0 13 6.382V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-.707.293Z" />
+                                </svg>
+                                <span class="links_name">SMS Settings</span>
+                            </a>
+                            <span class="tooltip">SMS Settings</span>
+                        </li>
+                        <li>
                             <a href="systemlogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"

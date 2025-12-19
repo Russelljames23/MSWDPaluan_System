@@ -1063,12 +1063,31 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             document.getElementById('deselect-all-btn').addEventListener('click', deselectAll);
             document.getElementById('master-checkbox').addEventListener('change', toggleMasterCheckbox);
             document.getElementById('preview-ids-btn').addEventListener('click', previewIDs);
-            document.getElementById('generate-pdf-btn').addEventListener('click', generatePDF);
             document.getElementById('print-ids-btn').addEventListener('click', printIDs);
             document.getElementById('close-preview-btn').addEventListener('click', closePreview);
             document.getElementById('print-preview-btn').addEventListener('click', printPreview);
-            document.getElementById('prev-page-btn').addEventListener('click', prevPage);
-            document.getElementById('next-page-btn').addEventListener('click', nextPage);
+
+            // Use event delegation for buttons in the modal (which might not exist yet)
+            document.addEventListener('click', function(e) {
+                // Check if the clicked element is the prev page button
+                if (e.target && e.target.id === 'prev-page-btn') {
+                    prevPage();
+                }
+
+                // Check if the clicked element is the next page button
+                if (e.target && e.target.id === 'next-page-btn') {
+                    nextPage();
+                }
+
+                // Also check if clicked on a child element inside the button
+                if (e.target && (e.target.closest('#prev-page-btn'))) {
+                    prevPage();
+                }
+
+                if (e.target && (e.target.closest('#next-page-btn'))) {
+                    nextPage();
+                }
+            });
 
             // Search and filter event listeners
             document.getElementById('search-senior').addEventListener('input', filterTable);
@@ -1322,7 +1341,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 // Build full address
                 let fullAddress = '';
                 if (senior.barangay && senior.barangay !== 'N/A') {
-                    fullAddress = `Brgy. ${senior.barangay}`;
+                    fullAddress = `Brgy. ${senior.barangay.toUpperCase()}`;
                 }
                 if (senior.municipality && senior.municipality !== 'N/A') {
                     fullAddress += fullAddress ? ', ' + senior.municipality : senior.municipality;
@@ -1335,13 +1354,13 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             <div class="id-card">
                 <!-- Republic Header -->
                 <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.49in] h-[.49in] rounded-full vertical-align-middle">
+                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
                     <div>
                         <div style="font-size: 7.5pt;">Republic of the Philippines</div>
                         <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
                         <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
                     </div>
-                    <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.49in] h-[.49in] rounded-full vertical-align-middle">
+                    <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
                 </div>
                 
                 <!-- ID Content -->
@@ -1379,8 +1398,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
                         </div>
                         <div style="text-align: right; margin-right:0.5in;">
-                            <div style="font-size: 7pt; font-weight: bold;">
-                                I.D No. <span style="font-weight: bold;">${idNumber}</span>
+                            <div style="font-size: 8pt; font-weight: bold;" class="validity-number">
+                                I.D No. <span style="font-weight: bold; text-decoration: underline;" class="id-number">${idNumber}</span>
                             </div>
                         </div>
                     </div>
@@ -1419,15 +1438,15 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     </div>
                     
                     <div class="benefits-list">
-                        <div>• Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
-                        <div>• 20% discount in purchase medicines</div>
-                        <div>• 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
-                        <div>• 20% discount on theatres, cinema houses and concert halls, etc.</div>
-                        <div>• 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
-                        <div>• 20% discount in fare for domestic air, sea travel and public land transportation</div>
-                        <div>• 5% discount in basic necessities and prime commodities</div>
-                        <div>• 12% VAT- exemption on the purchase of goods & service which are entitled to the 20% discount</div>
-                        <div>• 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in purchase medicines</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount on theatres, cinema houses and concert halls, etc.</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in fare for domestic air, sea travel and public land transportation</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount in basic necessities and prime commodities</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 12% VAT - exemption on the purchase of goods & service which are entitled to the 20% discount</div>
+                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
                         
                         <div class="benefits-notice">
                             Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
@@ -1581,330 +1600,551 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         }
 
         // Print Preview
-        // Print Preview
         function printPreview() {
             const printWindow = window.open('', '_blank');
             printWindow.document.title = 'Senior Citizen IDs - Print';
 
             let printHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Senior Citizen IDs - Print</title>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <!-- Import Maiandra GD font -->
-                    <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
-                    <style>
-                        @page {
-                            size: landscape;
-                            margin: 0;
-                        }
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Senior Citizen IDs - Print</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <!-- Import Maiandra GD font -->
+            <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
+            <style>
+                @page {
+                    size: landscape;
+                    margin: 0;
+                }
+                
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: "Times New Roman", Times, serif;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                    min-height: 100vh !important;
+                    background: white !important;
+                }
+                
+                /* Container for centering all pages */
+                .print-container {
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    display: flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                }
+                
+                .print-page {
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    page-break-after: always !important;
+                    display: flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                }
+                
+                /* Grid that's perfectly centered */
+                .print-grid {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 3.17in) !important;
+                    grid-template-rows: repeat(3, 2.14in) !important;
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    padding: 0.2in !important;
+                    box-sizing: border-box !important;
+                    justify-items: center !important;
+                    align-items: center !important;
+                }
+                
+                .id-card {
+                    width: 3.20in !important;
+                    height: 2.16in !important;
+                    border: 1px solid #000 !important;
+                    padding: 5px !important;
+                    background: white !important;
+                    position: relative !important;
+                    overflow: hidden !important;
+                    box-sizing: border-box !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                }
+                
+                /* ID Header - exactly matches generateFrontPage() */
+                .id-header {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    font-weight:bold !important;
+                    text-align: center !important;
+                    margin-bottom: 2px !important;
+                    width: 100% !important;
+                    font-size: 7.5pt !important;
+                }
+                
+                .id-header img {
+                    width: 0.49in !important;
+                    height: 0.49in !important;
+                    object-fit: contain !important;
+                    vertical-align: middle !important;
+                    display: block !important;
+                }
+                
+                /* ID Content - exactly matches generateFrontPage() */
+                .id-content {
+                    font-size: 8pt !important;
+                }
+                
+                .name {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    gap: 1px !important;
+                    margin-bottom: 15px !important;
+                }
+                
+                .id-name{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    text-decoration: underline !important;
+                }
+                
+                .id-address{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    text-decoration: underline !important;
+                }
+                
+                .dob, .gender, .dateissued{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    margin-top: 5px !important;
+                }
+                .address {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    margin-bottom: 5px !important;
+                }
+                
+                /* 3rdrow class from generateFrontPage() */
+                .3rdrow {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    justify-content: space-between !important;
+                    margin-top: 20px !important;
+                }
+                
+                /* dsd class from generateFrontPage() */
+                .dsd {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    justify-content: start !important;
+                    height: 1in !important;
+                    width: 2.15in !important;
+                }
+                
+                /* ID picture alignment */
+                .idpicture {
+                    height: 1in !important;
+                    width: 1in !important;
+                    border: 1px solid #000 !important;
+                }
+
+                id-number {
+                    font-weight: bold !important;
+                    fontsize: 8pt !important;
+                    text-decoration: underline !important;  
+                }
+                validity-number {
+                    font-weight: bold !important;
+                    fontsize: 8pt !important;
+                    text-decoration: underline !important;  
+                }
+                
+                /* Grid for date sections */
+                [style*="display: grid"] {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 1fr) !important;
+                    gap: 1px !important;
+                }
+                
+                .text-center {
+                    text-align: center !important;
+                }
+                
+                /* ID name and address styling */
+                [style*="font-weight: bold"] {
+                    font-weight: bold !important;
+                }
+                
+                [style*="font-size: 8pt"] {
+                    font-size: 8pt !important;
+                }
+                
+                [style*="text-decoration: underline"] {
+                    text-decoration: underline !important;
+                }
+                
+                [style*="margin-left: 5px"] {
+                    margin-left: 5px !important;
+                }
+                
+                /* Signature section */
+                [style*="border-bottom: 1px solid #000"] {
+                    border-bottom: 1px solid #000 !important;
+                    width: 100% !important;
+                }
+                
+                [style*="text-align: left"] {
+                    text-align: left !important;
+                }
+                
+                [style*="text-align: right"] {
+                    text-align: right !important;
+                }
+                
+                [style*="margin-right:0.5in"] {
+                    margin-right: 0.5in !important;
+                }
+                
+                .id-footer {
+                    font-size: 7pt !important;
+                    font-weight: bold !important;
+                    color: red !important;
+                    text-align: center !important;
+                    margin-top: 2px !important;
+                }
+                
+                /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
+                .benefits-card {
+                    width: 3.30in !important;
+                    height: 2.23in !important;
+                    border: 1px solid #000 !important;
+                    padding: 12px 10px 8px 10px !important;
+                    background: white !important;
+                    position: relative !important;
+                    overflow: hidden !important;
+                    box-sizing: border-box !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                }
+                
+                .benefits-header {
+                    text-align: center !important;
+                    font-weight: bold !important;
+                    margin-bottom: 6px !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    font-size: 6.5pt !important;
+                    line-height: 1.1 !important;
+                    text-transform: uppercase !important;
+                }
+                
+                .benefits-list {
+                    font-size: 5pt !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    margin-bottom: 4px !important;
+                }
+                
+                /* FIXED: Perfect vertical alignment for image bullets */
+                .benefits-list div {
+                    margin-bottom: 2px !important;
+                    display: flex !important;
+                    align-items: flex-start !important;
+                    gap:15.5px;
+                }
+                
+                /* Image bullet styling - perfectly aligned */
+                .benefits-list div img {
+                    width: 3pt !important;
+                    height: 3pt !important;
+                    margin-right: 4px !important;
+                    margin-top: 0.5px !important;
+                    flex-shrink: 0 !important;
+                    display: inline-block !important;
+                    vertical-align: top !important;
+                }
+                
+                /* Text content styling */
+                .benefits-list div span {
+                    flex: 1 !important;
+                    display: inline-block !important;
+                    vertical-align: top !important;
+                    line-height: 1.2 !important;
+                }
+                
+                .benefits-footer {
+                    text-align: center !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    font-size: 5pt !important;
+                    margin-top: 16px !important;
+                }
+                
+                .benefits-notice {
+                    font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
+                    font-style: italic !important;
+                    font-size: 6pt !important;
+                    margin-top: 10px !important;
+                    text-align: center !important;
+                    line-height: 1.2 !important;
+                    margin-bottom: 2px !important;
+                    color: #ff0000 !important;
+                }
+                
+                .signatures-container {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: flex-end !important;
+                    margin-top: 3px !important;
+                }
+                
+                .signature-item {
+                    text-align: center !important;
+                    width: 48% !important;
+                }
+                
+                .signature-name {
+                    font-weight: bold !important;
+                    font-size: 7pt !important;
+                    text-decoration: underline !important;
+                    margin-bottom: 1px !important;
+                    min-height: 8px !important;
+                }
+                
+                .signature-title {
+                    font-size: 6.5pt !important;
+                    font-weight: bold !important;
+                }
+                
+                /* Additional flex utilities */
+                .flex {
+                    display: flex !important;
+                }
+                
+                .flex-row {
+                    flex-direction: row !important;
+                }
+                
+                .flex-col {
+                    flex-direction: column !important;
+                }
+                
+                .justify-between {
+                    justify-content: space-between !important;
+                }
+                
+                .align-start {
+                    align-items: flex-start !important;
+                }
+                
+                .align-middle {
+                    align-items: center !important;
+                }
+                
+                .mt-1 {
+                    margin-top: 1px !important;
+                }
+                
+                @media print {
+                    
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: "Times New Roman", Times, serif;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        min-height: 100vh !important;
+                        background: white !important;
+                    }
+                    
+                    /* Container for centering all pages */
+                    .print-container {
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    .print-page {
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        page-break-after: always !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    /* Grid that's perfectly centered */
+                    .print-grid {
+                        display: grid !important;
+                        grid-template-columns: repeat(3, 4in) !important;
+                        grid-template-rows: repeat(3, 2.40in) !important;
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        padding: 0.2in !important;
+                        box-sizing: border-box !important;
+                        justify-items: center !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    .id-card {
+                        width: 3.35in !important;
+                        height: 2.30in !important;
+                        border: 1px solid #000 !important;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                        padding-left: 10px !important;
+                        padding-right: 10px !important;
+                        background: white !important;
+                        position: relative !important;
+                        overflow: hidden !important;
+                        box-sizing: border-box !important;
+                        font-family: "Times New Roman", Times, serif !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+
+                    /* ID Header - exactly matches generateFrontPage() */
+                    .id-header {
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        font-weight:bold !important;
+                        text-align: center !important;
+                        margin-bottom: 3px !important;
+                        width: 100% !important;
+                        font-size: 7.5pt !important;
+                    }
+                    
+                    .id-header img {
+                        width: 0.49in !important;
+                        height: 0.49in !important;
+                        object-fit: contain !important;
+                        vertical-align: middle !important;
+                        display: block !important;
+                    }
+                    
+                    /* ID Content - exactly matches generateFrontPage() */
+                    .id-content {
+                        font-size: 8pt !important;
+                    }
+                    .name {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 1px !important;
                         
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            font-family: "Times New Roman", Times, serif;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                        
-                        .print-page {
-                            width: 13in;
-                            height: 8.5in;
-                            page-break-after: always;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                        
-                        .print-grid {
-                            display: grid !important;
-                            grid-template-columns: repeat(3, 1fr) !important;
-                            grid-template-rows: repeat(3, 1fr) !important;
-                            gap: 0.1in !important;
-                            width: 13in !important;
-                            height: 8.5in !important;
-                            padding: 0.2in !important;
-                            box-sizing: border-box !important;
-                        }
-                        
-                        .id-card {
-                            width: 3.17in !important;
-                            height: 2.14in !important;
-                            border: 1px solid #000 !important;
-                            padding: 3px !important;
-                            background: white !important;
-                            position: relative !important;
-                            overflow: hidden !important;
-                            box-sizing: border-box !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                        }
-                        
-                        /* ID Header - exactly matches generateFrontPage() */
-                        .id-header {
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: center !important;
-                            margin-bottom: 2px !important;
-                            width: 100% !important;
-                            font-size: 6pt !important;
-                        }
-                        
-                        .id-header img {
-                            width: 0.49in !important;
-                            height: 0.49in !important;
-                            object-fit: contain !important;
-                            vertical-align: middle !important;
-                            display: block !important;
-                        }
-                        
-                        /* ID Content - exactly matches generateFrontPage() */
-                        .id-content {
-                            font-size: 8pt !important;
-                        }
-                        
-                        .name {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            gap: 1px !important;
-                            margin-bottom: 1px !important;
-                        }
-                        
-                        .address {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            margin-bottom: 2px !important;
-                        }
-                        
-                        /* 3rdrow class from generateFrontPage() */
-                        .3rdrow {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            justify-content: space-between !important;
-                            margin-top: 1px !important;
-                            border:solid 1px black 
-                        }
-                        
-                        /* dsd class from generateFrontPage() */
-                        .dsd {
-                            display: flex !important;
-                            flex-direction: column !important;
-                            text-align: left !important;
-                            width: 2.15in !important;
-                        }
-                        
-                        /* ID picture alignment */
-                        .idpicture {
-                            height: 1in !important;
-                            width: 1in !important;
-                            border: 1px solid #000 !important;
-                        }
-                        
-                        /* Grid for date sections */
-                        [style*="display: grid"] {
-                            display: grid !important;
-                            grid-template-columns: repeat(3, 1fr) !important;
-                            gap: 1px !important;
-                        }
-                        
-                        .text-center {
-                            text-align: center !important;
-                        }
-                        
-                        /* ID name and address styling */
-                        [style*="font-weight: bold"] {
-                            font-weight: bold !important;
-                        }
-                        
-                        [style*="font-size: 8pt"] {
-                            font-size: 8pt !important;
-                        }
-                        
-                        [style*="text-decoration: underline"] {
-                            text-decoration: underline !important;
-                        }
-                        
-                        [style*="margin-left: 5px"] {
-                            margin-left: 5px !important;
-                        }
-                        
-                        /* Signature section */
-                        [style*="border-bottom: 1px solid #000"] {
-                            border-bottom: 1px solid #000 !important;
-                            width: 100% !important;
-                        }
-                        
-                        [style*="text-align: left"] {
-                            text-align: left !important;
-                        }
-                        
-                        [style*="text-align: right"] {
-                            text-align: right !important;
-                        }
-                        
-                        [style*="margin-right:0.5in"] {
-                            margin-right: 0.5in !important;
-                        }
-                        
-                        .id-footer {
-                            font-size: 7pt !important;
-                            font-weight: bold !important;
-                            color: red !important;
-                            text-align: center !important;
-                        }
-                        
-                        /* Benefits card styles - keep as is since they work */
-                        .benefits-card {
-                            width: 3.17in !important;
-                            height: 2.14in !important;
-                            border: 1px solid #000 !important;
-                            padding: 10px 8px 8px 8px !important;
-                            background: white !important;
-                            position: relative !important;
-                            overflow: hidden !important;
-                            box-sizing: border-box !important;
-                            display: flex !important;
-                            flex-direction: column !important;
-                        }
-                        
-                        .benefits-header {
-                            text-align: center !important;
-                            font-weight: bold !important;
-                            margin-bottom: 6px !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            font-size: 6.5pt !important;
-                            line-height: 1.1 !important;
-                            text-transform: uppercase !important;
-                        }
-                        
-                        .benefits-list {
-                            font-size: 5pt !important;
-                            line-height: 1.1 !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            flex-grow: 1 !important;
-                            margin-bottom: 4px !important;
-                        }
-                        
-                        .benefits-list div {
-                            margin-bottom: 1px !important;
-                            text-indent: -10px !important;
-                            padding-left: 10px !important;
-                        }
-                        
-                        .benefits-footer {
-                            text-align: center !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            font-size: 5pt !important;
-                            margin-top: 2px !important;
-                        }
-                        
-                        .benefits-notice {
-                            font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
-                            font-style: italic !important;
-                            font-size: 5.5pt !important;
-                            margin-top: 4px !important;
-                            text-align: center !important;
-                            line-height: 1.1 !important;
-                            margin-bottom: 4px !important;
-                            color: #ff0000 !important;
-                        }
-                        
-                        .signatures-container {
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: flex-end !important;
-                            margin-top: 4px !important;
-                        }
-                        
-                        .signature-item {
-                            text-align: center !important;
-                            width: 48% !important;
-                        }
-                        
-                        .signature-name {
-                            font-weight: bold !important;
-                            font-size: 7pt !important;
-                            text-decoration: underline !important;
-                            margin-bottom: 2px !important;
-                            min-height: 8px !important;
-                        }
-                        
-                        .signature-title {
-                            font-size: 6.5pt !important;
-                            font-weight: bold !important;
-                        }
-                        
-                        /* Additional flex utilities to match Tailwind classes */
-                        .flex {
-                            display: flex !important;
-                        }
-                        
-                        .flex-row {
-                            flex-direction: row !important;
-                        }
-                        
-                        .flex-col {
-                            flex-direction: column !important;
-                        }
-                        
-                        .justify-between {
-                            justify-content: space-between !important;
-                        }
-                        
-                        .align-middle {
-                            align-items: center !important;
-                        }
-                        
-                        .mt-1 {
-                            margin-top: 1px !important;
-                        }
-                        
-                        @media print {
-                            body {
-                                margin: 0 !important;
-                                padding: 0 !important;
-                            }
-                            
-                            .print-page {
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                page-break-after: always !important;
-                            }
-                            
-                            .print-grid {
-                                display: grid !important;
-                                grid-template-columns: repeat(3, 1fr) !important;
-                                grid-template-rows: repeat(3, 1fr) !important;
-                                gap: 0.1in !important;
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                padding: 0.2in !important;
-                                box-sizing: border-box !important;
-                            }
-                            
-                            .id-card {
-                                width: 3.17in !important;
-                                height: 2.14in !important;
-                                border: 1px solid #000 !important;
-                                padding: 3px !important;
-                                background: white !important;
-                                position: relative !important;
-                                overflow: hidden !important;
-                                box-sizing: border-box !important;
-                                font-family: "Times New Roman", Times, serif !important;
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                            
-                            .id-header img {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                `;
+                    }
+                    
+                    /* Ensure 3rdrow and dsd align properly in print */
+                    .3rdrow {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        justify-content: space-between !important;
+                        align-items: flex-start !important;
+                        margin-top: 40px !important;
+                        height: 1.1in !important;
+                    }
+                    
+                    .dsd {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: start !important;
+                        height: 1in !important;
+                    }
+
+                    /* ID picture alignment */
+                    .idpicture {
+                        height: 1.05in !important;
+                        width: 1.1in !important;
+                        border: 1px solid #000 !important;
+                    }
+
+                    .benefits-card {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    .id-header img {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+
+                    .id-name{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        text-decoration: underline !important;
+                    }
+                    
+                    .id-address{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        text-decoration: underline !important;
+                        margin-bottom: 5px !important;
+                        margin-left: 0px !important;
+                    }
+                    .dob, .gender, .dateissued{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        margin-top: 5px !important;
+                    }
+
+                    id-number {
+                        font-weight: bold !important;
+                        fontsize: 8pt !important;
+                        text-decoration: underline !important;  
+                    }
+
+                    validity-number {
+                        font-weight: bold !important;
+                        fontsize: 8pt !important;
+                    }
+
+                    .id-footer {
+                        font-size: 7pt !important;
+                        font-weight: bold !important;
+                        color: red !important;
+                        text-align: center !important;
+                        margin-top: 2px !important;
+                    }
+                    /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
+
+                    .benefits-card {
+                        width: 3.35in !important;
+                        height: 2.27in !important;
+                        border: 1px solid #000 !important;
+                        padding: 12px 10px 8px 10px !important;
+                        background: white !important;
+                        position: relative !important;
+                        overflow: hidden !important;
+                        box-sizing: border-box !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                    }
+                    /* Ensure consistent list alignment in print */
+                    .benefits-list div {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        -webkit-column-break-inside: avoid !important;
+                    }
+                    
+                    .benefits-list div img {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+    `;
 
             // Add all pages
             allPreviewPages.forEach(page => {
@@ -1912,9 +2152,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             });
 
             printHTML += `
-                </body>
-                </html>
-            `;
+        </body>
+        </html>
+    `;
 
             printWindow.document.write(printHTML);
             printWindow.document.close();

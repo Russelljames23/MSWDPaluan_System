@@ -1,0 +1,388 @@
+[2025-12-16 19:31:23] SMS REQUEST: To: 09272873751 | Message: ffdsf...
+[2025-12-16 19:31:25] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-16 19:31:25] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-16 19:31:59] SMS REQUEST: To: 09272873751 | Message: eafsdf...
+[2025-12-16 19:32:01] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-16 19:32:01] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-16 19:32:20] SMS REQUEST: To: 09272873751 | Message: fsadfsdaf...
+[2025-12-16 19:32:22] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-16 19:32:22] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-16 19:32:43] SMS REQUEST: To: 09272873751 | Message: ddgfg...
+[2025-12-16 19:32:45] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-16 19:32:45] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:12:15] SMS REQUEST: To: 09272873751 | Message: Hii pooo...
+[2025-12-18 13:12:17] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:12:17] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:13:23] SMS REQUEST: To: 09272873751 | Message: hiii...
+[2025-12-18 13:13:25] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:13:25] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:14:00] SMS REQUEST: To: 09272873751 | Message: hii...
+[2025-12-18 13:14:02] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:14:02] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:16:38] SMS REQUEST: To: +639272873751 | Message: sdfsdf...
+[2025-12-18 13:16:40] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:16:40] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:23:01] SMS REQUEST: To: 09272873751 | Message: Hiii...
+[2025-12-18 13:23:03] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:23:03] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:23:27] SMS REQUEST: To: 09272873751 | Message: jkjfhkasdf...
+[2025-12-18 13:23:29] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:23:29] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:26:21] SMS REQUEST START: To: 09272873751 | Message: dgdfg...
+[2025-12-18 13:26:21] Formatted number: 09272873751
+[2025-12-18 13:26:21] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:26:21] Detected as globe
+[2025-12-18 13:26:21] Detected carrier: globe
+[2025-12-18 13:26:21] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:26:21] Detected as globe
+[2025-12-18 13:26:21] Email address: 09272873751@globe.com.ph
+[2025-12-18 13:26:21] Attempting to send via mail()...
+[2025-12-18 13:26:23] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:26:23] mail() result: Failed
+[2025-12-18 13:26:24] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:26:24] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:26:33] SMS REQUEST START: To: 09272873751 | Message: gdfgdfg...
+[2025-12-18 13:26:33] Formatted number: 09272873751
+[2025-12-18 13:26:33] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:26:33] Detected as globe
+[2025-12-18 13:26:33] Detected carrier: globe
+[2025-12-18 13:26:33] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:26:33] Detected as globe
+[2025-12-18 13:26:33] Email address: 09272873751@globe.com.ph
+[2025-12-18 13:26:33] Attempting to send via mail()...
+[2025-12-18 13:26:35] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:26:35] mail() result: Failed
+[2025-12-18 13:26:35] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:26:35] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:32:52] SMS REQUEST START: To: 09272873751 | Message: sdfgafdg...
+[2025-12-18 13:32:52] Formatted number: 09272873751
+[2025-12-18 13:32:52] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:32:52] Detected as globe
+[2025-12-18 13:32:52] Detected carrier: globe
+[2025-12-18 13:32:52] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:32:52] Detected as globe
+[2025-12-18 13:32:52] Email address: 09272873751@globe.com.ph
+[2025-12-18 13:32:52] Attempting to send via mail()...
+[2025-12-18 13:32:54] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:32:54] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 13:32:54] mail() result: Success
+[2025-12-18 13:32:54] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:32:54] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:33:02] SMS REQUEST START: To: 09272873751 | Message: sfdsdffsdf...
+[2025-12-18 13:33:02] Formatted number: 09272873751
+[2025-12-18 13:33:02] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:33:02] Detected as globe
+[2025-12-18 13:33:02] Detected carrier: globe
+[2025-12-18 13:33:02] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 13:33:02] Detected as globe
+[2025-12-18 13:33:02] Email address: 09272873751@globe.com.ph
+[2025-12-18 13:33:02] Attempting to send via mail()...
+[2025-12-18 13:33:04] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 13:33:04] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 13:33:04] mail() result: Success
+[2025-12-18 13:33:04] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 13:33:04] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:34:48] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:34:48] Cleaned: 09272873751
+[2025-12-18 14:34:48] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:34:48] ✓ Valid number: 09272873751
+[2025-12-18 14:34:48] Valid: YES
+[2025-12-18 14:34:48] Formatted: 09272873751
+[2025-12-18 14:34:48] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:34:48] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:34:48] ✓ Detected as globe
+[2025-12-18 14:34:48] Carrier: globe
+[2025-12-18 14:34:48] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:34:48] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:34:48] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:34:48] ✓ Detected as globe
+[2025-12-18 14:34:48] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:34:48] Email: 09272873751@globe.com.ph
+[2025-12-18 14:34:48] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:34:48] Cleaned: 09272873751
+[2025-12-18 14:34:48] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:34:48] ✓ Valid number: 09272873751
+[2025-12-18 14:34:48] Valid: YES
+[2025-12-18 14:34:48] Formatted: 09272873751
+[2025-12-18 14:34:48] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:34:48] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:34:48] ✓ Detected as globe
+[2025-12-18 14:34:48] Carrier: globe
+[2025-12-18 14:34:48] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:34:48] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:34:48] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:34:48] ✓ Detected as globe
+[2025-12-18 14:34:48] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:34:48] Email: 09272873751@globe.com.ph
+[2025-12-18 14:35:30] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:35:30] Cleaned: 09272873751
+[2025-12-18 14:35:30] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:30] ✓ Valid number: 09272873751
+[2025-12-18 14:35:30] Valid: YES
+[2025-12-18 14:35:30] Formatted: 09272873751
+[2025-12-18 14:35:30] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:30] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:30] ✓ Detected as globe
+[2025-12-18 14:35:30] Carrier: globe
+[2025-12-18 14:35:30] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:30] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:30] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:30] ✓ Detected as globe
+[2025-12-18 14:35:30] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:35:30] Email: 09272873751@globe.com.ph
+[2025-12-18 14:35:37] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:35:37] Cleaned: 09272873751
+[2025-12-18 14:35:37] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:37] ✓ Valid number: 09272873751
+[2025-12-18 14:35:37] Valid: YES
+[2025-12-18 14:35:37] Formatted: 09272873751
+[2025-12-18 14:35:37] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:37] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:37] ✓ Detected as globe
+[2025-12-18 14:35:37] Carrier: globe
+[2025-12-18 14:35:37] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:38] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:38] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:38] ✓ Detected as globe
+[2025-12-18 14:35:38] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:35:38] Email: 09272873751@globe.com.ph
+[2025-12-18 14:35:43] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:43] ✓ Valid number: 09272873751
+[2025-12-18 14:35:43] SMS REQUEST START: To: 09272873751 | Message: sfsdf...
+[2025-12-18 14:35:43] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:43] ✓ Valid number: 09272873751
+[2025-12-18 14:35:43] Formatted number: 09272873751
+[2025-12-18 14:35:43] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:43] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:43] ✓ Detected as globe
+[2025-12-18 14:35:43] Detected carrier: globe
+[2025-12-18 14:35:43] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:43] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:43] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:43] ✓ Detected as globe
+[2025-12-18 14:35:43] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:35:43] Email address: 09272873751@globe.com.ph
+[2025-12-18 14:35:43] Attempting to send via mail()...
+[2025-12-18 14:35:45] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 14:35:45] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 14:35:45] mail() result: Success
+[2025-12-18 14:35:45] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:35:45] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:35:45] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:35:45] Cleaned: 09272873751
+[2025-12-18 14:35:45] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:45] ✓ Valid number: 09272873751
+[2025-12-18 14:35:45] Valid: YES
+[2025-12-18 14:35:45] Formatted: 09272873751
+[2025-12-18 14:35:45] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:45] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:45] ✓ Detected as globe
+[2025-12-18 14:35:45] Carrier: globe
+[2025-12-18 14:35:45] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:35:45] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:35:45] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:35:45] ✓ Detected as globe
+[2025-12-18 14:35:45] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:35:45] Email: 09272873751@globe.com.ph
+[2025-12-18 14:36:06] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:36:06] Cleaned: 09272873751
+[2025-12-18 14:36:06] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:06] ✓ Valid number: 09272873751
+[2025-12-18 14:36:06] Valid: YES
+[2025-12-18 14:36:06] Formatted: 09272873751
+[2025-12-18 14:36:06] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:06] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:06] ✓ Detected as globe
+[2025-12-18 14:36:06] Carrier: globe
+[2025-12-18 14:36:06] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:06] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:06] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:06] ✓ Detected as globe
+[2025-12-18 14:36:06] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:06] Email: 09272873751@globe.com.ph
+[2025-12-18 14:36:21] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:21] ✓ Valid number: 09272873751
+[2025-12-18 14:36:21] SMS REQUEST START: To: 09272873751 | Message: eafdf...
+[2025-12-18 14:36:21] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:21] ✓ Valid number: 09272873751
+[2025-12-18 14:36:21] Formatted number: 09272873751
+[2025-12-18 14:36:21] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:21] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:21] ✓ Detected as globe
+[2025-12-18 14:36:21] Detected carrier: globe
+[2025-12-18 14:36:21] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:21] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:21] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:21] ✓ Detected as globe
+[2025-12-18 14:36:21] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:21] Email address: 09272873751@globe.com.ph
+[2025-12-18 14:36:21] Attempting to send via mail()...
+[2025-12-18 14:36:23] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 14:36:23] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 14:36:23] mail() result: Success
+[2025-12-18 14:36:23] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:23] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:23] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:36:23] Cleaned: 09272873751
+[2025-12-18 14:36:23] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:23] ✓ Valid number: 09272873751
+[2025-12-18 14:36:23] Valid: YES
+[2025-12-18 14:36:23] Formatted: 09272873751
+[2025-12-18 14:36:23] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:23] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:23] ✓ Detected as globe
+[2025-12-18 14:36:23] Carrier: globe
+[2025-12-18 14:36:23] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:23] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:23] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:23] ✓ Detected as globe
+[2025-12-18 14:36:23] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:23] Email: 09272873751@globe.com.ph
+[2025-12-18 14:36:45] SMS REQUEST START: To: 09272873751 | Message: dfsfds...
+[2025-12-18 14:36:45] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:45] ✓ Valid number: 09272873751
+[2025-12-18 14:36:45] Formatted number: 09272873751
+[2025-12-18 14:36:45] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:45] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:45] ✓ Detected as globe
+[2025-12-18 14:36:45] Detected carrier: globe
+[2025-12-18 14:36:45] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:45] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:45] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:45] ✓ Detected as globe
+[2025-12-18 14:36:45] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:45] Email address: 09272873751@globe.com.ph
+[2025-12-18 14:36:45] Attempting to send via mail()...
+[2025-12-18 14:36:47] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 14:36:47] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 14:36:47] mail() result: Success
+[2025-12-18 14:36:47] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:47] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:47] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:36:47] Cleaned: 09272873751
+[2025-12-18 14:36:47] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:47] ✓ Valid number: 09272873751
+[2025-12-18 14:36:47] Valid: YES
+[2025-12-18 14:36:47] Formatted: 09272873751
+[2025-12-18 14:36:47] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:47] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:47] ✓ Detected as globe
+[2025-12-18 14:36:47] Carrier: globe
+[2025-12-18 14:36:47] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:47] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:47] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:47] ✓ Detected as globe
+[2025-12-18 14:36:47] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:47] Email: 09272873751@globe.com.ph
+[2025-12-18 14:36:57] SMS REQUEST START: To: 09272873751 | Message: sgfdf...
+[2025-12-18 14:36:57] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:57] ✓ Valid number: 09272873751
+[2025-12-18 14:36:57] Formatted number: 09272873751
+[2025-12-18 14:36:57] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:57] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:57] ✓ Detected as globe
+[2025-12-18 14:36:57] Detected carrier: globe
+[2025-12-18 14:36:57] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:57] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:57] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:57] ✓ Detected as globe
+[2025-12-18 14:36:57] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:57] Email address: 09272873751@globe.com.ph
+[2025-12-18 14:36:57] Attempting to send via mail()...
+[2025-12-18 14:36:59] MAIL ATTEMPT: To: 09272873751@globe.com.ph | Result: Failed
+[2025-12-18 14:36:59] DEBUG: mail() returned false, but returning true for testing
+[2025-12-18 14:36:59] mail() result: Success
+[2025-12-18 14:36:59] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:59] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:36:59] === DIAGNOSIS FOR: 09272873751 ===
+[2025-12-18 14:36:59] Cleaned: 09272873751
+[2025-12-18 14:36:59] Validating: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:59] ✓ Valid number: 09272873751
+[2025-12-18 14:36:59] Valid: YES
+[2025-12-18 14:36:59] Formatted: 09272873751
+[2025-12-18 14:36:59] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:59] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:59] ✓ Detected as globe
+[2025-12-18 14:36:59] Carrier: globe
+[2025-12-18 14:36:59] phoneToEmail input: 09272873751 -> cleaned: 09272873751
+[2025-12-18 14:36:59] Carrier detection for 09272873751, prefix: 0927
+[2025-12-18 14:36:59] Checking globe with prefixes: 0917, 0916, 0915, 0945, 0956, 0966, 0977, 0927, 0926, 0925, 0935, 0936, 0937, 0995, 0996, 0997, 09173, 09175, 09176, 09178
+[2025-12-18 14:36:59] ✓ Detected as globe
+[2025-12-18 14:36:59] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:36:59] Email: 09272873751@globe.com.ph
+[2025-12-18 14:55:50] ====== SMS SEND REQUEST ======
+[2025-12-18 14:55:50] Original number: 09272873751
+[2025-12-18 14:55:50] Message length: 6
+[2025-12-18 14:55:50] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:55:50] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:55:50] Formatting: 09272873751 -> 09272873751
+[2025-12-18 14:55:50] Formatted number: 09272873751
+[2025-12-18 14:55:50] phoneToEmail - Input: 09272873751 -> Cleaned: 09272873751
+[2025-12-18 14:55:50] Carrier detection - Number: 09272873751, Prefix: 0927
+[2025-12-18 14:55:50] ✓ Detected as globe carrier
+[2025-12-18 14:55:50] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:55:50] Final email address: 09272873751@globe.com.ph
+[2025-12-18 14:55:50] Attempting to send via email gateway...
+[2025-12-18 14:55:50] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:55:50] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:03] ====== SMS SEND REQUEST ======
+[2025-12-18 14:56:03] Original number: 09272873751
+[2025-12-18 14:56:03] Message length: 5
+[2025-12-18 14:56:03] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:56:03] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:56:03] Formatting: 09272873751 -> 09272873751
+[2025-12-18 14:56:03] Formatted number: 09272873751
+[2025-12-18 14:56:03] phoneToEmail - Input: 09272873751 -> Cleaned: 09272873751
+[2025-12-18 14:56:03] Carrier detection - Number: 09272873751, Prefix: 0927
+[2025-12-18 14:56:03] ✓ Detected as globe carrier
+[2025-12-18 14:56:03] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:56:03] Final email address: 09272873751@globe.com.ph
+[2025-12-18 14:56:03] Attempting to send via email gateway...
+[2025-12-18 14:56:03] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:03] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:07] ====== BULK SMS REQUEST ======
+[2025-12-18 14:56:07] Total numbers: 1
+[2025-12-18 14:56:07] Message: dsfsdf...
+[2025-12-18 14:56:07] Processing #1: 09272873751
+[2025-12-18 14:56:07] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:56:07] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:56:07] ====== SMS SEND REQUEST ======
+[2025-12-18 14:56:07] Original number: 09272873751
+[2025-12-18 14:56:07] Message length: 6
+[2025-12-18 14:56:07] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:56:07] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:56:07] Formatting: 09272873751 -> 09272873751
+[2025-12-18 14:56:07] Formatted number: 09272873751
+[2025-12-18 14:56:07] phoneToEmail - Input: 09272873751 -> Cleaned: 09272873751
+[2025-12-18 14:56:07] Carrier detection - Number: 09272873751, Prefix: 0927
+[2025-12-18 14:56:07] ✓ Detected as globe carrier
+[2025-12-18 14:56:07] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:56:07] Final email address: 09272873751@globe.com.ph
+[2025-12-18 14:56:07] Attempting to send via email gateway...
+[2025-12-18 14:56:07] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:07] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:07] ✗ Failed: 09272873751 - Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:07] BULK RESULTS: Sent: 0, Failed: 1
+[2025-12-18 14:56:24] ====== BULK SMS REQUEST ======
+[2025-12-18 14:56:24] Total numbers: 1
+[2025-12-18 14:56:24] Message: sdfsdf...
+[2025-12-18 14:56:24] Processing #1: 09272873751
+[2025-12-18 14:56:24] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:56:24] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:56:24] ====== SMS SEND REQUEST ======
+[2025-12-18 14:56:24] Original number: 09272873751
+[2025-12-18 14:56:24] Message length: 6
+[2025-12-18 14:56:24] Validating: 09272873751 -> Cleaned: 09272873751 (Length: 11)
+[2025-12-18 14:56:24] ✓ Valid number (Pattern: /^09\d{9}$/)
+[2025-12-18 14:56:24] Formatting: 09272873751 -> 09272873751
+[2025-12-18 14:56:24] Formatted number: 09272873751
+[2025-12-18 14:56:24] phoneToEmail - Input: 09272873751 -> Cleaned: 09272873751
+[2025-12-18 14:56:24] Carrier detection - Number: 09272873751, Prefix: 0927
+[2025-12-18 14:56:24] ✓ Detected as globe carrier
+[2025-12-18 14:56:24] Generated email: 09272873751@globe.com.ph for carrier: globe
+[2025-12-18 14:56:24] Final email address: 09272873751@globe.com.ph
+[2025-12-18 14:56:24] Attempting to send via email gateway...
+[2025-12-18 14:56:24] EXCEPTION: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:24] ERROR: Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:24] ✗ Failed: 09272873751 - Send failed: Unknown column 'phone_number' in 'field list'
+[2025-12-18 14:56:24] BULK RESULTS: Sent: 0, Failed: 1
