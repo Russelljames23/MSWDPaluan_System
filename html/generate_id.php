@@ -2048,6 +2048,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     .3rdrow {
                         display: flex !important;
                         flex-direction: row !important;
+                        gap: 2px !important;
                         justify-content: space-between !important;
                         align-items: flex-start !important;
                         margin-top: 40px !important;
@@ -2089,7 +2090,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         font-weight: bold !important;
                         text-decoration: underline !important;
                         margin-bottom: 5px !important;
-                        margin-left: 0px !important;
                     }
                     .dob, .gender, .dateissued{
                         font-size: 8pt !important;

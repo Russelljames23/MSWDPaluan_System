@@ -304,10 +304,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         <div class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
                             <div class="flex flex-row justify-between items-center">
                                 <h4 class="text-xl font-medium dark:text-white">Active List</h4>
-                                <button id="masterbtn"
+                                <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
-                                    Master List
+                                    <i class="fas fa-table mr-2"></i>Master List
                                 </button>
                             </div>
                             <div class="flex flex-row justify-between">
