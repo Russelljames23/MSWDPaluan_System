@@ -115,7 +115,7 @@ function logLoginActivity($pdo, $user_id, $login_type)
 function getRedirectUrl($login_type, $session_context)
 {
     if ($login_type === 'Admin') {
-        return "/MSWDPALUAN_SYSTEM-MAIN/html/index.php?session_context=" . urlencode($session_context);
+        return "/MSWDPALUAN_SYSTEM-MAIN/html/admin_dashboard.php?session_context=" . urlencode($session_context);
     } else {
         return "/MSWDPALUAN_SYSTEM-MAIN/html/staff/staffindex.php?session_context=" . urlencode($session_context);
     }

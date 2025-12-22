@@ -12,7 +12,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior List</title>
+    <title>Senior List - Reports Part VII-IX</title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -387,34 +387,6 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
                                 style="font-family: 'Times New Roman', Times, serif;">VII-IX. Monthly Statistics</h4>
-                            <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                        class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Filter by Year
-                                    <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                </button>
-                                <div id="filterDropdown"
-                                    class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" id="yearFilterList" aria-labelledby="dropdownDefault2">
-                                        <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                onclick="applyYearFilter(null)">
-                                                All Years</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Summary Statistics -->
@@ -443,8 +415,19 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                                         <h4 class="text-5xl font-black dark:text-white" id="philhealthCount"
                                             style="font-family: 'Times New Roman', Times, serif;">0</h4>
                                     </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <p>Senior citizens registered with PhilHealth in the selected period.</p>
+                                    <div class="flex-1">
+                                        <div class="flex gap-2 items-center">
+                                            <input type="number" id="philhealthInput" min="0"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Enter count" />
+                                            <button onclick="updatePhilHealthCount()"
+                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                Update
+                                            </button>
+                                        </div>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                            Enter the number of senior citizens who registered to PhilHealth this month.
+                                        </p>
                                         <p class="mt-1 text-xs">Last updated: <span id="philhealthUpdated">-</span></p>
                                     </div>
                                 </div>
@@ -461,8 +444,19 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                                         <h4 class="text-5xl font-black dark:text-white" id="bookletsCount"
                                             style="font-family: 'Times New Roman', Times, serif;">0</h4>
                                     </div>
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        <p>Purchase booklets released to senior citizens.</p>
+                                    <div class="flex-1">
+                                        <div class="flex gap-2 items-center">
+                                            <input type="number" id="bookletsInput" min="0"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Enter count" />
+                                            <button onclick="updateBookletsCount()"
+                                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                Update
+                                            </button>
+                                        </div>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                            Enter the total number of purchase booklets released this month.
+                                        </p>
                                         <p class="mt-1 text-xs">Last updated: <span id="bookletsUpdated">-</span></p>
                                     </div>
                                 </div>
@@ -624,6 +618,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     window.addEventListener('filtersApplied', function(e) {
                         console.log('Filters applied in Part VII-IX:', e.detail);
                         loadStatistics();
+                        loadActivities();
                     });
                 }
             }
@@ -635,7 +630,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     updatePeriodDisplay();
 
                     // Build API URL
-                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php';
+                    let apiUrl = '../../php/reports/report_part7to9_backend.php';
                     apiUrl += '?';
 
                     // Add filters if provided
@@ -707,28 +702,113 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
 
                 const philhealthUpdated = document.getElementById('philhealthUpdated');
                 if (philhealthUpdated) {
-                    philhealthUpdated.textContent = timeString;
+                    philhealthUpdated.textContent = data.philhealth_updated || timeString;
                 }
 
                 const bookletsUpdated = document.getElementById('bookletsUpdated');
                 if (bookletsUpdated) {
-                    bookletsUpdated.textContent = timeString;
+                    bookletsUpdated.textContent = data.booklets_updated || timeString;
                 }
             }
+
+            // Update PhilHealth count
+            window.updatePhilHealthCount = async function() {
+                const input = document.getElementById('philhealthInput');
+                if (!input || input.value === '') {
+                    showNotification('Please enter a number', 'error');
+                    return;
+                }
+
+                const count = parseInt(input.value);
+                if (isNaN(count) || count < 0) {
+                    showNotification('Please enter a valid positive number', 'error');
+                    return;
+                }
+
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'update_philhealth');
+                    formData.append('count', count);
+                    formData.append('month', currentMonth || new Date().getMonth() + 1);
+                    formData.append('year', currentYear || new Date().getFullYear());
+
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        input.value = '';
+                        loadStatistics();
+                        showNotification('PhilHealth count updated successfully!', 'success');
+                    } else {
+                        showNotification('Failed to update count: ' + (result.message || 'Unknown error'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error updating PhilHealth count:', error);
+                    showNotification('Error updating count', 'error');
+                }
+            };
+
+            // Update booklets count
+            window.updateBookletsCount = async function() {
+                const input = document.getElementById('bookletsInput');
+                if (!input || input.value === '') {
+                    showNotification('Please enter a number', 'error');
+                    return;
+                }
+
+                const count = parseInt(input.value);
+                if (isNaN(count) || count < 0) {
+                    showNotification('Please enter a valid positive number', 'error');
+                    return;
+                }
+
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'update_booklets');
+                    formData.append('count', count);
+                    formData.append('month', currentMonth || new Date().getMonth() + 1);
+                    formData.append('year', currentYear || new Date().getFullYear());
+
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        input.value = '';
+                        loadStatistics();
+                        showNotification('Booklets count updated successfully!', 'success');
+                    } else {
+                        showNotification('Failed to update count: ' + (result.message || 'Unknown error'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error updating booklets count:', error);
+                    showNotification('Error updating count', 'error');
+                }
+            };
 
             // Function to load activities
             async function loadActivities() {
                 try {
-                    const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php?action=get_activities&_=' + Date.now();
+                    const apiUrl = '../../php/reports/report_part7to9_backend.php?action=get_activities&_=' + Date.now();
 
                     const response = await fetch(apiUrl);
                     const result = await response.json();
 
                     if (result.success) {
                         displayActivities(result.activities || []);
+                    } else {
+                        console.error('Failed to load activities:', result.message);
                     }
                 } catch (error) {
                     console.error('Error loading activities:', error);
+                    showNotification('Error loading activities', 'error');
                 }
             }
 
@@ -782,7 +862,10 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
             // Function to add a new activity
             async function addActivity() {
                 const activityInput = document.getElementById('activityInput');
-                if (!activityInput || !activityInput.value.trim()) return;
+                if (!activityInput || !activityInput.value.trim()) {
+                    showNotification('Please enter an activity description', 'error');
+                    return;
+                }
 
                 try {
                     const formData = new FormData();
@@ -791,7 +874,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -801,11 +884,9 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     if (result.success) {
                         activityInput.value = '';
                         loadActivities();
-
-                        // Show success message
                         showNotification('Activity added successfully!', 'success');
                     } else {
-                        showNotification('Failed to add activity: ' + result.message, 'error');
+                        showNotification('Failed to add activity: ' + (result.message || 'Unknown error'), 'error');
                     }
                 } catch (error) {
                     console.error('Error adding activity:', error);
@@ -822,7 +903,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     formData.append('action', 'delete_activity');
                     formData.append('activity_id', activityId);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -843,7 +924,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
 
             // Function to clear all activities
             async function clearAllActivities() {
-                if (!confirm('Are you sure you want to clear ALL activities? This cannot be undone.')) return;
+                if (!confirm('Are you sure you want to clear ALL activities for this period? This cannot be undone.')) return;
 
                 try {
                     const formData = new FormData();
@@ -851,7 +932,7 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });

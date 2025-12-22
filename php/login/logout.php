@@ -89,5 +89,5 @@ if (isset($_SESSION['verification_expires'])) {
 session_regenerate_id(true);
 
 // Redirect to login page
-header('Location: /MSWDPALUAN_SYSTEM-MAIN/html/login.php');
+header('Location: ../../index.php');
 exit;

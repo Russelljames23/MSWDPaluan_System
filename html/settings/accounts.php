@@ -310,7 +310,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="../../php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -344,7 +344,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/index.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -368,7 +368,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -403,24 +403,24 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/html/SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/benefits.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -435,7 +435,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/generate_id.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -448,7 +448,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/reports/report.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -462,7 +462,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/archived.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -865,146 +865,60 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
     <script>
-        let sidebar = document.querySelector(".sidebar");
-        let closeBtn = document.querySelector("#btn");
-        const profileLink = document.querySelector('.nav-list li:first-child button'); // My Profile link
-        const accountLink = document.querySelector('.nav-list li:nth-child(3) button'); // My Account link
-        const historyLink = document.querySelector('.nav-list li:nth-child(4) button'); // My History link
-        const activityLink = document.querySelector('.nav-list li:nth-child(5) button'); // My Activity link
-        const profileSection = document.getElementById('profileSection'); // Your hidden profile section
-        const accountSection = document.getElementById('accountSection'); // Your hidden account section
-        const historySection = document.getElementById('historySection'); // Your hidden history section
-        const activitySection = document.getElementById('activitySection'); // Your hidden activity section
-        const allLinks = document.querySelectorAll('.nav-list button');
+        // Fix DOMContentLoaded check
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // Sidebar toggle
-        closeBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+            // Fix sidebar toggle - check if elements exist
+            let sidebar = document.querySelector(".sidebar");
+            let closeBtn = document.querySelector("#btn");
+
+            if (closeBtn && sidebar) {
+                closeBtn.addEventListener("click", () => {
+                    sidebar.classList.toggle("open");
+                });
+            }
+
+            // Fix edit/cancel buttons - check if elements exist
+            const editBtn = document.getElementById("editBtn");
+            const cancelBtn = document.getElementById("cancelBtn");
+            const updateBtn = document.getElementById("updateBtn");
+
+            if (editBtn) {
+                editBtn.addEventListener("click", () => {
+                    // Show inputs and hide labels
+                    const labels = document.querySelectorAll(".profile-label");
+                    const inputs = document.querySelectorAll(".profile-input");
+
+                    labels.forEach((lbl) => lbl.classList.add("hidden"));
+                    inputs.forEach((inp) => inp.classList.remove("hidden"));
+
+                    // Toggle buttons
+                    editBtn.classList.add("hidden");
+                    if (cancelBtn) cancelBtn.classList.remove("hidden");
+                    if (updateBtn) updateBtn.classList.remove("hidden");
+                });
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    // Hide inputs and show labels
+                    const labels = document.querySelectorAll(".profile-label");
+                    const inputs = document.querySelectorAll(".profile-input");
+
+                    labels.forEach((lbl) => lbl.classList.remove("hidden"));
+                    inputs.forEach((inp) => inp.classList.add("hidden"));
+
+                    // Toggle buttons
+                    cancelBtn.classList.add("hidden");
+                    if (updateBtn) updateBtn.classList.add("hidden");
+                    if (editBtn) editBtn.classList.remove("hidden");
+                });
+            }
+
+            // Initialize AccountsManager
+            window.accountsManager = new AccountsManager();
         });
 
-        // My Profile click behavior
-        profileLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the profile section
-            profileSection.classList.remove('hidden');
-            accountSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My Profile link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            profileLink.classList.add('active-link');
-
-        });
-
-        // My Account click behavior
-        accountLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the account section
-            accountSection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My Account link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            accountLink.classList.add('active-link');
-
-        });
-        // My History click behavior
-        historyLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the history section
-            historySection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            accountSection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My History link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            historyLink.classList.add('active-link');
-
-        });
-        // My Activity click behavior
-        activityLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the activity section
-            activitySection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            accountSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            // Highlight the My Activity link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            activityLink.classList.add('active-link');
-
-        });
-
-        // Close button behavior inside the profile section
-        const closeProfileBtn = document.querySelector('[aria-label="Close"]');
-        if (closeProfileBtn) {
-            closeProfileBtn.addEventListener('click', () => {
-                profileSection.classList.add('hidden');
-                profileLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the account section
-        const closeAccountBtn = document.querySelector('[aria-label="Close1"]');
-        if (closeAccountBtn) {
-            closeAccountBtn.addEventListener('click', () => {
-                accountSection.classList.add('hidden');
-                accountLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the history section
-        const closeHistoryBtn = document.querySelector('[aria-label="Close2"]');
-        if (closeHistoryBtn) {
-            closeHistoryBtn.addEventListener('click', () => {
-                historySection.classList.add('hidden');
-                historyLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the activity section
-        const closeActivityBtn = document.querySelector('[aria-label="Close3"]');
-        if (closeActivityBtn) {
-            closeActivityBtn.addEventListener('click', () => {
-                activitySection.classList.add('hidden');
-                activityLink.classList.remove('active-link');
-            });
-        }
-    </script>
-
-    <script>
-        const editBtn = document.getElementById("editBtn");
-        const cancelBtn = document.getElementById("cancelBtn");
-        const updateBtn = document.getElementById("updateBtn");
-        const labels = document.querySelectorAll(".profile-label");
-        const inputs = document.querySelectorAll(".profile-input");
-
-        editBtn.addEventListener("click", () => {
-            // Show inputs and hide labels
-            labels.forEach((lbl) => lbl.classList.add("hidden"));
-            inputs.forEach((inp) => inp.classList.remove("hidden"));
-
-            // Toggle buttons
-            editBtn.classList.add("hidden");
-            cancelBtn.classList.remove("hidden");
-            updateBtn.classList.remove("hidden");
-        });
-
-        cancelBtn.addEventListener("click", () => {
-            // Hide inputs and show labels
-            labels.forEach((lbl) => lbl.classList.remove("hidden"));
-            inputs.forEach((inp) => inp.classList.add("hidden"));
-
-            // Toggle buttons
-            cancelBtn.classList.add("hidden");
-            updateBtn.classList.add("hidden");
-            editBtn.classList.remove("hidden");
-        });
-    </script>
-
-    <script>
         class AccountsManager {
             constructor() {
                 this.accounts = [];
@@ -1057,13 +971,29 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     });
                 }
 
-                // Modal close buttons
-                const modalCloseButtons = document.querySelectorAll('[data-modal-toggle="defaultModal"], [data-modal-hide="defaultModal"]');
-                modalCloseButtons.forEach(button => {
+                // Remove data-dismiss-target attribute that causes error
+                const dismissButtons = document.querySelectorAll('[data-dismiss-target]');
+                dismissButtons.forEach(button => {
+                    button.removeAttribute('data-dismiss-target');
                     button.addEventListener('click', () => {
                         this.closeModal();
                     });
                 });
+
+                // Fix close button
+                const closeAccountBtn = document.querySelector('[aria-label="Close1"]');
+                if (closeAccountBtn) {
+                    closeAccountBtn.addEventListener('click', () => {
+                        const accountSection = document.getElementById('accountSection');
+                        if (accountSection) {
+                            accountSection.classList.add('hidden');
+                        }
+                        const accountLink = document.querySelector('#accounts');
+                        if (accountLink) {
+                            accountLink.classList.remove('active-link');
+                        }
+                    });
+                }
 
                 // Close modal on escape key
                 document.addEventListener('keydown', (e) => {
@@ -1188,28 +1118,63 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 this.showLoadingState();
 
                 try {
-                    // Use absolute path to ensure correct API endpoint
-                    const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php?action=get_accounts';
-                    console.log('Fetching from:', apiUrl);
+                    // First, test the API
+                    const testUrl = '../../php/accounts/accounts_api.php?test=1';
+                    const testResponse = await fetch(testUrl);
+                    const testText = await testResponse.text();
+
+                    console.log('API test response:', testText);
+
+                    // Try to parse as JSON
+                    try {
+                        const testData = JSON.parse(testText);
+                        console.log('API test parsed:', testData);
+                    } catch (e) {
+                        console.error('API test returned non-JSON:', testText.substring(0, 100));
+                        throw new Error('API returned HTML instead of JSON. Check PHP errors.');
+                    }
+
+                    // Now fetch accounts
+                    const apiUrl = '../../php/accounts/accounts_api.php?action=get_accounts';
+                    console.log('Fetching accounts from:', apiUrl);
 
                     const response = await fetch(apiUrl, {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
-                        }
+                        },
+                        cache: 'no-cache'
                     });
 
                     console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    // Get raw response text
+                    const text = await response.text();
+                    console.log('Raw response (first 500 chars):', text.substring(0, 500));
+
+                    // Check if response is HTML (contains <html>, <!DOCTYPE, etc.)
+                    if (text.trim().startsWith('<!') || text.includes('<html') || text.includes('<!DOCTYPE')) {
+                        console.error('API returned HTML instead of JSON');
+                        console.error('Full response:', text);
+                        throw new Error('Server returned HTML page instead of JSON. Check for PHP errors or incorrect endpoint.');
                     }
 
-                    const text = await response.text();
-                    console.log('Raw response:', text);
+                    // Try to parse as JSON
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        console.error('Problematic text:', text.substring(0, 200));
+                        throw new Error('Invalid JSON response from server: ' + e.message);
+                    }
 
-                    const data = JSON.parse(text);
                     console.log('Parsed data:', data);
+
+                    if (data.success === false) {
+                        throw new Error(data.message || 'Request failed');
+                    }
 
                     if (data.records) {
                         this.accounts = data.records;
@@ -1217,7 +1182,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     } else {
                         this.accounts = [];
                         this.renderAccounts();
-                        console.warn('No records found in response');
+                        this.showNotification('No accounts found in system', 'info');
                     }
                 } catch (error) {
                     console.error('Error loading accounts:', error);
@@ -1227,6 +1192,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     this.hideLoadingState();
                 }
             }
+
             showLoadingState() {
                 const tbody = document.querySelector('#deceasedTable tbody');
                 if (tbody) {
@@ -1295,14 +1261,14 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <td class="px-4 py-3">${this.escapeHtml(account.contact_no)}</td>
                 <td class="px-4 py-3">
                     <div class="flex items-center justify-end space-x-2">
-                        <button onclick="accountsManager.editAccount(${account.id})" 
+                        <button onclick="window.accountsManager.editAccount(${account.id})" 
                                 class="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded transition-colors"
                                 title="Edit account">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </button>
-                        <button onclick="accountsManager.deleteAccount(${account.id})" 
+                        <button onclick="window.accountsManager.deleteAccount(${account.id})" 
                                 class="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded transition-colors"
                                 title="Delete account">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1344,7 +1310,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 this.showNotification('Creating account...', 'info');
 
                 try {
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php', {
+                    const response = await fetch('../../php/accounts/accounts_api.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1369,17 +1335,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
             getFormData() {
                 return {
-                    lastname: document.getElementById('lastname').value.trim(),
-                    firstname: document.getElementById('firstname').value.trim(),
-                    middlename: document.getElementById('middlename').value.trim(),
-                    birthdate: document.getElementById('birthdate').value,
+                    lastname: document.getElementById('lastname')?.value.trim() || '',
+                    firstname: document.getElementById('firstname')?.value.trim() || '',
+                    middlename: document.getElementById('middlename')?.value.trim() || '',
+                    birthdate: document.getElementById('birthdate')?.value || '',
                     gender: this.getSelectedGender(),
-                    email: document.getElementById('email').value.trim(),
-                    contact_no: document.getElementById('contact_no').value.trim(),
-                    address: document.getElementById('address').value.trim(),
-                    username: document.getElementById('username').value.trim(),
-                    password: document.getElementById('password').value,
-                    user_type: document.getElementById('select-type').value,
+                    email: document.getElementById('email')?.value.trim() || '',
+                    contact_no: document.getElementById('contact_no')?.value.trim() || '',
+                    address: document.getElementById('address')?.value.trim() || '',
+                    username: document.getElementById('username')?.value.trim() || '',
+                    password: document.getElementById('password')?.value || '',
+                    user_type: document.getElementById('select-type')?.value || '',
                     created_by: null
                 };
             }
@@ -1402,7 +1368,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     };
                 }
 
-                const confirmPassword = document.getElementById('confirm-password').value;
+                const confirmPassword = document.getElementById('confirm-password')?.value;
                 if (data.password !== confirmPassword) {
                     return {
                         isValid: false,
@@ -1464,7 +1430,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 }
 
                 try {
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php', {
+                    const response = await fetch('../../php/accounts/accounts_api.php', {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1547,15 +1513,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             }
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                window.accountsManager = new AccountsManager();
-            });
-        } else {
-            window.accountsManager = new AccountsManager();
         }
     </script>
 </body>

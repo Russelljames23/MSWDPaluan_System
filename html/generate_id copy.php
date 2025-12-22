@@ -811,7 +811,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                     <th scope="col" class="px-4 py-3">ID Number</th>
                                     <th scope="col" class="px-4 py-3">Date Issued</th>
                                     <th scope="col" class="px-4 py-3">Status</th>
-                                    <th scope="col" class="px-4 py-3">ID Status</th>
                                 </tr>
                             </thead>
                             <tbody id="seniors-table-body">
@@ -878,25 +877,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                 <span class="px-2 py-1 text-xs rounded <?php echo ($senior['validation'] === 'Validated') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                     <?php echo htmlspecialchars($senior['validation'] ?? 'Unknown'); ?>
                                                 </span>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <?php
-                                                // Check if ID has been printed for this senior
-                                                $idStatus = checkIfIDPrinted($senior['applicant_id']);
-                                                if ($idStatus && $idStatus['status'] === 'Printed' && $idStatus['is_active'] == 1):
-                                                ?>
-                                                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full" title="Printed on <?php echo date('m/d/Y', strtotime($idStatus['print_date'])); ?>">
-                                                        ✅ Printed
-                                                    </span>
-                                                <?php elseif ($idStatus && $idStatus['status'] === 'Reissued'): ?>
-                                                    <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
-                                                        🔄 Reissued
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full">
-                                                        ⏳ Not Printed
-                                                    </span>
-                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -1625,546 +1605,546 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             printWindow.document.title = 'Senior Citizen IDs - Print';
 
             let printHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Senior Citizen IDs - Print</title>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <!-- Import Maiandra GD font -->
-                    <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
-                    <style>
-                        @page {
-                            size: landscape;
-                            margin: 0;
-                        }
-                        
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            font-family: "Times New Roman", Times, serif;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                            display: flex !important;
-                            flex-direction: column !important;
-                            justify-content: center !important;
-                            align-items: center !important;
-                            min-height: 100vh !important;
-                            background: white !important;
-                        }
-                        
-                        /* Container for centering all pages */
-                        .print-container {
-                            width: 13in !important;
-                            height: 8.5in !important;
-                            display: flex !important;
-                            justify-content: center !important;
-                            align-items: center !important;
-                        }
-                        
-                        .print-page {
-                            width: 13in !important;
-                            height: 8.5in !important;
-                            page-break-after: always !important;
-                            display: flex !important;
-                            justify-content: center !important;
-                            align-items: center !important;
-                        }
-                        
-                        /* Grid that's perfectly centered */
-                        .print-grid {
-                            display: grid !important;
-                            grid-template-columns: repeat(3, 3.17in) !important;
-                            grid-template-rows: repeat(3, 2.14in) !important;
-                            width: 13in !important;
-                            height: 8.5in !important;
-                            padding: 0.2in !important;
-                            box-sizing: border-box !important;
-                            justify-items: center !important;
-                            align-items: center !important;
-                        }
-                        
-                        .id-card {
-                            width: 3.20in !important;
-                            height: 2.16in !important;
-                            border: 1px solid #000 !important;
-                            padding: 5px !important;
-                            background: white !important;
-                            position: relative !important;
-                            overflow: hidden !important;
-                            box-sizing: border-box !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                        }
-                        
-                        /* ID Header - exactly matches generateFrontPage() */
-                        .id-header {
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: center !important;
-                            font-weight:bold !important;
-                            text-align: center !important;
-                            margin-bottom: 2px !important;
-                            width: 100% !important;
-                            font-size: 7.5pt !important;
-                        }
-                        
-                        .id-header img {
-                            width: 0.49in !important;
-                            height: 0.49in !important;
-                            object-fit: contain !important;
-                            vertical-align: middle !important;
-                            display: block !important;
-                        }
-                        
-                        /* ID Content - exactly matches generateFrontPage() */
-                        .id-content {
-                            font-size: 8pt !important;
-                        }
-                        
-                        .name {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            gap: 1px !important;
-                            margin-bottom: 15px !important;
-                        }
-                        
-                        .id-name{
-                            font-size: 8pt !important;
-                            font-weight: bold !important;
-                            text-decoration: underline !important;
-                        }
-                        
-                        .id-address{
-                            font-size: 8pt !important;
-                            font-weight: bold !important;
-                            text-decoration: underline !important;
-                        }
-                        
-                        .dob, .gender, .dateissued{
-                            font-size: 8pt !important;
-                            font-weight: bold !important;
-                            margin-top: 5px !important;
-                        }
-                        .address {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            margin-bottom: 5px !important;
-                        }
-                        
-                        /* 3rdrow class from generateFrontPage() */
-                        .3rdrow {
-                            display: flex !important;
-                            flex-direction: row !important;
-                            justify-content: space-between !important;
-                            margin-top: 20px !important;
-                        }
-                        
-                        /* dsd class from generateFrontPage() */
-                        .dsd {
-                            display: flex !important;
-                            flex-direction: column !important;
-                            justify-content: start !important;
-                            height: 1in !important;
-                            width: 2.15in !important;
-                        }
-                        
-                        /* ID picture alignment */
-                        .idpicture {
-                            height: 1in !important;
-                            width: 1in !important;
-                            border: 1px solid #000 !important;
-                        }
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Senior Citizen IDs - Print</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <!-- Import Maiandra GD font -->
+            <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
+            <style>
+                @page {
+                    size: landscape;
+                    margin: 0;
+                }
+                
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: "Times New Roman", Times, serif;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                    min-height: 100vh !important;
+                    background: white !important;
+                }
+                
+                /* Container for centering all pages */
+                .print-container {
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    display: flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                }
+                
+                .print-page {
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    page-break-after: always !important;
+                    display: flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                }
+                
+                /* Grid that's perfectly centered */
+                .print-grid {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 3.17in) !important;
+                    grid-template-rows: repeat(3, 2.14in) !important;
+                    width: 13in !important;
+                    height: 8.5in !important;
+                    padding: 0.2in !important;
+                    box-sizing: border-box !important;
+                    justify-items: center !important;
+                    align-items: center !important;
+                }
+                
+                .id-card {
+                    width: 3.20in !important;
+                    height: 2.16in !important;
+                    border: 1px solid #000 !important;
+                    padding: 5px !important;
+                    background: white !important;
+                    position: relative !important;
+                    overflow: hidden !important;
+                    box-sizing: border-box !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                }
+                
+                /* ID Header - exactly matches generateFrontPage() */
+                .id-header {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    font-weight:bold !important;
+                    text-align: center !important;
+                    margin-bottom: 2px !important;
+                    width: 100% !important;
+                    font-size: 7.5pt !important;
+                }
+                
+                .id-header img {
+                    width: 0.49in !important;
+                    height: 0.49in !important;
+                    object-fit: contain !important;
+                    vertical-align: middle !important;
+                    display: block !important;
+                }
+                
+                /* ID Content - exactly matches generateFrontPage() */
+                .id-content {
+                    font-size: 8pt !important;
+                }
+                
+                .name {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    gap: 1px !important;
+                    margin-bottom: 15px !important;
+                }
+                
+                .id-name{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    text-decoration: underline !important;
+                }
+                
+                .id-address{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    text-decoration: underline !important;
+                }
+                
+                .dob, .gender, .dateissued{
+                    font-size: 8pt !important;
+                    font-weight: bold !important;
+                    margin-top: 5px !important;
+                }
+                .address {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    margin-bottom: 5px !important;
+                }
+                
+                /* 3rdrow class from generateFrontPage() */
+                .3rdrow {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    justify-content: space-between !important;
+                    margin-top: 20px !important;
+                }
+                
+                /* dsd class from generateFrontPage() */
+                .dsd {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    justify-content: start !important;
+                    height: 1in !important;
+                    width: 2.15in !important;
+                }
+                
+                /* ID picture alignment */
+                .idpicture {
+                    height: 1in !important;
+                    width: 1in !important;
+                    border: 1px solid #000 !important;
+                }
 
-                        id-number {
-                            font-weight: bold !important;
-                            fontsize: 8pt !important;
-                            text-decoration: underline !important;  
-                        }
-                        validity-number {
-                            font-weight: bold !important;
-                            fontsize: 8pt !important;
-                            text-decoration: underline !important;  
-                        }
-                        
-                        /* Grid for date sections */
-                        [style*="display: grid"] {
-                            display: grid !important;
-                            grid-template-columns: repeat(3, 1fr) !important;
-                            gap: 1px !important;
-                        }
-                        
-                        .text-center {
-                            text-align: center !important;
-                        }
-                        
-                        /* ID name and address styling */
-                        [style*="font-weight: bold"] {
-                            font-weight: bold !important;
-                        }
-                        
-                        [style*="font-size: 8pt"] {
-                            font-size: 8pt !important;
-                        }
-                        
-                        [style*="text-decoration: underline"] {
-                            text-decoration: underline !important;
-                        }
-                        
-                        [style*="margin-left: 5px"] {
-                            margin-left: 5px !important;
-                        }
-                        
-                        /* Signature section */
-                        [style*="border-bottom: 1px solid #000"] {
-                            border-bottom: 1px solid #000 !important;
-                            width: 100% !important;
-                        }
-                        
-                        [style*="text-align: left"] {
-                            text-align: left !important;
-                        }
-                        
-                        [style*="text-align: right"] {
-                            text-align: right !important;
-                        }
-                        
-                        [style*="margin-right:0.5in"] {
-                            margin-right: 0.5in !important;
-                        }
-                        
-                        .id-footer {
-                            font-size: 7pt !important;
-                            font-weight: bold !important;
-                            color: red !important;
-                            text-align: center !important;
-                            margin-top: 2px !important;
-                        }
-                        
-                        /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
-                        .benefits-card {
-                            width: 3.30in !important;
-                            height: 2.23in !important;
-                            border: 1px solid #000 !important;
-                            padding: 12px 10px 8px 10px !important;
-                            background: white !important;
-                            position: relative !important;
-                            overflow: hidden !important;
-                            box-sizing: border-box !important;
-                            display: flex !important;
-                            flex-direction: column !important;
-                        }
-                        
-                        .benefits-header {
-                            text-align: center !important;
-                            font-weight: bold !important;
-                            margin-bottom: 6px !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            font-size: 6.5pt !important;
-                            line-height: 1.1 !important;
-                            text-transform: uppercase !important;
-                        }
-                        
-                        .benefits-list {
-                            font-size: 5pt !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            margin-bottom: 4px !important;
-                        }
-                        
-                        /* FIXED: Perfect vertical alignment for image bullets */
-                        .benefits-list div {
-                            margin-bottom: 2px !important;
-                            display: flex !important;
-                            align-items: flex-start !important;
-                            gap:15.5px;
-                        }
-                        
-                        /* Image bullet styling - perfectly aligned */
-                        .benefits-list div img {
-                            width: 3pt !important;
-                            height: 3pt !important;
-                            margin-right: 4px !important;
-                            margin-top: 0.5px !important;
-                            flex-shrink: 0 !important;
-                            display: inline-block !important;
-                            vertical-align: top !important;
-                        }
-                        
-                        /* Text content styling */
-                        .benefits-list div span {
-                            flex: 1 !important;
-                            display: inline-block !important;
-                            vertical-align: top !important;
-                            line-height: 1.2 !important;
-                        }
-                        
-                        .benefits-footer {
-                            text-align: center !important;
-                            font-family: "Times New Roman", Times, serif !important;
-                            font-size: 5pt !important;
-                            margin-top: 16px !important;
-                        }
-                        
-                        .benefits-notice {
-                            font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
-                            font-style: italic !important;
-                            font-size: 6pt !important;
-                            margin-top: 10px !important;
-                            text-align: center !important;
-                            line-height: 1.2 !important;
-                            margin-bottom: 2px !important;
-                            color: #ff0000 !important;
-                        }
-                        
-                        .signatures-container {
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: flex-end !important;
-                            margin-top: 3px !important;
-                        }
-                        
-                        .signature-item {
-                            text-align: center !important;
-                            width: 48% !important;
-                        }
-                        
-                        .signature-name {
-                            font-weight: bold !important;
-                            font-size: 7pt !important;
-                            text-decoration: underline !important;
-                            margin-bottom: 1px !important;
-                            min-height: 8px !important;
-                        }
-                        
-                        .signature-title {
-                            font-size: 6.5pt !important;
-                            font-weight: bold !important;
-                        }
-                        
-                        /* Additional flex utilities */
-                        .flex {
-                            display: flex !important;
-                        }
-                        
-                        .flex-row {
-                            flex-direction: row !important;
-                        }
-                        
-                        .flex-col {
-                            flex-direction: column !important;
-                        }
-                        
-                        .justify-between {
-                            justify-content: space-between !important;
-                        }
-                        
-                        .align-start {
-                            align-items: flex-start !important;
-                        }
-                        
-                        .align-middle {
-                            align-items: center !important;
-                        }
-                        
-                        .mt-1 {
-                            margin-top: 1px !important;
-                        }
-                        
-                        @media print {
-                            
-                            body {
-                                margin: 0;
-                                padding: 0;
-                                font-family: "Times New Roman", Times, serif;
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                                display: flex !important;
-                                flex-direction: column !important;
-                                justify-content: center !important;
-                                align-items: center !important;
-                                min-height: 100vh !important;
-                                background: white !important;
-                            }
-                            
-                            /* Container for centering all pages */
-                            .print-container {
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                display: flex !important;
-                                justify-content: center !important;
-                                align-items: center !important;
-                            }
-                            
-                            .print-page {
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                page-break-after: always !important;
-                                display: flex !important;
-                                justify-content: center !important;
-                                align-items: center !important;
-                            }
-                            
-                            /* Grid that's perfectly centered */
-                            .print-grid {
-                                display: grid !important;
-                                grid-template-columns: repeat(3, 4in) !important;
-                                grid-template-rows: repeat(3, 2.40in) !important;
-                                width: 13in !important;
-                                height: 8.5in !important;
-                                padding: 0.2in !important;
-                                box-sizing: border-box !important;
-                                justify-items: center !important;
-                                justify-content: center !important;
-                                align-items: center !important;
-                            }
-                            
-                            .id-card {
-                                width: 3.35in !important;
-                                height: 2.30in !important;
-                                border: 1px solid #000 !important;
-                                padding-top: 5px !important;
-                                padding-bottom: 5px !important;
-                                padding-left: 10px !important;
-                                padding-right: 10px !important;
-                                background: white !important;
-                                position: relative !important;
-                                overflow: hidden !important;
-                                box-sizing: border-box !important;
-                                font-family: "Times New Roman", Times, serif !important;
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
+                id-number {
+                    font-weight: bold !important;
+                    fontsize: 8pt !important;
+                    text-decoration: underline !important;  
+                }
+                validity-number {
+                    font-weight: bold !important;
+                    fontsize: 8pt !important;
+                    text-decoration: underline !important;  
+                }
+                
+                /* Grid for date sections */
+                [style*="display: grid"] {
+                    display: grid !important;
+                    grid-template-columns: repeat(3, 1fr) !important;
+                    gap: 1px !important;
+                }
+                
+                .text-center {
+                    text-align: center !important;
+                }
+                
+                /* ID name and address styling */
+                [style*="font-weight: bold"] {
+                    font-weight: bold !important;
+                }
+                
+                [style*="font-size: 8pt"] {
+                    font-size: 8pt !important;
+                }
+                
+                [style*="text-decoration: underline"] {
+                    text-decoration: underline !important;
+                }
+                
+                [style*="margin-left: 5px"] {
+                    margin-left: 5px !important;
+                }
+                
+                /* Signature section */
+                [style*="border-bottom: 1px solid #000"] {
+                    border-bottom: 1px solid #000 !important;
+                    width: 100% !important;
+                }
+                
+                [style*="text-align: left"] {
+                    text-align: left !important;
+                }
+                
+                [style*="text-align: right"] {
+                    text-align: right !important;
+                }
+                
+                [style*="margin-right:0.5in"] {
+                    margin-right: 0.5in !important;
+                }
+                
+                .id-footer {
+                    font-size: 7pt !important;
+                    font-weight: bold !important;
+                    color: red !important;
+                    text-align: center !important;
+                    margin-top: 2px !important;
+                }
+                
+                /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
+                .benefits-card {
+                    width: 3.30in !important;
+                    height: 2.23in !important;
+                    border: 1px solid #000 !important;
+                    padding: 12px 10px 8px 10px !important;
+                    background: white !important;
+                    position: relative !important;
+                    overflow: hidden !important;
+                    box-sizing: border-box !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                }
+                
+                .benefits-header {
+                    text-align: center !important;
+                    font-weight: bold !important;
+                    margin-bottom: 6px !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    font-size: 6.5pt !important;
+                    line-height: 1.1 !important;
+                    text-transform: uppercase !important;
+                }
+                
+                .benefits-list {
+                    font-size: 5pt !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    margin-bottom: 4px !important;
+                }
+                
+                /* FIXED: Perfect vertical alignment for image bullets */
+                .benefits-list div {
+                    margin-bottom: 2px !important;
+                    display: flex !important;
+                    align-items: flex-start !important;
+                    gap:15.5px;
+                }
+                
+                /* Image bullet styling - perfectly aligned */
+                .benefits-list div img {
+                    width: 3pt !important;
+                    height: 3pt !important;
+                    margin-right: 4px !important;
+                    margin-top: 0.5px !important;
+                    flex-shrink: 0 !important;
+                    display: inline-block !important;
+                    vertical-align: top !important;
+                }
+                
+                /* Text content styling */
+                .benefits-list div span {
+                    flex: 1 !important;
+                    display: inline-block !important;
+                    vertical-align: top !important;
+                    line-height: 1.2 !important;
+                }
+                
+                .benefits-footer {
+                    text-align: center !important;
+                    font-family: "Times New Roman", Times, serif !important;
+                    font-size: 5pt !important;
+                    margin-top: 16px !important;
+                }
+                
+                .benefits-notice {
+                    font-family: "Maiandra GD", "Times New Roman", Times, serif !important;
+                    font-style: italic !important;
+                    font-size: 6pt !important;
+                    margin-top: 10px !important;
+                    text-align: center !important;
+                    line-height: 1.2 !important;
+                    margin-bottom: 2px !important;
+                    color: #ff0000 !important;
+                }
+                
+                .signatures-container {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: flex-end !important;
+                    margin-top: 3px !important;
+                }
+                
+                .signature-item {
+                    text-align: center !important;
+                    width: 48% !important;
+                }
+                
+                .signature-name {
+                    font-weight: bold !important;
+                    font-size: 7pt !important;
+                    text-decoration: underline !important;
+                    margin-bottom: 1px !important;
+                    min-height: 8px !important;
+                }
+                
+                .signature-title {
+                    font-size: 6.5pt !important;
+                    font-weight: bold !important;
+                }
+                
+                /* Additional flex utilities */
+                .flex {
+                    display: flex !important;
+                }
+                
+                .flex-row {
+                    flex-direction: row !important;
+                }
+                
+                .flex-col {
+                    flex-direction: column !important;
+                }
+                
+                .justify-between {
+                    justify-content: space-between !important;
+                }
+                
+                .align-start {
+                    align-items: flex-start !important;
+                }
+                
+                .align-middle {
+                    align-items: center !important;
+                }
+                
+                .mt-1 {
+                    margin-top: 1px !important;
+                }
+                
+                @media print {
+                    
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: "Times New Roman", Times, serif;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        min-height: 100vh !important;
+                        background: white !important;
+                    }
+                    
+                    /* Container for centering all pages */
+                    .print-container {
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    .print-page {
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        page-break-after: always !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    /* Grid that's perfectly centered */
+                    .print-grid {
+                        display: grid !important;
+                        grid-template-columns: repeat(3, 4in) !important;
+                        grid-template-rows: repeat(3, 2.40in) !important;
+                        width: 13in !important;
+                        height: 8.5in !important;
+                        padding: 0.2in !important;
+                        box-sizing: border-box !important;
+                        justify-items: center !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                    }
+                    
+                    .id-card {
+                        width: 3.35in !important;
+                        height: 2.30in !important;
+                        border: 1px solid #000 !important;
+                        padding-top: 5px !important;
+                        padding-bottom: 5px !important;
+                        padding-left: 10px !important;
+                        padding-right: 10px !important;
+                        background: white !important;
+                        position: relative !important;
+                        overflow: hidden !important;
+                        box-sizing: border-box !important;
+                        font-family: "Times New Roman", Times, serif !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
 
-                            /* ID Header - exactly matches generateFrontPage() */
-                            .id-header {
-                                display: flex !important;
-                                justify-content: space-between !important;
-                                font-weight:bold !important;
-                                text-align: center !important;
-                                margin-bottom: 3px !important;
-                                width: 100% !important;
-                                font-size: 7.5pt !important;
-                            }
-                            
-                            .id-header img {
-                                width: 0.49in !important;
-                                height: 0.49in !important;
-                                object-fit: contain !important;
-                                vertical-align: middle !important;
-                                display: block !important;
-                            }
-                            
-                            /* ID Content - exactly matches generateFrontPage() */
-                            .id-content {
-                                font-size: 8pt !important;
-                            }
-                            .name {
-                                display: flex !important;
-                                flex-direction: row !important;
-                                gap: 1px !important;
-                                
-                            }
-                            
-                            /* Ensure 3rdrow and dsd align properly in print */
-                            .3rdrow {
-                                display: flex !important;
-                                flex-direction: row !important;
-                                gap: 2px !important;
-                                justify-content: space-between !important;
-                                align-items: flex-start !important;
-                                margin-top: 40px !important;
-                                height: 1.1in !important;
-                            }
-                            
-                            .dsd {
-                                display: flex !important;
-                                flex-direction: column !important;
-                                justify-content: start !important;
-                                height: 1in !important;
-                            }
+                    /* ID Header - exactly matches generateFrontPage() */
+                    .id-header {
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        font-weight:bold !important;
+                        text-align: center !important;
+                        margin-bottom: 3px !important;
+                        width: 100% !important;
+                        font-size: 7.5pt !important;
+                    }
+                    
+                    .id-header img {
+                        width: 0.49in !important;
+                        height: 0.49in !important;
+                        object-fit: contain !important;
+                        vertical-align: middle !important;
+                        display: block !important;
+                    }
+                    
+                    /* ID Content - exactly matches generateFrontPage() */
+                    .id-content {
+                        font-size: 8pt !important;
+                    }
+                    .name {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 1px !important;
+                        
+                    }
+                    
+                    /* Ensure 3rdrow and dsd align properly in print */
+                    .3rdrow {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 2px !important;
+                        justify-content: space-between !important;
+                        align-items: flex-start !important;
+                        margin-top: 40px !important;
+                        height: 1.1in !important;
+                    }
+                    
+                    .dsd {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: start !important;
+                        height: 1in !important;
+                    }
 
-                            /* ID picture alignment */
-                            .idpicture {
-                                height: 1.05in !important;
-                                width: 1.1in !important;
-                                border: 1px solid #000 !important;
-                            }
+                    /* ID picture alignment */
+                    .idpicture {
+                        height: 1.05in !important;
+                        width: 1.1in !important;
+                        border: 1px solid #000 !important;
+                    }
 
-                            .benefits-card {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                            
-                            .id-header img {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
+                    .benefits-card {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    .id-header img {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
 
-                            .id-name{
-                                font-size: 8pt !important;
-                                font-weight: bold !important;
-                                text-decoration: underline !important;
-                            }
-                            
-                            .id-address{
-                                font-size: 8pt !important;
-                                font-weight: bold !important;
-                                text-decoration: underline !important;
-                                margin-bottom: 5px !important;
-                            }
-                            .dob, .gender, .dateissued{
-                                font-size: 8pt !important;
-                                font-weight: bold !important;
-                                margin-top: 5px !important;
-                            }
+                    .id-name{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        text-decoration: underline !important;
+                    }
+                    
+                    .id-address{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        text-decoration: underline !important;
+                        margin-bottom: 5px !important;
+                    }
+                    .dob, .gender, .dateissued{
+                        font-size: 8pt !important;
+                        font-weight: bold !important;
+                        margin-top: 5px !important;
+                    }
 
-                            id-number {
-                                font-weight: bold !important;
-                                fontsize: 8pt !important;
-                                text-decoration: underline !important;  
-                            }
+                    id-number {
+                        font-weight: bold !important;
+                        fontsize: 8pt !important;
+                        text-decoration: underline !important;  
+                    }
 
-                            validity-number {
-                                font-weight: bold !important;
-                                fontsize: 8pt !important;
-                            }
+                    validity-number {
+                        font-weight: bold !important;
+                        fontsize: 8pt !important;
+                    }
 
-                            .id-footer {
-                                font-size: 7pt !important;
-                                font-weight: bold !important;
-                                color: red !important;
-                                text-align: center !important;
-                                margin-top: 2px !important;
-                            }
-                            /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
+                    .id-footer {
+                        font-size: 7pt !important;
+                        font-weight: bold !important;
+                        color: red !important;
+                        text-align: center !important;
+                        margin-top: 2px !important;
+                    }
+                    /* IMPROVED Benefits card styles - PERFECT VERTICAL ALIGNMENT */
 
-                            .benefits-card {
-                                width: 3.35in !important;
-                                height: 2.27in !important;
-                                border: 1px solid #000 !important;
-                                padding: 12px 10px 8px 10px !important;
-                                background: white !important;
-                                position: relative !important;
-                                overflow: hidden !important;
-                                box-sizing: border-box !important;
-                                display: flex !important;
-                                flex-direction: column !important;
-                            }
-                            /* Ensure consistent list alignment in print */
-                            .benefits-list div {
-                                page-break-inside: avoid !important;
-                                break-inside: avoid !important;
-                                -webkit-column-break-inside: avoid !important;
-                            }
-                            
-                            .benefits-list div img {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-            `;
+                    .benefits-card {
+                        width: 3.35in !important;
+                        height: 2.27in !important;
+                        border: 1px solid #000 !important;
+                        padding: 12px 10px 8px 10px !important;
+                        background: white !important;
+                        position: relative !important;
+                        overflow: hidden !important;
+                        box-sizing: border-box !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                    }
+                    /* Ensure consistent list alignment in print */
+                    .benefits-list div {
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                        -webkit-column-break-inside: avoid !important;
+                    }
+                    
+                    .benefits-list div img {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+    `;
 
             // Add all pages
             allPreviewPages.forEach(page => {
@@ -2172,9 +2152,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             });
 
             printHTML += `
-                </body>
-                </html>
-            `;
+        </body>
+        </html>
+    `;
 
             printWindow.document.write(printHTML);
             printWindow.document.close();
@@ -2198,41 +2178,23 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 return;
             }
 
-            // Convert selected seniors to array with PROPER ID numbers
-            const seniorsArray = Array.from(selectedSeniors, ([id, data]) => {
-                // Generate a proper ID number if it's 'N/A'
-                let idNumber = data.idNumber;
-                let localControl = data.localControl;
-
-                if (idNumber === 'N/A' || !idNumber) {
-                    // Generate a temporary ID number
-                    idNumber = 'TEMP-' + Date.now() + '-' + id;
-                }
-
-                if (localControl === 'N/A' || !localControl) {
-                    localControl = '';
-                }
-
-                return {
-                    id: id,
-                    idNumber: idNumber,
-                    localControl: localControl,
-                    name: data.name
-                };
-            });
+            // Convert selected seniors to array
+            const seniorsArray = Array.from(selectedSeniors, ([id, data]) => ({
+                id: id,
+                idNumber: data.idNumber,
+                localControl: data.localControl
+            }));
 
             // Prepare data for logging
             const logData = {
                 seniors: seniorsArray,
                 osca_head: document.getElementById('osca-head').value,
                 municipal_mayor: document.getElementById('municipal-mayor').value
-                // Don't pass user_id and user_name - let PHP handle it from session
             };
 
             console.log('Logging ID generation for', seniorsArray.length, 'seniors');
-            console.log('Sample data:', seniorsArray[0]);
 
-            // Send AJAX request
+            // Send AJAX request to log the ID generation
             fetch('../php/log_id_generation.php', {
                     method: 'POST',
                     headers: {
@@ -2240,11 +2202,21 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     },
                     body: JSON.stringify(logData)
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(result => {
                     if (result.success) {
                         console.log('✅ ID generation logged successfully. Batch:', result.batch_number);
                         showNotification('✅ ID generation logged successfully! Batch: ' + result.batch_number, 'success');
+
+                        // Optionally refresh the page to show updated status
+                        // setTimeout(() => {
+                        //     location.reload();
+                        // }, 2000);
                     } else {
                         console.error('❌ Failed to log ID generation:', result.error);
                         showNotification('⚠️ ID generation log failed: ' + result.error, 'warning');

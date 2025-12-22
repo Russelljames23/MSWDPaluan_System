@@ -113,7 +113,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="../../php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -147,7 +147,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -301,16 +301,45 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </aside>
 
         <main class="p-4 md:ml-64 pt-17">
-            <div class="w-full flex  justify-end">
-                <button type="button"
-                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
-                    Report</button>
+            <div class="w-full flex justify-between items-center mb-4">
+                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
+                <button type="button" onclick="generateReport()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Generate Report
+                </button>
             </div>
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
             <div class="flex flex-row items-center justify-center gap-5 mt-2">
-                <h4 class="text-xl font-medium dark:text-white px-2 text-center">February 2024</h4>
+                <?php
+                // Calculate display text
+                $displayText = 'All Time';
+                if ($currentYear && $currentMonth) {
+                    $monthNames = [
+                        1 => 'January',
+                        2 => 'February',
+                        3 => 'March',
+                        4 => 'April',
+                        5 => 'May',
+                        6 => 'June',
+                        7 => 'July',
+                        8 => 'August',
+                        9 => 'September',
+                        10 => 'October',
+                        11 => 'November',
+                        12 => 'December'
+                    ];
+                    $displayText = $monthNames[$currentMonth] . ' ' . $currentYear;
+                } elseif ($currentYear) {
+                    $displayText = 'Year ' . $currentYear;
+                } elseif ($currentMonth) {
+                    $displayText = $monthNames[$currentMonth] . ' (All Years)';
+                }
+                ?>
+                <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">
+                    <?php echo htmlspecialchars($displayText); ?>
+                </h4>
                 <div>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
                         class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -352,46 +381,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">Benefits</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">Benefits Distribution Summary</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
-                                <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clip-rule="evenodd" fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                    </svg>
-                                    Category
-                                </button>
-                                <div id="actionsDropdown2"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="actionsDropdownButton2">
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                January</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                February</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                March</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                April</a>
-                                        </li>
-                                    </ul>
-                                </div>
                                 <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                         class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
@@ -399,76 +392,76 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Filter
+                                    Filter by Year
                                     <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clip-rule="evenodd" fill-rule="evenodd"
                                             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                     </svg>
                                 </button>
-                                <!-- Dropdown menu -->
+                                <!-- Dropdown menu will be populated dynamically -->
                                 <div id="filterDropdown2"
                                     class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
+                                    <ul class="space-y-2 text-sm" id="yearFilterList" aria-labelledby="dropdownDefault2">
+                                        <!-- Years will be loaded dynamically -->
                                         <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2025</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2024</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2023</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                2022</a>
+                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                onclick="applyYearFilter(null)">
+                                                All Years</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Summary Statistics -->
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                            <div class="flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Selected Period:</span>
+                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="selectedPeriod">All Time</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="overflow-x-auto">
-                            <table id="deceasedTable"
+                            <table id="benefitsTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                     <tr class="flex w-full border-gray-300 dark:border-gray-600">
-                                        <th scope="col" class="px-4 py-3 w-[40%] text-sm text-left"></th>
+                                        <th scope="col" class="px-4 py-3 w-[40%] text-sm text-left">Benefit Type</th>
                                         <th scope="col"
                                             class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Male</th>
+                                            Male
+                                        </th>
                                         <th scope="col"
                                             class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Female</th>
+                                            Female
+                                        </th>
                                         <th scope="col"
                                             class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Total</th>
+                                            Total
+                                        </th>
                                     </tr>
                                 </thead>
-                                <tbody
-                                    class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                                <tbody id="benefitsBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                                    <!-- All benefit types will be listed here with dynamic data -->
                                     <tr class="flex w-full font-semibold">
                                         <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of OSCA ID (New)
                                         </td>
-                                        <td
+                                        <td id="oscaMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            48
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            85
+                                        <td id="oscaFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            133
+                                        <td id="oscaTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -476,17 +469,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of SP
                                         </td>
-                                        <td
+                                        <td id="spMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            715
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            583
+                                        <td id="spFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            1298
+                                        <td id="spTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -494,17 +487,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of LSP (SSS/GSIS)
                                         </td>
-                                        <td
+                                        <td id="lspMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            147
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            191
+                                        <td id="lspFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            338
+                                        <td id="lspTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -512,17 +505,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             LSP Non Pensioners
                                         </td>
-                                        <td
+                                        <td id="lspNonMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
-                                            75
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            80
+                                        <td id="lspNonFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border-t-0 border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            115
+                                        <td id="lspNonTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border-t-0 border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -530,36 +523,35 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of AICS
                                         </td>
-                                        <td
+                                        <td id="aicsMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            124
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            139
+                                        <td id="aicsFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            263
+                                        <td id="aicsTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
-
                                     <tr class="flex w-full font-semibold">
                                         <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of Birthday Gift
                                         </td>
-                                        <td
+                                        <td id="birthdayMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            954
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            1097
+                                        <td id="birthdayFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            2051
+                                        <td id="birthdayTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -567,17 +559,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of Milestone
                                         </td>
-                                        <td
+                                        <td id="milestoneMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            92
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            88
+                                        <td id="milestoneFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            180
+                                        <td id="milestoneTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -585,17 +577,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of Bedridden SC
                                         </td>
-                                        <td
+                                        <td id="bedriddenMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            7
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            16
+                                        <td id="bedriddenFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            23
+                                        <td id="bedriddenTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -603,17 +595,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of Burial Assistance
                                         </td>
-                                        <td
+                                        <td id="burialMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            27
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            42
+                                        <td id="burialFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            69
+                                        <td id="burialTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -621,17 +613,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair
                                         </td>
-                                        <td
+                                        <td id="medical5kMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            4
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            5
+                                        <td id="medical5kFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            9
+                                        <td id="medical5kTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -639,17 +631,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Centenarian Awardee (Php.50,000.00)
                                         </td>
-                                        <td
+                                        <td id="centenarianMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            0
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            2
+                                        <td id="centenarianFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            2
+                                        <td id="centenarianTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -657,17 +649,17 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)
                                         </td>
-                                        <td
+                                        <td id="medical1kMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            32
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            39
+                                        <td id="medical1kFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            71
+                                        <td id="medical1kTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                     <tr class="flex w-full font-semibold">
@@ -675,40 +667,21 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             style="font-family: 'Times New Roman', Times, serif;">
                                             Total # of SC Availed of Christmas Gift
                                         </td>
-                                        <td
+                                        <td id="christmasMale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            954
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            1097
-                                        </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            2051
-                                        </td>
-                                    </tr>
-                                    <tr class="flex w-full font-semibold">
-                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            Total # of SC Availed of Christmas Gift
-                                        </td>
-                                        <td
+                                        <td id="christmasFemale"
                                             class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                                            954
+                                            Loading...
                                         </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            1097
-                                        </td>
-                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                                            style="font-family: 'Times New Roman', Times, serif;">
-                                            2051
+                                        <td id="christmasTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -751,7 +724,345 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             // location.href = ("reportbenefits.html");
         }
     </script>
+    <script>
+        // Benefits report functionality
+        (function() {
+            'use strict';
 
+            console.log('Benefits report page initialized');
+
+            // Get current filter values from PHP
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+
+            // Map of benefit names to their element IDs and search patterns
+            const benefitMap = {
+                'OSCA ID (New)': {
+                    ids: ['oscaMale', 'oscaFemale', 'oscaTotal'],
+                    pattern: 'OSCA ID (New)'
+                },
+                'Social Pension': {
+                    ids: ['spMale', 'spFemale', 'spTotal'],
+                    patterns: ['Social Pension', 'SP']
+                },
+                'LSP (SSS/GSIS)': {
+                    ids: ['lspMale', 'lspFemale', 'lspTotal'],
+                    patterns: ['LSP (SSS/GSIS)', 'LSP', 'SSS', 'GSIS']
+                },
+                'LSP Non Pensioners': {
+                    ids: ['lspNonMale', 'lspNonFemale', 'lspNonTotal'],
+                    patterns: ['LSP Non Pensioners', 'Non Pensioners']
+                },
+                'AICS': {
+                    ids: ['aicsMale', 'aicsFemale', 'aicsTotal'],
+                    patterns: ['AICS']
+                },
+                'Birthday Gift': {
+                    ids: ['birthdayMale', 'birthdayFemale', 'birthdayTotal'],
+                    patterns: ['Birthday Gift', 'Birthday']
+                },
+                'Milestone': {
+                    ids: ['milestoneMale', 'milestoneFemale', 'milestoneTotal'],
+                    patterns: ['Milestone']
+                },
+                'Bedridden SC': {
+                    ids: ['bedriddenMale', 'bedriddenFemale', 'bedriddenTotal'],
+                    patterns: ['Bedridden SC', 'Bedridden']
+                },
+                'Burial Assistance': {
+                    ids: ['burialMale', 'burialFemale', 'burialTotal'],
+                    patterns: ['Burial Assistance', 'Burial']
+                },
+                'Medical Assistance Php.5,000.00': {
+                    ids: ['medical5kMale', 'medical5kFemale', 'medical5kTotal'],
+                    patterns: ['Medical Assistance Php.5,000.00', '5,000.00']
+                },
+                'Centenarian Awardee (Php.50,000.00)': {
+                    ids: ['centenarianMale', 'centenarianFemale', 'centenarianTotal'],
+                    patterns: ['Centenarian Awardee', 'Php.50,000.00']
+                },
+                'Medical Assistance Php.1,000.00': {
+                    ids: ['medical1kMale', 'medical1kFemale', 'medical1kTotal'],
+                    patterns: ['Medical Assistance Php.1,000.00', '1,000.00', 'Brgy.Mananao']
+                },
+                'Christmas Gift': {
+                    ids: ['christmasMale', 'christmasFemale', 'christmasTotal'],
+                    patterns: ['Christmas Gift', 'Christmas']
+                }
+            };
+
+            // Load data when page is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded. Loading benefits data...');
+                fetchBenefitsReport();
+            });
+
+            // Main function to fetch benefits report
+            async function fetchBenefitsReport() {
+                try {
+                    showLoading();
+
+                    // Build API URL
+                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_benefits_backend.php';
+                    apiUrl += '?';
+
+                    // Add filters if provided
+                    const params = new URLSearchParams();
+
+                    if (currentYear && currentYear !== 'null') {
+                        params.append('year', currentYear);
+                    }
+                    if (currentMonth && currentMonth !== 'null') {
+                        params.append('month', currentMonth);
+                    }
+
+                    apiUrl += params.toString();
+
+                    // Add cache busting
+                    apiUrl += '&_=' + Date.now();
+
+                    console.log('Calling Benefits API:', apiUrl);
+
+                    // Fetch data
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Benefits API Response:', result);
+
+                    // Display the data
+                    if (result.success) {
+                        displayBenefitsReport(result);
+                        updateBenefitsSummary(result);
+                        populateYearFilter(result.available_years || [], result.year_counts || []);
+                    } else {
+                        throw new Error(result.message || 'Unknown error from API');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading benefits report:', error);
+                    showError('Failed to load benefits data: ' + error.message);
+                }
+            }
+
+            // Function to display benefits report in the table
+            function displayBenefitsReport(data) {
+                // Reset all cells to 0 first
+                Object.values(benefitMap).forEach(benefit => {
+                    const [maleId, femaleId, totalId] = benefit.ids;
+                    document.getElementById(maleId).textContent = '0';
+                    document.getElementById(femaleId).textContent = '0';
+                    document.getElementById(totalId).textContent = '0';
+                });
+
+                // Check if we have data
+                if (!data.data || data.data.length === 0) {
+                    console.log('No benefits data found');
+                    return;
+                }
+
+                console.log('Processing', data.data.length, 'benefit records');
+
+                // Update each benefit type with actual data
+                data.data.forEach(item => {
+                    if (!item || !item.benefit_name) return;
+
+                    const benefitName = item.benefit_name;
+
+                    // Find which benefit this matches
+                    Object.keys(benefitMap).forEach(benefitKey => {
+                        const benefit = benefitMap[benefitKey];
+
+                        // Check if this item matches any pattern for this benefit
+                        let matches = false;
+
+                        if (benefit.pattern) {
+                            // For OSCA ID which has exact match
+                            matches = (benefitName === benefit.pattern);
+                        } else if (benefit.patterns) {
+                            // For other benefits, check if any pattern matches
+                            matches = benefit.patterns.some(pattern =>
+                                benefitName.includes(pattern)
+                            );
+                        }
+
+                        if (matches) {
+                            const [maleId, femaleId, totalId] = benefit.ids;
+
+                            // Update the cells with actual data
+                            document.getElementById(maleId).textContent = item.male_count || 0;
+                            document.getElementById(femaleId).textContent = item.female_count || 0;
+                            document.getElementById(totalId).textContent = item.total_count || 0;
+
+                            console.log(`Updated ${benefitKey}: Male=${item.male_count}, Female=${item.female_count}, Total=${item.total_count}`);
+                        }
+                    });
+                });
+            }
+
+            // Update summary statistics
+            function updateBenefitsSummary(data) {
+                const periodElement = document.getElementById('selectedPeriod');
+
+                if (periodElement && data.filters) {
+                    const monthNames = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+
+                    let periodText = 'All Time';
+                    const year = data.filters.year;
+                    const month = data.filters.month;
+
+                    if (month && year) {
+                        const monthName = monthNames[month - 1] || 'Unknown';
+                        periodText = `${monthName} ${year}`;
+                    } else if (year) {
+                        periodText = `Year ${year}`;
+                    } else if (month) {
+                        const monthName = monthNames[month - 1] || 'Unknown';
+                        periodText = `${monthName} (All Years)`;
+                    }
+
+                    periodElement.textContent = periodText;
+                }
+            }
+
+            // Populate year filter dropdown
+            function populateYearFilter(years, yearCounts) {
+                const yearList = document.getElementById('yearFilterList');
+                if (!yearList) return;
+
+                // Clear existing items
+                yearList.innerHTML = '';
+
+                // Add "All Years" option
+                const allYearsLi = document.createElement('li');
+                allYearsLi.innerHTML = `
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                onclick="applyYearFilter(null)">
+                All Years
+            </a>
+        `;
+                yearList.appendChild(allYearsLi);
+
+                // Create a map of year counts for easy lookup
+                const countMap = {};
+                if (yearCounts && Array.isArray(yearCounts)) {
+                    yearCounts.forEach(item => {
+                        if (item.year && item.year > 1900) {
+                            countMap[item.year] = item.count;
+                        }
+                    });
+                }
+
+                // Add available years with counts
+                if (years && years.length > 0) {
+                    years.forEach(year => {
+                        const count = countMap[year] || 0;
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onclick="applyYearFilter(${year})">
+                        ${year} (${count})
+                    </a>
+                `;
+                        yearList.appendChild(li);
+                    });
+                }
+            }
+
+            // Utility functions
+            function showLoading() {
+                // All cells already show "Loading..." initially
+                console.log('Loading benefits data...');
+
+                // Add a small visual indicator
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'loadingIndicator';
+                loadingIndicator.className = 'fixed top-4 right-4 z-50';
+                loadingIndicator.innerHTML = `
+            <div class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Loading benefits data...
+            </div>
+        `;
+                document.body.appendChild(loadingIndicator);
+            }
+
+            function showError(message) {
+                // Remove loading indicator if exists
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                if (loadingIndicator) {
+                    loadingIndicator.remove();
+                }
+
+                const tbody = document.getElementById('benefitsBody');
+                if (tbody) {
+                    const errorRow = document.createElement('tr');
+                    errorRow.innerHTML = `
+                <td colspan="4" class="px-4 py-8 text-center text-red-500">
+                    <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <p class="text-lg">${message}</p>
+                    <button onclick="window.location.reload()" 
+                        class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Retry
+                    </button>
+                </td>
+            `;
+                    tbody.appendChild(errorRow);
+                }
+            }
+
+            // Clean up loading indicator when data is loaded
+            function cleanupLoading() {
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                if (loadingIndicator) {
+                    loadingIndicator.remove();
+                }
+            }
+
+            // Filter functions
+            window.applyYearFilter = function(year) {
+                const url = new URL(window.location);
+
+                if (year === null) {
+                    url.searchParams.delete('year');
+                    url.searchParams.delete('month');
+                } else {
+                    url.searchParams.set('year', year);
+                    // Keep month filter if it exists
+                    const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+                    if (currentMonth && currentMonth !== 'null') {
+                        url.searchParams.set('month', currentMonth);
+                    }
+                }
+
+                window.location.href = url.toString();
+            };
+
+            // Listen for filter changes from date_filter_component.php
+            if (typeof window !== 'undefined') {
+                window.addEventListener('filtersApplied', function(e) {
+                    console.log('Filters applied in Benefits Report:', e.detail);
+                    // Reload data with new filters
+                    fetchBenefitsReport();
+                });
+            }
+
+            // Clean up on successful data load
+            window.addEventListener('benefitsDataLoaded', function() {
+                cleanupLoading();
+            });
+
+        })();
+    </script>
 </body>
 
 </html>

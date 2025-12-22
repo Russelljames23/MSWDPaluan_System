@@ -1152,7 +1152,7 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
                     <span class="sr-only">Toggle sidebar</span>
                 </button>
                 <a href="#" class="flex items-center justify-between mr-4 ">
-                    <img src="../img/MSWD_LOGO-removebg-preview.png"
+                    <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                         class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                         alt="MSWD LOGO" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -1228,7 +1228,7 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
-                            <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                            <a href="../php/login/logout.php"
                                 class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                 out</a>
                         </li>

@@ -358,7 +358,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         IV
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part5()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         V
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part6()"
@@ -370,18 +370,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         VII-IX
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="benefits()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         Benefits
                     </button>
                 </div>
             </div>
-            <!-- Part V -->
+            <!-- Part VI -->
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
-                                style="font-family: 'Times New Roman', Times, serif;">V. List of Bedridden Senior Citizens</h4>
+                                style="font-family: 'Times New Roman', Times, serif;">Benefits</h4>
                             <div class="flex items-center w-full space-x-3 md:w-auto">
                                 <button id="actionsDropdownButton2" data-dropdown-toggle="actionsDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -393,7 +393,32 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                     </svg>
                                     Category
                                 </button>
-                                <!-- Category dropdown removed as it's not needed -->
+                                <div id="actionsDropdown2"
+                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="actionsDropdownButton2">
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                January</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                February</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                March</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                April</a>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <button id="filterDropdownButton2" data-dropdown-toggle="filterDropdown2"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto  hover:bg-gray-100 hover:text-primary-700 f dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
@@ -410,62 +435,309 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                                             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                     </svg>
                                 </button>
-                                <!-- Dropdown menu - will be populated dynamically -->
+                                <!-- Dropdown menu -->
                                 <div id="filterDropdown2"
                                     class="z-10 hidden w-30 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                     <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault2">
                                         <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="applyYearFilter(2025)">
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 2025</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="applyYearFilter(2024)">
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 2024</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="applyYearFilter(2023)">
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 2023</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="applyYearFilter(2022)">
+                                            <a href="#"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 2022</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Summary Statistics -->
-                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                            <div class="flex flex-wrap gap-4 text-sm">
-                                <div class="flex items-center">
-                                    <span class="text-gray-600 dark:text-gray-300 mr-2">Total Bedridden Seniors:</span>
-                                    <span class="font-semibold text-blue-600 dark:text-blue-400" id="totalBedridden">0</span>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="overflow-x-auto">
-                            <table id="bedriddenTable"
+                            <table id="deceasedTable"
                                 class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                    <tr class="flex w-full  border-gray-300 dark:border-gray-600">
-                                        <th scope="col" class="px-4 py-3 flex w-full text-sm text-left">Name</th>
+                                    <tr class="flex w-full border-gray-300 dark:border-gray-600">
+                                        <th scope="col" class="px-4 py-3 w-[40%] text-sm text-left"></th>
                                         <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Sex</th>
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Male</th>
                                         <th scope="col"
-                                            class="px-4 py-3 flex-l w-full text-sm border-l border-gray-300 dark:border-gray-600">
-                                            Barangay</th>
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Female</th>
+                                        <th scope="col"
+                                            class="px-4 py-3 w-[20%] text-sm border-l border-gray-300 dark:border-gray-600">
+                                            Total</th>
                                     </tr>
                                 </thead>
-                                <tbody id="bedriddenBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] 
-                                        [&::-webkit-scrollbar]:hidden">
-                                    <tr>
-                                        <td colspan="3" class="px-4 py-3 text-center">Loading data...</td>
+                                <tbody
+                                    class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of OSCA ID (New)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            48
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            85
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            133
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of SP
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            715
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            583
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1298
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of LSP (SSS/GSIS)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            147
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            191
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            338
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-t-0 border-r-0 text-left-20 border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            LSP Non Pensioners
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
+                                            75
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            80
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border-t-0 border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            115
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of AICS
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            124
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            139
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            263
+                                        </td>
+                                    </tr>
+
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Birthday Gift
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Milestone
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            92
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            88
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            180
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of Bedridden SC
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            7
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            16
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            23
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Burial Assistance
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            27
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            42
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            69
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            4
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            5
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            9
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Centenarian Awardee (Php.50,000.00)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            0
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            32
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            39
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            71
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Christmas Gift
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Christmas Gift
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            954
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            1097
+                                        </td>
+                                        <td class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            2051
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
@@ -476,259 +748,37 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        // Update navigation functions to preserve filters
-        window.part1 = function() {
-            navigateToReport('report.php');
-        };
-
-        window.part2 = function() {
-            navigateToReport('reportpart2.php');
-        };
-
-        window.part3 = function() {
-            navigateToReport('reportpart3.php');
-        };
-
-        window.part4 = function() {
-            navigateToReport('reportpart4.php');
-        };
-
-        window.part5 = function() {
-            // Already on part 5, reload with current filters
-            window.location.reload();
-        };
-
-        window.part6 = function() {
-            navigateToReport('reportpart6.php');
-        };
-
-        window.part7to9 = function() {
-            navigateToReport('reportpart7to9.php');
-        };
-
-        window.benefits = function() {
-            navigateToReport('reportbenefits.php');
-        };
-
-        // Helper to navigate between report pages
-        function navigateToReport(pageName) {
-            let url = pageName;
-            const params = new URLSearchParams();
-
-            // Get session context from current URL
-            const currentUrl = new URLSearchParams(window.location.search);
-            const sessionContext = currentUrl.get('session_context');
-
-            if (sessionContext) {
-                params.append('session_context', sessionContext);
-            }
-
-            // Add current filters
-            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
-            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
-
-            if (currentYear && currentYear !== 'null') {
-                params.append('year', currentYear);
-            }
-            if (currentMonth && currentMonth !== 'null') {
-                params.append('month', currentMonth);
-            }
-
-            const queryString = params.toString();
-            if (queryString) {
-                url += '?' + queryString;
-            }
-
-            console.log('Navigating to:', url);
-            window.location.href = url;
+        function part1() {
+            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
         }
 
-        // Part V specific functions
-        (function() {
-            'use strict';
+        function part2() {
+            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            console.log('Part V page initialized');
+        function part3() {
+            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Get current filter values from PHP
-            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
-            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+        function part4() {
+            location.href = ("reportpart4.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Load data when page is ready
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log('DOM loaded. Loading Part V data...');
-                fetchBedriddenSeniors();
-            });
+        function part5() {
+            location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
+        }
 
-            // Main function to fetch bedridden seniors
-            async function fetchBedriddenSeniors() {
-                try {
-                    showLoading();
+        function part6() {
+            location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
+        }
 
-                    // Build API URL
-                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part5_backend.php';
-                    apiUrl += '?';
+        function part7to9() {
+            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
+        }
 
-                    // Add filters if provided
-                    const params = new URLSearchParams();
-
-                    if (currentYear && currentYear !== 'null') {
-                        params.append('year', currentYear);
-                    }
-                    if (currentMonth && currentMonth !== 'null') {
-                        params.append('month', currentMonth);
-                    }
-
-                    apiUrl += params.toString();
-
-                    // Add cache busting
-                    apiUrl += '&_=' + Date.now();
-
-                    console.log('Calling API:', apiUrl);
-
-                    // Fetch data
-                    const response = await fetch(apiUrl);
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    console.log('API Response:', result);
-
-                    // Display the data
-                    if (result.success) {
-                        displayBedriddenSeniors(result);
-                        updateBedriddenSummary(result);
-                    } else {
-                        throw new Error(result.message || 'Unknown error from API');
-                    }
-
-                } catch (error) {
-                    console.error('Error loading bedridden seniors:', error);
-                    showError('Failed to load data: ' + error.message);
-                }
-            }
-
-            // Function to display bedridden seniors in the table
-            function displayBedriddenSeniors(data) {
-                const tbody = document.getElementById('bedriddenBody');
-                if (!tbody) {
-                    console.error('Table body not found!');
-                    return;
-                }
-
-                // Clear existing content
-                tbody.innerHTML = '';
-
-                // Check if we have data
-                if (!data.data || data.data.length === 0) {
-                    tbody.innerHTML = `
-            <tr>
-                <td colspan="3" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-lg">No bedridden seniors found</p>
-                    <p class="text-sm mt-1">No seniors with health conditions in the selected period</p>
-                </td>
-            </tr>
-        `;
-                    return;
-                }
-
-                console.log('Displaying', data.data.length, 'records');
-
-                // Create rows for each senior
-                data.data.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.className = 'flex w-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-700';
-
-                    // Format gender to single letter
-                    const gender = item.gender ? item.gender.charAt(0).toUpperCase() : 'N/A';
-
-                    row.innerHTML = `
-                <td class="px-4 py-3 flex w-full border-b-0 borde-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600" 
-                    style="font-family: 'Times New Roman', Times, serif;">
-                    ${index + 1}. ${item.full_name}
-                </td>
-                <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                    ${gender}
-                </td>
-                <td class="px-4 py-3 flex-l w-full border-b-0 borde-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600"
-                    style="font-family: 'Times New Roman', Times, serif;">
-                    ${item.barangay || 'N/A'}
-                </td>
-            `;
-                    tbody.appendChild(row);
-                });
-
-                console.log('Displayed', data.data.length, 'records');
-            }
-
-            // Update summary statistics
-            function updateBedriddenSummary(data) {
-                const totalElement = document.getElementById('totalBedridden');
-                if (totalElement && data.count !== undefined) {
-                    totalElement.textContent = data.count || 0;
-                }
-            }
-
-            // Utility functions
-            function showLoading() {
-                const tbody = document.getElementById('bedriddenBody');
-                if (tbody) {
-                    tbody.innerHTML = `
-            <tr>
-                <td colspan="3" class="px-4 py-8 text-center">
-                    <div class="flex justify-center">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    </div>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">Loading data...</p>
-                </td>
-            </tr>
-        `;
-                }
-            }
-
-            function showError(message) {
-                const tbody = document.getElementById('bedriddenBody');
-                if (tbody) {
-                    tbody.innerHTML = `
-            <tr>
-                <td colspan="3" class="px-4 py-8 text-center text-red-500">
-                    <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                    <p class="text-lg">${message}</p>
-                    <button onclick="window.location.reload()" 
-                        class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Retry
-                    </button>
-                </td>
-            </tr>
-        `;
-                }
-            }
-
-            // Filter functions
-            window.applyYearFilter = function(year) {
-                const url = new URL(window.location);
-                url.searchParams.set('year', year);
-                window.location.href = url.toString();
-            };
-
-            // Listen for filter changes from date_filter_component.php
-            if (typeof window !== 'undefined') {
-                window.addEventListener('filtersApplied', function(e) {
-                    console.log('Filters applied in Part V:', e.detail);
-                    // Reload data with new filters
-                    fetchBedriddenSeniors();
-                });
-            }
-
-        })();
+        function benefits() {
+            // location.href = ("reportbenefits.html");
+        }
     </script>
 
 </body>

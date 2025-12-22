@@ -22,33 +22,15 @@ $senior_data = [];
 $errors = [];
 $success_message = '';
 
-// Helper function to format date for HTML input
-function formatDateForInput($date)
-{
-    if (empty($date) || $date == '0000-00-00' || $date == '0000-00-00 00:00:00') {
-        return '';
-    }
-    return date('Y-m-d', strtotime($date));
-}
-
-// Helper function to get safe year value
-function formatYearForInput($year)
-{
-    if (empty($year) || $year == 0 || $year == '0000') {
-        return '';
-    }
-    return (int)$year;
-}
-
 try {
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Start transaction
+    $pdo->beginTransaction();
+
     // Check if form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Start transaction
-        $pdo->beginTransaction();
-
         // Validate and sanitize input
         $applicant_data = [
             'first_name' => trim($_POST['first_name'] ?? ''),
@@ -209,12 +191,11 @@ try {
                 }
 
                 // Update or insert educational background
-                $year_graduated = !empty($_POST['year_graduated']) ? $_POST['year_graduated'] : null;
                 $education_data = [
                     'educational_attainment' => trim($_POST['edu_attainment'] ?? ''),
                     'school_name' => trim($_POST['school_name'] ?? ''),
                     'course_taken' => trim($_POST['course_taken'] ?? ''),
-                    'year_graduated' => $year_graduated
+                    'year_graduated' => !empty($_POST['year_graduated']) ? $_POST['year_graduated'] : null
                 ];
 
                 $check_edu = $pdo->prepare("SELECT COUNT(*) FROM applicant_educational_background WHERE applicant_id = ?");
@@ -478,27 +459,11 @@ try {
 
                 // Commit transaction
                 $pdo->commit();
-
-                // Set success message and reload data
                 $success_message = "Senior information updated successfully!";
 
-                // Fetch updated data to show in form
-                $stmt = $pdo->prepare("
-                    SELECT a.*,
-                           CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name
-                    FROM applicants a 
-                    WHERE a.applicant_id = ?
-                ");
-                $stmt->execute([$applicant_id]);
-                $senior_data['applicant'] = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // Fetch other updated data
-                $stmt = $pdo->prepare("SELECT * FROM addresses WHERE applicant_id = ?");
-                $stmt->execute([$applicant_id]);
-                $senior_data['address'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
-
-                // ... (fetch other tables as you had before) ...
-
+                // Refresh the page to show updated data and success message
+                echo '<script>window.location.href = window.location.href;</script>';
+                exit();
             } catch (Exception $e) {
                 $pdo->rollBack();
                 $errors[] = "Error updating data: " . $e->getMessage();
@@ -619,49 +584,10 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             content: " *";
             color: #ef4444;
         }
-
-        .error {
-            border-color: #ef4444 !important;
-        }
-
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loading-spinner {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-        }
     </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-700">Saving changes, please wait...</p>
-        </div>
-    </div>
-
     <div class="antialiased">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -769,6 +695,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                 </div>
             </div>
         </nav>
+
         <!-- Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -942,6 +869,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                 </ul>
             </div>
         </aside>
+
         <main class="p-4 md:ml-64 pt-20">
             <!-- Header with navigation -->
             <div class="w-full flex justify-between items-center mb-6">
@@ -991,7 +919,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
 
             <?php if (!empty($success_message)): ?>
                 <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                    <i class="fas fa-check-circle mr-2"></i><?php echo htmlspecialchars($success_message); ?>
+                    <?php echo htmlspecialchars($success_message); ?>
                 </div>
             <?php endif; ?>
 
@@ -1038,7 +966,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                             <div>
                                 <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white required">Birth Date</label>
                                 <input type="date" id="birth_date" name="birth_date"
-                                    value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'birth_date')); ?>"
+                                    value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'birth_date')); ?>"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                             </div>
 
@@ -1141,14 +1069,19 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div id="deceased-fields" class="hidden">
                                     <label for="date_of_death" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Death</label>
                                     <input type="date" id="date_of_death" name="date_of_death"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'date_of_death')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'date_of_death')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
                                 <div id="inactive-fields" class="hidden">
+                                    <label for="inactive_reason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inactive Reason</label>
+                                    <input type="text" id="inactive_reason" name="inactive_reason"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'inactive_reason')); ?>"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
                                     <label for="date_of_inactive" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-4">Date of Inactive</label>
                                     <input type="date" id="date_of_inactive" name="date_of_inactive"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'date_of_inactive')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'date_of_inactive')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
                             </div>
@@ -1305,7 +1238,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="year_graduated" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Year Graduated</label>
                                     <input type="number" id="year_graduated" name="year_graduated" min="1900" max="<?php echo date('Y'); ?>"
-                                        value="<?php echo formatYearForInput(getArrayValue($senior_data['education'], 'year_graduated')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['education'], 'year_graduated')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
                             </div>
@@ -1332,7 +1265,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="date_of_registration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Registration</label>
                                     <input type="date" id="date_of_registration" name="date_of_registration"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['registration'], 'date_of_registration')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['registration'], 'date_of_registration')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
@@ -1352,7 +1285,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="approval_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval Date</label>
                                     <input type="date" id="approval_date" name="approval_date"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['registration'], 'approval_date')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['registration'], 'approval_date')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
@@ -1938,15 +1871,6 @@ $support_types = ['Cash', 'In-kind', 'Both'];
         let currentStep = 1;
         const totalSteps = 6;
 
-        // Show/hide loading overlay
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
-
         function showStep(step) {
             // Hide all steps
             document.querySelectorAll('.step').forEach(el => {
@@ -2008,23 +1932,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             stepElement.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
 
             requiredInputs.forEach(input => {
-                // Skip validation for hidden fields
-                if (input.type === 'hidden' || input.closest('.hidden')) {
-                    return;
-                }
-
-                if (input.type === 'checkbox') {
-                    // For checkboxes, check if required but not checked
-                    if (input.required && !input.checked) {
-                        isValid = false;
-                        input.classList.add('error');
-
-                        const error = document.createElement('p');
-                        error.className = 'error-message';
-                        error.textContent = 'This field is required';
-                        input.parentNode.appendChild(error);
-                    }
-                } else if (!input.value.trim()) {
+                if (!input.value.trim()) {
                     isValid = false;
                     input.classList.add('error');
 
@@ -2056,54 +1964,23 @@ $support_types = ['Cash', 'In-kind', 'Both'];
         }
 
         function updateReviewData() {
+            // ... (rest of updateReviewData function remains the same) ...
             // Personal Information
-            const firstName = document.getElementById('first_name').value;
-            const middleName = document.getElementById('middle_name').value;
-            const lastName = document.getElementById('last_name').value;
-            const suffix = document.getElementById('suffix').value;
+            const firstName = document.getElementById('first_name')?.value || '';
+            const middleName = document.getElementById('middle_name')?.value || '';
+            const lastName = document.getElementById('last_name')?.value || '';
+            const suffix = document.getElementById('suffix')?.value || '';
 
             let fullName = `${lastName}${suffix ? ' ' + suffix : ''}, ${firstName}`;
             if (middleName) fullName += ` ${middleName.charAt(0)}.`;
 
-            document.getElementById('review-fullname').textContent = fullName;
-            document.getElementById('review-birthdate').textContent = document.getElementById('birth_date').value;
-            document.getElementById('review-gender').textContent = document.getElementById('gender').value;
-            document.getElementById('review-civilstatus').textContent = document.getElementById('civil_status').value;
-            document.getElementById('review-status').textContent = document.getElementById('status').value;
-            document.getElementById('review-validation').textContent = document.getElementById('validation').value;
+            const reviewFullname = document.getElementById('review-fullname');
+            if (reviewFullname) reviewFullname.textContent = fullName;
 
-            // Address Information
-            const houseNo = document.getElementById('house_no').value;
-            const street = document.getElementById('street').value;
-            const barangay = document.getElementById('barangay').value;
-            const municipality = document.getElementById('municipality').value;
-            const province = document.getElementById('province').value;
+            const reviewBirthdate = document.getElementById('review-birthdate');
+            if (reviewBirthdate) reviewBirthdate.textContent = document.getElementById('birth_date')?.value || '';
 
-            let address = '';
-            if (houseNo) address += houseNo + ' ';
-            if (street) address += street + ', ';
-            address += barangay + ', ' + municipality + ', ' + province;
-
-            document.getElementById('review-address').textContent = address;
-            document.getElementById('review-barangay').textContent = barangay;
-
-            // Economic Status
-            const monthlyIncome = document.getElementById('monthly_income').value;
-            const isPensioner = document.getElementById('is_pensioner').checked ? 'Yes' : 'No';
-            const incomeSource = document.getElementById('income_source').value;
-
-            document.getElementById('review-income').textContent = monthlyIncome ? '₱' + parseFloat(monthlyIncome).toLocaleString('en-US', {
-                minimumFractionDigits: 2
-            }) : 'Not specified';
-            document.getElementById('review-pensioner').textContent = isPensioner;
-            document.getElementById('review-incomesource').textContent = incomeSource || 'Not specified';
-
-            // Health Condition
-            const hasIllness = document.getElementById('has_existing_illness').checked ? 'Yes' : 'No';
-            const hasDisability = document.getElementById('has_disability').checked ? 'Yes' : 'No';
-
-            document.getElementById('review-illness').textContent = hasIllness;
-            document.getElementById('review-disability').textContent = hasDisability;
+            // ... (rest of the updateReviewData function) ...
         }
 
         // Status change handler
@@ -2131,7 +2008,45 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             });
         }
 
-        // Setup government benefits handlers
+        // Pension source change handler
+        const pensionSourceElement = document.getElementById('pension_source');
+        if (pensionSourceElement) {
+            pensionSourceElement.addEventListener('change', function() {
+                const pensionOtherDiv = document.getElementById('pension_other_div');
+                if (this.value === 'Others') {
+                    if (pensionOtherDiv) pensionOtherDiv.classList.remove('hidden');
+                } else {
+                    if (pensionOtherDiv) pensionOtherDiv.classList.add('hidden');
+                }
+            });
+        }
+
+        // Illness entry management
+        function addIllnessEntry() {
+            const container = document.getElementById('illness-entries');
+            if (!container) return;
+
+            const entry = document.createElement('div');
+            entry.className = 'illness-entry flex gap-2 mb-2';
+            entry.innerHTML = `
+            <input type="text" name="illnesses[]" placeholder="Illness name"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <input type="date" name="illness_dates[]"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <button type="button" onclick="removeIllnessEntry(this)" 
+                    class="text-red-600 hover:text-red-800">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+            container.appendChild(entry);
+        }
+
+        function removeIllnessEntry(button) {
+            const entry = button.closest('.illness-entry');
+            if (entry) entry.remove();
+        }
+
+        // Government benefits checkbox handlers - FIXED
         function setupGovernmentBenefitsHandlers() {
             const benefits = [{
                     checkbox: 'has_sss',
@@ -2183,11 +2098,10 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             });
         }
 
-        // Form submission handler with proper feedback
+        // Form submission handler
         const editForm = document.getElementById('editForm');
         if (editForm) {
             editForm.addEventListener('submit', function(e) {
-                // Prevent default to show our custom loading
                 e.preventDefault();
 
                 // Validate all steps
@@ -2213,21 +2127,15 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                     return false;
                 }
 
-                // Show loading overlay
-                showLoading();
-
-                // Disable submit button
+                // Show loading indicator
                 const submitBtn = this.querySelector('button[type="submit"]');
                 if (submitBtn) {
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
                 }
 
-                // Submit the form after a short delay to show the loading state
-                setTimeout(() => {
-                    this.submit();
-                }, 500);
-
+                // Submit the form
+                this.submit();
                 return true;
             });
         }
@@ -2242,22 +2150,13 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                 statusElement.dispatchEvent(new Event('change'));
             }
 
+            // Trigger pension source change
+            if (pensionSourceElement) {
+                pensionSourceElement.dispatchEvent(new Event('change'));
+            }
+
             // Setup government benefits handlers
             setupGovernmentBenefitsHandlers();
-
-            // Clean up invalid date values
-            const dateFields = document.querySelectorAll('input[type="date"]');
-            dateFields.forEach(field => {
-                if (field.value === '0000-00-00' || field.value === '') {
-                    field.value = '';
-                }
-            });
-
-            // Clean up year_graduated field
-            const yearField = document.getElementById('year_graduated');
-            if (yearField && (yearField.value === '0' || yearField.value === '0000')) {
-                yearField.value = '';
-            }
 
             // Initialize tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-tooltip-target]'));

@@ -256,3 +256,29 @@
 [14-Dec-2025 08:27:15 Europe/Berlin] Error restoring health_condition: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
 [14-Dec-2025 14:02:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
 [14-Dec-2025 14:03:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:31 Europe/Berlin] No user ID found for activity: DELETE_BENEFIT
+[22-Dec-2025 08:43:33 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:33 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:35 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:35 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:38 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:38 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:40 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:40 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:42 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:42 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:44 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:44 Europe/Berlin] No user ID found for activity: DELETE_BENEFIT
+[22-Dec-2025 08:43:47 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:47 Europe/Berlin] No user ID found for activity: DELETE_BENEFIT
+[22-Dec-2025 08:43:49 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:49 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:51 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:53 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:53 Europe/Berlin] No user ID found for activity: ERROR
+[22-Dec-2025 08:43:57 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:43:57 Europe/Berlin] No user ID found for activity: UPDATE_BENEFIT
+[22-Dec-2025 08:48:41 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[22-Dec-2025 08:48:41 Europe/Berlin] No user ID found for activity: ADD_BENEFIT_TYPE

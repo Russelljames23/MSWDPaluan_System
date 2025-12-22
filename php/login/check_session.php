@@ -11,7 +11,7 @@ function checkAuth()
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // Store the current URL for redirecting back after login
         $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
-        header('Location: /MSWDPALUAN_SYSTEM-MAIN/html/login.php');
+        header('Location: ../../index.php');
         exit;
     }
 
@@ -26,7 +26,7 @@ function checkAuth()
         unset($_SESSION['is_verified']);
         unset($_SESSION['session_context']);
 
-        header('Location: /MSWDPALUAN_SYSTEM-MAIN/html/login.php?error=not_verified');
+        header('Location: ../../index.php?error=not_verified');
         exit;
     }
 
@@ -43,7 +43,7 @@ function checkAuth()
         unset($_SESSION['is_verified']);
         unset($_SESSION['session_context']);
 
-        header('Location: /MSWDPALUAN_SYSTEM-MAIN/html/login.php?error=session_expired');
+        header('Location: ../../index.php?error=session_expired');
         exit;
     }
 

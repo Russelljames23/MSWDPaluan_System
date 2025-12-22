@@ -377,7 +377,7 @@ $local_other = [
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="../../php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -411,7 +411,7 @@ $local_other = [
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -837,10 +837,10 @@ $local_other = [
 
                                 <!-- ID NUMBERS (6 columns) -->
                                 <td><?php echo formatEmpty(getArrayValue($senior_data['registration'], 'id_number')); ?></td>
-                                <td><?php echo getArrayValue($senior_data['economic'], 'has_tin') ? 'Yes' : 'No'; ?></td>
-                                <td><?php echo getArrayValue($senior_data['economic'], 'has_philhealth') ? 'Yes' : 'No'; ?></td>
-                                <td><?php echo getArrayValue($senior_data['economic'], 'has_gsis') ? 'Yes' : 'No'; ?></td>
-                                <td><?php echo getArrayValue($senior_data['economic'], 'has_sss') ? 'Yes' : 'No'; ?></td>
+                                <td><?php echo formatEmpty(getArrayValue($senior_data['economic'], 'tin_number')); ?></td>
+                                <td><?php echo formatEmpty(getArrayValue($senior_data['economic'], 'philhealth_number')); ?></td>
+                                <td><?php echo formatEmpty(getArrayValue($senior_data['economic'], 'gsis_number')); ?></td>
+                                <td><?php echo formatEmpty(getArrayValue($senior_data['economic'], 'sss_number')); ?></td>
                                 <td>
                                     <?php
                                     $other_pension = '';
@@ -1288,6 +1288,7 @@ $local_other = [
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
     <script>
         async function exportToExcel() {
             try {
@@ -1814,10 +1815,10 @@ $local_other = [
 
                     // ID NUMBERS (6 columns)
                     '<?php echo addslashes(getArrayValue($senior_data['registration'], 'id_number')); ?>',
-                    '<?php echo getArrayValue($senior_data['economic'], 'has_tin') ? 'Yes' : 'No'; ?>',
-                    '<?php echo getArrayValue($senior_data['economic'], 'has_philhealth') ? 'Yes' : 'No'; ?>',
-                    '<?php echo getArrayValue($senior_data['economic'], 'has_gsis') ? 'Yes' : 'No'; ?>',
-                    '<?php echo getArrayValue($senior_data['economic'], 'has_sss') ? 'Yes' : 'No'; ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'tin_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'philhealth_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'gsis_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'sss_number')); ?>',
                     '<?php
                         $other_pension = '';
                         if (

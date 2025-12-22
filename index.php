@@ -17,7 +17,7 @@
         <!-- LEFT SIDE - Branding Section -->
         <div class="hidden md:flex w-1/2 items-center justify-center relative bg-gradient-to-br from-purple-900/90 to-blue-800/90">
             <div class="text-center text-white z-10 px-8">
-                <img src="../img/paluan.png" alt="Seal of Paluan"
+                <img src="./img/paluan.png" alt="Seal of Paluan"
                     class="mx-auto w-64 h-64 object-contain mb-6 drop-shadow-2xl opacity-80" />
                 <h1 class="text-4xl font-bold mb-4">Bayan ng Paluan</h1>
                 <h2 class="text-xl font-semibold mb-2 opacity-90">MSWD System</h2>
@@ -57,7 +57,7 @@
             <!-- User Type Selection -->
             <div id="selectUser" class="w-full max-w-sm transition-all duration-300">
                 <div class="text-center mb-8">
-                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
+                    <img src="./img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
                         class="w-20 h-20 mx-auto mb-4 drop-shadow-md">
                     <h2 class="text-3xl font-bold text-purple-800 mb-2">Welcome</h2>
                     <p class="text-gray-600">Select your account type to continue</p>
@@ -106,7 +106,7 @@
                             class="self-start w-10 h-10 bg-white hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 text-gray-600 hover:text-gray-800 shadow-sm mb-4">
                             <i class="fas fa-arrow-left"></i>
                         </button>
-                        <img src="../img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
+                        <img src="./img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
                             class="w-16 h-16 mb-3 drop-shadow-md">
                         <h2 class="text-2xl font-bold text-purple-800">Admin Login</h2>
                         <p class="text-gray-600 text-sm mt-1">System Administrator Access</p>
@@ -171,7 +171,7 @@
                             class="self-start w-10 h-10 bg-white hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 text-gray-600 hover:text-gray-800 shadow-sm mb-4">
                             <i class="fas fa-arrow-left"></i>
                         </button>
-                        <img src="../img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
+                        <img src="./img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo"
                             class="w-16 h-16 mb-3 drop-shadow-md">
                         <h2 class="text-2xl font-bold text-purple-800">Staff Login</h2>
                         <p class="text-gray-600 text-sm mt-1">Staff Member Access</p>
@@ -242,7 +242,7 @@
     <div id="verificationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-8 w-full max-w-md mx-4">
             <div class="flex flex-col items-center mb-6">
-                <img src="../img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo" class="w-16 h-16 mb-4">
+                <img src="./img/MSWD_LOGO-removebg-preview.png" alt="MSWD Logo" class="w-16 h-16 mb-4">
                 <h2 class="text-2xl font-bold text-purple-800">Enter Verification Code</h2>
                 <p class="text-gray-600 text-sm mt-2 text-center">
                     We've sent a 6-digit code to your email address
@@ -345,7 +345,7 @@
             submitBtn.disabled = true;
             showLoading(true);
 
-            fetch('/MSWDPALUAN_SYSTEM-MAIN/php/login/login_backend.php', {
+            fetch('./php/login/login_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -559,7 +559,7 @@
             const sessionContext = generateSessionContext();
             storeSessionContext(sessionContext, userType);
 
-            fetch('/MSWDPALUAN_SYSTEM-MAIN/php/login/login_backend.php', {
+            fetch('./php/login/login_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -666,7 +666,7 @@
             // Get current session context
             const sessionContext = getCurrentSessionContext();
 
-            fetch('/MSWDPALUAN_SYSTEM-MAIN/php/login/verify_code_backend.php', {
+            fetch('./php/login/verify_code_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -733,7 +733,7 @@
         function resendVerificationCode() {
             showLoading(true);
 
-            fetch('/MSWDPALUAN_SYSTEM-MAIN/php/login/resend_verification_code.php', {
+            fetch('./php/login/resend_verification_code.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -22,33 +22,15 @@ $senior_data = [];
 $errors = [];
 $success_message = '';
 
-// Helper function to format date for HTML input
-function formatDateForInput($date)
-{
-    if (empty($date) || $date == '0000-00-00' || $date == '0000-00-00 00:00:00') {
-        return '';
-    }
-    return date('Y-m-d', strtotime($date));
-}
-
-// Helper function to get safe year value
-function formatYearForInput($year)
-{
-    if (empty($year) || $year == 0 || $year == '0000') {
-        return '';
-    }
-    return (int)$year;
-}
-
 try {
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Start transaction
+    $pdo->beginTransaction();
+
     // Check if form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Start transaction
-        $pdo->beginTransaction();
-
         // Validate and sanitize input
         $applicant_data = [
             'first_name' => trim($_POST['first_name'] ?? ''),
@@ -69,9 +51,9 @@ try {
             'status' => $_POST['status'] ?? 'Active',
             'validation' => $_POST['validation'] ?? 'For Validation',
             'living_arrangement' => $_POST['living_arrangement'] ?? '',
-            'date_of_death' => !empty($_POST['date_of_death']) ? $_POST['date_of_death'] : null,
+            'date_of_death' => $_POST['date_of_death'] ?? null,
             'inactive_reason' => trim($_POST['inactive_reason'] ?? ''),
-            'date_of_inactive' => !empty($_POST['date_of_inactive']) ? $_POST['date_of_inactive'] : null
+            'date_of_inactive' => $_POST['date_of_inactive'] ?? null
         ];
 
         // Validation
@@ -83,9 +65,6 @@ try {
         // If no errors, proceed with updates
         if (empty($errors)) {
             try {
-                // Debug: Check what data is being received
-                error_log("Updating applicant ID: $applicant_id");
-
                 // Update applicants table
                 $stmt = $pdo->prepare("
                     UPDATE applicants SET 
@@ -131,6 +110,7 @@ try {
                     'barangay' => trim($_POST['barangay'] ?? ''),
                     'municipality' => trim($_POST['municipality'] ?? ''),
                     'province' => trim($_POST['province'] ?? '')
+                    // 'region' => trim($_POST['region'] ?? '')
                 ];
 
                 $check_address = $pdo->prepare("SELECT COUNT(*) FROM addresses WHERE applicant_id = ?");
@@ -150,6 +130,7 @@ try {
                         $address_data['barangay'],
                         $address_data['municipality'],
                         $address_data['province'],
+                        // $address_data['region'],
                         $applicant_id
                     ]);
                 } else {
@@ -165,6 +146,7 @@ try {
                         $address_data['barangay'],
                         $address_data['municipality'],
                         $address_data['province']
+                        // $address_data['region']
                     ]);
                 }
 
@@ -209,12 +191,11 @@ try {
                 }
 
                 // Update or insert educational background
-                $year_graduated = !empty($_POST['year_graduated']) ? $_POST['year_graduated'] : null;
                 $education_data = [
                     'educational_attainment' => trim($_POST['edu_attainment'] ?? ''),
                     'school_name' => trim($_POST['school_name'] ?? ''),
                     'course_taken' => trim($_POST['course_taken'] ?? ''),
-                    'year_graduated' => $year_graduated
+                    'year_graduated' => $_POST['year_graduated'] ?? null
                 ];
 
                 $check_edu = $pdo->prepare("SELECT COUNT(*) FROM applicant_educational_background WHERE applicant_id = ?");
@@ -253,9 +234,9 @@ try {
                 $registration_data = [
                     'id_number' => trim($_POST['id_number'] ?? ''),
                     'local_control_number' => trim($_POST['local_control_number'] ?? ''),
-                    'date_of_registration' => !empty($_POST['date_of_registration']) ? $_POST['date_of_registration'] : null,
+                    'date_of_registration' => $_POST['date_of_registration'] ?? null,
                     'registration_status' => $_POST['registration_status'] ?? '',
-                    'approval_date' => !empty($_POST['approval_date']) ? $_POST['approval_date'] : null,
+                    'approval_date' => $_POST['approval_date'] ?? null,
                     'registration_remarks' => trim($_POST['registration_remarks'] ?? '')
                 ];
 
@@ -302,12 +283,12 @@ try {
                     'is_pensioner' => isset($_POST['is_pensioner']) ? 1 : 0,
                     'pension_source' => $_POST['pension_source'] ?? '',
                     'pension_source_other' => trim($_POST['pension_source_other'] ?? ''),
-                    'pension_amount' => !empty($_POST['pension_amount']) ? $_POST['pension_amount'] : 0,
+                    'pension_amount' => $_POST['pension_amount'] ?? 0,
                     'has_permanent_income' => isset($_POST['has_permanent_income']) ? 1 : 0,
                     'has_family_support' => isset($_POST['has_family_support']) ? 1 : 0,
                     'income_source' => trim($_POST['income_source'] ?? ''),
                     'income_source_detail' => trim($_POST['income_source_detail'] ?? ''),
-                    'monthly_income' => !empty($_POST['monthly_income']) ? $_POST['monthly_income'] : 0,
+                    'monthly_income' => $_POST['monthly_income'] ?? 0,
                     'assets_properties' => trim($_POST['assets_properties'] ?? ''),
                     'living_residing_with' => trim($_POST['living_residing_with'] ?? ''),
                     'has_sss' => isset($_POST['has_sss']) ? 1 : 0,
@@ -333,15 +314,15 @@ try {
 
                 if ($econ_exists) {
                     $stmt = $pdo->prepare("
-                        UPDATE economic_status SET 
-                            is_pensioner = ?, pension_source = ?, pension_source_other = ?, pension_amount = ?,
-                            has_permanent_income = ?, has_family_support = ?, income_source = ?, income_source_detail = ?,
-                            monthly_income = ?, assets_properties = ?, living_residing_with = ?,
-                            has_sss = ?, sss_number = ?, has_gsis = ?, gsis_number = ?, has_pvao = ?, pvao_number = ?, 
-                            has_insurance = ?, insurance_number = ?, has_tin = ?, tin_number = ?, has_philhealth = ?, 
-                            philhealth_number = ?, support_type = ?, support_cash = ?, support_in_kind = ?
-                        WHERE applicant_id = ?
-                    ");
+        UPDATE economic_status SET 
+            is_pensioner = ?, pension_source = ?, pension_source_other = ?, pension_amount = ?,
+            has_permanent_income = ?, has_family_support = ?, income_source = ?, income_source_detail = ?,
+            monthly_income = ?, assets_properties = ?, living_residing_with = ?,
+            has_sss = ?, sss_number = ?, has_gsis = ?, gsis_number = ?, has_pvao = ?, pvao_number = ?, 
+            has_insurance = ?, insurance_number = ?, has_tin = ?, tin_number = ?, has_philhealth = ?, 
+            philhealth_number = ?, support_type = ?, support_cash = ?, support_in_kind = ?
+        WHERE applicant_id = ?
+    ");
                     $stmt->execute([
                         $economic_data['is_pensioner'],
                         $economic_data['pension_source'],
@@ -373,15 +354,15 @@ try {
                     ]);
                 } else {
                     $stmt = $pdo->prepare("
-                        INSERT INTO economic_status 
-                        (applicant_id, is_pensioner, pension_source, pension_source_other, pension_amount,
-                         has_permanent_income, has_family_support, income_source, income_source_detail,
-                         monthly_income, assets_properties, living_residing_with,
-                         has_sss, sss_number, has_gsis, gsis_number, has_pvao, pvao_number, 
-                         has_insurance, insurance_number, has_tin, tin_number, has_philhealth, 
-                         philhealth_number, support_type, support_cash, support_in_kind)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ");
+        INSERT INTO economic_status 
+        (applicant_id, is_pensioner, pension_source, pension_source_other, pension_amount,
+         has_permanent_income, has_family_support, income_source, income_source_detail,
+         monthly_income, assets_properties, living_residing_with,
+         has_sss, sss_number, has_gsis, gsis_number, has_pvao, pvao_number, 
+         has_insurance, insurance_number, has_tin, tin_number, has_philhealth, 
+         philhealth_number, support_type, support_cash, support_in_kind)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
                     $stmt->execute([
                         $applicant_id,
                         $economic_data['is_pensioner'],
@@ -420,6 +401,7 @@ try {
                     'has_disability' => isset($_POST['has_disability']) ? 1 : 0,
                     'disability_details' => trim($_POST['disability_details'] ?? ''),
                     'hospitalized_last6mos' => isset($_POST['hospitalized_last6mos']) ? 1 : 0
+                    // 'hospitalization_details' => trim($_POST['hospitalization_details'] ?? '')
                 ];
 
                 $check_health = $pdo->prepare("SELECT COUNT(*) FROM health_condition WHERE applicant_id = ?");
@@ -439,6 +421,7 @@ try {
                         $health_data['has_disability'],
                         $health_data['disability_details'],
                         $health_data['hospitalized_last6mos'],
+                        // $health_data['hospitalization_details'],
                         $applicant_id
                     ]);
                 } else {
@@ -455,6 +438,7 @@ try {
                         $health_data['has_disability'],
                         $health_data['disability_details'],
                         $health_data['hospitalized_last6mos']
+                        // $health_data['hospitalization_details']
                     ]);
                 }
 
@@ -476,36 +460,12 @@ try {
                     }
                 }
 
-                // Commit transaction
                 $pdo->commit();
-
-                // Set success message and reload data
                 $success_message = "Senior information updated successfully!";
-
-                // Fetch updated data to show in form
-                $stmt = $pdo->prepare("
-                    SELECT a.*,
-                           CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name
-                    FROM applicants a 
-                    WHERE a.applicant_id = ?
-                ");
-                $stmt->execute([$applicant_id]);
-                $senior_data['applicant'] = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // Fetch other updated data
-                $stmt = $pdo->prepare("SELECT * FROM addresses WHERE applicant_id = ?");
-                $stmt->execute([$applicant_id]);
-                $senior_data['address'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
-
-                // ... (fetch other tables as you had before) ...
-
             } catch (Exception $e) {
                 $pdo->rollBack();
                 $errors[] = "Error updating data: " . $e->getMessage();
-                error_log("Update error: " . $e->getMessage());
             }
-        } else {
-            $pdo->rollBack();
         }
     }
 
@@ -619,49 +579,10 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             content: " *";
             color: #ef4444;
         }
-
-        .error {
-            border-color: #ef4444 !important;
-        }
-
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loading-spinner {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-        }
     </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-700">Saving changes, please wait...</p>
-        </div>
-    </div>
-
     <div class="antialiased">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -769,6 +690,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                 </div>
             </div>
         </nav>
+
         <!-- Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -942,6 +864,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                 </ul>
             </div>
         </aside>
+
         <main class="p-4 md:ml-64 pt-20">
             <!-- Header with navigation -->
             <div class="w-full flex justify-between items-center mb-6">
@@ -991,7 +914,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
 
             <?php if (!empty($success_message)): ?>
                 <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                    <i class="fas fa-check-circle mr-2"></i><?php echo htmlspecialchars($success_message); ?>
+                    <?php echo htmlspecialchars($success_message); ?>
                 </div>
             <?php endif; ?>
 
@@ -1038,7 +961,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                             <div>
                                 <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white required">Birth Date</label>
                                 <input type="date" id="birth_date" name="birth_date"
-                                    value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'birth_date')); ?>"
+                                    value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'birth_date')); ?>"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                             </div>
 
@@ -1141,14 +1064,19 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div id="deceased-fields" class="hidden">
                                     <label for="date_of_death" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Death</label>
                                     <input type="date" id="date_of_death" name="date_of_death"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'date_of_death')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'date_of_death')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
                                 <div id="inactive-fields" class="hidden">
+                                    <label for="inactive_reason" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inactive Reason</label>
+                                    <input type="text" id="inactive_reason" name="inactive_reason"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'inactive_reason')); ?>"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
                                     <label for="date_of_inactive" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-4">Date of Inactive</label>
                                     <input type="date" id="date_of_inactive" name="date_of_inactive"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['applicant'], 'date_of_inactive')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'date_of_inactive')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
                             </div>
@@ -1305,7 +1233,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="year_graduated" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Year Graduated</label>
                                     <input type="number" id="year_graduated" name="year_graduated" min="1900" max="<?php echo date('Y'); ?>"
-                                        value="<?php echo formatYearForInput(getArrayValue($senior_data['education'], 'year_graduated')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['education'], 'year_graduated')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
                             </div>
@@ -1332,7 +1260,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="date_of_registration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Registration</label>
                                     <input type="date" id="date_of_registration" name="date_of_registration"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['registration'], 'date_of_registration')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['registration'], 'date_of_registration')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
@@ -1352,7 +1280,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                 <div>
                                     <label for="approval_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Approval Date</label>
                                     <input type="date" id="approval_date" name="approval_date"
-                                        value="<?php echo formatDateForInput(getArrayValue($senior_data['registration'], 'approval_date')); ?>"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['registration'], 'approval_date')); ?>"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 </div>
 
@@ -1933,19 +1861,9 @@ $support_types = ['Cash', 'In-kind', 'Both'];
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/tailwind.config.js"></script>
     <script>
         let currentStep = 1;
         const totalSteps = 6;
-
-        // Show/hide loading overlay
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
 
         function showStep(step) {
             // Hide all steps
@@ -1954,14 +1872,11 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             });
 
             // Show current step
-            const stepElement = document.getElementById(`step-${step}`);
-            if (stepElement) {
-                stepElement.classList.add('active');
-            }
+            document.getElementById(`step-${step}`).classList.add('active');
 
             // Update progress indicators
             document.querySelectorAll('.step-indicator').forEach((el, index) => {
-                if (index + 1 <= step) {
+                if (index < step) {
                     el.classList.add('active');
                 } else {
                     el.classList.remove('active');
@@ -1970,10 +1885,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
 
             // Update progress bar
             const progress = (step / totalSteps) * 100;
-            const progressBar = document.getElementById('progress-bar');
-            if (progressBar) {
-                progressBar.style.width = `${progress}%`;
-            }
+            document.getElementById('progress-bar').style.width = `${progress}%`;
 
             currentStep = step;
 
@@ -1998,58 +1910,34 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             let isValid = true;
             const stepElement = document.getElementById(`step-${step}`);
 
-            if (!stepElement) return true;
-
             // Get all required inputs in current step
             const requiredInputs = stepElement.querySelectorAll('[required]');
 
-            // Clear previous errors
-            stepElement.querySelectorAll('.error-message').forEach(el => el.remove());
-            stepElement.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-
             requiredInputs.forEach(input => {
-                // Skip validation for hidden fields
-                if (input.type === 'hidden' || input.closest('.hidden')) {
-                    return;
-                }
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('border-red-500');
 
-                if (input.type === 'checkbox') {
-                    // For checkboxes, check if required but not checked
-                    if (input.required && !input.checked) {
-                        isValid = false;
-                        input.classList.add('error');
-
+                    // Add error message
+                    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('error-message')) {
                         const error = document.createElement('p');
-                        error.className = 'error-message';
+                        error.className = 'error-message text-red-500 text-xs mt-1';
                         error.textContent = 'This field is required';
                         input.parentNode.appendChild(error);
                     }
-                } else if (!input.value.trim()) {
-                    isValid = false;
-                    input.classList.add('error');
+                } else {
+                    input.classList.remove('border-red-500');
 
-                    // Add error message
-                    const error = document.createElement('p');
-                    error.className = 'error-message';
-                    error.textContent = 'This field is required';
-                    input.parentNode.appendChild(error);
+                    // Remove error message
+                    const errorMsg = input.parentNode.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
                 }
             });
 
             if (!isValid) {
-                // Scroll to first error
-                const firstError = stepElement.querySelector('.error');
-                if (firstError) {
-                    firstError.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-
-                // Show alert only for step 1-5, not for review step
-                if (step < 6) {
-                    alert('Please fill in all required fields marked with *');
-                }
+                alert('Please fill in all required fields marked with *');
             }
 
             return isValid;
@@ -2107,163 +1995,135 @@ $support_types = ['Cash', 'In-kind', 'Both'];
         }
 
         // Status change handler
-        const statusElement = document.getElementById('status');
-        if (statusElement) {
-            statusElement.addEventListener('change', function() {
-                const status = this.value;
-                const statusFields = document.getElementById('status-fields');
-                const deceasedFields = document.getElementById('deceased-fields');
-                const inactiveFields = document.getElementById('inactive-fields');
+        document.getElementById('status').addEventListener('change', function() {
+            const status = this.value;
+            const statusFields = document.getElementById('status-fields');
+            const deceasedFields = document.getElementById('deceased-fields');
+            const inactiveFields = document.getElementById('inactive-fields');
 
-                if (status === 'Deceased') {
-                    if (statusFields) statusFields.classList.remove('hidden');
-                    if (deceasedFields) deceasedFields.classList.remove('hidden');
-                    if (inactiveFields) inactiveFields.classList.add('hidden');
-                } else if (status === 'Inactive') {
-                    if (statusFields) statusFields.classList.remove('hidden');
-                    if (deceasedFields) deceasedFields.classList.add('hidden');
-                    if (inactiveFields) inactiveFields.classList.remove('hidden');
-                } else {
-                    if (statusFields) statusFields.classList.add('hidden');
-                    if (deceasedFields) deceasedFields.classList.add('hidden');
-                    if (inactiveFields) inactiveFields.classList.add('hidden');
-                }
-            });
+            if (status === 'Deceased') {
+                statusFields.classList.remove('hidden');
+                deceasedFields.classList.remove('hidden');
+                inactiveFields.classList.add('hidden');
+            } else if (status === 'Inactive') {
+                statusFields.classList.remove('hidden');
+                deceasedFields.classList.add('hidden');
+                inactiveFields.classList.remove('hidden');
+            } else {
+                statusFields.classList.add('hidden');
+                deceasedFields.classList.add('hidden');
+                inactiveFields.classList.add('hidden');
+            }
+        });
+
+        // Pension source change handler
+        document.getElementById('pension_source').addEventListener('change', function() {
+            const pensionOtherDiv = document.getElementById('pension_other_div');
+            if (this.value === 'Others') {
+                pensionOtherDiv.classList.remove('hidden');
+            } else {
+                pensionOtherDiv.classList.add('hidden');
+            }
+        });
+
+        // Illness entry management
+        function addIllnessEntry() {
+            const container = document.getElementById('illness-entries');
+            const entry = document.createElement('div');
+            entry.className = 'illness-entry flex gap-2 mb-2';
+            entry.innerHTML = `
+                <input type="text" name="illnesses[]" placeholder="Illness name"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input type="date" name="illness_dates[]"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <button type="button" onclick="removeIllnessEntry(this)" 
+                        class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(entry);
         }
 
-        // Setup government benefits handlers
-        function setupGovernmentBenefitsHandlers() {
-            const benefits = [{
-                    checkbox: 'has_sss',
-                    div: 'sss_number_div'
-                },
-                {
-                    checkbox: 'has_gsis',
-                    div: 'gsis_number_div'
-                },
-                {
-                    checkbox: 'has_pvao',
-                    div: 'pvao_number_div'
-                },
-                {
-                    checkbox: 'has_insurance',
-                    div: 'insurance_number_div'
-                },
-                {
-                    checkbox: 'has_tin',
-                    div: 'tin_number_div'
-                },
-                {
-                    checkbox: 'has_philhealth',
-                    div: 'philhealth_number_div'
-                }
-            ];
-
-            benefits.forEach(benefit => {
-                const checkbox = document.getElementById(benefit.checkbox);
-                const div = document.getElementById(benefit.div);
-
-                if (checkbox && div) {
-                    // Set initial state based on checkbox
-                    if (checkbox.checked) {
-                        div.classList.remove('hidden');
-                    } else {
-                        div.classList.add('hidden');
-                    }
-
-                    // Add event listener for future changes
-                    checkbox.addEventListener('change', function() {
-                        if (this.checked) {
-                            div.classList.remove('hidden');
-                        } else {
-                            div.classList.add('hidden');
-                        }
-                    });
-                }
-            });
+        function removeIllnessEntry(button) {
+            const entry = button.closest('.illness-entry');
+            entry.remove();
         }
 
-        // Form submission handler with proper feedback
-        const editForm = document.getElementById('editForm');
-        if (editForm) {
-            editForm.addEventListener('submit', function(e) {
-                // Prevent default to show our custom loading
-                e.preventDefault();
+        // Government benefits checkbox handlers
+        document.getElementById('has_sss').addEventListener('change', function() {
+            document.getElementById('sss_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                // Validate all steps
-                let allValid = true;
-                for (let i = 1; i <= 5; i++) {
-                    if (!validateStep(i)) {
-                        allValid = false;
-                        showStep(i);
-                        break;
-                    }
-                }
+        document.getElementById('has_gsis').addEventListener('change', function() {
+            document.getElementById('gsis_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                if (!allValid) {
-                    alert('Please fix errors in the form before submitting.');
-                    return false;
-                }
+        document.getElementById('has_pvao').addEventListener('change', function() {
+            document.getElementById('pvao_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                // Validate terms agreement
-                const terms = document.getElementById('terms');
-                if (terms && !terms.checked) {
-                    alert('Please confirm the terms before submitting.');
-                    terms.focus();
-                    return false;
-                }
+        document.getElementById('has_insurance').addEventListener('change', function() {
+            document.getElementById('insurance_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                // Show loading overlay
-                showLoading();
+        document.getElementById('has_tin').addEventListener('change', function() {
+            document.getElementById('tin_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                // Disable submit button
-                const submitBtn = this.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
-                }
+        document.getElementById('has_philhealth').addEventListener('change', function() {
+            document.getElementById('philhealth_number_div').classList.toggle('hidden', !this.checked);
+        });
 
-                // Submit the form after a short delay to show the loading state
-                setTimeout(() => {
-                    this.submit();
-                }, 500);
-
-                return true;
-            });
-        }
-
-        // Initialize on page load
+        // Initialize status fields on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Show first step
-            showStep(1);
-
+            // Trigger government benefits changes
+            document.getElementById('has_sss').dispatchEvent(new Event('change'));
+            document.getElementById('has_gsis').dispatchEvent(new Event('change'));
+            document.getElementById('has_pvao').dispatchEvent(new Event('change'));
+            document.getElementById('has_insurance').dispatchEvent(new Event('change'));
+            document.getElementById('has_tin').dispatchEvent(new Event('change'));
+            document.getElementById('has_philhealth').dispatchEvent(new Event('change'));
+            
             // Trigger status change to show/hide appropriate fields
-            if (statusElement) {
-                statusElement.dispatchEvent(new Event('change'));
-            }
+            document.getElementById('status').dispatchEvent(new Event('change'));
 
-            // Setup government benefits handlers
-            setupGovernmentBenefitsHandlers();
-
-            // Clean up invalid date values
-            const dateFields = document.querySelectorAll('input[type="date"]');
-            dateFields.forEach(field => {
-                if (field.value === '0000-00-00' || field.value === '') {
-                    field.value = '';
-                }
-            });
-
-            // Clean up year_graduated field
-            const yearField = document.getElementById('year_graduated');
-            if (yearField && (yearField.value === '0' || yearField.value === '0000')) {
-                yearField.value = '';
-            }
+            // Trigger pension source change
+            document.getElementById('pension_source').dispatchEvent(new Event('change'));
 
             // Initialize tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-tooltip-target]'));
             tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new Tooltip(tooltipTriggerEl);
             });
+        });
+
+        // Form submission handler
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            // Validate terms agreement
+            const terms = document.getElementById('terms');
+            if (!terms.checked) {
+                e.preventDefault();
+                alert('Please confirm the terms before submitting.');
+                terms.focus();
+                return false;
+            }
+
+            // Validate all steps
+            for (let i = 1; i <= 5; i++) {
+                if (!validateStep(i)) {
+                    e.preventDefault();
+                    showStep(i);
+                    alert('Please fix errors in the form before submitting.');
+                    return false;
+                }
+            }
+
+            // Show loading indicator
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+
+            return true;
         });
     </script>
 </body>

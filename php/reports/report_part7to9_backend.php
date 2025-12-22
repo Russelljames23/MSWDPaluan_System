@@ -12,24 +12,65 @@ class Part7to9ReportAPI
     public function __construct($connection)
     {
         $this->conn = $connection;
+        // Ensure tables exist
+        $this->createTablesIfNotExist();
+    }
+
+    private function createTablesIfNotExist()
+    {
+        try {
+            // Create report_statistics table
+            $sql = "CREATE TABLE IF NOT EXISTS report_statistics (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                report_type ENUM('philhealth', 'booklets') NOT NULL,
+                month INT NOT NULL,
+                year INT NOT NULL,
+                count INT DEFAULT 0,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_statistic (report_type, month, year),
+                INDEX idx_month_year (month, year),
+                INDEX idx_report_type (report_type)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+            $this->conn->exec($sql);
+
+            // Create report_activities table
+            $sql = "CREATE TABLE IF NOT EXISTS report_activities (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                description TEXT NOT NULL,
+                month INT NOT NULL,
+                year INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_month_year (month, year)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+            $this->conn->exec($sql);
+
+            return true;
+        } catch (PDOException $e) {
+            error_log("Error creating tables: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function getStatistics($year = null, $month = null)
     {
         try {
-            // Part VII: Get PhilHealth registrations count
-            $philhealthCount = $this->getPhilHealthCount($year, $month);
+            // Get PhilHealth count
+            $philhealthCount = $this->getStatisticCount('philhealth', $year, $month);
 
-            // Part VIII: Get purchase booklets count
-            $bookletsCount = $this->getBookletsCount($year, $month);
+            // Get booklets count
+            $bookletsCount = $this->getStatisticCount('booklets', $year, $month);
 
-            // Part IX: Get activities
+            // Get activities
             $activities = $this->getActivities($year, $month);
 
             return [
                 'success' => true,
-                'philhealth_count' => $philhealthCount,
-                'booklets_count' => $bookletsCount,
+                'philhealth_count' => $philhealthCount['count'] ?? 0,
+                'philhealth_updated' => $philhealthCount['last_updated'] ?? null,
+                'booklets_count' => $bookletsCount['count'] ?? 0,
+                'booklets_updated' => $bookletsCount['last_updated'] ?? null,
                 'activities' => $activities,
                 'available_years' => $this->getAvailableYears(),
                 'filters' => [
@@ -46,74 +87,75 @@ class Part7to9ReportAPI
         }
     }
 
-    private function getPhilHealthCount($year = null, $month = null)
+    private function getStatisticCount($reportType, $year = null, $month = null)
     {
         try {
-            $sql = "SELECT COUNT(*) as count 
-                    FROM applicants 
-                    WHERE philhealth_member = 'Yes' 
-                    AND validation = 'Validated'";
+            $sql = "SELECT count, last_updated 
+                    FROM report_statistics 
+                    WHERE report_type = ?";
 
-            $params = [];
+            $params = [$reportType];
 
             if ($year !== null) {
-                $sql .= " AND YEAR(date_created) = ?";
+                $sql .= " AND year = ?";
                 $params[] = $year;
             }
 
             if ($month !== null) {
-                $sql .= " AND MONTH(date_created) = ?";
+                $sql .= " AND month = ?";
                 $params[] = $month;
             }
 
-            $stmt = $this->conn->prepare($sql);
+            $sql .= " ORDER BY last_updated DESC LIMIT 1";
 
-            if ($params) {
-                $stmt->execute($params);
-            } else {
-                $stmt->execute();
-            }
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute($params);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result['count'] ?? 0;
+
+            if ($result) {
+                return [
+                    'count' => (int)$result['count'],
+                    'last_updated' => $this->formatDate($result['last_updated'])
+                ];
+            }
+
+            return ['count' => 0, 'last_updated' => null];
         } catch (PDOException $e) {
-            error_log("Error in getPhilHealthCount: " . $e->getMessage());
-            return 0;
+            error_log("Error in getStatisticCount: " . $e->getMessage());
+            return ['count' => 0, 'last_updated' => null];
         }
     }
 
-    private function getBookletsCount($year = null, $month = null)
+    public function updateStatistic($reportType, $count, $year, $month)
     {
         try {
-            $sql = "SELECT COUNT(*) as count 
-                    FROM booklets 
-                    WHERE status = 'Released'";
-
-            $params = [];
-
-            if ($year !== null) {
-                $sql .= " AND YEAR(release_date) = ?";
-                $params[] = $year;
-            }
-
-            if ($month !== null) {
-                $sql .= " AND MONTH(release_date) = ?";
-                $params[] = $month;
-            }
+            // Check if record exists
+            $sql = "SELECT id FROM report_statistics 
+                    WHERE report_type = ? AND year = ? AND month = ?";
 
             $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$reportType, $year, $month]);
 
-            if ($params) {
-                $stmt->execute($params);
+            if ($stmt->rowCount() > 0) {
+                // Update existing record
+                $sql = "UPDATE report_statistics 
+                        SET count = ?, last_updated = NOW() 
+                        WHERE report_type = ? AND year = ? AND month = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([$count, $reportType, $year, $month]);
             } else {
-                $stmt->execute();
+                // Insert new record
+                $sql = "INSERT INTO report_statistics (report_type, month, year, count) 
+                        VALUES (?, ?, ?, ?)";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([$reportType, $month, $year, $count]);
             }
 
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result['count'] ?? 0;
+            return ['success' => true];
         } catch (PDOException $e) {
-            error_log("Error in getBookletsCount: " . $e->getMessage());
-            return 0;
+            error_log("Error in updateStatistic: " . $e->getMessage());
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -198,43 +240,53 @@ class Part7to9ReportAPI
     private function getAvailableYears()
     {
         try {
-            // Get years from applicants table for PhilHealth
-            $sql = "SELECT DISTINCT YEAR(date_created) as year 
-                    FROM applicants 
-                    WHERE philhealth_member = 'Yes' 
+            $years = [];
+
+            // Get years from report_statistics
+            $sql = "SELECT DISTINCT year 
+                    FROM report_statistics 
+                    WHERE year > 1900
                     ORDER BY year DESC";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
+            $statisticsYears = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
 
-            $years1 = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
-            // Get years from booklets table
-            $sql = "SELECT DISTINCT YEAR(release_date) as year 
-                    FROM booklets 
-                    WHERE status = 'Released' 
+            // Get years from report_activities
+            $sql = "SELECT DISTINCT year 
+                    FROM report_activities 
+                    WHERE year > 1900
                     ORDER BY year DESC";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
+            $activitiesYears = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
 
-            $years2 = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+            // Get current year
+            $currentYear = date('Y');
 
-            // Combine and deduplicate
-            $allYears = array_unique(array_merge($years1, $years2));
-
-            // Filter valid years
-            $validYears = array_filter($allYears, function ($year) {
-                return $year > 1900;
-            });
+            // Combine all years
+            $allYears = array_unique(array_merge($statisticsYears, $activitiesYears, [$currentYear]));
 
             // Sort descending
-            rsort($validYears);
+            rsort($allYears);
 
-            return array_values($validYears);
+            return array_values($allYears);
         } catch (PDOException $e) {
             error_log("Error in getAvailableYears: " . $e->getMessage());
             return [];
+        }
+    }
+
+    private function formatDate($dateString)
+    {
+        if (!$dateString) return null;
+
+        try {
+            $date = new DateTime($dateString);
+            return $date->format('M j, Y g:i A');
+        } catch (Exception $e) {
+            return $dateString;
         }
     }
 }
@@ -262,10 +314,43 @@ try {
         $action = $_POST['action'] ?? '';
 
         switch ($action) {
+            case 'update_philhealth':
+                $count = isset($_POST['count']) ? intval($_POST['count']) : 0;
+                $month = isset($_POST['month']) ? intval($_POST['month']) : date('m');
+                $year = isset($_POST['year']) ? intval($_POST['year']) : date('Y');
+
+                if ($count < 0) {
+                    echo json_encode(['success' => false, 'message' => 'Count must be a positive number']);
+                    break;
+                }
+
+                $result = $api->updateStatistic('philhealth', $count, $year, $month);
+                echo json_encode($result);
+                break;
+
+            case 'update_booklets':
+                $count = isset($_POST['count']) ? intval($_POST['count']) : 0;
+                $month = isset($_POST['month']) ? intval($_POST['month']) : date('m');
+                $year = isset($_POST['year']) ? intval($_POST['year']) : date('Y');
+
+                if ($count < 0) {
+                    echo json_encode(['success' => false, 'message' => 'Count must be a positive number']);
+                    break;
+                }
+
+                $result = $api->updateStatistic('booklets', $count, $year, $month);
+                echo json_encode($result);
+                break;
+
             case 'add_activity':
                 $description = $_POST['description'] ?? '';
                 $month = isset($_POST['month']) ? intval($_POST['month']) : date('m');
                 $year = isset($_POST['year']) ? intval($_POST['year']) : date('Y');
+
+                if (empty($description)) {
+                    echo json_encode(['success' => false, 'message' => 'Activity description is required']);
+                    break;
+                }
 
                 $result = $api->addActivity($description, $month, $year);
                 echo json_encode($result);
@@ -273,6 +358,11 @@ try {
 
             case 'delete_activity':
                 $activityId = isset($_POST['activity_id']) ? intval($_POST['activity_id']) : 0;
+
+                if ($activityId <= 0) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid activity ID']);
+                    break;
+                }
 
                 $result = $api->deleteActivity($activityId);
                 echo json_encode($result);
