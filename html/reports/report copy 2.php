@@ -1,8 +1,6 @@
 <?php
-require_once "../../php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,7 +113,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="../../php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -149,7 +147,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
@@ -210,11 +208,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             </svg>
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
-                            <li>
-                                <a href="../SeniorList/seniorlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Senior
-                                    List</a>
-                            </li>
                             <li>
                                 <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
                                     class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
@@ -306,23 +299,25 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 </ul>
             </div>
         </aside>
+
         <main class="p-4 md:ml-64 pt-17">
-            
             <div class="w-full flex justify-between items-center mb-4">
-                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div> <!-- Empty div for spacing -->
+                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
                 <button type="button" onclick="generateReport()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     Generate Report
                 </button>
             </div>
+
             <div class="w-full items-center justify-center">
                 <h4 class="text-2xl font-bold dark:text-white text-center">Monthly Reports</h4>
             </div>
+
             <div class="flex flex-col md:flex-row items-center justify-center gap-3 mt-2 mb-4">
                 <?php
                 // Calculate display text
                 $displayText = 'All Time';
-                if ($currentYear && $currentMonth) {
+                if (isset($currentYear) && $currentYear && isset($currentMonth) && $currentMonth) {
                     $monthNames = [
                         1 => 'January',
                         2 => 'February',
@@ -338,17 +333,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         12 => 'December'
                     ];
                     $displayText = $monthNames[$currentMonth] . ' ' . $currentYear;
-                } elseif ($currentYear) {
+                } elseif (isset($currentYear) && $currentYear) {
                     $displayText = 'Year ' . $currentYear;
-                } elseif ($currentMonth) {
+                } elseif (isset($currentMonth) && $currentMonth) {
                     $displayText = $monthNames[$currentMonth] . ' (All Years)';
                 }
                 ?>
                 <h4 class="text-xl font-medium dark:text-white px-2 text-center" id="reportPeriod">
                     <?php echo htmlspecialchars($displayText); ?>
                 </h4>
+
                 <div class="flex flex-wrap justify-center gap-2">
-                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="loadPart1()"
+                    <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="part1()"
                         class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         I
                     </button>
@@ -391,80 +387,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             <h4 class="text-lg font-medium dark:text-white text-center md:text-left" style="font-family: 'Times New Roman', Times, serif;">
                                 I. Number of Registered Senior Citizens
                             </h4>
-                            <!-- <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
-                                <div class="relative w-full sm:w-auto">
-                                    <button id="monthDropdownButton" data-dropdown-toggle="monthDropdown"
-                                        class="flex items-center cursor-pointer justify-between w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button">
-                                        <span class="flex items-center">
-                                            <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path clip-rule="evenodd" fill-rule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                            </svg>
-                                            <span id="selectedMonth">Month</span>
-                                        </span>
-                                    </button>
-                                    <div id="monthDropdown"
-                                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
-                                            aria-labelledby="monthDropdownButton">
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('All Months', null)">All Months</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('January', 1)">January</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('February', 2)">February</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('March', 3)">March</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('April', 4)">April</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('May', 5)">May</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('June', 6)">June</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('July', 7)">July</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('August', 8)">August</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('September', 9)">September</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('October', 10)">October</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('November', 11)">November</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectMonth('December', 12)">December</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
 
-                                <div class="relative w-full sm:w-auto">
-                                    <button id="yearDropdownButton" data-dropdown-toggle="yearDropdown"
-                                        class="flex items-center cursor-pointer justify-between w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button">
-                                        <span class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                                class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <span id="selectedYear">Year</span>
-                                        </span>
-                                        <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
-                                    </button>
-                                    <div id="yearDropdown"
-                                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-32 dark:bg-gray-700 dark:divide-gray-600">
-                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-60 overflow-y-auto"
-                                            aria-labelledby="yearDropdownButton">
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2025, 2025)">2025</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2024, 2024)">2024</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2023, 2023)">2023</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2022, 2022)">2022</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2021, 2021)">2021</a></li>
-                                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(2020, 2020)">2020</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <button type="button" onclick="clearFilters()"
-                                    class="w-full sm:w-auto px-4 py-2 text-sm cursor-pointer font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">
-                                    Clear Filters
-                                </button>
-                            </div> -->
                         </div>
                         <div class="overflow-x-auto">
                             <table id="reportTable"
@@ -496,315 +419,340 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
-
     <script>
-        // Global variables
-        let currentData = null;
-        let currentYear = null;
-        let currentMonth = null;
-        let selectedMonthName = 'All Months';
-        let selectedYearValue = 'All Years';
-        let availableYears = [];
-        let availableMonths = [];
+        // Report Page JavaScript - Single Version (No Conflicts)
+        (function() {
+            'use strict';
 
-        // Load data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load available date ranges first, then load data
-            loadDateRanges().then(() => {
-                // Initialize dropdown texts
-                document.getElementById('selectedMonth').textContent = selectedMonthName;
-                document.getElementById('selectedYear').textContent = selectedYearValue;
+            console.log('Report page initialized');
 
-                loadSeniorCounts(currentYear, currentMonth);
+            // Get current filter values from PHP (defined at top of page)
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+
+            // Load data when page is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded. Loading report data...');
+                console.log('Filters - Year:', currentYear, 'Month:', currentMonth);
+
+                // Load the data
+                loadReportData(currentYear, currentMonth);
             });
-        });
 
-        // Fetch available date ranges from backend
-        async function loadDateRanges() {
-            try {
-                const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_date_ranges');
-                const result = await response.json();
+            // Main function to load report data
+            async function loadReportData(year = null, month = null) {
+                try {
+                    // Show loading state
+                    const tbody = document.getElementById('reportTableBody');
+                    if (tbody) {
+                        tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="px-4 py-8 text-center">
+                                <div class="flex justify-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                </div>
+                                <p class="mt-2 text-gray-600 dark:text-gray-400">Loading data...</p>
+                            </td>
+                        </tr>
+                    `;
+                    }
 
-                if (result.success) {
-                    availableYears = result.years;
-                    availableMonths = result.months;
-                    populateYearDropdown();
-                } else {
-                    console.error('Failed to load date ranges:', result.message);
-                    // Fallback to default years if API fails
-                    populateYearDropdownWithDefaults();
+                    // Build API URL
+                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts';
+
+                    // Add filters if provided
+                    if (year && year !== 'null') {
+                        apiUrl += '&year=' + encodeURIComponent(year);
+                    }
+                    if (month && month !== 'null') {
+                        apiUrl += '&month=' + encodeURIComponent(month);
+                    }
+
+                    // Add cache busting
+                    apiUrl += '&_=' + Date.now();
+
+                    console.log('Calling API:', apiUrl);
+
+                    // Fetch data
+                    const response = await fetch(apiUrl);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('API Response:', result);
+
+                    // Display the data
+                    if (result.success) {
+                        displayReportData(result);
+                        updateReportTitle(result);
+                    } else {
+                        throw new Error(result.message || 'Unknown error from API');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading report data:', error);
+
+                    // Show error in table
+                    const tbody = document.getElementById('reportTableBody');
+                    if (tbody) {
+                        tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="px-4 py-8 text-center text-red-500">
+                                <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                                <p class="text-lg">Failed to load data</p>
+                                <p class="text-sm mt-2">Error: ${error.message}</p>
+                                <button onclick="window.location.reload()" 
+                                    class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                    Retry
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    }
                 }
-            } catch (error) {
-                console.error('Error loading date ranges:', error);
-                // Fallback to default years if API fails
-                populateYearDropdownWithDefaults();
             }
-        }
 
-        // Populate year dropdown with available years from database
-        function populateYearDropdown() {
-            const yearDropdown = document.getElementById('yearDropdown');
-            const ul = yearDropdown.querySelector('ul');
-            ul.innerHTML = '';
+            // Function to display data in the table
+            function displayReportData(data) {
+                const tbody = document.getElementById('reportTableBody');
+                if (!tbody) {
+                    console.error('Table body not found!');
+                    return;
+                }
 
-            // Add "All Years" option
-            const allYearsItem = document.createElement('li');
-            allYearsItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a>`;
-            ul.appendChild(allYearsItem);
+                // Clear existing content
+                tbody.innerHTML = '';
 
-            // Add available years
-            if (availableYears.length > 0) {
-                availableYears.sort((a, b) => b - a); // Sort descending
-                availableYears.forEach(year => {
-                    const yearItem = document.createElement('li');
-                    yearItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(${year}, ${year})">${year}</a>`;
-                    ul.appendChild(yearItem);
+                // Check if we have data
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-lg">No data found</p>
+                            <p class="text-sm mt-1">Try changing your filters</p>
+                        </td>
+                    </tr>
+                `;
+                    return;
+                }
+
+                // Filter out null/empty barangays and create rows
+                const validData = data.data.filter(item => item.barangay && item.barangay.trim() !== '');
+
+                validData.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = 'flex w-full font-semibold text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700';
+                    row.innerHTML = `
+                    <td class="px-4 py-3 flex w-full border-b border-gray-300 dark:border-gray-600 text-left" style="font-family: 'Times New Roman', Times, serif;">
+                        ${item.barangay}
+                    </td>
+                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
+                        ${item.male || 0}
+                    </td>
+                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
+                        ${item.female || 0}
+                    </td>
+                    <td class="px-4 py-3 flex-l w-full border-b border-gray-300 dark:border-gray-600 text-center">
+                        ${item.total || 0}
+                    </td>
+                `;
+                    tbody.appendChild(row);
                 });
-            } else {
-                // Fallback if no years found
-                populateYearDropdownWithDefaults();
-            }
-        }
 
-        // Fallback function to populate year dropdown with default years
-        function populateYearDropdownWithDefaults() {
-            const yearDropdown = document.getElementById('yearDropdown');
-            const ul = yearDropdown.querySelector('ul');
-            ul.innerHTML = '';
-
-            // Add "All Years" option
-            const allYearsItem = document.createElement('li');
-            allYearsItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear('All Years', null)">All Years</a>`;
-            ul.appendChild(allYearsItem);
-
-            // Add default years (current year and previous 5 years)
-            const currentYear = new Date().getFullYear();
-            for (let year = currentYear; year >= currentYear - 5; year--) {
-                const yearItem = document.createElement('li');
-                yearItem.innerHTML = `<a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="selectYear(${year}, ${year})">${year}</a>`;
-                ul.appendChild(yearItem);
-            }
-        }
-
-        // Fetch data from backend
-        async function loadSeniorCounts(year = null, month = null) {
-            try {
-                showLoading();
-
-                // Build URL with filters
-                let url = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts';
-                if (year !== null) {
-                    url += `&year=${year}`;
-                }
-                if (month !== null) {
-                    url += `&month=${month}`;
+                // Add totals row
+                if (data.totals) {
+                    const totalsRow = document.createElement('tr');
+                    totalsRow.className = 'flex w-full font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border-t-2 border-gray-300';
+                    totalsRow.innerHTML = `
+                    <td class="flex w-full px-4 py-3 text-left border border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
+                        TOTAL
+                    </td>
+                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
+                        ${data.totals.male || 0}
+                    </td>
+                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
+                        ${data.totals.female || 0}
+                    </td>
+                    <td class="flex-l w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-center">
+                        ${data.totals.total || 0}
+                    </td>
+                `;
+                    tbody.appendChild(totalsRow);
                 }
 
-                const response = await fetch(url);
-                const result = await response.json();
+                console.log('Displayed', validData.length, 'records');
+            }
 
-                if (result.success) {
-                    currentData = result;
-                    displayData(result);
-                    updateReportPeriod(result.filters);
-                } else {
-                    showError('Failed to load data: ' + result.message);
+            // Update the report title/period
+            function updateReportTitle(data) {
+                const periodElement = document.getElementById('reportPeriod');
+                if (!periodElement) return;
+
+                const monthNames = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                let displayText = 'All Time';
+                const year = data?.filters?.year;
+                const month = data?.filters?.month;
+
+                if (month && year) {
+                    const monthName = monthNames[month - 1] || 'Unknown';
+                    displayText = `${monthName} ${year}`;
+                } else if (year) {
+                    displayText = `Year ${year}`;
+                } else if (month) {
+                    const monthName = monthNames[month - 1] || 'Unknown';
+                    displayText = `${monthName} (All Years)`;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Failed to load data. Please try again.');
-            }
-        }
 
-        // Update report period display
-        function updateReportPeriod(filters) {
-            const periodElement = document.getElementById('reportPeriod');
-            const monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-
-            let displayText = '';
-
-            if (filters.month !== null && filters.year !== null) {
-                const monthName = monthNames[filters.month - 1] || 'Unknown';
-                displayText = `${monthName} ${filters.year}`;
-                currentMonth = filters.month;
-                currentYear = filters.year;
-                selectedMonthName = monthName;
-                selectedYearValue = filters.year;
-            } else if (filters.year !== null) {
-                displayText = `Year ${filters.year}`;
-                currentYear = filters.year;
-                selectedYearValue = filters.year;
-                selectedMonthName = 'All Months';
-            } else if (filters.month !== null) {
-                const monthName = monthNames[filters.month - 1] || 'Unknown';
-                displayText = `${monthName} (All Years)`;
-                currentMonth = filters.month;
-                selectedMonthName = monthName;
-                selectedYearValue = 'All Years';
-            } else {
-                displayText = 'All Time';
-                selectedMonthName = 'All Months';
-                selectedYearValue = 'All Years';
+                periodElement.textContent = displayText;
             }
 
-            // Update dropdown button texts
-            document.getElementById('selectedMonth').textContent = selectedMonthName;
-            document.getElementById('selectedYear').textContent = selectedYearValue;
+            // Navigation functions for report parts
+            window.part1 = function() {
+                // Already on part 1
+                console.log('Already on Part I');
+            };
 
-            periodElement.textContent = displayText;
-        }
+            window.part2 = function() {
+                navigateToReport('reportpart2.php');
+            };
 
-        // Month selection handler
-        function selectMonth(monthName, monthNumber) {
-            document.getElementById('selectedMonth').textContent = monthName;
-            selectedMonthName = monthName;
-            currentMonth = monthNumber;
-            loadSeniorCounts(currentYear, currentMonth);
+            window.part3 = function() {
+                navigateToReport('reportpart3.php');
+            };
 
-            // Close dropdown
-            const dropdown = document.getElementById('monthDropdown');
-            dropdown.classList.add('hidden');
-        }
+            window.part4 = function() {
+                navigateToReport('reportpart4.php');
+            };
 
-        // Year selection handler
-        function selectYear(yearName, yearNumber) {
-            document.getElementById('selectedYear').textContent = yearName;
-            selectedYearValue = yearName;
-            currentYear = yearNumber;
-            loadSeniorCounts(currentYear, currentMonth);
+            window.part5 = function() {
+                navigateToReport('reportpart5.php');
+            };
 
-            // Close dropdown
-            const dropdown = document.getElementById('yearDropdown');
-            dropdown.classList.add('hidden');
-        }
+            window.part6 = function() {
+                navigateToReport('reportpart6.php');
+            };
 
-        // Display data in table
-        function displayData(data) {
-            const tbody = document.getElementById('reportTableBody');
-            tbody.innerHTML = '';
+            window.part7to9 = function() {
+                navigateToReport('reportpart7to9.php');
+            };
 
-            data.data.forEach(item => {
-                const row = document.createElement('tr');
-                row.className = 'flex w-full font-semibold text-gray-700';
-                row.innerHTML = `
-                <td class="px-4 py-3 flex w-full border-b-0 border-t-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
-                    ${item.barangay}
-                </td>
-                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                    ${item.male}
-                </td>
-                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                    ${item.female}
-                </td>
-                <td class="px-4 py-3 flex-l w-full border-b-0 border-t-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                    ${item.total}
-                </td>
-            `;
-                tbody.appendChild(row);
-            });
+            window.benefits = function() {
+                navigateToReport('reportbenefits.php');
+            };
 
-            // Add totals row
-            const totalsRow = document.createElement('tr');
-            totalsRow.className = 'flex w-full font-semibold text-gray-700 bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-500';
-            totalsRow.innerHTML = `
-            <td class="flex w-full px-4 py-3 text-left border border-l-0 border-r-0 border-gray-300 dark:border-gray-600" style="font-family: 'Times New Roman', Times, serif;">
-                Total
-            </td>
-            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
-                ${data.totals.male}
-            </td>
-            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
-                ${data.totals.female}
-            </td>
-            <td class="flex-l w-full px-4 py-3 border border-r-0 border-gray-300 dark:border-gray-600">
-                ${data.totals.total}
-            </td>
-        `;
-            tbody.appendChild(totalsRow);
-        }
+            // Helper to navigate between report pages
+            function navigateToReport(pageName) {
+                let url = pageName;
+                const params = new URLSearchParams();
 
-        // Utility functions
-        function showLoading() {
-            const tbody = document.getElementById('reportTableBody');
-            tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-3 text-center">Loading data...</td></tr>';
-        }
+                // Get session context from current URL
+                const currentUrl = new URLSearchParams(window.location.search);
+                const sessionContext = currentUrl.get('session_context');
 
-        function showError(message) {
-            const tbody = document.getElementById('reportTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-3 text-center text-red-500">${message}</td></tr>`;
-        }
+                if (sessionContext) {
+                    params.append('session_context', sessionContext);
+                }
 
-        // Clear all filters
-        function clearFilters() {
-            currentYear = null;
-            currentMonth = null;
-            selectedMonthName = 'All Months';
-            selectedYearValue = 'All Years';
+                // Add current filters
+                if (currentYear && currentYear !== 'null') {
+                    params.append('year', currentYear);
+                }
+                if (currentMonth && currentMonth !== 'null') {
+                    params.append('month', currentMonth);
+                }
 
-            document.getElementById('selectedMonth').textContent = selectedMonthName;
-            document.getElementById('selectedYear').textContent = selectedYearValue;
+                const queryString = params.toString();
+                if (queryString) {
+                    url += '?' + queryString;
+                }
 
-            loadSeniorCounts();
-        }
-
-        // Generate report function
-        function generateReport() {
-            const periodText = document.getElementById('reportPeriod').textContent;
-            alert(`Generating report for: ${periodText}\nThis feature would export the current data as PDF.`);
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
-            const monthDropdown = document.getElementById('monthDropdown');
-            const yearDropdown = document.getElementById('yearDropdown');
-            const monthButton = document.getElementById('monthDropdownButton');
-            const yearButton = document.getElementById('yearDropdownButton');
-
-            if (!monthButton.contains(event.target) && !monthDropdown.contains(event.target)) {
-                monthDropdown.classList.add('hidden');
+                console.log('Navigating to:', url);
+                window.location.href = url;
             }
-            if (!yearButton.contains(event.target) && !yearDropdown.contains(event.target)) {
-                yearDropdown.classList.add('hidden');
-            }
-        });
-    </script>
-    <script>
-        function part1() {
-            applyFilters();
-        }
 
-        function part2() {
-            navigateWithFilters('reportpart2.php');
-        }
+            // Generate report function
+            window.generateReport = function() {
+                // Get current filter values
+                const year = currentYear !== 'null' ? currentYear : null;
+                const month = currentMonth !== 'null' ? currentMonth : null;
 
-        function part3() {
-            navigateWithFilters('reportpart3.php');
-        }
+                // Build URL with all parameters
+                let url = 'generate_consolidated_report.php';
 
-        function part4() {
-            navigateWithFilters('reportpart4.php');
-        }
+                // Get session context from current URL
+                const currentUrl = new URLSearchParams(window.location.search);
+                const sessionContext = currentUrl.get('session_context');
 
-        function part5() {
-            navigateWithFilters('reportpart5.php');
-        }
+                // Build query parameters
+                const params = new URLSearchParams();
 
-        function part6() {
-            navigateWithFilters('reportpart6.php');
-        }
+                if (sessionContext) {
+                    params.append('session_context', sessionContext);
+                }
 
-        function part7to9() {
-            navigateWithFilters('reportpart7to9.php');
-        }
+                // Add filter parameters if they exist
+                if (year && year !== 'null') {
+                    params.append('year', year);
+                }
 
-        function benefits() {
-            navigateWithFilters('reportbenefits.php');
-        }
+                if (month && month !== 'null') {
+                    params.append('month', month);
+                }
 
-        // The filter functions (selectMonth, selectYear, etc.) are now in date_filter_component.php
+                const queryString = params.toString();
+                if (queryString) {
+                    url += '?' + queryString;
+                }
+
+                console.log('Navigating to consolidated report:', url);
+
+                // Navigate to the consolidated report page
+                window.location.href = url;
+
+                // Optional: Show a loading message
+                // alert('Generating consolidated report... Please wait.');
+            };
+
+            // Make loadReportData available globally for debugging
+            window.loadReportData = loadReportData;
+
+            // Debug function
+            window.debugReport = function() {
+                console.log('=== DEBUG REPORT ===');
+                console.log('Current Year:', currentYear);
+                console.log('Current Month:', currentMonth);
+                console.log('Table Body:', document.getElementById('reportTableBody'));
+                console.log('API URL Test:', '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts');
+
+                // Test the API
+                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_backend.php?action=get_senior_counts')
+                    .then(r => r.json())
+                    .then(data => {
+                        console.log('API Test Result:', data);
+                        if (data.success) {
+                            alert('API is working! Found ' + data.data.length + ' records.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('API Test Failed:', err);
+                        alert('API Test Failed: ' + err.message);
+                    });
+            };
+
+        })();
     </script>
 </body>
 

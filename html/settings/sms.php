@@ -1,6 +1,6 @@
 <?php
-require_once "../../php/login/admin_header.php";
-require_once "../../php/helpers/sms_helper.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/helpers/sms_helper.php";
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {

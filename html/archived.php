@@ -1,5 +1,5 @@
 <?php
-require_once "../php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 ?>
 <!DOCTYPE html>
@@ -147,7 +147,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="index.php?session_context=<?php echo $ctx; ?>"
+                        <a href="admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"

@@ -1,5 +1,5 @@
 <?php
-require_once "../php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 // Database configuration
@@ -758,7 +758,7 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
                         
                         <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <h4 class="font-medium text-gray-900 dark:text-white mb-3">Quick Actions:</h4>
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-1 gap-3">
                                 <button onclick="viewSeniorsByValidation('${status}')" 
                                         class="flex items-center justify-center px-4 py-3 text-sm font-medium text-white ${status === 'Validated' ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800' : 'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800'} rounded-lg transition-all duration-200 hover:scale-[1.02]">
                                     <i class="fas fa-users mr-2"></i>View Seniors
@@ -1228,7 +1228,7 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
-                            <a href="../php/login/logout.php"
+                            <a href="../index.php"
                                 class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                 out</a>
                         </li>
@@ -1415,7 +1415,6 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
         <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Real-time statistics and insights</p>
             </div>
             <div class="flex items-center space-x-3">
                 <span class="text-sm text-gray-500 dark:text-gray-400 hidden md:inline">

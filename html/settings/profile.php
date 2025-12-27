@@ -1,5 +1,5 @@
 <?php
-require_once "../../php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 // Database connection
@@ -241,6 +241,7 @@ if (empty($profile_photo_url)) {
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
+        /* Sidebar container */
         .sidebar {
             position: relative;
             border-radius: 10px;
@@ -250,12 +251,14 @@ if (empty($profile_photo_url)) {
             transition: all 0.4s ease;
             z-index: 40;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            /* overflow: hidden; */
         }
 
         .sidebar.open {
             width: 200px;
         }
 
+        /* Logo section + toggle button */
         .sidebar .logo-details {
             height: 60px;
             position: relative;
@@ -295,6 +298,7 @@ if (empty($profile_photo_url)) {
             transform: rotate(180deg);
         }
 
+        /* Navigation list */
         .nav-list {
             list-style: none;
             padding: 15px;
@@ -330,15 +334,24 @@ if (empty($profile_photo_url)) {
             background: #e4e9f7;
         }
 
-        .nav-list li a.active-link {
-            color: #1d4ed8;
-            font-weight: 600;
-            border-color: #1d4ed8;
-            background: #eff6ff;
+        .nav-list li button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #333;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            height: 35px;
+            width: 100%;
+            padding: 0 10px;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .nav-list li a.active-link svg {
-            color: #1d4ed8;
+        .nav-list li button:hover {
+            background: #e4e9f7;
         }
 
         .nav-list svg {
@@ -350,6 +363,7 @@ if (empty($profile_photo_url)) {
             transition: all 0.3s ease;
         }
 
+        /* Hide link text when collapsed, keep icons */
         .links_name {
             white-space: nowrap;
             opacity: 0;
@@ -361,6 +375,8 @@ if (empty($profile_photo_url)) {
             opacity: 1;
         }
 
+        /* Tooltip styling */
+        /* Tooltip styling - fixed visibility & design */
         .tooltip {
             position: absolute;
             top: 50%;
@@ -368,6 +384,7 @@ if (empty($profile_photo_url)) {
             transform: translateY(-50%);
             margin-left: 10px;
             background: rgba(221, 221, 221, 0.555);
+            /* darker semi-transparent background */
             color: #000;
             padding: 4px 8px;
             border-radius: 6px;
@@ -381,51 +398,41 @@ if (empty($profile_photo_url)) {
             z-index: 200;
         }
 
+        /* Show tooltip when hovering over an item */
         .sidebar li:hover .tooltip {
             opacity: 1;
             transform: translate(10px, -50%);
+            /* subtle slide-in effect */
         }
 
+        /* Hide tooltips when sidebar is expanded */
         .sidebar.open li .tooltip {
             display: none;
         }
 
-        /* Modal styles */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
 
-        .modal-content {
-            background: white;
-            border-radius: 8px;
+        /* Page content */
+        .home-section {
+            margin-left: 78px;
             padding: 20px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
         }
 
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin: 0 auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid #e5e7eb;
+        .sidebar.open~.home-section {
+            margin-left: 200px;
         }
 
-        .preview-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        /* Highlight active sidebar link */
+        .nav-list li #profile.active-link {
+            color: #1d4ed8;
+            /* Tailwind blue-700 */
+            font-weight: 600;
+            border-color: #1d4ed8;
+            background: #eff6ff;
+        }
+
+        .nav-list li #profile.active-link svg {
+            color: #1d4ed8;
         }
     </style>
 </head>
@@ -673,7 +680,7 @@ if (empty($profile_photo_url)) {
                     </div>
                     <ul class="nav-list">
                         <li>
-                            <a id="button" class="cursor-pointer active-link">
+                            <a id="profile" class="cursor-pointer active-link">
                                 <svg class="w-6 h-6 text-gray-800 dark:text-gray-900" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
@@ -684,6 +691,20 @@ if (empty($profile_photo_url)) {
                                 <span class="links_name">My Profile</span>
                             </a>
                             <span class="tooltip">My Profile</span>
+                        </li>
+                        <li>
+                            <button class="cursor-pointer active-link">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+
+                                <span class="links_name">Theme</span>
+                            </button>
+                            <span class="tooltip">Theme</span>
                         </li>
                         <li>
                             <a href="accounts.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">

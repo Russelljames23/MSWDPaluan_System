@@ -731,7 +731,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 <!-- Page Header -->
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Generate Senior Citizen ID</h2>
-                    <p class="text-gray-600 dark:text-gray-400">Create and print ID cards in batch format (9 per page) following exact document format</p>
                 </div>
 
                 <!-- Search and Filter Section -->

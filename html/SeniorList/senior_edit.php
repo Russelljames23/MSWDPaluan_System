@@ -1,6 +1,6 @@
 <?php
 // senior_edit.php
-require_once "../../php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 
 // Database configuration
 $servername = "localhost";
