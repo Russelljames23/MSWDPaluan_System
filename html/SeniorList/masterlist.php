@@ -8,6 +8,53 @@ $username = "root";
 $password = "";
 $dbname = "mswd_seniors";
 
+$pdo = null;
+try {
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    die("Database connection failed. Please try again later.");
+}
+
+// Fetch current user data - ADD THIS
+$user_id = $_SESSION['user_id'] ?? 0;
+$user_data = [];
+
+if ($user_id && $pdo) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error fetching user data: " . $e->getMessage());
+        $user_data = [];
+    }
+}
+
+// Prepare full name - ADD THIS
+$full_name = '';
+if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
+    $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
+    if (!empty($user_data['middlename'])) {
+        $full_name = $user_data['firstname'] . ' ' . $user_data['middlename'] . ' ' . $user_data['lastname'];
+    }
+}
+
+// Get profile photo URL - ADD THIS
+$profile_photo_url = '';
+if (!empty($user_data['profile_photo'])) {
+    $profile_photo_url = '../../' . $user_data['profile_photo'];
+    if (!file_exists($profile_photo_url)) {
+        $profile_photo_url = '';
+    }
+}
+
+// Fallback to avatar if no profile photo - ADD THIS
+if (empty($profile_photo_url)) {
+    $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
+}
 // Initialize variables
 // Handle barangays as array (from checkboxes) or comma-separated string
 $filtered_barangays = [];
@@ -476,8 +523,8 @@ function formatEmpty($value)
                         class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-8 h-8 rounded-full"
-                            src="https://spng.pngfind.com/pngs/s/378-3780189_member-icon-png-transparent-png.png"
+                        <img class="w-8 h-8 rounded-full object-cover"
+                            src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
                     <!-- Dropdown menu -->
@@ -698,8 +745,49 @@ function formatEmpty($value)
         </aside>
 
         <main class="p-4 md:ml-64 pt-20">
-            <!-- Header -->
+            <!-- Header with navigation -->
             <div class="w-full flex justify-between items-center mb-6 no-print">
+                <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
+                    class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to List
+                </a>
+
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                        <i class="fas fa-table mr-3"></i>Demographic Master List
+                    </h1>
+                </div>
+
+                <div class="relative">
+                    <button id="actionDropdownButton" data-dropdown-toggle="actionDropdown"
+                        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200"
+                        type="button">
+                        <i class="fas fa-ellipsis-v mr-2"></i>
+                        Actions
+                    </button>
+
+                    <div id="actionDropdown"
+                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <ul class=" text-sm text-gray-700 dark:text-gray-200">
+                            <!-- <li>
+                                <button onclick="window.print()"
+                                    class="block px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-print mr-2"></i>Print
+                                </button>
+                            </li> -->
+                            <li>
+                                <button onclick="exportToExcel()"
+                                    class="block px-4 py-2 w-full cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-file-excel mr-2"></i>Export to Excel
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Header -->
+            <!-- <div class="w-full flex justify-between items-center mb-6 no-print">
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                     <i class="fas fa-table mr-3"></i>Demographic Master List
                 </h1>
@@ -713,7 +801,7 @@ function formatEmpty($value)
                         <i class="fas fa-file-excel mr-2"></i>Export to Excel
                     </button>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Filters -->
             <div class="filter-container no-print">

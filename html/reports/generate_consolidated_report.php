@@ -257,7 +257,7 @@ if (!$hasData) {
         .print-page {
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
+            /* border: 1px solid #ddd; */
             background: white;
         }
 
@@ -357,7 +357,7 @@ if (!$hasData) {
 
         .error-alert {
             position: fixed;
-            top: 80px;
+            top: 120px;
             right: 20px;
             z-index: 1000;
             background: #fef2f2;
@@ -370,7 +370,7 @@ if (!$hasData) {
 
         .success-alert {
             position: fixed;
-            top: 80px;
+            top: 120px;
             right: 20px;
             z-index: 1000;
             background: #f0fdf4;
@@ -425,7 +425,7 @@ if (!$hasData) {
         </button>
         <div class="mt-2 text-xs text-gray-600">
             Report Period: <?php echo $displayText; ?><br>
-            Data Source: <?php echo $hasData ? 'Database' : 'Fallback Template'; ?><br>
+            <!-- Data Source: <?php echo $hasData ? 'Database' : 'Fallback Template'; ?><br> -->
             <?php if ($errorMessage): ?>
                 <span class="text-red-500">⚠️ Error encountered</span>
             <?php endif; ?>
