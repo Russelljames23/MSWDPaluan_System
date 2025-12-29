@@ -1,6 +1,16 @@
 <?php
 require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
+$currentYear = isset($_GET['year']) && $_GET['year'] !== '' ? intval($_GET['year']) : null;
+$currentMonth = isset($_GET['month']) && $_GET['month'] !== '' ? intval($_GET['month']) : null;
+
+// Validate parameters
+if ($currentMonth !== null && ($currentMonth < 1 || $currentMonth > 12)) {
+    $currentMonth = null;
+}
+if ($currentYear !== null && ($currentYear < 2000 || $currentYear > 2100)) {
+    $currentYear = null;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -662,39 +672,72 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        function part1() {
-            location.href = ("report.php?session_context=<?php echo $ctx; ?>");
+        // Update navigation functions to preserve filters
+        window.part1 = function() {
+            navigateToReport('report.php');
+        };
+
+        window.part2 = function() {
+            navigateToReport('reportpart2.php');
+        };
+
+        window.part3 = function() {
+            navigateToReport('reportpart3.php');
+        };
+
+        window.part4 = function() {
+            navigateToReport('reportpart4.php');
+        };
+
+        window.part5 = function() {
+            navigateToReport('reportpart5.php');
+        };
+
+        window.part6 = function() {
+            navigateToReport('reportpart6.php');
+        };
+
+        window.part7to9 = function() {
+            navigateToReport('reportpart7to9.php');
+        };
+
+        window.benefits = function() {
+            // Already on benefits page, reload with current filters
+            window.location.reload();
+        };
+
+        // Helper to navigate between report pages while preserving filters
+        function navigateToReport(pageName) {
+            let url = pageName;
+            const params = new URLSearchParams();
+
+            // Get session context from current URL
+            const currentUrl = new URLSearchParams(window.location.search);
+            const sessionContext = currentUrl.get('session_context');
+
+            if (sessionContext) {
+                params.append('session_context', sessionContext);
+            }
+
+            // Add current filters
+            const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
+            const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
+
+            if (currentYear && currentYear !== 'null') {
+                params.append('year', currentYear);
+            }
+            if (currentMonth && currentMonth !== 'null') {
+                params.append('month', currentMonth);
+            }
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            window.location.href = url;
         }
 
-        function part2() {
-            location.href = ("reportpart2.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function part3() {
-            location.href = ("reportpart3.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function part4() {
-            location.href = ("reportpart4.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function part5() {
-            location.href = ("reportpart5.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function part6() {
-            location.href = ("reportpart6.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function part7to9() {
-            location.href = ("reportpart7to9.php?session_context=<?php echo $ctx; ?>");
-        }
-
-        function benefits() {
-            // location.href = ("reportbenefits.html");
-        }
-    </script>
-    <script>
         // Benefits report functionality
         (function() {
             'use strict';
@@ -808,6 +851,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         displayBenefitsReport(result);
                         updateBenefitsSummary(result);
                         populateYearFilter(result.available_years || [], result.year_counts || []);
+                        cleanupLoading();
                     } else {
                         throw new Error(result.message || 'Unknown error from API');
                     }
@@ -823,9 +867,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 // Reset all cells to 0 first
                 Object.values(benefitMap).forEach(benefit => {
                     const [maleId, femaleId, totalId] = benefit.ids;
-                    document.getElementById(maleId).textContent = '0';
-                    document.getElementById(femaleId).textContent = '0';
-                    document.getElementById(totalId).textContent = '0';
+                    const maleElement = document.getElementById(maleId);
+                    const femaleElement = document.getElementById(femaleId);
+                    const totalElement = document.getElementById(totalId);
+
+                    if (maleElement) maleElement.textContent = '0';
+                    if (femaleElement) femaleElement.textContent = '0';
+                    if (totalElement) totalElement.textContent = '0';
                 });
 
                 // Check if we have data
@@ -863,9 +911,13 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                             const [maleId, femaleId, totalId] = benefit.ids;
 
                             // Update the cells with actual data
-                            document.getElementById(maleId).textContent = item.male_count || 0;
-                            document.getElementById(femaleId).textContent = item.female_count || 0;
-                            document.getElementById(totalId).textContent = item.total_count || 0;
+                            const maleElement = document.getElementById(maleId);
+                            const femaleElement = document.getElementById(femaleId);
+                            const totalElement = document.getElementById(totalId);
+
+                            if (maleElement) maleElement.textContent = item.male_count || 0;
+                            if (femaleElement) femaleElement.textContent = item.female_count || 0;
+                            if (totalElement) totalElement.textContent = item.total_count || 0;
 
                             console.log(`Updated ${benefitKey}: Male=${item.male_count}, Female=${item.female_count}, Total=${item.total_count}`);
                         }
@@ -912,11 +964,11 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 // Add "All Years" option
                 const allYearsLi = document.createElement('li');
                 allYearsLi.innerHTML = `
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                onclick="applyYearFilter(null)">
-                All Years
-            </a>
-        `;
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    onclick="applyYearFilter(null)">
+                    All Years
+                </a>
+            `;
                 yearList.appendChild(allYearsLi);
 
                 // Create a map of year counts for easy lookup
@@ -935,11 +987,11 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         const count = countMap[year] || 0;
                         const li = document.createElement('li');
                         li.innerHTML = `
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        onclick="applyYearFilter(${year})">
-                        ${year} (${count})
-                    </a>
-                `;
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            onclick="applyYearFilter(${year})">
+                            ${year} (${count})
+                        </a>
+                    `;
                         yearList.appendChild(li);
                     });
                 }
@@ -955,11 +1007,11 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 loadingIndicator.id = 'loadingIndicator';
                 loadingIndicator.className = 'fixed top-4 right-4 z-50';
                 loadingIndicator.innerHTML = `
-            <div class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Loading benefits data...
-            </div>
-        `;
+                <div class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Loading benefits data...
+                </div>
+            `;
                 document.body.appendChild(loadingIndicator);
             }
 
@@ -974,18 +1026,18 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 if (tbody) {
                     const errorRow = document.createElement('tr');
                     errorRow.innerHTML = `
-                <td colspan="4" class="px-4 py-8 text-center text-red-500">
-                    <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                    <p class="text-lg">${message}</p>
-                    <button onclick="window.location.reload()" 
-                        class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Retry
-                    </button>
-                </td>
-            `;
+                    <td colspan="4" class="px-4 py-8 text-center text-red-500">
+                        <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <p class="text-lg">${message}</p>
+                        <button onclick="window.location.reload()" 
+                            class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Retry
+                        </button>
+                    </td>
+                `;
                     tbody.appendChild(errorRow);
                 }
             }
@@ -1008,7 +1060,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 } else {
                     url.searchParams.set('year', year);
                     // Keep month filter if it exists
-                    const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
                     if (currentMonth && currentMonth !== 'null') {
                         url.searchParams.set('month', currentMonth);
                     }
@@ -1026,11 +1077,69 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 });
             }
 
-            // Clean up on successful data load
-            window.addEventListener('benefitsDataLoaded', function() {
-                cleanupLoading();
-            });
 
+            // Generate report function
+            window.generateReport = function() {
+                console.log('=== Generate Report Clicked ===');
+
+                // Get current URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                let year = urlParams.get('year');
+                let month = urlParams.get('month');
+                let ctx = urlParams.get('session_context');
+
+                // If not in URL, try to get from filter components
+                if (!year || !month) {
+                    const selectedMonthText = document.getElementById('selectedMonth')?.textContent?.trim();
+                    const selectedYearText = document.getElementById('selectedYear')?.textContent?.trim();
+
+                    const monthNames = {
+                        'January': 1,
+                        'February': 2,
+                        'March': 3,
+                        'April': 4,
+                        'May': 5,
+                        'June': 6,
+                        'July': 7,
+                        'August': 8,
+                        'September': 9,
+                        'October': 10,
+                        'November': 11,
+                        'December': 12
+                    };
+
+                    if (selectedMonthText && selectedMonthText !== 'All Months' && monthNames[selectedMonthText]) {
+                        month = monthNames[selectedMonthText];
+                    }
+
+                    if (selectedYearText && selectedYearText !== 'All Years') {
+                        year = parseInt(selectedYearText);
+                    }
+                }
+
+                // Build URL
+                let url = 'generate_consolidated_report.php';
+                const params = [];
+
+                if (ctx) {
+                    params.push('session_context=' + encodeURIComponent(ctx));
+                }
+
+                if (year && year !== 'null') {
+                    params.push('year=' + encodeURIComponent(year));
+                }
+
+                if (month && month !== 'null') {
+                    params.push('month=' + encodeURIComponent(month));
+                }
+
+                if (params.length > 0) {
+                    url += '?' + params.join('&');
+                }
+
+                console.log('Navigating to consolidated report:', url);
+                window.location.href = url;
+            };
         })();
     </script>
 </body>

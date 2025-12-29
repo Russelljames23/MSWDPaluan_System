@@ -2,9 +2,16 @@
 require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-// Get filter values
-$currentYear = isset($_GET['year']) ? intval($_GET['year']) : null;
-$currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
+$currentYear = isset($_GET['year']) && $_GET['year'] !== '' ? intval($_GET['year']) : null;
+$currentMonth = isset($_GET['month']) && $_GET['month'] !== '' ? intval($_GET['month']) : null;
+
+// Validate parameters
+if ($currentMonth !== null && ($currentMonth < 1 || $currentMonth > 12)) {
+    $currentMonth = null;
+}
+if ($currentYear !== null && ($currentYear < 2000 || $currentYear > 2100)) {
+    $currentYear = null;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -728,10 +735,65 @@ $currentMonth = isset($_GET['month']) ? intval($_GET['month']) : null;
 
             // Generate report function
             window.generateReport = function() {
-                const periodText = document.getElementById('reportPeriod').textContent;
-                const totalPensioners = document.getElementById('totalPensioners').textContent;
+                console.log('=== Generate Report Clicked ===');
 
-                alert(`Generating pensioners report for: ${periodText}\nTotal Pensioners: ${totalPensioners}\nThis feature would export the current data as PDF.`);
+                // Get current URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                let year = urlParams.get('year');
+                let month = urlParams.get('month');
+                let ctx = urlParams.get('session_context');
+
+                // If not in URL, try to get from filter components
+                if (!year || !month) {
+                    const selectedMonthText = document.getElementById('selectedMonth')?.textContent?.trim();
+                    const selectedYearText = document.getElementById('selectedYear')?.textContent?.trim();
+
+                    const monthNames = {
+                        'January': 1,
+                        'February': 2,
+                        'March': 3,
+                        'April': 4,
+                        'May': 5,
+                        'June': 6,
+                        'July': 7,
+                        'August': 8,
+                        'September': 9,
+                        'October': 10,
+                        'November': 11,
+                        'December': 12
+                    };
+
+                    if (selectedMonthText && selectedMonthText !== 'All Months' && monthNames[selectedMonthText]) {
+                        month = monthNames[selectedMonthText];
+                    }
+
+                    if (selectedYearText && selectedYearText !== 'All Years') {
+                        year = parseInt(selectedYearText);
+                    }
+                }
+
+                // Build URL
+                let url = 'generate_consolidated_report.php';
+                const params = [];
+
+                if (ctx) {
+                    params.push('session_context=' + encodeURIComponent(ctx));
+                }
+
+                if (year && year !== 'null') {
+                    params.push('year=' + encodeURIComponent(year));
+                }
+
+                if (month && month !== 'null') {
+                    params.push('month=' + encodeURIComponent(month));
+                }
+
+                if (params.length > 0) {
+                    url += '?' + params.join('&');
+                }
+
+                console.log('Navigating to consolidated report:', url);
+                window.location.href = url;
             };
 
             // Listen for filter changes from date_filter_component.php

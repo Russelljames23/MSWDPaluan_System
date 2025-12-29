@@ -55,49 +55,49 @@ $apiResult = null;
 try {
     // Use relative path from current directory
     $backendFile = __DIR__ . '/../../php/reports/generate_consolidated_report_backend.php';
-    
+
     // Alternative path check
     if (!file_exists($backendFile)) {
         // Try another possible path
         $backendFile = dirname(__DIR__) . '/../php/reports/generate_consolidated_report_backend.php';
     }
-    
+
     if (file_exists($backendFile)) {
         // Create GET parameters array for the backend
         $backendParams = [];
         if ($year !== null) $backendParams['year'] = $year;
         if ($month !== null) $backendParams['month'] = $month;
-        
+
         // Build query string
         $queryString = http_build_query($backendParams);
-        
+
         // Use cURL to call the backend
         $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
         $backendUrl = $baseUrl . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
-        
+
         if ($queryString) {
             $backendUrl .= '?' . $queryString;
         }
-        
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $backendUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        
+
         $jsonResponse = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
         if (curl_errno($ch)) {
             throw new Exception('cURL Error: ' . curl_error($ch));
         }
-        
+
         curl_close($ch);
-        
+
         if ($httpCode === 200 && $jsonResponse) {
             $apiResult = json_decode($jsonResponse, true);
-            
+
             if ($apiResult && isset($apiResult['success'])) {
                 if ($apiResult['success'] && isset($apiResult['data'])) {
                     $reportData = $apiResult['data'];
@@ -232,7 +232,7 @@ if (!$hasData) {
             .error-alert {
                 display: none !important;
             }
-            
+
             .success-alert {
                 display: none !important;
             }
@@ -380,7 +380,7 @@ if (!$hasData) {
             border-radius: 5px;
             max-width: 300px;
         }
-        
+
         .debug-info {
             position: fixed;
             bottom: 10px;
@@ -923,7 +923,7 @@ if (!$hasData) {
             <?php if ($errorMessage): ?>
                 console.error('Error:', '<?php echo addslashes($errorMessage); ?>');
             <?php endif; ?>
-            
+
             // Debug info
             console.log('URL Parameters:', {
                 year: '<?php echo $year; ?>',
