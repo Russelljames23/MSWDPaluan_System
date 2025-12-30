@@ -12,9 +12,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-[50] dark:bg-gray-900">
         <nav
             class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
@@ -38,7 +39,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
                     <a href="https://flowbite.com" class="flex items-center justify-between mr-4 ">
-                        <img src="../img/MSWD_LOGO-removebg-preview.png"
+                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -94,13 +95,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="#"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My
-                                    profile</a>
-                            </li>
-                        </ul>
-                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                            <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
@@ -112,7 +106,6 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </nav>
 
         <!-- Sidebar -->
-
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
@@ -136,8 +129,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 bg-blue-50 rounded-lg dark:text-blue  dark:hover:bg-blue-700 group">
+                        <a href="#"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400  dark:group-hover:text-white">
@@ -159,9 +152,10 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="register.php?session_context=<?php echo $ctx; ?>"
+                        <a href="staff_register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <g transform="translate(24,0) scale(-1,1)">
                                     <path fill-rule="evenodd"
@@ -174,7 +168,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            class="flex items-center p-2 cursor-pointer w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -193,30 +187,25 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="./SeniorList/seniorlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Senior
+                                <a href="./SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/activelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="./SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="./SeniorList/inactivelist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                    List</a>
-                            </li>
-                            <li>
-                                <a href="./SeniorList/deceasedlist.php"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                <a href="./SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="./benefits.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./benefits.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -230,8 +219,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="./generate_id.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./generate_id.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -243,8 +232,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </a>
                     </li>
                     <li>
-                        <a href="./reports/report.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="./reports/report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -258,21 +247,8 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="./archived.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 1 0 0 4h16a2 2 0 1 0 0-4H4Zm0 6h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm10.707 5.707a1 1 0 0 0-1.414-1.414l-.293.293V12a1 1 0 1 0-2 0v2.586l-.293-.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l2-2Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="ml-3">Archived</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -291,7 +267,73 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../js/tailwind.config.js"></script>
+    <script src="../../js/staff_tailwind.config.js"></script>
+    <script src="../../js/staff_theme.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+
+        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
+        (function() {
+            // Use the same StaffTheme namespace
+            const StaffTheme = {
+                init: function() {
+                    const savedTheme = localStorage.getItem('staff_theme');
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                    let theme = 'light';
+                    if (savedTheme) {
+                        theme = savedTheme;
+                    } else if (systemPrefersDark) {
+                        theme = 'dark';
+                    }
+
+                    this.set(theme);
+                    return theme;
+                },
+
+                set: function(theme) {
+                    const root = document.documentElement;
+                    const wasDark = root.classList.contains('dark');
+                    const isDark = theme === 'dark';
+
+                    if (isDark && !wasDark) {
+                        root.classList.add('dark');
+                        localStorage.setItem('staff_theme', 'dark');
+                    } else if (!isDark && wasDark) {
+                        root.classList.remove('dark');
+                        localStorage.setItem('staff_theme', 'light');
+                    }
+
+                    // Dispatch event for staff components
+                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
+                }
+            };
+
+            // Initialize theme
+            StaffTheme.init();
+
+            // Listen for storage events
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'staff_theme') {
+                    const theme = e.newValue;
+                    const currentIsDark = document.documentElement.classList.contains('dark');
+                    const newIsDark = theme === 'dark';
+
+                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
+                        StaffTheme.set(theme);
+                    }
+                }
+            });
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('staff_theme')) {
+                    StaffTheme.set(e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
