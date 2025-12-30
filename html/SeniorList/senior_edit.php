@@ -640,6 +640,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .step {
             display: none;
@@ -902,8 +903,8 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="#" style="color: blue;"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="#"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Active
                                     List</a>
                             </li>
                             <li>
@@ -1981,6 +1982,52 @@ $support_types = ['Cash', 'In-kind', 'Both'];
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         let currentStep = 1;
         const totalSteps = 6;

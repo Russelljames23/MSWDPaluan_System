@@ -369,6 +369,7 @@ function formatEmpty($value)
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .demographic-table {
             width: 100%;
@@ -385,10 +386,10 @@ function formatEmpty($value)
             white-space: nowrap;
         }
 
-        .demographic-table th {
+        /* .demographic-table th {
             background-color: #f3f4f6;
             font-weight: 600;
-        }
+        } */
 
         .demographic-table .section-header {
             background-color: #e5e7eb;
@@ -396,10 +397,10 @@ function formatEmpty($value)
             text-align: center;
         }
 
-        .demographic-table .sub-header {
+        /* .demographic-table .sub-header {
             background-color: #f9fafb;
             font-weight: 500;
-        }
+        } */
 
         @media print {
             .no-print {
@@ -656,8 +657,8 @@ function formatEmpty($value)
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="#" style="color: blue;"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="#"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Active
                                     List</a>
                             </li>
                             <li>
@@ -804,12 +805,12 @@ function formatEmpty($value)
             </div> -->
 
             <!-- Filters -->
-            <div class="filter-container no-print">
+            <div class="filter-container no-print dark:text-white dark:bg-gray-800">
                 <form method="GET" id="filterForm" action="masterlist.php">
                     <input type="hidden" name="session_context" value="<?php echo $ctx; ?>">
                     <input type="hidden" name="page" value="1" id="pageInput">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 ">
                         <!-- Search -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -964,11 +965,11 @@ function formatEmpty($value)
             </div>
 
             <!-- Demographic Table -->
-            <div class="mb-6">
+            <div class="mb-6 dark:text-white dark:bg-gray-800">
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700 overflow-x-auto">
-                    <table class="demographic-table">
-                        <thead>
-                            <tr>
+                    <table class="demographic-table dark:bg-gray-800">
+                        <thead class=" text-center text-gray-700  bg-gray-50 dark:bg-gray-800 dark:text-white">
+                            <tr >
                                 <th colspan="2" rowspan="4">Province</th>
                                 <th colspan="2" rowspan="4">Municipality</th>
                                 <th colspan="2" rowspan="4">Barangay</th>
@@ -1234,6 +1235,53 @@ function formatEmpty($value)
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <!-- Add this after your PHP code, before the closing </body> tag -->
     <script>
         // Pass PHP data to JavaScript

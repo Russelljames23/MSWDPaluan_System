@@ -246,6 +246,7 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom animations and styles */
         .stat-card {
@@ -1307,8 +1308,8 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
             <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
             <ul class="space-y-2">
                 <li>
-                    <a href="#" style="color: blue;"
-                        class="flex items-center p-2 text-base font-medium text-blue-700 bg-blue-100 rounded-lg dark:text-blue  dark:hover:bg-blue-700 group">
+                    <a href="#"
+                        class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="currentColor"
                             class="w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400  dark:group-hover:text-white">
@@ -1331,11 +1332,10 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
                 </li>
                 <li>
                     <a href="register.php?session_context=<?php echo $ctx; ?>"
-
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-gray-700 group">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <g transform="translate(24,0) scale(-1,1)">
                                 <path fill-rule="evenodd"
                                     d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
@@ -1869,6 +1869,52 @@ $top_barangays = array_slice($all_barangays, 0, 5, true);
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         // Initialize tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-tooltip-target]'));

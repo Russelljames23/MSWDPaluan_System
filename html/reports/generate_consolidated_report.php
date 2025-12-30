@@ -191,6 +191,7 @@ if (!$hasData) {
     <title>Data of Senior Citizen <?php echo $year ?: date('Y'); ?></title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -357,7 +358,7 @@ if (!$hasData) {
 
         .error-alert {
             position: fixed;
-            top: 120px;
+            top: 180px;
             right: 20px;
             z-index: 1000;
             background: #fef2f2;
@@ -370,7 +371,7 @@ if (!$hasData) {
 
         .success-alert {
             position: fixed;
-            top: 120px;
+            top: 180px;
             right: 20px;
             z-index: 1000;
             background: #f0fdf4;
@@ -394,7 +395,7 @@ if (!$hasData) {
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <?php if ($errorMessage): ?>
         <div class="error-alert no-print">
             <strong>⚠️ Error:</strong><br>
@@ -403,7 +404,7 @@ if (!$hasData) {
             <small>Using fallback data for display. Backend data not available.</small>
         </div>
     <?php elseif ($hasData && $apiResult): ?>
-        <div class="success-alert no-print">
+        <div class="success-alert no-print hidden">
             <strong>✅ Data Loaded Successfully</strong><br>
             Showing data for: <?php echo $displayText; ?><br>
             Total Seniors: <?php echo number_format($reportData['part1']['totals']['overall'] ?? 0); ?>
@@ -415,15 +416,15 @@ if (!$hasData) {
         </div>
     <?php endif; ?>
 
-    <div class="print-controls no-print">
-        <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
-            🖨️ Print Report
-        </button>
+    <div class="print-controls no-print flex flex-col items-center gap-5">
         <button onclick="window.location.href='report.php?session_context=<?php echo $ctx; ?>&year=<?php echo $year; ?>&month=<?php echo $month; ?>'"
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm ml-2">
             ← Back to Reports
         </button>
-        <div class="mt-2 text-xs text-gray-600">
+        <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+            🖨️ Print Report
+        </button>
+        <div class="text-xs text-gray-600">
             Report Period: <?php echo $displayText; ?><br>
             <!-- Data Source: <?php echo $hasData ? 'Database' : 'Fallback Template'; ?><br> -->
             <?php if ($errorMessage): ?>
@@ -914,6 +915,53 @@ if (!$hasData) {
         Has Data: <?php echo $hasData ? 'Yes' : 'No'; ?>
     </div>
 
+    <script src="../../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         window.onload = function() {
             console.log('Report loaded for:', '<?php echo $displayText; ?>');

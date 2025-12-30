@@ -25,7 +25,7 @@ try {
     $pdo = null;
 }
 
-// Fetch current user data - ADD THIS
+// Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -40,7 +40,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name - ADD THIS
+// Prepare full name
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -49,7 +49,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL - ADD THIS
+// Get profile photo URL
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../../' . $user_data['profile_photo'];
@@ -58,7 +58,7 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo - ADD THIS
+// Fallback to avatar if no profile photo
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name ?: 'User') . '&background=3b82f6&color=fff&size=128';
 }
@@ -177,7 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $results = $gateway->sendBulk($validRecipients, $message);
 
                 // Show results
-                // In the send_sms POST handling, replace the success message with:
                 if ($results['sent'] > 0) {
                     if ($results['demo_mode']) {
                         $_SESSION['success'] = "✅ DEMO MODE: Successfully logged {$results['sent']} SMS messages!<br>";
@@ -234,7 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Add this in your POST handling section, before the if(isset($_POST['send_sms'])) block
     if (isset($_POST['test_smtp'])) {
         $gateway = new SMSGateway($smsSettings);
         $testResult = $gateway->testSMTPConnection();
@@ -249,20 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 }
-// Add this after your POST handling section
-if (isset($_POST['test_smtp'])) {
-    $gateway = new SMSGateway($smsSettings);
-    $testResult = $gateway->testSMTPConnection();
 
-    if ($testResult['success']) {
-        $_SESSION['success'] = "✅ " . $testResult['message'];
-    } else {
-        $_SESSION['error'] = "❌ " . $testResult['message'];
-    }
-
-    header("Location: sms.php?session_context=" . $ctx);
-    exit();
-}
 // Get SMS logs
 $smsLogs = [];
 if (!$conn->connect_error) {
@@ -286,7 +271,7 @@ unset($_SESSION['success'], $_SESSION['error'], $_SESSION['sms_warning']);
 $conn->close();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
@@ -295,41 +280,19 @@ $conn->close();
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <style>
-        /* Character counter */
-        .char-counter {
-            font-size: 12px;
-            transition: color 0.3s;
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        .char-counter.warning {
-            color: #f59e0b;
-            font-weight: bold;
+        /* Smooth theme icon transitions */
+        #nav-theme-light-icon,
+        #nav-theme-dark-icon {
+            transition: opacity 0.3s ease;
         }
 
-        .char-counter.error {
-            color: #ef4444;
-            font-weight: bold;
-        }
-
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 40;
-        }
-
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        /* Sidebar styles remain the same */
+        /* Sidebar container */
         .sidebar {
             position: relative;
             border-radius: 10px;
@@ -341,10 +304,17 @@ $conn->close();
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        .dark .sidebar {
+            background: #1f2937;
+            /* gray-800 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
         .sidebar.open {
             width: 200px;
         }
 
+        /* Logo section + toggle button */
         .sidebar .logo-details {
             height: 60px;
             position: relative;
@@ -352,6 +322,11 @@ $conn->close();
             align-items: center;
             justify-content: center;
             border-bottom: 1px solid #ddd;
+        }
+
+        .dark .sidebar .logo-details {
+            border-bottom: 1px solid #374151;
+            /* gray-700 */
         }
 
         .logo-details #btn {
@@ -384,6 +359,7 @@ $conn->close();
             transform: rotate(180deg);
         }
 
+        /* Navigation list */
         .nav-list {
             list-style: none;
             padding: 15px;
@@ -448,6 +424,24 @@ $conn->close();
             transition: all 0.3s ease;
         }
 
+        /* Dark mode styles for nav list */
+        .dark .nav-list li a,
+        .dark .nav-list li button {
+            background: #374151;
+            /* gray-700 */
+            border: 1px solid #4b5563;
+            /* gray-600 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
+        .dark .nav-list li a:hover,
+        .dark .nav-list li button:hover {
+            background: #4b5563;
+            /* gray-600 */
+        }
+
+        /* Hide link text when collapsed, keep icons */
         .links_name {
             white-space: nowrap;
             opacity: 0;
@@ -459,13 +453,14 @@ $conn->close();
             opacity: 1;
         }
 
+        /* Tooltip styling */
         .tooltip {
             position: absolute;
             top: 50%;
             left: 100%;
             transform: translateY(-50%);
             margin-left: 10px;
-            background: rgba(221, 221, 221, 0.555);
+            background: rgba(221, 221, 221, 0.95);
             color: #000;
             padding: 4px 8px;
             border-radius: 6px;
@@ -479,27 +474,32 @@ $conn->close();
             z-index: 200;
         }
 
+        .dark .tooltip {
+            background: rgba(55, 65, 81, 0.95);
+            /* gray-700 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
+        /* Show tooltip when hovering over an item */
         .sidebar li:hover .tooltip {
             opacity: 1;
             transform: translate(10px, -50%);
         }
 
+        /* Hide tooltips when sidebar is expanded */
         .sidebar.open li .tooltip {
             display: none;
         }
 
-        .home-section {
-            margin-left: 78px;
-            padding: 20px;
-            transition: all 0.4s ease;
+        .dark .links_name {
+            color: #d1d5db;
         }
 
-        .sidebar.open~.home-section {
-            margin-left: 200px;
-        }
-
+        /* Active link styling */
         .nav-list li #sms.active-link {
             color: #1d4ed8;
+            /* Tailwind blue-700 */
             font-weight: 600;
             border-color: #1d4ed8;
             background: #eff6ff;
@@ -508,10 +508,24 @@ $conn->close();
         .nav-list li #sms.active-link svg {
             color: #1d4ed8;
         }
+
+        .dark .nav-list li #sms.active-link {
+            color: #60a5fa;
+            /* blue-400 */
+            border-color: #3b82f6;
+            /* blue-500 */
+            background: #1e40af;
+            /* blue-800 */
+        }
+
+        .dark .nav-list li #sms.active-link svg {
+            color: #60a5fa;
+            /* blue-400 */
+        }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
         <div class="flex flex-wrap justify-between items-center">
             <div class="flex justify-start items-center">
@@ -534,7 +548,7 @@ $conn->close();
                 </button>
                 <a href="#" class="flex items-center justify-between mr-4 ">
                     <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                        class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                        class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                         alt="MSWD LOGO" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
                         PALUAN</span>
@@ -582,11 +596,9 @@ $conn->close();
                     <div class="py-3 px-4">
                         <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                             <?php
-                            // Display fullname with fallback
                             if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                 echo htmlspecialchars($_SESSION['fullname']);
                             } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                // Construct fullname from first and last name if available
                                 echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                             } else {
                                 echo 'User';
@@ -595,11 +607,9 @@ $conn->close();
                         </span>
                         <span class="block text-sm text-gray-900 truncate dark:text-white">
                             <?php
-                            // Display user type with proper formatting
                             if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                 echo htmlspecialchars($_SESSION['user_type']);
                             } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                // Fallback to role_name if available
                                 echo htmlspecialchars($_SESSION['role_name']);
                             } else {
                                 echo 'User Type';
@@ -608,6 +618,7 @@ $conn->close();
                         </span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
+
                         <li>
                             <a href="../../php/login/logout.php"
                                 class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
@@ -644,31 +655,21 @@ $conn->close();
             <ul class="space-y-2">
                 <li>
                     <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="currentColor"
                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                            <!-- Top-left (taller) -->
                             <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                            <!-- Top-right (smaller) -->
                             <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                            <!-- Bottom-left (smaller) -->
                             <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                            <!-- Bottom-right (taller) -->
                             <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
                         </svg>
-
                         <span class="ml-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="../register.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <svg xmlns="http://www.w3.org/2000/svg"
                             class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -683,7 +684,7 @@ $conn->close();
                 </li>
                 <li>
                     <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                        class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
+                        class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <svg aria-hidden="true"
                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -703,24 +704,24 @@ $conn->close();
                     <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                         <li>
                             <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                 List</a>
                         </li>
                         <li>
                             <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                 List</a>
                         </li>
                         <li>
                             <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                 List</a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
@@ -735,7 +736,7 @@ $conn->close();
                 </li>
                 <li>
                     <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             fill="currentColor" viewBox="0 0 24 24">
@@ -748,7 +749,7 @@ $conn->close();
                 </li>
                 <li>
                     <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
@@ -774,10 +775,10 @@ $conn->close();
                     </a>
                 </li>
                 <li>
-                    <a href="#" style="color: blue;"
-                        class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                    <a href="#"
+                        class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
                         <svg aria-hidden="true"
-                            class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
+                            class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                 d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
@@ -806,7 +807,7 @@ $conn->close();
                 <ul class="nav-list">
                     <li>
                         <a href="profile.php?session_context=<?php echo $ctx; ?>" id="profile" class="cursor-pointer">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-900" aria-hidden="true"
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-300" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -818,22 +819,21 @@ $conn->close();
                         <span class="tooltip">My Profile</span>
                     </li>
                     <li>
-                        <a href="theme.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                                    clip-rule="evenodd" />
+                        <button type="button" id="nav-theme-toggle"
+                            class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg id="nav-theme-light-icon" class="w-4 h-4 mr-2 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
                             </svg>
-                            <span class="links_name">Theme</span>
-                        </a>
-                        <span class="tooltip">Theme</span>
+                            <svg id="nav-theme-dark-icon" class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                            </svg>
+                            <span id="nav-theme-text">Dark Mode</span>
+                        </button>
                     </li>
 
                     <li>
                         <a href="accounts.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-300" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -846,7 +846,7 @@ $conn->close();
                     </li>
                     <li>
                         <a href="#" id="sms" class="cursor-pointer active-link">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-300" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -860,7 +860,7 @@ $conn->close();
                     </li>
                     <li>
                         <a href="systemlogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-300" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -879,33 +879,32 @@ $conn->close();
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <!-- Success Message -->
                     <?php if ($success): ?>
-                        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900 dark:border-green-700 dark:text-green-200">
                             <?php echo $success; ?>
                         </div>
                     <?php endif; ?>
 
                     <!-- Error Message -->
                     <?php if ($error): ?>
-                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">
                             <?php echo $error; ?>
                         </div>
                     <?php endif; ?>
 
                     <!-- Warning Message -->
                     <?php if ($smsWarning): ?>
-                        <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg">
+                        <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200">
                             <?php echo $smsWarning; ?>
                         </div>
                     <?php endif; ?>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- In the SMS Settings Card section, replace with: -->
                         <!-- SMS Settings Card -->
-                        <div class="bg-white rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">SMS Settings</h2>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">SMS Settings</h2>
 
                             <?php if ($systemStatus): ?>
-                                <div class="mb-4 p-3 <?php echo $systemStatus['smtp_configured'] && !$systemStatus['demo_mode'] ? 'bg-green-100 border border-green-400 text-green-800' : 'bg-yellow-100 border border-yellow-400 text-yellow-800'; ?> rounded-lg">
+                                <div class="mb-4 p-3 <?php echo $systemStatus['smtp_configured'] && !$systemStatus['demo_mode'] ? 'bg-green-100 border border-green-400 text-green-800 dark:bg-green-900 dark:border-green-700 dark:text-green-200' : 'bg-yellow-100 border border-yellow-400 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200'; ?> rounded-lg">
                                     <div class="flex items-center">
                                         <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                                             <?php if ($systemStatus['smtp_configured'] && !$systemStatus['demo_mode']): ?>
@@ -926,88 +925,88 @@ $conn->close();
                                 <div class="space-y-4">
                                     <!-- Operation Mode -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Operation Mode
                                         </label>
                                         <div class="flex items-center">
                                             <input type="checkbox" id="demo_mode" name="demo_mode" value="1"
                                                 <?php echo ($smsSettings['demo_mode'] ?? 0) ? 'checked' : ''; ?>
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                                            <label for="demo_mode" class="ms-2 text-sm font-medium text-gray-900">
+                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="demo_mode" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                 Demo Mode (Log only, don't send)
                                             </label>
                                         </div>
-                                        <p class="mt-1 text-xs text-gray-500">
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                             When checked: SMS are logged but not actually sent. Uncheck to send real SMS.
                                         </p>
                                     </div>
 
                                     <!-- Service Status -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             SMS Service Status
                                         </label>
                                         <div class="flex items-center">
                                             <input type="checkbox" id="is_active" name="is_active" value="1"
                                                 <?php echo ($smsSettings['is_active'] ?? 1) ? 'checked' : ''; ?>
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                                            <label for="is_active" class="ms-2 text-sm font-medium text-gray-900">
+                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="is_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                 Enable SMS Service
                                             </label>
                                         </div>
                                     </div>
 
                                     <!-- SMTP Configuration -->
-                                    <div class="border-t pt-4">
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-3">SMTP Configuration</h3>
-                                        <p class="text-sm text-gray-600 mb-3">
+                                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">SMTP Configuration</h3>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                                             Configure SMTP to send real SMS via email-to-SMS gateways
                                         </p>
 
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             <div>
-                                                <label for="smtp_host" class="block text-sm font-medium text-gray-700 mb-2">
+                                                <label for="smtp_host" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                     SMTP Host
                                                 </label>
                                                 <input type="text" id="smtp_host" name="smtp_host"
                                                     value="<?php echo htmlspecialchars($smsSettings['smtp_host'] ?? 'smtp.gmail.com'); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="smtp.gmail.com">
                                             </div>
 
                                             <div>
-                                                <label for="smtp_port" class="block text-sm font-medium text-gray-700 mb-2">
+                                                <label for="smtp_port" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                     SMTP Port
                                                 </label>
                                                 <input type="text" id="smtp_port" name="smtp_port"
                                                     value="<?php echo htmlspecialchars($smsSettings['smtp_port'] ?? '587'); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="587">
                                             </div>
 
                                             <div>
-                                                <label for="smtp_user" class="block text-sm font-medium text-gray-700 mb-2">
+                                                <label for="smtp_user" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                     SMTP Username/Email
                                                 </label>
                                                 <input type="text" id="smtp_user" name="smtp_user"
                                                     value="<?php echo htmlspecialchars($smsSettings['smtp_user'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="your-email@gmail.com">
                                             </div>
 
                                             <div>
-                                                <label for="smtp_pass" class="block text-sm font-medium text-gray-700 mb-2">
+                                                <label for="smtp_pass" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                     SMTP Password
                                                 </label>
                                                 <input type="password" id="smtp_pass" name="smtp_pass"
                                                     value="<?php echo htmlspecialchars($smsSettings['smtp_pass'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="••••••••">
                                             </div>
                                         </div>
 
-                                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                            <p class="text-sm text-blue-800">
+                                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900 dark:border-blue-700">
+                                            <p class="text-sm text-blue-800 dark:text-blue-200">
                                                 <strong>Gmail Setup:</strong> Use "App Password" not regular password.
                                                 Enable 2FA in Google, then generate app password.
                                             </p>
@@ -1016,28 +1015,28 @@ $conn->close();
 
                                     <!-- Sender ID -->
                                     <div>
-                                        <label for="sender_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label for="sender_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Sender Name
                                         </label>
                                         <input type="text" id="sender_id" name="sender_id"
                                             value="<?php echo htmlspecialchars($smsSettings['sender_id'] ?? 'MSWDPALUAN'); ?>"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="MSWDPALUAN"
                                             maxlength="11">
-                                        <p class="mt-1 text-xs text-gray-500">Will appear as sender in SMS (max 11 characters)</p>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Will appear as sender in SMS (max 11 characters)</p>
                                     </div>
 
                                     <input type="hidden" name="provider" value="email_sms">
                                     <input type="hidden" name="api_key" value="">
 
-                                    <div class="grid grid-cols-2 gap-3 pt-4 border-t">
+                                    <div class="grid grid-cols-2 gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                                         <button type="submit" name="save_settings"
-                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             Save Settings
                                         </button>
 
                                         <button type="button" onclick="testSMTPConnection()"
-                                            class="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5">
+                                            class="text-gray-900 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
                                             Test SMTP
                                         </button>
                                     </div>
@@ -1046,37 +1045,37 @@ $conn->close();
                         </div>
 
                         <!-- Send SMS Card -->
-                        <div class="bg-white rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">Send SMS</h2>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Send SMS</h2>
                             <form method="POST">
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Recipients
                                         </label>
                                         <div class="grid grid-cols-2 gap-2">
                                             <div>
                                                 <input type="radio" id="all_active" name="recipient_type" value="all_active" checked
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
-                                                <label for="all_active" class="ms-2 text-sm font-medium text-gray-900">
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="all_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                     All Active Seniors
                                                 </label>
                                             </div>
                                             <div>
                                                 <input type="radio" id="all_seniors" name="recipient_type" value="all_seniors"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
-                                                <label for="all_seniors" class="ms-2 text-sm font-medium text-gray-900">
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="all_seniors" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                     All Seniors
                                                 </label>
                                             </div>
                                             <div class="col-span-2">
                                                 <input type="radio" id="custom" name="recipient_type" value="custom"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
-                                                <label for="custom" class="ms-2 text-sm font-medium text-gray-900">
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="custom" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                     Custom Numbers
                                                 </label>
                                                 <input type="text" id="custom_numbers" name="custom_numbers"
-                                                    class="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                    class="mt-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="Enter numbers separated by commas (09XXXXXXXXX)"
                                                     disabled>
                                             </div>
@@ -1084,27 +1083,27 @@ $conn->close();
                                     </div>
 
                                     <div>
-                                        <label for="broadcast_message" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label for="broadcast_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Message
                                         </label>
                                         <textarea id="broadcast_message" name="broadcast_message" rows="4"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Enter your message here..."
                                             required></textarea>
                                         <div class="mt-1 flex justify-between">
-                                            <span class="text-xs text-gray-500">Maximum 160 characters per SMS</span>
-                                            <span id="charCount" class="text-xs text-gray-500">0/160</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">Maximum 160 characters per SMS</span>
+                                            <span id="charCount" class="text-xs text-gray-500 dark:text-gray-400">0/160</span>
                                         </div>
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-2">
                                         <button type="submit" name="send_sms"
-                                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                             Send SMS
                                         </button>
 
                                         <button type="button" onclick="openTestModal()"
-                                            class="text-gray-900 bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:ring-yellow-200 font-medium rounded-lg text-sm px-5 py-2.5">
+                                            class="text-gray-900 bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:ring-yellow-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700">
                                             Test SMS
                                         </button>
                                     </div>
@@ -1113,67 +1112,67 @@ $conn->close();
                         </div>
 
                         <!-- Message Templates Card -->
-                        <div class="bg-white rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">Message Templates</h2>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Message Templates</h2>
                             <form method="POST" class="mb-4">
                                 <div class="space-y-4">
                                     <div>
-                                        <label for="template_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label for="template_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Template Name
                                         </label>
                                         <input type="text" id="template_name" name="template_name"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="e.g., Reminder, Announcement">
                                     </div>
 
                                     <div>
-                                        <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Template Message
                                         </label>
                                         <textarea id="message" name="message" rows="3"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Enter template message..."></textarea>
                                     </div>
 
                                     <div class="flex items-center">
                                         <input type="checkbox" id="template_active" name="template_active" checked
-                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                                        <label for="template_active" class="ms-2 text-sm font-medium text-gray-900">
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="template_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Active
                                         </label>
                                     </div>
 
                                     <button type="submit" name="save_template"
-                                        class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                                        class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
                                         Save Template
                                     </button>
                                 </div>
                             </form>
 
                             <div class="mt-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Saved Templates</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Saved Templates</h3>
                                 <div class="space-y-2 max-h-60 overflow-y-auto">
                                     <?php if (empty($templates)): ?>
-                                        <p class="text-gray-500 text-sm">No templates saved yet.</p>
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm">No templates saved yet.</p>
                                     <?php else: ?>
                                         <?php foreach ($templates as $template): ?>
-                                            <div class="p-3 bg-gray-50 rounded-lg">
+                                            <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                                 <div class="flex justify-between items-start">
                                                     <div>
-                                                        <h4 class="font-medium text-gray-900">
+                                                        <h4 class="font-medium text-gray-900 dark:text-white">
                                                             <?php echo htmlspecialchars($template['template_name']); ?>
                                                             <?php if (!$template['is_active']): ?>
-                                                                <span class="ml-2 text-xs text-red-500">(Inactive)</span>
+                                                                <span class="ml-2 text-xs text-red-500 dark:text-red-400">(Inactive)</span>
                                                             <?php endif; ?>
                                                         </h4>
-                                                        <p class="text-sm text-gray-600 mt-1">
+                                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
                                                             <?php echo htmlspecialchars(substr($template['message'], 0, 100)); ?>
                                                             <?php echo strlen($template['message']) > 100 ? '...' : ''; ?>
                                                         </p>
                                                     </div>
                                                     <div class="flex space-x-2">
                                                         <button type="button" onclick="useTemplate(<?php echo htmlspecialchars(json_encode($template['message'])); ?>)"
-                                                            class="text-blue-600 hover:text-blue-800 text-sm">
+                                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm">
                                                             Use
                                                         </button>
                                                     </div>
@@ -1186,11 +1185,11 @@ $conn->close();
                         </div>
 
                         <!-- SMS Logs Card -->
-                        <div class="bg-white rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">SMS Logs</h2>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">SMS Logs</h2>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-500">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
                                             <th class="px-4 py-3">Date</th>
                                             <th class="px-4 py-3">Number</th>
@@ -1200,11 +1199,11 @@ $conn->close();
                                     <tbody>
                                         <?php if (empty($smsLogs)): ?>
                                             <tr>
-                                                <td colspan="3" class="px-4 py-3 text-center text-gray-500">No logs yet</td>
+                                                <td colspan="3" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">No logs yet</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($smsLogs as $log): ?>
-                                                <tr class="border-b">
+                                                <tr class="border-b border-gray-200 dark:border-gray-700">
                                                     <td class="px-4 py-3">
                                                         <?php echo date('M d, H:i', strtotime($log['sent_at'])); ?>
                                                     </td>
@@ -1213,7 +1212,7 @@ $conn->close();
                                                     </td>
                                                     <td class="px-4 py-3">
                                                         <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                                            <?php echo (strpos($log['status'], 'sent') !== false) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                                                            <?php echo (strpos($log['status'], 'sent') !== false) ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'; ?>">
                                                             <?php echo htmlspecialchars($log['status']); ?>
                                                         </span>
                                                     </td>
@@ -1233,37 +1232,37 @@ $conn->close();
     <!-- Test SMS Modal -->
     <div id="testSmsModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-gray-900/50" onclick="closeTestModal()"></div>
-            <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Test SMS</h3>
+            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70" onclick="closeTestModal()"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test SMS</h3>
                 <form method="POST">
                     <div class="space-y-4">
                         <div>
-                            <label for="test_number" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="test_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Test Phone Number
                             </label>
                             <input type="text" id="test_number" name="test_number"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="09XXXXXXXXX or +639XXXXXXXXXX" required>
-                            <p class="mt-1 text-xs text-gray-500">Enter your own number to test</p>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enter your own number to test</p>
                         </div>
 
                         <div>
-                            <label for="test_message" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="test_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Test Message
                             </label>
                             <textarea id="test_message" name="test_message" rows="3"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Enter test message..." required>Test SMS from MSWD System</textarea>
                         </div>
 
                         <div class="flex justify-end space-x-3">
                             <button type="button" onclick="closeTestModal()"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
                                 Cancel
                             </button>
                             <button type="submit" name="test_sms"
-                                class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700">
                                 Send Test
                             </button>
                         </div>
@@ -1274,7 +1273,7 @@ $conn->close();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-
+    <script src="../../js/tailwind.config.js"></script>
     <script>
         // Character counter
         const messageInput = document.getElementById('broadcast_message');
@@ -1368,7 +1367,7 @@ $conn->close();
                 }
             }
 
-            resultDiv.innerHTML = '<p class="text-gray-600">Testing SMTP connection...</p>';
+            resultDiv.innerHTML = '<p class="text-gray-600 dark:text-gray-300">Testing SMTP connection...</p>';
 
             try {
                 const formData = new FormData();
@@ -1387,9 +1386,9 @@ $conn->close();
 
             } catch (error) {
                 resultDiv.innerHTML = `
-                <div class="p-3 bg-red-100 border border-red-400 rounded">
-                    <p class="text-red-800 font-semibold">❌ Test Failed</p>
-                    <p class="text-red-700 text-sm mt-1">${error.message}</p>
+                <div class="p-3 bg-red-100 border border-red-400 rounded dark:bg-red-900 dark:border-red-700">
+                    <p class="text-red-800 font-semibold dark:text-red-200">❌ Test Failed</p>
+                    <p class="text-red-700 text-sm mt-1 dark:text-red-300">${error.message}</p>
                 </div>
             `;
             }
@@ -1423,9 +1422,9 @@ $conn->close();
 
         function showConfigurationGuide() {
             const guideHtml = `
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 class="font-semibold text-blue-800 mb-2">📋 SMS Configuration Guide</h4>
-                <ol class="text-sm text-blue-700 space-y-2 list-decimal list-inside">
+            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900 dark:border-blue-700">
+                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">📋 SMS Configuration Guide</h4>
+                <ol class="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-decimal list-inside">
                     <li><strong>For Gmail Users:</strong>
                         <ul class="ml-4 mt-1 list-disc">
                             <li>Enable 2-Factor Authentication in your Google Account</li>
@@ -1468,104 +1467,108 @@ $conn->close();
                 messageInput.dispatchEvent(new Event('input'));
             }
         }
-    </script>
-    <script>
+
+        // Theme Switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            const navThemeToggle = document.getElementById('nav-theme-toggle');
+            const navThemeLightIcon = document.getElementById('nav-theme-light-icon');
+            const navThemeDarkIcon = document.getElementById('nav-theme-dark-icon');
+            const navThemeText = document.getElementById('nav-theme-text');
+
+            // Function to update theme icons based on current theme
+            function updateThemeUI(isDarkMode) {
+                if (isDarkMode) {
+                    // If dark mode is active, show light icon (for switching to light mode)
+                    if (navThemeLightIcon) navThemeLightIcon.classList.remove('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.add('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Light Mode';
+                } else {
+                    // If light mode is active, show dark icon (for switching to dark mode)
+                    if (navThemeLightIcon) navThemeLightIcon.classList.add('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.remove('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Dark Mode';
+                }
+            }
+
+            // Function to set theme
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateThemeUI(theme === 'dark');
+            }
+
+            // Initialize theme
+            function initTheme() {
+                // Check localStorage for saved theme
+                const savedTheme = localStorage.getItem('theme');
+
+                // Check for system preference
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                // Determine which theme to use
+                let theme = 'light';
+                if (savedTheme) {
+                    theme = savedTheme;
+                } else if (systemPrefersDark) {
+                    theme = 'dark';
+                }
+
+                // Apply the theme
+                setTheme(theme);
+
+                // Update UI
+                updateThemeUI(theme === 'dark');
+            }
+
+            // Initialize theme on page load
+            initTheme();
+
+            // Toggle theme when button is clicked
+            if (navThemeToggle) {
+                navThemeToggle.addEventListener('click', function() {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    setTheme(isDark ? 'light' : 'dark');
+                });
+            }
+
+            // Listen for theme changes from other tabs/windows
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'theme') {
+                    const theme = e.newValue;
+                    setTheme(theme);
+                }
+            });
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                // Only apply system theme if no user preference is saved
+                if (!localStorage.getItem('theme')) {
+                    setTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+
+            // Optional: Add keyboard shortcut for theme toggle (Alt+T)
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey && e.key === 't') {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    setTheme(isDark ? 'light' : 'dark');
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Sidebar toggle
         let sidebar = document.querySelector(".sidebar");
         let closeBtn = document.querySelector("#btn");
 
-        // Sidebar toggle
-        closeBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-        });
-
-        // My Profile click behavior
-        profileLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the profile section
-            profileSection.classList.remove('hidden');
-            accountSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My Profile link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            profileLink.classList.add('active-link');
-
-        });
-
-        // My Account click behavior
-        accountLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the account section
-            accountSection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My Account link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            accountLink.classList.add('active-link');
-
-        });
-        // My History click behavior
-        historyLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the history section
-            historySection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            accountSection.classList.add('hidden');
-            activitySection.classList.add('hidden');
-            // Highlight the My History link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            historyLink.classList.add('active-link');
-
-        });
-        // My Activity click behavior
-        activityLink.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            // Show the activity section
-            activitySection.classList.remove('hidden');
-            profileSection.classList.add('hidden');
-            accountSection.classList.add('hidden');
-            historySection.classList.add('hidden');
-            // Highlight the My Activity link and remove highlight from others
-            allLinks.forEach(link => link.classList.remove('active-link'));
-            activityLink.classList.add('active-link');
-
-        });
-
-        // Close button behavior inside the profile section
-        const closeProfileBtn = document.querySelector('[aria-label="Close"]');
-        if (closeProfileBtn) {
-            closeProfileBtn.addEventListener('click', () => {
-                profileSection.classList.add('hidden');
-                profileLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the account section
-        const closeAccountBtn = document.querySelector('[aria-label="Close1"]');
-        if (closeAccountBtn) {
-            closeAccountBtn.addEventListener('click', () => {
-                accountSection.classList.add('hidden');
-                accountLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the history section
-        const closeHistoryBtn = document.querySelector('[aria-label="Close2"]');
-        if (closeHistoryBtn) {
-            closeHistoryBtn.addEventListener('click', () => {
-                historySection.classList.add('hidden');
-                historyLink.classList.remove('active-link');
-            });
-        }
-        // Close button behavior inside the activity section
-        const closeActivityBtn = document.querySelector('[aria-label="Close3"]');
-        if (closeActivityBtn) {
-            closeActivityBtn.addEventListener('click', () => {
-                activitySection.classList.add('hidden');
-                activityLink.classList.remove('active-link');
+        if (closeBtn) {
+            closeBtn.addEventListener("click", () => {
+                sidebar.classList.toggle("open");
             });
         }
     </script>

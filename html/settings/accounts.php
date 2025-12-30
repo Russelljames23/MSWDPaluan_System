@@ -64,8 +64,19 @@ if (empty($profile_photo_url)) {
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Smooth theme icon transitions */
+        #nav-theme-light-icon,
+        #nav-theme-dark-icon {
+            transition: opacity 0.3s ease;
+        }
 
         /* Sidebar container */
         .sidebar {
@@ -77,7 +88,12 @@ if (empty($profile_photo_url)) {
             transition: all 0.4s ease;
             z-index: 40;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* overflow: hidden; */
+        }
+
+        .dark .sidebar {
+            background: #1f2937;
+            /* gray-800 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .sidebar.open {
@@ -92,6 +108,11 @@ if (empty($profile_photo_url)) {
             align-items: center;
             justify-content: center;
             border-bottom: 1px solid #ddd;
+        }
+
+        .dark .sidebar .logo-details {
+            border-bottom: 1px solid #374151;
+            /* gray-700 */
         }
 
         .logo-details #btn {
@@ -189,6 +210,23 @@ if (empty($profile_photo_url)) {
             transition: all 0.3s ease;
         }
 
+        /* Dark mode styles for nav list */
+        .dark .nav-list li a,
+        .dark .nav-list li button {
+            background: #374151;
+            /* gray-700 */
+            border: 1px solid #4b5563;
+            /* gray-600 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
+        .dark .nav-list li a:hover,
+        .dark .nav-list li button:hover {
+            background: #4b5563;
+            /* gray-600 */
+        }
+
         /* Hide link text when collapsed, keep icons */
         .links_name {
             white-space: nowrap;
@@ -202,15 +240,13 @@ if (empty($profile_photo_url)) {
         }
 
         /* Tooltip styling */
-        /* Tooltip styling - fixed visibility & design */
         .tooltip {
             position: absolute;
             top: 50%;
             left: 100%;
             transform: translateY(-50%);
             margin-left: 10px;
-            background: rgba(221, 221, 221, 0.555);
-            /* darker semi-transparent background */
+            background: rgba(221, 221, 221, 0.95);
             color: #000;
             padding: 4px 8px;
             border-radius: 6px;
@@ -224,11 +260,17 @@ if (empty($profile_photo_url)) {
             z-index: 200;
         }
 
+        .dark .tooltip {
+            background: rgba(55, 65, 81, 0.95);
+            /* gray-700 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
         /* Show tooltip when hovering over an item */
         .sidebar li:hover .tooltip {
             opacity: 1;
             transform: translate(10px, -50%);
-            /* subtle slide-in effect */
         }
 
         /* Hide tooltips when sidebar is expanded */
@@ -236,19 +278,11 @@ if (empty($profile_photo_url)) {
             display: none;
         }
 
-
-        /* Page content */
-        .home-section {
-            margin-left: 78px;
-            padding: 20px;
-            transition: all 0.4s ease;
+        .dark .links_name {
+            color: #d1d5db;
         }
 
-        .sidebar.open~.home-section {
-            margin-left: 200px;
-        }
-
-        /* Highlight active sidebar link */
+        /* Active link styling */
         .nav-list li #accounts.active-link {
             color: #1d4ed8;
             /* Tailwind blue-700 */
@@ -260,10 +294,24 @@ if (empty($profile_photo_url)) {
         .nav-list li #accounts.active-link svg {
             color: #1d4ed8;
         }
+
+        .dark .nav-list li #accounts.active-link {
+            color: #60a5fa;
+            /* blue-400 */
+            border-color: #3b82f6;
+            /* blue-500 */
+            background: #1e40af;
+            /* blue-800 */
+        }
+
+        .dark .nav-list li #accounts.active-link svg {
+            color: #60a5fa;
+            /* blue-400 */
+        }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -397,25 +445,15 @@ if (empty($profile_photo_url)) {
                 <ul class="space-y-2">
                     <li>
                         <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
                                 <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
                                 <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
                                 <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
                                 <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
                             </svg>
-
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
@@ -527,11 +565,11 @@ if (empty($profile_photo_url)) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <a href="#"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                                     clip-rule="evenodd"></path>
@@ -559,8 +597,8 @@ if (empty($profile_photo_url)) {
                     </div>
                     <ul class="nav-list">
                         <li>
-                            <a href="profile.php?session_context=<?php echo $ctx; ?>" id="profile" class="cursor-pointer active-link">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-900" aria-hidden="true"
+                            <a href="profile.php?session_context=<?php echo $ctx; ?>" id="profile" class="cursor-pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-300" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -572,18 +610,16 @@ if (empty($profile_photo_url)) {
                             <span class="tooltip">My Profile</span>
                         </li>
                         <li>
-                            <button class="cursor-pointer active-link">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                                        clip-rule="evenodd" />
+                            <button type="button" id="nav-theme-toggle"
+                                class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <svg id="nav-theme-light-icon" class="w-4 h-4 mr-2 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
                                 </svg>
-
-                                <span class="links_name">Theme</span>
+                                <svg id="nav-theme-dark-icon" class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                </svg>
+                                <span id="nav-theme-text">Dark Mode</span>
                             </button>
-                            <span class="tooltip">Theme</span>
                         </li>
 
                         <li>
@@ -915,7 +951,7 @@ if (empty($profile_photo_url)) {
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../js/tailwind.config.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
     <script>
         // Fix DOMContentLoaded check
         document.addEventListener('DOMContentLoaded', function() {
@@ -1566,6 +1602,101 @@ if (empty($profile_photo_url)) {
                     .replace(/'/g, "&#039;");
             }
         }
+    </script>
+    <script>
+        // Theme Switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            const navThemeToggle = document.getElementById('nav-theme-toggle');
+            const navThemeLightIcon = document.getElementById('nav-theme-light-icon');
+            const navThemeDarkIcon = document.getElementById('nav-theme-dark-icon');
+            const navThemeText = document.getElementById('nav-theme-text');
+
+            // Function to update theme icons based on current theme
+            function updateThemeUI(isDarkMode) {
+                if (isDarkMode) {
+                    // If dark mode is active, show light icon (for switching to light mode)
+                    if (navThemeLightIcon) navThemeLightIcon.classList.remove('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.add('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Light Mode';
+                } else {
+                    // If light mode is active, show dark icon (for switching to dark mode)
+                    if (navThemeLightIcon) navThemeLightIcon.classList.add('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.remove('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Dark Mode';
+                }
+            }
+
+            // Function to set theme
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateThemeUI(theme === 'dark');
+            }
+
+            // Initialize theme
+            function initTheme() {
+                // Check localStorage for saved theme
+                const savedTheme = localStorage.getItem('theme');
+
+                // Check for system preference
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                // Determine which theme to use
+                let theme = 'light';
+                if (savedTheme) {
+                    theme = savedTheme;
+                } else if (systemPrefersDark) {
+                    theme = 'dark';
+                }
+
+                // Apply the theme
+                setTheme(theme);
+
+                // Update UI
+                updateThemeUI(theme === 'dark');
+            }
+
+            // Initialize theme on page load
+            initTheme();
+
+            // Toggle theme when button is clicked
+            if (navThemeToggle) {
+                navThemeToggle.addEventListener('click', function() {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    setTheme(isDark ? 'light' : 'dark');
+                });
+            }
+
+            // Listen for theme changes from other tabs/windows
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'theme') {
+                    const theme = e.newValue;
+                    setTheme(theme);
+                }
+            });
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                // Only apply system theme if no user preference is saved
+                if (!localStorage.getItem('theme')) {
+                    setTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+
+            // Optional: Add keyboard shortcut for theme toggle (Alt+T)
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey && e.key === 't') {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    setTheme(isDark ? 'light' : 'dark');
+                    e.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 

@@ -229,7 +229,7 @@ if (empty($profile_photo_url)) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -238,8 +238,32 @@ if (empty($profile_photo_url)) {
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Check for saved theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Smooth theme icon transitions */
+        #nav-theme-light-icon,
+        #nav-theme-dark-icon {
+            transition: opacity 0.3s ease;
+        }
 
         /* Sidebar container */
         .sidebar {
@@ -251,7 +275,12 @@ if (empty($profile_photo_url)) {
             transition: all 0.4s ease;
             z-index: 40;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* overflow: hidden; */
+        }
+
+        .dark .sidebar {
+            background: #1f2937;
+            /* gray-800 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .sidebar.open {
@@ -266,6 +295,11 @@ if (empty($profile_photo_url)) {
             align-items: center;
             justify-content: center;
             border-bottom: 1px solid #ddd;
+        }
+
+        .dark .sidebar .logo-details {
+            border-bottom: 1px solid #374151;
+            /* gray-700 */
         }
 
         .logo-details #btn {
@@ -363,6 +397,23 @@ if (empty($profile_photo_url)) {
             transition: all 0.3s ease;
         }
 
+        /* Dark mode styles for nav list */
+        .dark .nav-list li a,
+        .dark .nav-list li button {
+            background: #374151;
+            /* gray-700 */
+            border: 1px solid #4b5563;
+            /* gray-600 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
+        .dark .nav-list li a:hover,
+        .dark .nav-list li button:hover {
+            background: #4b5563;
+            /* gray-600 */
+        }
+
         /* Hide link text when collapsed, keep icons */
         .links_name {
             white-space: nowrap;
@@ -376,15 +427,13 @@ if (empty($profile_photo_url)) {
         }
 
         /* Tooltip styling */
-        /* Tooltip styling - fixed visibility & design */
         .tooltip {
             position: absolute;
             top: 50%;
             left: 100%;
             transform: translateY(-50%);
             margin-left: 10px;
-            background: rgba(221, 221, 221, 0.555);
-            /* darker semi-transparent background */
+            background: rgba(221, 221, 221, 0.95);
             color: #000;
             padding: 4px 8px;
             border-radius: 6px;
@@ -398,11 +447,17 @@ if (empty($profile_photo_url)) {
             z-index: 200;
         }
 
+        .dark .tooltip {
+            background: rgba(55, 65, 81, 0.95);
+            /* gray-700 */
+            color: #e5e7eb;
+            /* gray-200 */
+        }
+
         /* Show tooltip when hovering over an item */
         .sidebar li:hover .tooltip {
             opacity: 1;
             transform: translate(10px, -50%);
-            /* subtle slide-in effect */
         }
 
         /* Hide tooltips when sidebar is expanded */
@@ -410,19 +465,11 @@ if (empty($profile_photo_url)) {
             display: none;
         }
 
-
-        /* Page content */
-        .home-section {
-            margin-left: 78px;
-            padding: 20px;
-            transition: all 0.4s ease;
+        .dark .links_name {
+            color: #d1d5db;
         }
 
-        .sidebar.open~.home-section {
-            margin-left: 200px;
-        }
-
-        /* Highlight active sidebar link */
+        /* Active link styling */
         .nav-list li #profile.active-link {
             color: #1d4ed8;
             /* Tailwind blue-700 */
@@ -434,10 +481,24 @@ if (empty($profile_photo_url)) {
         .nav-list li #profile.active-link svg {
             color: #1d4ed8;
         }
+
+        .dark .nav-list li #profile.active-link {
+            color: #60a5fa;
+            /* blue-400 */
+            border-color: #3b82f6;
+            /* blue-500 */
+            background: #1e40af;
+            /* blue-800 */
+        }
+
+        .dark .nav-list li #profile.active-link svg {
+            color: #60a5fa;
+            /* blue-400 */
+        }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <!-- Navigation -->
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
@@ -454,9 +515,9 @@ if (empty($profile_photo_url)) {
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>" class="flex items-center justify-between mr-4 ">
+                    <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>" class="flex items-center justify-between mr-4">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
                             PALUAN</span>
@@ -493,7 +554,7 @@ if (empty($profile_photo_url)) {
             </div>
         </nav>
 
-        <!-- Sidebar -->
+        <!-- Main Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
@@ -518,31 +579,21 @@ if (empty($profile_photo_url)) {
                 <ul class="space-y-2">
                     <li>
                         <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
                                 <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
                                 <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
                                 <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
                                 <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
                             </svg>
-
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="../register.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -557,7 +608,7 @@ if (empty($profile_photo_url)) {
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -577,24 +628,24 @@ if (empty($profile_photo_url)) {
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
                                 <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
                                     List</a>
                             </li>
                             <li>
                                 <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
                                     List</a>
                             </li>
                             <li>
                                 <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
@@ -609,7 +660,7 @@ if (empty($profile_photo_url)) {
                     </li>
                     <li>
                         <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                 fill="currentColor" viewBox="0 0 24 24">
@@ -622,7 +673,7 @@ if (empty($profile_photo_url)) {
                     </li>
                     <li>
                         <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -648,11 +699,11 @@ if (empty($profile_photo_url)) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-blue bg-blue-100 hover:bg-blue-100 dark:hover:bg-blue-700 group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <a href="#"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                                     clip-rule="evenodd"></path>
@@ -665,13 +716,13 @@ if (empty($profile_photo_url)) {
         </aside>
 
         <!-- Main content -->
-        <main class="p-4 md:ml-64 pt-20">
+        <main class="p-4 md:ml-64 pt-20 dark:bg-gray-900">
             <div class="flex flex-row justify-between gap-2">
                 <!-- Settings Sidebar -->
                 <div class="sidebar open">
                     <div class="logo-details">
-                        <button type="button" class="border" id="btn">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                        <button type="button" class="border dark:border-gray-600" id="btn">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="M6 6h8m-8 4h12M6 14h8m-8 4h12" />
@@ -680,8 +731,8 @@ if (empty($profile_photo_url)) {
                     </div>
                     <ul class="nav-list">
                         <li>
-                            <a id="profile" class="cursor-pointer active-link">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-900" aria-hidden="true"
+                            <a id="profile" class="cursor-pointer active-link dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -690,25 +741,23 @@ if (empty($profile_photo_url)) {
                                 </svg>
                                 <span class="links_name">My Profile</span>
                             </a>
-                            <span class="tooltip">My Profile</span>
+                            <span class="tooltip dark:bg-gray-700 dark:text-gray-200">My Profile</span>
                         </li>
                         <li>
-                            <button class="cursor-pointer active-link">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-                                        clip-rule="evenodd" />
+                            <button type="button" id="nav-theme-toggle"
+                                class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <svg id="nav-theme-light-icon" class="w-4 h-4 mr-2 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
                                 </svg>
-
-                                <span class="links_name">Theme</span>
+                                <svg id="nav-theme-dark-icon" class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                </svg>
+                                <span id="nav-theme-text">Dark Mode</span>
                             </button>
-                            <span class="tooltip">Theme</span>
                         </li>
                         <li>
-                            <a href="accounts.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <a href="accounts.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -717,11 +766,11 @@ if (empty($profile_photo_url)) {
                                 </svg>
                                 <span class="links_name">Accounts</span>
                             </a>
-                            <span class="tooltip">Accounts</span>
+                            <span class="tooltip dark:bg-gray-700 dark:text-gray-200">Accounts</span>
                         </li>
                         <li>
-                            <a href="sms.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <a href="sms.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -731,11 +780,11 @@ if (empty($profile_photo_url)) {
                                 </svg>
                                 <span class="links_name">SMS Settings</span>
                             </a>
-                            <span class="tooltip">SMS Settings</span>
+                            <span class="tooltip dark:bg-gray-700 dark:text-gray-200">SMS Settings</span>
                         </li>
                         <li>
-                            <a href="systemlogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                            <a href="systemlogs.php?session_context=<?php echo $ctx; ?>" class="cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -744,30 +793,30 @@ if (empty($profile_photo_url)) {
                                 </svg>
                                 <span class="links_name">System Logs</span>
                             </a>
-                            <span class="tooltip">System Logs</span>
+                            <span class="tooltip dark:bg-gray-700 dark:text-gray-200">System Logs</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Profile Section -->
-                <section id="profileSection" class="bg-gray-50 dark:bg-gray-900 w-full">
+                <section id="profileSection" class="w-full">
                     <div class="mx-auto max-w-screen-xl">
-                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg px-5">
+                        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                             <!-- Success/Error Messages -->
                             <?php if (!empty($photo_message)): ?>
-                                <div class="mb-4 p-4 rounded-lg <?php echo $photo_message_type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'; ?>">
+                                <div class="mb-4 p-4 rounded-lg <?php echo $photo_message_type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'; ?>">
                                     <?php echo htmlspecialchars($photo_message); ?>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($update_message)): ?>
-                                <div class="mb-4 p-4 rounded-lg <?php echo $message_type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'; ?>">
+                                <div class="mb-4 p-4 rounded-lg <?php echo $message_type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'; ?>">
                                     <?php echo htmlspecialchars($update_message); ?>
                                 </div>
                             <?php endif; ?>
 
                             <!-- Profile Header -->
-                            <div class="flex flex-col pb-10 border-b border-gray-200 dark:border-gray-700 md:flex-row justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+                            <div class="flex flex-col pb-10 border-b border-gray-200 dark:border-gray-700 md:flex-row justify-between space-y-3 md:space-y-0 md:space-x-4 p-4 md:p-6">
                                 <div class="flex flex-row gap-4 items-center">
                                     <div class="relative inline-block">
                                         <img id="profileImage" class="w-20 h-20 rounded-full ring-2 ring-gray-300 dark:ring-gray-500 object-cover"
@@ -783,13 +832,13 @@ if (empty($profile_photo_url)) {
                                                         d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 0 1 3-3h1m4-6a3 3 0 0 1 3-3h1m-4 18a3 3 0 0 0 3-3v-1m-9 3a3 3 0 0 1-3-3v-1m9-3a3 3 0 0 1 3 3v1m-9-3a3 3 0 0 0-3 3v1m9-9a3 3 0 0 0-3-3h-1m-6 3a3 3 0 0 1 3-3h1m-6 6a3 3 0 0 1 3 3v1m6-9a3 3 0 0 1 3 3v1m-9-6a3 3 0 0 0-3-3h-1" />
                                                 </svg>
                                             </button>
-                                            <span class="absolute bottom-10 right-1/2 translate-x-1/2 mb-1 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-700/80 rounded-md shadow-lg whitespace-nowrap">
+                                            <span class="absolute bottom-10 right-1/2 translate-x-1/2 mb-1 hidden group-hover:block px-2 py-1 text-xs text-white bg-gray-700/80 dark:bg-gray-900/90 rounded-md shadow-lg whitespace-nowrap">
                                                 Change Photo
                                             </span>
                                         </div>
                                     </div>
                                     <div class="flex flex-col">
-                                        <h2 class="text-lg font-semibold dark:text-white">
+                                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                                             <?php echo htmlspecialchars($full_name ?: 'User Profile'); ?>
                                         </h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -803,28 +852,28 @@ if (empty($profile_photo_url)) {
                             </div>
 
                             <!-- Profile Form -->
-                            <div class="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 py-6">
+                            <div class="flex flex-col md:flex-row items-center justify-center space-y-3 md:space-y-0 py-6 px-4 md:px-6">
                                 <form method="POST" class="w-full max-w-2xl" id="profileForm" enctype="multipart/form-data">
-                                    <div class="flex flex-col gap-4">
+                                    <div class="flex flex-col gap-4 md:gap-6">
                                         <!-- Name Fields -->
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
                                                 <label for="firstname" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">First Name *</label>
                                                 <input type="text" id="firstname" name="firstname" required
                                                     value="<?php echo htmlspecialchars($user_data['firstname'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                             <div>
                                                 <label for="middlename" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Middle Name</label>
                                                 <input type="text" id="middlename" name="middlename"
                                                     value="<?php echo htmlspecialchars($user_data['middlename'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                             <div>
                                                 <label for="lastname" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Last Name *</label>
                                                 <input type="text" id="lastname" name="lastname" required
                                                     value="<?php echo htmlspecialchars($user_data['lastname'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                         </div>
 
@@ -834,15 +883,15 @@ if (empty($profile_photo_url)) {
                                                 <label for="birthdate" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Birthdate</label>
                                                 <input type="date" id="birthdate" name="birthdate"
                                                     value="<?php echo htmlspecialchars($user_data['birthdate'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                             <div>
                                                 <label for="gender" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
                                                 <select id="gender" name="gender" disabled
                                                     class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 cursor-not-allowed">
-                                                    <option><?php echo htmlspecialchars($user_data['gender'] ?? 'Not specified'); ?></option>
+                                                    <option class="dark:text-gray-400"><?php echo htmlspecialchars($user_data['gender'] ?? 'Not specified'); ?></option>
                                                 </select>
-                                                <p class="text-xs text-gray-500 mt-1">Gender cannot be changed</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Gender cannot be changed</p>
                                             </div>
                                         </div>
 
@@ -852,13 +901,13 @@ if (empty($profile_photo_url)) {
                                                 <label for="email" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Email *</label>
                                                 <input type="email" id="email" name="email" required
                                                     value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                             <div>
                                                 <label for="contact_no" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Contact Number</label>
                                                 <input type="tel" id="contact_no" name="contact_no"
                                                     value="<?php echo htmlspecialchars($user_data['contact_no'] ?? ''); ?>"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             </div>
                                         </div>
 
@@ -866,7 +915,7 @@ if (empty($profile_photo_url)) {
                                         <div>
                                             <label for="address" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Address</label>
                                             <textarea id="address" name="address" rows="2"
-                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"><?php echo htmlspecialchars($user_data['address'] ?? ''); ?></textarea>
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"><?php echo htmlspecialchars($user_data['address'] ?? ''); ?></textarea>
                                         </div>
 
                                         <!-- Password Section -->
@@ -877,14 +926,14 @@ if (empty($profile_photo_url)) {
                                                     <label for="password" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
                                                     <input type="password" id="password" name="password"
                                                         placeholder="Leave blank to keep current"
-                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
-                                                    <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 6 characters</p>
                                                 </div>
                                                 <div>
                                                     <label for="confirm_password" class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
                                                     <input type="password" id="confirm_password" name="confirm_password"
                                                         placeholder="Confirm new password"
-                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                 </div>
                                             </div>
                                         </div>
@@ -907,11 +956,11 @@ if (empty($profile_photo_url)) {
     </div>
 
     <!-- Photo Upload Modal - Tailwind version -->
-    <div id="photoModal" class="fixed inset-0 bg-gray-900/50 bg-opacity-75 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-lg font-semibold">Change Profile Photo</h3>
-                <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-500">
+    <div id="photoModal" class="fixed inset-0 bg-gray-900/50 bg-opacity-75 dark:bg-gray-900/80 hidden flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="flex justify-between items-center p-6 border-b dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Change Profile Photo</h3>
+                <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -920,25 +969,25 @@ if (empty($profile_photo_url)) {
 
             <form id="photoUploadForm" enctype="multipart/form-data" method="POST" class="p-6">
                 <div class="mb-6">
-                    <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-200">
+                    <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-600">
                         <img id="imagePreview" src="<?php echo htmlspecialchars($profile_photo_url); ?>" alt="Preview" class="w-full h-full object-cover">
                     </div>
 
-                    <label class="block mb-2 text-sm font-medium text-gray-700" for="profile_photo">
+                    <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" for="profile_photo">
                         Choose new photo
                     </label>
-                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         id="profile_photo" name="profile_photo" type="file" accept="image/*">
-                    <p class="mt-2 text-sm text-gray-500">
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         JPG, PNG, GIF or WebP (Max. 2MB)
                     </p>
                 </div>
 
                 <div class="flex justify-end gap-3">
-                    <button type="button" id="cancelUpload" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                    <button type="button" id="cancelUpload" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg">
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg dark:bg-blue-700 dark:hover:bg-blue-800">
                         Upload Photo
                     </button>
                 </div>
@@ -982,6 +1031,7 @@ if (empty($profile_photo_url)) {
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
     <script>
         // Sidebar toggle
         document.addEventListener('DOMContentLoaded', function() {
@@ -1152,6 +1202,70 @@ if (empty($profile_photo_url)) {
                         message.style.display = 'none';
                     }, 300);
                 }, 5000);
+            });
+        });
+
+        // Theme switcher for sms.php
+        document.addEventListener('DOMContentLoaded', function() {
+            const navThemeToggle = document.getElementById('nav-theme-toggle');
+            const navThemeLightIcon = document.getElementById('nav-theme-light-icon');
+            const navThemeDarkIcon = document.getElementById('nav-theme-dark-icon');
+            const navThemeText = document.getElementById('nav-theme-text');
+
+            function updateNavThemeIcons(theme) {
+                if (theme === 'dark') {
+                    if (navThemeLightIcon) navThemeLightIcon.classList.remove('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.add('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Light Mode';
+                } else {
+                    if (navThemeLightIcon) navThemeLightIcon.classList.add('hidden');
+                    if (navThemeDarkIcon) navThemeDarkIcon.classList.remove('hidden');
+                    if (navThemeText) navThemeText.textContent = 'Dark Mode';
+                }
+            }
+
+            // Initialize nav theme icons
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            updateNavThemeIcons(currentTheme);
+
+            // Toggle theme from nav
+            if (navThemeToggle) {
+                navThemeToggle.addEventListener('click', function() {
+                    const isDark = document.documentElement.classList.contains('dark');
+
+                    if (isDark) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                        updateNavThemeIcons('light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                        updateNavThemeIcons('dark');
+                    }
+
+                    // Dispatch event for other components
+                    window.dispatchEvent(new CustomEvent('themeChanged'));
+                });
+            }
+
+            // Listen for theme changes from other pages
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'theme') {
+                    const theme = e.newValue;
+                    if (theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                        updateNavThemeIcons('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        updateNavThemeIcons('light');
+                    }
+                }
+            });
+
+            // Listen for themeChanged events
+            window.addEventListener('themeChanged', function() {
+                const isDark = document.documentElement.classList.contains('dark');
+                updateNavThemeIcons(isDark ? 'dark' : 'light');
             });
         });
     </script>

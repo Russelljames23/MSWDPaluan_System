@@ -64,6 +64,7 @@ if (empty($profile_photo_url)) {
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Make sure the ordered list numbers show even with flex items */
         #benefitsList {
@@ -98,7 +99,7 @@ if (empty($profile_photo_url)) {
 
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -231,8 +232,8 @@ if (empty($profile_photo_url)) {
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="./index.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-blue hover:bg-blue-100 dark:hover:bg-blue-700 group">
+                        <a href="admin_dashboard.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="currentColor"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
@@ -307,11 +308,10 @@ if (empty($profile_photo_url)) {
                         </ul>
                     </li>
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg
-                                class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <a href="#" class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
                                     clip-rule="evenodd" />
@@ -387,7 +387,7 @@ if (empty($profile_photo_url)) {
                         <h4 class="text-xl font-medium text-blue-700 px-2">Benefits</h4>
                     </a>
                 </div>
-                <div class="flex items-center flex-row border border-t-0 border-r-0 border-l-0 w-full">
+                <div class="flex items-center flex-row border dark:text-white border-t-0 border-r-0 border-l-0 w-full">
                     <div class="">
                         <a href="./beneficiary.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
                             <h4 class="text-xl font-medium dark:text-blue px-2">Beneficiaries</h4>
@@ -469,14 +469,14 @@ if (empty($profile_photo_url)) {
                         </div>
                         <div class="overflow-x-auto">
                             <table id="deceasedTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <thead class="text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">List of Benefits</th>
                                         <th scope="col" class="px-17 py-3 flex items-center justify-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="border-b dark:border-gray-700">
+                                    <tr class="border-b dark:border-gray-700 dark:text-white">
                                         <td class="px-4 py-3">Availed of Social Pension</td>
                                         <td class="px-15 py-3 flex items-center justify-end">
                                             <button id="apple-imac-27-dropdown-button"
@@ -607,6 +607,52 @@ if (empty($profile_photo_url)) {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         function benefits() {
             document.getElementById('benefits').style.display = "flex";
@@ -869,9 +915,9 @@ if (empty($profile_photo_url)) {
                             benefitsTableBody.innerHTML = "";
                             data.benefits.forEach(benefit => {
                                 const row = document.createElement("tr");
-                                row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700");
+                                row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700", "dark:text-white");
                                 row.innerHTML = `
-                                    <td class="px-4 py-3 text-gray-700">${benefit.benefit_name}</td>
+                                    <td class="px-4 py-3 text-gray-700 dark:text-white">${benefit.benefit_name}</td>
                                     <td class="px-15 py-3 flex items-center justify-end space-x-2">
                                         <button class="edit-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white" data-id="${benefit.id}" type="button" title="Edit">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-10 10A2 2 0 016 16H4a1 1 0 01-1-1v-2a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0z"/></svg>

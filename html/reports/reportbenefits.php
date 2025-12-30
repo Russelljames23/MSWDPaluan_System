@@ -76,9 +76,10 @@ if (empty($profile_photo_url)) {
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -319,11 +320,10 @@ if (empty($profile_photo_url)) {
                         </a>
                     <li>
                     <li>
-                        <a href="#" style="color: blue;"
-                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg transition duration-75 bg-blue-100 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400 group-hover:text-blue-700 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
+                        <a href="#" class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                fill="currentColor" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
                             </svg>
@@ -364,7 +364,7 @@ if (empty($profile_photo_url)) {
             </div>
         </aside>
 
-        <main class="p-4 md:ml-64 pt-17">
+        <main class="p-4 md:ml-64 pt-20">
             <div class="w-full flex justify-between items-center mb-4">
                 <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
                 <button type="button" onclick="generateReport()"
@@ -434,15 +434,15 @@ if (empty($profile_photo_url)) {
                         VII-IX
                     </button>
                     <button type="button" style="font-family: 'Times New Roman', Times, serif;" onclick="benefits()"
-                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="py-1 px-3 w-20 cursor-pointer text-sm font-black text-white focus:outline-none bg-blue-700 rounded-sm border border-gray-200 dark:bg-blue-700 dark:text-white">
                         Benefits
                     </button>
                 </div>
             </div>
             <!-- Part VI -->
-            <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+            <section class="bg-gray-50 dark:bg-gray-900  dark:text-white p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-                    <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                    <div class="bg-white dark:bg-gray-800  dark:text-white relative shadow-md sm:rounded-lg overflow-hidden">
                         <div class="flex flex-col md:flex-row items-center justify-between p-2">
                             <h4 class="text-lg font-medium dark:text-white"
                                 style="font-family: 'Times New Roman', Times, serif;">Benefits Distribution Summary</h4>
@@ -460,7 +460,7 @@ if (empty($profile_photo_url)) {
 
                         <div class="overflow-x-auto">
                             <table id="benefitsTable"
-                                class="w-full text-sm text-center text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600">
+                                class="w-full text-sm text-center text-gray-500  dark:text-white border border-gray-300 dark:border-gray-600">
                                 <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                                     <tr class="flex w-full border-gray-300 dark:border-gray-600">
                                         <th scope="col" class="px-4 py-3 w-[40%] text-sm text-left">Benefit Type</th>
@@ -725,6 +725,52 @@ if (empty($profile_photo_url)) {
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         // Update navigation functions to preserve filters
         window.part1 = function() {
@@ -1059,10 +1105,10 @@ if (empty($profile_photo_url)) {
                 // Add a small visual indicator
                 const loadingIndicator = document.createElement('div');
                 loadingIndicator.id = 'loadingIndicator';
-                loadingIndicator.className = 'fixed top-4 right-4 z-50';
+                loadingIndicator.className = 'fixed top-4 right-4 z-50  dark:text-white';
                 loadingIndicator.innerHTML = `
-                <div class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div class="flex items-center bg-blue-500 text-white dark:text-white px-4 py-2 rounded-lg shadow-lg">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2  dark:text-white"></div>
                     Loading benefits data...
                 </div>
             `;

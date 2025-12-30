@@ -66,10 +66,11 @@ if (empty($profile_photo_url)) {
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -264,8 +265,8 @@ if (empty($profile_photo_url)) {
                         </button>
                         <ul id="dropdown-pages" class="py-2 space-y-2">
                             <li>
-                                <a href="#" style="color: blue;"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 bg-blue-100 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
+                                <a href="#"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Active
                                     List</a>
                             </li>
                             <li>
@@ -352,11 +353,11 @@ if (empty($profile_photo_url)) {
             </div>
         </aside>
 
-        <main class="p-4 md:ml-64 pt-18">
-            <!-- Header with navigation -->
-            <div class="w-full flex justify-between items-center mb-6 no-print">
+        <main class="p-4 md:ml-64 pt-20">
+            <!-- Header with navigation - FIXED FOR DARK MODE -->
+            <div  class="w-full flex justify-between items-center mb-6 no-print">
                 <a href="./activelist.php?session_context=<?php echo $ctx; ?>"
-                    class="text-white flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200">
+                    class="flex flex-row items-center cursor-pointer bg-blue-700 hover:bg-blue-800 text-white dark:text-white font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Back to List
                 </a>
@@ -373,24 +374,24 @@ if (empty($profile_photo_url)) {
 
                 <div class="relative">
                     <button id="actionDropdownButton" data-dropdown-toggle="actionDropdown"
-                        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200"
+                        class="bg-blue-700 hover:bg-blue-800 text-white dark:text-white font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 transition duration-200"
                         type="button">
                         <i class="fas fa-ellipsis-v mr-2"></i>
                         Actions
                     </button>
 
                     <div id="actionDropdown"
-                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-800 dark:divide-gray-600">
                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                             <li>
                                 <a href="#" data-modal-target="default-modal" data-modal-toggle="default-modal" id="editButton"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
                                     <i class="fas fa-edit mr-2"></i>Edit Information
                                 </a>
                             </li>
                             <li>
                                 <a href="#" onclick="window.print()"
-                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
                                     <i class="fas fa-print mr-2"></i>Print Profile
                                 </a>
                             </li>
@@ -412,7 +413,7 @@ if (empty($profile_photo_url)) {
                                                 DSWD</h1>
                                         </div>
                                         <div>
-                                            <p class="text-[9px] text-gray-900 mt-[-5px] dark:text-white ">Department of
+                                            <p class="text-[9px] text-gray-900 mt-[-1px] dark:text-white ">Department of
                                                 Social
                                                 Welfare
                                                 and
@@ -1281,6 +1282,52 @@ if (empty($profile_photo_url)) {
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
+
+            setTheme(theme);
+        }
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
+    </script>
     <script>
         function nextStep() {
             document.getElementById("step1").classList.add("hidden");
