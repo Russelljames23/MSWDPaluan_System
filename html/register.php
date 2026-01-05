@@ -293,7 +293,7 @@ if (empty($profile_photo_url)) {
                         </a>
                     </li>
                     <li>
-                        <a href="./generate_id.php?session_context=<?php echo $ctx; ?>"
+                        <a href="generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"

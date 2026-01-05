@@ -282,3 +282,10 @@
 [22-Dec-2025 08:43:57 Europe/Berlin] No user ID found for activity: UPDATE_BENEFIT
 [22-Dec-2025 08:48:41 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp-new\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
 [22-Dec-2025 08:48:41 Europe/Berlin] No user ID found for activity: ADD_BENEFIT_TYPE
+[05-Jan-2026 08:07:56 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[05-Jan-2026 08:07:56 Europe/Berlin] No user ID found for activity: ADD_BENEFITS
+[05-Jan-2026 08:24:07 Europe/Berlin] Error archiving economic_status: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'monthly_income' in 'field list'
+[05-Jan-2026 08:24:07 Europe/Berlin] Error archiving health_condition: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'has_disability' in 'field list'
+[05-Jan-2026 08:24:07 Europe/Berlin] Activity logging failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[05-Jan-2026 08:24:44 Europe/Berlin] Error restoring addresses: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
+[05-Jan-2026 08:24:44 Europe/Berlin] Activity logging failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)

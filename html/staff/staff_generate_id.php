@@ -1,7 +1,7 @@
 <?php
-require_once "../php/login/staff_header.php";
-require_once "../php/db.php";
-require_once "../php/id_generation_functions.php";
+require_once "../../php/login/staff_header.php";
+require_once "../../php/db.php";
+require_once "../../php/id_generation_functions.php";
 
 $servername = "localhost";
 $username = "root";
