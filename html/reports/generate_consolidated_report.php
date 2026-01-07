@@ -1,5 +1,5 @@
 <?php
-// generate_consolidated_report.php - FIXED VERSION
+// generate_consolidated_report.php - UPDATED VERSION
 header('Content-Type: text/html; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
@@ -46,45 +46,62 @@ if ($year && $month) {
     $displayText = $monthNames[$month] . ' (All Years)';
 }
 
-// Try to fetch data from backend - FIXED APPROACH
+// Try to fetch data from backend using CURL
 $reportData = [];
 $hasData = false;
 $errorMessage = '';
 $apiResult = null;
 
+// Create the backend URL
+$backendURL = "http://" . $_SERVER['HTTP_HOST'] . "/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php";
+
+// Build query parameters
+$queryParams = [];
+if ($year !== null) $queryParams['year'] = $year;
+if ($month !== null) $queryParams['month'] = $month;
+
+if (!empty($queryParams)) {
+    $backendURL .= '?' . http_build_query($queryParams);
+}
+
+error_log("Attempting to fetch from: " . $backendURL);
+
 try {
-    // Use server-relative path for include instead of HTTP request
-    $backendFilePath = dirname(__DIR__) . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
+    // Use CURL to fetch data
+    $ch = curl_init();
 
-    // Check if backend file exists
-    if (file_exists($backendFilePath)) {
-        // Instead of making an HTTP request, directly include and call the backend
-        // First, capture the current GET parameters
-        $originalGet = $_GET;
+    curl_setopt($ch, CURLOPT_URL, $backendURL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Accept: application/json',
+        'Content-Type: application/json'
+    ]);
 
-        // Set up parameters for backend
-        $_GET = [
-            'year' => $year,
-            'month' => $month
-        ];
+    // For local development, you might need to disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-        // Start output buffering
-        ob_start();
+    $jsonResponse = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
 
-        // Include the backend file
-        include $backendFilePath;
+    curl_close($ch);
 
-        // Get the JSON response
-        $jsonResponse = ob_get_clean();
+    error_log("HTTP Code: " . $httpCode);
+    error_log("Response length: " . strlen($jsonResponse));
+    error_log("CURL Error: " . $curlError);
 
-        // Restore original GET parameters
-        $_GET = $originalGet;
+    if ($httpCode === 200 && !empty($jsonResponse)) {
+        // Clean the response
+        $jsonResponse = trim($jsonResponse);
 
-        // Decode the JSON response
+        // Try to decode JSON
         $apiResult = json_decode($jsonResponse, true);
+        $jsonError = json_last_error();
 
-        if ($apiResult && isset($apiResult['success'])) {
-            if ($apiResult['success'] && isset($apiResult['data'])) {
+        if ($jsonError === JSON_ERROR_NONE && $apiResult !== null) {
+            if (isset($apiResult['success']) && $apiResult['success'] && isset($apiResult['data'])) {
                 $reportData = $apiResult['data'];
                 $hasData = true;
 
@@ -92,48 +109,64 @@ try {
                 if (isset($apiResult['filters']['month_name']) && $apiResult['filters']['month_name'] && $apiResult['filters']['year']) {
                     $displayText = $apiResult['filters']['month_name'] . ' ' . $apiResult['filters']['year'];
                 }
+
+                error_log("✅ Successfully loaded data from backend");
+                error_log("Total seniors: " . ($reportData['part1']['totals']['overall'] ?? 0));
             } else {
                 $errorMessage = $apiResult['message'] ?? 'Backend returned unsuccessful response';
-                error_log("Backend error: " . $errorMessage);
+                error_log("❌ Backend error: " . $errorMessage);
             }
         } else {
-            $errorMessage = 'Invalid JSON response from backend';
-            error_log($errorMessage . ": " . substr($jsonResponse, 0, 200));
+            $errorMessage = 'Invalid JSON response. JSON error: ' . json_last_error_msg();
+            error_log("❌ " . $errorMessage);
+            error_log("Raw response start: " . substr($jsonResponse, 0, 200));
         }
     } else {
-        // Try alternative path
-        $alternativePath = dirname(dirname(dirname(__DIR__))) . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
-        if (file_exists($alternativePath)) {
-            $backendFilePath = $alternativePath;
+        $errorMessage = 'Could not reach backend API. HTTP Code: ' . $httpCode;
+        if ($curlError) {
+            $errorMessage .= ', CURL Error: ' . $curlError;
+        }
+        error_log("❌ " . $errorMessage);
+    }
+} catch (Exception $e) {
+    $errorMessage = 'Exception: ' . $e->getMessage();
+    error_log("❌ Error fetching report data: " . $e->getMessage());
+}
 
-            // Rest of the include logic here...
-            $originalGet = $_GET;
-            $_GET = ['year' => $year, 'month' => $month];
-            ob_start();
-            include $backendFilePath;
-            $jsonResponse = ob_get_clean();
-            $_GET = $originalGet;
+// Alternative: If CURL fails, try file_get_contents
+if (!$hasData) {
+    try {
+        error_log("Trying file_get_contents as fallback...");
 
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => "Accept: application/json\r\n",
+                'timeout' => 10
+            ]
+        ]);
+
+        $jsonResponse = @file_get_contents($backendURL, false, $context);
+
+        if ($jsonResponse !== false) {
             $apiResult = json_decode($jsonResponse, true);
 
             if ($apiResult && isset($apiResult['success']) && $apiResult['success'] && isset($apiResult['data'])) {
                 $reportData = $apiResult['data'];
                 $hasData = true;
-            } else {
-                $errorMessage = 'Backend file found but returned invalid data';
+
+                error_log("✅ Successfully loaded data using file_get_contents");
             }
-        } else {
-            $errorMessage = 'Backend file not found. Checked paths: ' . $backendFilePath . ', ' . $alternativePath;
-            error_log($errorMessage);
         }
+    } catch (Exception $e) {
+        error_log("file_get_contents also failed: " . $e->getMessage());
     }
-} catch (Exception $e) {
-    $errorMessage = 'Exception: ' . $e->getMessage();
-    error_log("Error fetching report data: " . $e->getMessage());
 }
 
-// If no data from backend, create fallback data
+// If still no data from backend, create fallback data
 if (!$hasData) {
+    error_log("Using fallback data");
+
     // Create empty data structure
     $reportData = [
         'part1' => [
@@ -184,6 +217,12 @@ if (!$hasData) {
         ];
     }
 }
+
+// Debug output
+error_log("Final status - HasData: " . ($hasData ? 'Yes' : 'No') .
+    ", Error: " . ($errorMessage ?: 'None') .
+    ", Total Seniors: " . ($reportData['part1']['totals']['overall'] ?? 0));
+
 ?>
 
 <!DOCTYPE html>

@@ -1,6 +1,6 @@
 <?php
 // generate_consolidated_report_backend.php - UPDATED VERSION
-require_once "db.php";
+require_once "../db.php";
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
