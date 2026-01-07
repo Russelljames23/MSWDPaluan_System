@@ -7,9 +7,9 @@ header("Content-Type: application/json");
 
 // Database configuration
 $host = 'localhost';
-$dbname = 'mswd_seniors';
-$username = 'root';
-$password = '';
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

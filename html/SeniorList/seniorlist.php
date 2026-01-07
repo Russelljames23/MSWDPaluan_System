@@ -1,5 +1,5 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 ?>
 <!DOCTYPE html>
@@ -116,7 +116,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -657,7 +657,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             }
 
             // ---------------- FETCH BARANGAYS ----------------
-            fetch("../../php/seniorlist/fetch_seniors.php?mode=barangays")
+            fetch("../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
                 .then(res => res.json())
                 .then(barangays => {
                     barangayList.innerHTML = "";
@@ -699,7 +699,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                     barangays: selectedBarangays.join(',')
                 });
 
-                fetch(`../../php/seniorlist/fetch_seniors.php?${params}`)
+                fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tableBody.innerHTML = "";
@@ -934,7 +934,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
                 if (!deathDate) return showPopup("Please enter the date of death.", "error");
 
                 try {
-                    const res = await fetch(`../../php/seniorlist/mark_deceased.php`, {
+                    const res = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/mark_deceased.php`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1069,7 +1069,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
             try {
-                const res = await fetch(`../../php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                const res = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
                 const data = await res.json();
 
                 tbody.innerHTML = "";
@@ -1135,7 +1135,7 @@ $ctx = urlencode($_GET['session_context'] ?? session_id());
             }
 
             try {
-                const res = await fetch("../../php/seniorlist/senior_illness.php", {
+                const res = await fetch("../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

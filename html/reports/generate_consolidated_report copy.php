@@ -6,7 +6,7 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 // Start session and check admin access
-require_once '../../php/login/staff_header.php';
+require_once '../../php/login/admin_header.php';
 
 // Get filter parameters
 $year = isset($_GET['year']) ? intval($_GET['year']) : null;
@@ -46,58 +46,33 @@ if ($year && $month) {
     $displayText = $monthNames[$month] . ' (All Years)';
 }
 
-// Try to fetch data from backend
+// Try to fetch data from backend - FIXED APPROACH
 $reportData = [];
 $hasData = false;
 $errorMessage = '';
 $apiResult = null;
 
 try {
-    // Use relative path from current directory
-    $backendFile = __DIR__ . '/../../MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
-
-    // Alternative path check
-    if (!file_exists($backendFile)) {
-        // Try another possible path
-        $backendFile = dirname(__DIR__) . '/../MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
-    }
-
-    if (file_exists($backendFile)) {
-        // Create GET parameters array for the backend
-        $backendParams = [];
-        if ($year !== null) $backendParams['year'] = $year;
-        if ($month !== null) $backendParams['month'] = $month;
-
-        // Build query string
-        $queryString = http_build_query($backendParams);
-
-        // Use cURL to call the backend
-        $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
-        $backendUrl = $baseUrl . '/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
-
-        if ($queryString) {
-            $backendUrl .= '?' . $queryString;
-        }
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $backendUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-        $jsonResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if (curl_errno($ch)) {
-            throw new Exception('cURL Error: ' . curl_error($ch));
-        }
-
-        curl_close($ch);
-
-        if ($httpCode === 200 && $jsonResponse) {
+    // METHOD 1: Direct PHP include (most reliable)
+    $backendPath = __DIR__ . '/../../php/reports/generate_consolidated_report_backend.php';
+    
+    if (file_exists($backendPath)) {
+        // Create GET parameters to simulate the request
+        $_GET['year'] = $year;
+        $_GET['month'] = $month;
+        
+        // Start output buffering to capture the JSON response
+        ob_start();
+        
+        // Include the backend file directly
+        include $backendPath;
+        
+        // Get the output
+        $jsonResponse = ob_get_clean();
+        
+        if ($jsonResponse) {
             $apiResult = json_decode($jsonResponse, true);
-
+            
             if ($apiResult && isset($apiResult['success'])) {
                 if ($apiResult['success'] && isset($apiResult['data'])) {
                     $reportData = $apiResult['data'];
@@ -116,12 +91,34 @@ try {
                 error_log($errorMessage . ": " . substr($jsonResponse, 0, 200));
             }
         } else {
-            $errorMessage = "Backend request failed with HTTP code: $httpCode";
-            error_log($errorMessage);
+            $errorMessage = 'Backend returned empty response';
         }
     } else {
-        $errorMessage = 'Backend file not found. Checked path: ' . $backendFile;
-        error_log($errorMessage);
+        // METHOD 2: Alternative path
+        $backendPath = dirname(__DIR__, 2) . '/php/reports/generate_consolidated_report_backend.php';
+        
+        if (file_exists($backendPath)) {
+            $_GET['year'] = $year;
+            $_GET['month'] = $month;
+            
+            ob_start();
+            include $backendPath;
+            $jsonResponse = ob_get_clean();
+            
+            if ($jsonResponse) {
+                $apiResult = json_decode($jsonResponse, true);
+                
+                if ($apiResult && isset($apiResult['success'])) {
+                    if ($apiResult['success'] && isset($apiResult['data'])) {
+                        $reportData = $apiResult['data'];
+                        $hasData = true;
+                    }
+                }
+            }
+        } else {
+            $errorMessage = 'Backend file not found';
+            error_log($errorMessage . ": Checked paths: " . __DIR__ . '/../../php/reports/ and ' . dirname(__DIR__, 2) . '/php/reports/');
+        }
     }
 } catch (Exception $e) {
     $errorMessage = 'Exception: ' . $e->getMessage();
@@ -417,7 +414,7 @@ if (!$hasData) {
     <?php endif; ?>
 
     <div class="print-controls no-print flex flex-col items-center gap-5">
-        <button onclick="window.location.href='staff_report.php?session_context=<?php echo $ctx; ?>&year=<?php echo $year; ?>&month=<?php echo $month; ?>'"
+        <button onclick="window.location.href='report.php?session_context=<?php echo $ctx; ?>&year=<?php echo $year; ?>&month=<?php echo $month; ?>'"
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm ml-2">
             ← Back to Reports
         </button>
@@ -915,72 +912,52 @@ if (!$hasData) {
         Has Data: <?php echo $hasData ? 'Yes' : 'No'; ?>
     </div>
 
-    <script src="../../js/staff_tailwind.config.js"></script>
-    <script src="../../js/staff_theme.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
-        (function() {
-            // Use the same StaffTheme namespace
-            const StaffTheme = {
-                init: function() {
-                    const savedTheme = localStorage.getItem('staff_theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
 
-                    let theme = 'light';
-                    if (savedTheme) {
-                        theme = savedTheme;
-                    } else if (systemPrefersDark) {
-                        theme = 'dark';
-                    }
+            setTheme(theme);
+        }
 
-                    this.set(theme);
-                    return theme;
-                },
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
-                set: function(theme) {
-                    const root = document.documentElement;
-                    const wasDark = root.classList.contains('dark');
-                    const isDark = theme === 'dark';
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
 
-                    if (isDark && !wasDark) {
-                        root.classList.add('dark');
-                        localStorage.setItem('staff_theme', 'dark');
-                    } else if (!isDark && wasDark) {
-                        root.classList.remove('dark');
-                        localStorage.setItem('staff_theme', 'light');
-                    }
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
 
-                    // Dispatch event for staff components
-                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
-                }
-            };
-
-            // Initialize theme
-            StaffTheme.init();
-
-            // Listen for storage events
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'staff_theme') {
-                    const theme = e.newValue;
-                    const currentIsDark = document.documentElement.classList.contains('dark');
-                    const newIsDark = theme === 'dark';
-
-                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
-                        StaffTheme.set(theme);
-                    }
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('staff_theme')) {
-                    StaffTheme.set(e.matches ? 'dark' : 'light');
-                }
-            });
-        })();
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
     </script>
     <script>
         window.onload = function() {

@@ -1,12 +1,12 @@
 <?php
 // senior_edit.php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 
 // Database configuration
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -808,7 +808,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>

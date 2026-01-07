@@ -1,12 +1,12 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 // Database configuration
 $host = "localhost";
-$dbname = "mswd_seniors";
-$username = "root";
-$password = "";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 $pdo = null;
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

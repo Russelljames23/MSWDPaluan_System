@@ -4,9 +4,9 @@ require_once "../php/db.php";
 require_once "../php/id_generation_functions.php";
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -598,7 +598,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../php/login/logout.php"
+                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -1669,7 +1669,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             // Create form and submit to PHP script
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '../php/generate_id_pdf.php';
+            form.action = '../MSWDPALUAN_SYSTEM-MAIN/php/generate_id_pdf.php';
             form.style.display = 'none';
 
             const seniorsInput = document.createElement('input');
@@ -2330,7 +2330,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             console.log('Sample data:', seniorsArray[0]);
 
             // Send AJAX request
-            fetch('../php/log_id_generation.php', {
+            fetch('../MSWDPALUAN_SYSTEM-MAIN/php/log_id_generation.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2408,7 +2408,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
          */
         async function checkIDStatus(applicantId) {
             try {
-                const response = await fetch(`../php/check_id_status.php?applicant_id=${applicantId}`);
+                const response = await fetch(`../MSWDPALUAN_SYSTEM-MAIN/php/check_id_status.php?applicant_id=${applicantId}`);
                 const data = await response.json();
                 return data;
             } catch (error) {

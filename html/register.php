@@ -1,11 +1,11 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -168,7 +168,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../php/login/logout.php"
+                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -751,11 +751,11 @@ if (empty($profile_photo_url)) {
                 </section>
             </form>
             <!-- PopUp Message  -->
-            <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50  items-center justify-center">
+            <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 dark:text-white items-center justify-center">
                 <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
                     id="popupBox">
-                    <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800"></h2>
-                    <p id="popupMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+                    <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800 dark:text-white"></h2>
+                    <p id="popupMessage" class="text-gray-600 mb-6 dark:text-white leading-relaxed"></p>
                     <button id="popupCloseBtn"
                         class="px-4 py-1 bg-blue-600 text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">OK</button>
                 </div>
@@ -1341,7 +1341,7 @@ if (empty($profile_photo_url)) {
             }
 
             try {
-                const res = await fetch("/mswdpaluan_system-main/php/register/applicant.php", {
+                const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

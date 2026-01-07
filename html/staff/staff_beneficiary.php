@@ -1,10 +1,10 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/staff_header.php";
+require_once "../../php/login/staff_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
+$dbname = "u401132124_mswd_seniors";
 
 $pdo = null;
 try {
@@ -166,7 +166,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../php/login/logout.php"
+                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -728,7 +728,7 @@ if (empty($profile_photo_url)) {
 
             // ---------------- FETCH BARANGAYS ----------------
             function fetchBarangays() {
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
                     .then(res => res.json())
                     .then(barangays => {
                         barangayList.innerHTML = "";
@@ -764,7 +764,7 @@ if (empty($profile_photo_url)) {
 
             // ---------------- FETCH BENEFITS ----------------
             function fetchBenefits() {
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php")
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -788,7 +788,7 @@ if (empty($profile_photo_url)) {
             // ---------------- FETCH BENEFITS HISTORY ----------------
             async function fetchBenefitsHistory(applicantId, fullName) {
                 try {
-                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits_history.php?applicant_id=${applicantId}`);
+                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits_history.php?applicant_id=${applicantId}`);
                     const data = await response.json();
 
                     // Update modal title
@@ -892,7 +892,7 @@ if (empty($profile_photo_url)) {
                     barangays: selectedBarangays.join(',')
                 });
 
-                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tableBody.innerHTML = "";
@@ -1239,7 +1239,7 @@ if (empty($profile_photo_url)) {
                     };
 
                     try {
-                        const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
+                        const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

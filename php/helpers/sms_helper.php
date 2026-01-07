@@ -81,7 +81,7 @@ class SMSGateway
         static $conn = null;
 
         if ($conn === null || !$conn->ping()) {
-            $conn = new mysqli("localhost", "root", "", "mswd_seniors");
+            $conn = new mysqli("localhost", "u401132124_mswdopaluan", "Mswdo_PaluanSystem23", "u401132124_mswd_seniors");
 
             if ($conn->connect_error) {
                 error_log("SMS DB Connection Failed: " . $conn->connect_error);
@@ -119,10 +119,10 @@ class SMSGateway
     {
         // IMPORTANT: For SMS via email, subject should be empty
         $subject = '';
-        
+
         // Clean up the message for SMS
         $message = $this->formatMessageForSMS($message);
-        
+
         // Headers optimized for SMS
         $headers = [
             'From' => $this->settings['sender_id'] . ' <' . ($this->settings['smtp_user'] ?? 'noreply@mswd.paluan.ph') . '>',
@@ -165,7 +165,7 @@ class SMSGateway
     private function validatePhoneNumber($phoneNumber)
     {
         $cleanNumber = preg_replace('/[^0-9]/', '', trim($phoneNumber));
-        
+
         error_log("Validating: $phoneNumber -> Clean: $cleanNumber");
 
         // Check for various formats
@@ -173,12 +173,12 @@ class SMSGateway
         if (preg_match('/^09[0-9]{9}$/', $cleanNumber)) {
             return true;
         }
-        
+
         // 2. +639XXXXXXXXXX format
         if (preg_match('/^639[0-9]{9}$/', $cleanNumber)) {
             return true;
         }
-        
+
         // 3. 9XXXXXXXXX format
         if (preg_match('/^9[0-9]{9}$/', $cleanNumber)) {
             return true;
@@ -193,7 +193,7 @@ class SMSGateway
     private function formatPhoneNumber($phoneNumber)
     {
         $cleanNumber = preg_replace('/[^0-9]/', '', trim($phoneNumber));
-        
+
         error_log("Formatting: $phoneNumber -> Clean: $cleanNumber");
 
         // Remove country code (63)
@@ -222,7 +222,7 @@ class SMSGateway
     {
         // Format the number first
         $formatted = $this->formatPhoneNumber($phoneNumber);
-        
+
         if (strlen($formatted) !== 10) {
             error_log("Invalid number length for carrier detection: $formatted");
             return 'smart'; // Default
@@ -325,9 +325,9 @@ class SMSGateway
 
             // Enable detailed debugging
             $mail->SMTPDebug = 3; // VERBOSE DEBUGGING
-            $mail->Debugoutput = function($str, $level) {
+            $mail->Debugoutput = function ($str, $level) {
                 error_log("PHPMailer Debug (Level $level): $str");
-                
+
                 // Also output to browser if in debug mode
                 if (isset($_GET['debug'])) {
                     echo "PHPMailer: $str<br>";
@@ -344,11 +344,11 @@ class SMSGateway
             $mail->Port = $this->settings['smtp_port'] ?? 587;
             $mail->Timeout = 30;
             $mail->CharSet = 'ISO-8859-1'; // Better for SMS
-            
+
             // IMPORTANT: Carrier-specific optimizations
             $mail->Priority = 1; // High priority
             $mail->WordWrap = 70; // Wrap at 70 characters
-            
+
             // Less strict SSL
             $mail->SMTPOptions = [
                 'ssl' => [
@@ -361,10 +361,10 @@ class SMSGateway
             // Recipients - CRITICAL FOR CARRIERS
             $mail->setFrom($this->settings['smtp_user'], $this->settings['sender_id'] ?? 'MSWD');
             $mail->addAddress($toEmail);
-            
+
             // Add a secondary "From" for carrier compatibility
             $mail->addReplyTo('no-reply@mswd.paluan.ph', 'MSWD No-Reply');
-            
+
             // Add CC to yourself for tracking
             $mail->addCC($this->settings['smtp_user'], 'SMS Tracker');
 
@@ -372,7 +372,7 @@ class SMSGateway
             $mail->isHTML(false);
             $mail->Subject = ''; // EMPTY subject for SMS
             $mail->Body = $this->formatMessageForSMS($message);
-            
+
             // Add custom headers for carriers
             $mail->addCustomHeader('X-Priority', '1');
             $mail->addCustomHeader('X-MSMail-Priority', 'High');
@@ -386,26 +386,26 @@ class SMSGateway
             if ($result) {
                 error_log("✅ PHPMailer: Email sent successfully to $toEmail");
                 error_log("✅ Message was: " . substr($message, 0, 100) . "...");
-                
+
                 // Verify the email was actually accepted
                 $this->verifyEmailDelivery($toEmail, $message);
-                
+
                 return true;
             } else {
                 error_log("❌ PHPMailer: Failed to send to $toEmail");
                 error_log("❌ PHPMailer Error: " . $mail->ErrorInfo);
-                
+
                 // Try alternative gateway
                 return $this->tryAlternativeGateway($toEmail, $message, $mail->ErrorInfo);
             }
         } catch (Exception $e) {
             error_log("❌ PHPMailer Exception: " . $e->getMessage());
-            
+
             // Fallback to simple mail() function
             return $this->sendWithMailFunction($toEmail, '', $message);
         }
     }
-    
+
     /**
      * FORMAT MESSAGE FOR SMS - CARRIER SPECIFIC
      */
@@ -413,51 +413,51 @@ class SMSGateway
     {
         // Remove any HTML tags
         $message = strip_tags($message);
-        
+
         // Trim to 160 characters (SMS limit)
         if (strlen($message) > 160) {
             $message = substr($message, 0, 157) . '...';
         }
-        
+
         // Add sender tag
         $sender = $this->settings['sender_id'] ?? 'MSWD';
         $formatted = $message . "\n\n- $sender";
-        
+
         return $formatted;
     }
-    
+
     /**
      * TRY ALTERNATIVE GATEWAY
      */
     private function tryAlternativeGateway($toEmail, $message, $previousError)
     {
         error_log("Trying alternative gateway for: $toEmail");
-        
+
         // Extract phone number and carrier from email
         if (preg_match('/(\d{10})@(.+)$/', $toEmail, $matches)) {
             $phone = $matches[1];
             $domain = $matches[2];
-            
+
             // Detect carrier from domain
             $carrier = $this->detectCarrierFromDomain($domain);
-            
+
             if ($carrier && isset($this->carrierGateways[$carrier]['gateways'])) {
                 // Try second gateway
                 if (count($this->carrierGateways[$carrier]['gateways']) > 1) {
                     $altGateway = $this->carrierGateways[$carrier]['gateways'][1];
                     $altEmail = $phone . $altGateway;
-                    
+
                     error_log("Trying alternative gateway: $altEmail");
-                    
+
                     // Try with mail() function as fallback
                     return $this->sendWithMailFunction($altEmail, '', $message);
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * DETECT CARRIER FROM DOMAIN
      */
@@ -472,7 +472,7 @@ class SMSGateway
         }
         return null;
     }
-    
+
     /**
      * VERIFY EMAIL DELIVERY
      */
@@ -484,12 +484,12 @@ class SMSGateway
         error_log("Message: " . substr($message, 0, 100) . "...");
         error_log("Time: " . date('Y-m-d H:i:s'));
         error_log("SMTP: " . ($this->settings['smtp_user'] ?? 'Not set'));
-        
+
         // Check if this is likely a valid carrier email
         if (!preg_match('/^\d{10}@/', $toEmail)) {
             error_log("⚠️ WARNING: Email format doesn't look like carrier gateway!");
         }
-        
+
         // Rate limiting check
         static $lastSentTime = 0;
         $currentTime = time();
@@ -627,15 +627,15 @@ class SMSGateway
         // Send the email with retry logic
         $maxRetries = 2;
         $result = false;
-        
+
         for ($i = 0; $i < $maxRetries; $i++) {
             if ($i > 0) {
                 error_log("Retry attempt $i for $phoneNumber");
                 sleep(1); // Wait 1 second between retries
             }
-            
+
             $result = $this->sendViaSMTP($emailAddress, '', $message);
-            
+
             if ($result) {
                 break;
             }
@@ -649,7 +649,7 @@ class SMSGateway
 
         if ($result) {
             error_log("✅ SMS marked as sent to $phoneNumber via $carrier");
-            
+
             // Provide realistic expectations
             return [
                 'success' => true,
@@ -663,7 +663,7 @@ class SMSGateway
             ];
         } else {
             error_log("❌ SMS failed to send");
-            
+
             // Provide helpful error message
             return $this->errorResponse('Failed to send SMS. Carrier gateway may be blocking emails. Try again later.');
         }
@@ -721,13 +721,13 @@ class SMSGateway
 
             if ($result['success']) {
                 $results['sent']++;
-                
+
                 // Track carrier statistics
                 if (!isset($results['carrier_stats'][$carrier])) {
                     $results['carrier_stats'][$carrier] = 0;
                 }
                 $results['carrier_stats'][$carrier]++;
-                
+
                 $results['details'][] = [
                     'number' => $cleanNumber,
                     'status' => isset($result['demo_mode']) && $result['demo_mode'] ? 'demo_sent' : 'sent',
@@ -758,7 +758,7 @@ class SMSGateway
         error_log("Sent: {$results['sent']}");
         error_log("Failed: {$results['failed']}");
         error_log("Invalid: {$results['invalid']}");
-        
+
         if (!empty($results['carrier_stats'])) {
             foreach ($results['carrier_stats'] as $carrier => $count) {
                 error_log("Carrier $carrier: $count messages");
@@ -780,6 +780,11 @@ class SMSGateway
             return false;
         }
 
+        // Get current user ID from session
+        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+        $username = isset($_SESSION['username']) ? $_SESSION['username'] : (isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'System');
+        $userType = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : 'System';
+
         // Escape values
         $phoneNumber = $conn->real_escape_string($phoneNumber);
         $message = $conn->real_escape_string(substr($message, 0, 500));
@@ -787,43 +792,54 @@ class SMSGateway
         $carrier = $conn->real_escape_string($carrier);
         $email = $conn->real_escape_string($email);
         $messageId = uniqid('sms_', true);
+        $userId = intval($userId);
+        $username = $conn->real_escape_string($username);
+        $userType = $conn->real_escape_string($userType);
 
-        // Check if table exists, create it if not
-        $tableCheck = $conn->query("SHOW TABLES LIKE 'sms_logs'");
-        if ($tableCheck->num_rows == 0) {
-            $createTable = "CREATE TABLE sms_logs (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                phone_number VARCHAR(20) NOT NULL,
-                message TEXT,
-                status VARCHAR(50),
-                carrier VARCHAR(50),
-                email_address VARCHAR(255),
-                message_id VARCHAR(100),
-                sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )";
-            $conn->query($createTable);
-            error_log("Created sms_logs table");
-        }
+        // Check if columns exist, add them if not
+        $this->ensureSMSLogsTableStructure($conn);
 
-        $query = "INSERT INTO sms_logs (phone_number, message, status, carrier, email_address, message_id) 
-                 VALUES ('$phoneNumber', '$message', '$status', '$carrier', '$email', '$messageId')";
+        $query = "INSERT INTO sms_logs 
+              (phone_number, message, status, carrier, email_address, message_id, user_id, username, user_type, sms_type, created_at) 
+              VALUES 
+              ('$phoneNumber', '$message', '$status', '$carrier', '$email', '$messageId', $userId, '$username', '$userType', 'outgoing', NOW())";
 
         $result = $conn->query($query);
 
         if ($result) {
-            error_log("✅ Logged to database: $phoneNumber - $status ($carrier)");
+            error_log("✅ Logged to database: $phoneNumber - $status ($carrier) by user $username");
         } else {
             error_log("❌ Database log failed: " . $conn->error);
             // Try simpler query
-            $simpleQuery = "INSERT INTO sms_logs (phone_number, message, status, carrier) 
-                           VALUES ('$phoneNumber', '$message', '$status', '$carrier')";
+            $simpleQuery = "INSERT INTO sms_logs (phone_number, message, status, carrier, created_at) 
+                       VALUES ('$phoneNumber', '$message', '$status', '$carrier', NOW())";
             $conn->query($simpleQuery);
         }
 
         return true;
     }
 
+    private function ensureSMSLogsTableStructure($conn)
+    {
+        // Check and add missing columns
+        $columns = [
+            'user_id' => 'INT DEFAULT NULL',
+            'username' => 'VARCHAR(100) DEFAULT NULL',
+            'user_type' => 'VARCHAR(50) DEFAULT NULL',
+            'sms_type' => "VARCHAR(50) DEFAULT 'outgoing'",
+            'cost' => 'DECIMAL(10,2) DEFAULT 0.00',
+            'response_data' => 'TEXT DEFAULT NULL',
+            'error_message' => 'TEXT DEFAULT NULL'
+        ];
+
+        foreach ($columns as $column => $definition) {
+            $check = $conn->query("SHOW COLUMNS FROM sms_logs LIKE '$column'");
+            if ($check->num_rows == 0) {
+                $conn->query("ALTER TABLE sms_logs ADD COLUMN $column $definition");
+                error_log("Added column $column to sms_logs table");
+            }
+        }
+    }
     private function errorResponse($message)
     {
         error_log("ERROR: $message");
@@ -949,21 +965,21 @@ class SMSGateway
     {
         echo "<div style='background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;'>";
         echo "<h3>Carrier Debug Information</h3>";
-        
+
         $formatted = $this->formatPhoneNumber($phoneNumber);
         echo "<p>Phone: $phoneNumber</p>";
         echo "<p>Formatted: $formatted</p>";
-        
+
         if (strlen($formatted) === 10) {
             $prefix = substr($formatted, 0, 4);
             echo "<p>Prefix (4-digit): $prefix</p>";
-            
+
             $carrier = $this->detectCarrier($phoneNumber);
             echo "<p>Detected Carrier: <strong>$carrier</strong></p>";
-            
+
             $email = $this->phoneToEmail($phoneNumber);
             echo "<p>Email: " . ($email ? $email : 'Could not generate') . "</p>";
-            
+
             echo "<br><p>Checking all prefixes:</p>";
             foreach ($this->carrierGateways as $carrierName => $data) {
                 if (in_array($prefix, $data['prefixes'])) {
@@ -975,7 +991,7 @@ class SMSGateway
         } else {
             echo "<p style='color: red;'>Invalid phone number length: " . strlen($formatted) . " digits</p>";
         }
-        
+
         echo "</div>";
     }
 
@@ -1006,7 +1022,7 @@ class SMSGateway
         // Get carrier info
         $carrier = $this->detectCarrier($testNumber);
         $email = $this->phoneToEmail($testNumber);
-        
+
         if (!$email) {
             return [
                 'success' => false,

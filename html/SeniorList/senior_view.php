@@ -1,11 +1,11 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -169,7 +169,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -1281,7 +1281,7 @@ if (empty($profile_photo_url)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/tailwind.config.js"></script>
+    <script src="/MSWDPALUAN_SYSTEM-MAIN/js/tailwind.config.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
@@ -1347,7 +1347,7 @@ if (empty($profile_photo_url)) {
             const id = urlParams.get('id');
             if (!id) return;
 
-            const phpFilePath = `/MSWDPaluan_System-main/php/seniorlist/senior_view.php?id=${encodeURIComponent(id)}`;
+            const phpFilePath = `/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_view.php?id=${encodeURIComponent(id)}`;
 
             fetch(phpFilePath)
                 .then(res => {
@@ -1528,7 +1528,7 @@ if (empty($profile_photo_url)) {
             // --- Load applicant data from PHP ---
             async function loadApplicant() {
                 try {
-                    const res = await fetch(`/MSWDPaluan_System-main/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}`);
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}`);
                     const json = await res.json();
                     if (json.success && json.data) {
                         fillForm(json.data);
@@ -1549,7 +1549,7 @@ if (empty($profile_photo_url)) {
                 fd.append('id', applicantId);
 
                 try {
-                    const res = await fetch('/MSWDPaluan_System-main/php/seniorlist/senior_edit.php', {
+                    const res = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php', {
                         method: 'POST',
                         body: fd
                     });

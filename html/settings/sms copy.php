@@ -1,6 +1,6 @@
 <?php
-require_once "../../php/login/admin_header.php";
-require_once "../../php/helpers/sms_helper.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "/MSWDPALUAN_SYSTEM-MAIN/php/helpers/sms_helper.php";
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
@@ -9,26 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-// Get SMS settings - ADD DEBUGGING HERE
+// Get SMS settings
 $smsSettings = getSMSSettings();
-error_log("SMS Settings loaded: " . print_r($smsSettings, true));
-
-// Initialize variables to prevent warnings
-$success = $_SESSION['success'] ?? '';
-$error = $_SESSION['error'] ?? '';
-$smsWarning = $_SESSION['sms_warning'] ?? '';
-$templates = []; // Initialize empty array for templates
-$systemStatus = null; // Initialize system status
-
-// Store messages in temporary variables BEFORE clearing session
-$tempSuccess = $success;
-$tempError = $error;
-$tempSmsWarning = $smsWarning;
-
-// Clear session messages after storing in temp variables
-unset($_SESSION['success'], $_SESSION['error'], $_SESSION['sms_warning']);
-
-// Database connection
 $host = "localhost";
 $dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
@@ -84,18 +66,6 @@ if (empty($profile_photo_url)) {
 $conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
-
-// Get message templates
-if ($pdo) {
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM sms_templates WHERE is_active = 1 ORDER BY created_at DESC");
-        $stmt->execute();
-        $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching templates: " . $e->getMessage());
-        $templates = [];
-    }
 }
 
 // Handle form submissions
@@ -276,152 +246,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: sms.php?session_context=" . $ctx);
         exit();
     }
-
-    if (isset($_POST['save_template'])) {
-        $templateName = trim($_POST['template_name'] ?? '');
-        $message = trim($_POST['message'] ?? '');
-
-        if (empty($templateName) || empty($message)) {
-            $_SESSION['error'] = "Please provide both template name and message.";
-        } elseif ($pdo) {
-            try {
-                // Check if template with same name exists
-                $stmt = $pdo->prepare("SELECT id FROM sms_templates WHERE template_name = ?");
-                $stmt->execute([$templateName]);
-                $existing = $stmt->fetch();
-
-                if ($existing) {
-                    // Update existing template
-                    $stmt = $pdo->prepare("UPDATE sms_templates SET message = ?, updated_at = NOW() WHERE id = ?");
-                    $stmt->execute([$message, $existing['id']]);
-                } else {
-                    // Insert new template
-                    $stmt = $pdo->prepare("INSERT INTO sms_templates (template_name, message, is_active, created_at) VALUES (?, ?, 1, NOW())");
-                    $stmt->execute([$templateName, $message]);
-                }
-
-                $_SESSION['success'] = "Template saved successfully!";
-
-                // Refresh templates
-                $stmt = $pdo->prepare("SELECT * FROM sms_templates WHERE is_active = 1 ORDER BY created_at DESC");
-                $stmt->execute();
-                $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                error_log("Error saving template: " . $e->getMessage());
-                $_SESSION['error'] = "Failed to save template: " . $e->getMessage();
-            }
-        }
-
-        header("Location: sms.php?session_context=" . $ctx);
-        exit();
-    }
 }
 
 // Get SMS logs
-$sms_logs = [];
-if ($pdo) {
-    try {
-        $stmt = $pdo->prepare("
-            SELECT 
-                sl.id,
-                sl.phone_number as recipient,
-                sl.message,
-                sl.status,
-                sl.carrier,
-                sl.sms_type,
-                sl.created_at,
-                u.username,
-                u.user_type,
-                u.profile_photo as user_avatar
-            FROM sms_logs sl 
-            LEFT JOIN users u ON sl.user_id = u.id 
-            WHERE sl.status IS NOT NULL
-            ORDER BY sl.created_at DESC 
-            LIMIT 50
-        ");
-        $stmt->execute();
-        $sms_logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching SMS logs: " . $e->getMessage());
+$smsLogs = [];
+if (!$conn->connect_error) {
+    $logsResult = $conn->query("SELECT * FROM sms_logs ORDER BY sent_at DESC LIMIT 50");
+    while ($row = $logsResult->fetch_assoc()) {
+        $smsLogs[] = $row;
     }
 }
 
-// Calculate system status - FIXED VERSION
-// First, ensure $smsSettings is an array
-$smsSettings = $smsSettings ?? [];
+// Check system status
+$systemStatus = null;
+$gateway = new SMSGateway($smsSettings);
+$systemStatus = $gateway->checkSystemStatus();
 
-// Always calculate system status, even with default values
-$smtpConfigured = !empty($smsSettings['smtp_user']) && !empty($smsSettings['smtp_pass']);
-$demoMode = $smsSettings['demo_mode'] ?? false;
-$isActive = $smsSettings['is_active'] ?? false;
-
-if (!$isActive) {
-    $systemStatus = [
-        'status' => 'Disabled',
-        'message' => 'SMS service is disabled. Enable it to send messages.',
-        'smtp_configured' => $smtpConfigured,
-        'demo_mode' => $demoMode
-    ];
-} elseif ($demoMode) {
-    $systemStatus = [
-        'status' => 'Demo Mode',
-        'message' => 'SMS are being logged but not sent. Disable demo mode to send real messages.',
-        'smtp_configured' => $smtpConfigured,
-        'demo_mode' => $demoMode
-    ];
-} elseif (!$smtpConfigured) {
-    $systemStatus = [
-        'status' => 'Not Configured',
-        'message' => 'SMTP settings are not configured. Please set up your email credentials.',
-        'smtp_configured' => false,
-        'demo_mode' => $demoMode
-    ];
-} else {
-    $systemStatus = [
-        'status' => 'Operational',
-        'message' => 'SMS service is ready to send messages.',
-        'smtp_configured' => true,
-        'demo_mode' => false
-    ];
-}
-
-// Function to get status badge class
-function getSMSStatusClass($status)
-{
-    $status = strtolower($status);
-
-    if ($status === 'sent' || $status === 'delivered' || $status === 'success') {
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-    } elseif ($status === 'failed' || $status === 'error' || $status === 'undelivered') {
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-    } elseif ($status === 'pending' || $status === 'queued' || $status === 'processing') {
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-    } elseif ($status === 'cancelled' || $status === 'expired') {
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-    } else {
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-    }
-}
-
-// Function to format SMS timestamp
-function formatSMSTime($timestamp)
-{
-    if (!$timestamp) return 'N/A';
-
-    $date = new DateTime($timestamp);
-    $now = new DateTime();
-    $interval = $now->diff($date);
-
-    if ($interval->days === 0) {
-        return 'Today ' . $date->format('H:i');
-    } elseif ($interval->days === 1) {
-        return 'Yesterday ' . $date->format('H:i');
-    } elseif ($interval->days < 7) {
-        return $date->format('D H:i');
-    } else {
-        return $date->format('M d, Y H:i');
-    }
-}
+// Get session messages
+$success = $_SESSION['success'] ?? null;
+$error = $_SESSION['error'] ?? null;
+$smsWarning = $_SESSION['sms_warning'] ?? null;
+unset($_SESSION['success'], $_SESSION['error'], $_SESSION['sms_warning']);
 
 $conn->close();
 ?>
@@ -678,74 +523,6 @@ $conn->close();
             /* blue-400 */
         }
     </style>
-    <style>
-        /* Add these styles to your existing CSS */
-        .sms-status-badge {
-            transition: all 0.2s ease;
-        }
-
-        .sms-status-badge:hover {
-            transform: scale(1.05);
-        }
-
-        .sms-status-sent {
-            position: relative;
-        }
-
-        .sms-status-sent::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 9999px;
-            opacity: 0.5;
-            animation: pulse 2s infinite;
-            z-index: -1;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
-        }
-
-        /* SMS message preview */
-        .sms-preview {
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* Responsive table adjustments */
-        @media (max-width: 768px) {
-
-            .sms-table th:nth-child(4),
-            .sms-table td:nth-child(4) {
-                display: none;
-            }
-        }
-
-        @media (max-width: 640px) {
-
-            .sms-table th:nth-child(2),
-            .sms-table td:nth-child(2),
-            .sms-table th:nth-child(7),
-            .sms-table td:nth-child(7) {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -964,7 +741,7 @@ $conn->close();
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
-                                d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.20.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
+                                d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
                                 clip-rule="evenodd" />
                         </svg>
                         <span class="ml-3">Generate ID</span>
@@ -1034,7 +811,7 @@ $conn->close();
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                 viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.20.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
+                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
                                     clip-rule="evenodd" />
                             </svg>
                             <span class="links_name">My Profile</span>
@@ -1098,26 +875,26 @@ $conn->close();
             </div>
 
             <!-- SMS Settings Content -->
-            <section id="smsSection" class="bg-gray-50 dark:bg-gray-900 w-full ">
-                <div class="w-[900px] px-2">
+            <section id="smsSection" class="bg-gray-50 dark:bg-gray-900 w-full">
+                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <!-- Success Message -->
-                    <?php if ($tempSuccess): ?>
+                    <?php if ($success): ?>
                         <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900 dark:border-green-700 dark:text-green-200">
-                            <?php echo $tempSuccess; ?>
+                            <?php echo $success; ?>
                         </div>
                     <?php endif; ?>
 
                     <!-- Error Message -->
-                    <?php if ($tempError): ?>
+                    <?php if ($error): ?>
                         <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">
-                            <?php echo $tempError; ?>
+                            <?php echo $error; ?>
                         </div>
                     <?php endif; ?>
 
                     <!-- Warning Message -->
-                    <?php if ($tempSmsWarning): ?>
+                    <?php if ($smsWarning): ?>
                         <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200">
-                            <?php echo $tempSmsWarning; ?>
+                            <?php echo $smsWarning; ?>
                         </div>
                     <?php endif; ?>
 
@@ -1126,22 +903,23 @@ $conn->close();
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">SMS Settings</h2>
 
-                            <!-- ALWAYS SHOW SYSTEM STATUS - TEST -->
-                            <div class="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200 rounded-lg">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                    </svg>
-                                    <div>
-                                        <p class="font-medium">System Status: <?php echo $systemStatus['status'] ?? 'Unknown'; ?></p>
-                                        <p class="text-sm mt-1"><?php echo $systemStatus['message'] ?? 'Unable to determine system status'; ?></p>
-                                        <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">
-                                            SMS Settings: <?php echo !empty($smsSettings) ? 'Loaded' : 'Not loaded'; ?> |
-                                            SMTP Configured: <?php echo ($systemStatus['smtp_configured'] ?? false) ? 'Yes' : 'No'; ?>
-                                        </p>
+                            <?php if ($systemStatus): ?>
+                                <div class="mb-4 p-3 <?php echo $systemStatus['smtp_configured'] && !$systemStatus['demo_mode'] ? 'bg-green-100 border border-green-400 text-green-800 dark:bg-green-900 dark:border-green-700 dark:text-green-200' : 'bg-yellow-100 border border-yellow-400 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200'; ?> rounded-lg">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <?php if ($systemStatus['smtp_configured'] && !$systemStatus['demo_mode']): ?>
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            <?php else: ?>
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            <?php endif; ?>
+                                        </svg>
+                                        <div>
+                                            <p class="font-medium">System Status: <?php echo $systemStatus['status']; ?></p>
+                                            <p class="text-sm mt-1"><?php echo $systemStatus['message']; ?></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
 
                             <form method="POST">
                                 <div class="space-y-4">
@@ -1247,135 +1025,88 @@ $conn->close();
                     </div>
 
                     <!-- SMS Logs Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mt-6">
-                        <div class="border-b dark:border-gray-700 p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Logs</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Recent SMS message history</p>
-                        </div>
-
-                        <?php if (empty($sms_logs)): ?>
-                            <div class="p-8 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
-                                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No SMS logs found</h3>
-                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    Send your first SMS message to see logs here
-                                </p>
-                            </div>
-                        <?php else: ?>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 sms-table">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">SMS Logs</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th class="px-4 py-3">Date</th>
+                                        <th class="px-4 py-3">Number</th>
+                                        <th class="px-4 py-3">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($smsLogs)): ?>
                                         <tr>
-                                            <th scope="col" class="px-6 py-3">Recipient</th>
-                                            <th scope="col" class="px-6 py-3 hidden md:table-cell">User</th>
-                                            <th scope="col" class="px-6 py-3">Message</th>
-                                            <th scope="col" class="px-6 py-3 hidden lg:table-cell">Type</th>
-                                            <th scope="col" class="px-6 py-3">Status</th>
-                                            <th scope="col" class="px-6 py-3">Time</th>
-                                            <th scope="col" class="px-6 py-3">Actions</th>
+                                            <td colspan="3" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">No logs yet</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($sms_logs as $log): ?>
-                                            <?php
-                                            $statusClass = getSMSStatusClass($log['status']);
-                                            $pulseClass = (strtolower($log['status']) === 'sent' || strtolower($log['status']) === 'delivered') ? 'sms-status-sent' : '';
-                                            ?>
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-sms-id="<?php echo $log['id']; ?>">
-                                                <td class="px-6 py-4">
-                                                    <div class="font-medium text-gray-900 dark:text-white">
-                                                        <?php echo htmlspecialchars($log['recipient'] ?? 'N/A'); ?>
-                                                    </div>
+                                    <?php else: ?>
+                                        <?php foreach ($smsLogs as $log): ?>
+                                            <tr class="border-b border-gray-200 dark:border-gray-700">
+                                                <td class="px-4 py-3">
+                                                    <?php echo date('M d, H:i', strtotime($log['sent_at'])); ?>
                                                 </td>
-                                                <td class="px-6 py-4 hidden md:table-cell">
-                                                    <div class="flex items-center">
-                                                        <div class="flex-shrink-0 w-8 h-8">
-                                                            <img class="w-8 h-8 rounded-full object-cover"
-                                                                src="<?php echo htmlspecialchars($log['user_avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($log['username'] ?? 'User') . '&background=random&color=fff&size=32'); ?>"
-                                                                alt="<?php echo htmlspecialchars($log['username'] ?? 'User'); ?>">
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                                                <?php echo htmlspecialchars($log['username'] ?? 'User'); ?>
-                                                            </p>
-                                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                                <?php echo htmlspecialchars($log['user_type'] ?? 'User'); ?>
-                                                            </p>
-                                                        </div>
-                                                    </div>
+                                                <td class="px-4 py-3">
+                                                    <?php echo htmlspecialchars(substr($log['phone_number'] ?? 'N/A', 0, 15)); ?>
                                                 </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="sms-preview" title="<?php echo htmlspecialchars($log['message'] ?? ''); ?>">
-                                                        <?php
-                                                        $message = $log['message'] ?? '';
-                                                        if (strlen($message) > 50) {
-                                                            echo htmlspecialchars(substr($message, 0, 50)) . '...';
-                                                        } else {
-                                                            echo htmlspecialchars($message);
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4 hidden lg:table-cell">
+                                                <td class="px-4 py-3">
                                                     <span class="px-2 py-1 text-xs font-medium rounded-full 
-                    <?php echo (($log['sms_type'] ?? 'outgoing') === 'outgoing') ?
-                                                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                                                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['sms_type'] ?? 'outgoing')); ?>
+                                                            <?php echo (strpos($log['status'], 'sent') !== false) ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'; ?>">
+                                                        <?php echo htmlspecialchars($log['status']); ?>
                                                     </span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full sms-status-badge <?php echo $statusClass . ' ' . $pulseClass; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['status'] ?? 'unknown')); ?>
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="flex flex-col">
-                                                        <span class="text-gray-900 dark:text-white">
-                                                            <?php echo formatSMSTime($log['created_at'] ?? ''); ?>
-                                                        </span>
-                                                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                                                            <?php echo isset($log['created_at']) ? date('M d, Y', strtotime($log['created_at'])) : 'N/A'; ?>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <button type="button" onclick="viewSMSDetails(<?php echo $log['id']; ?>)"
-                                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
-                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                        </svg>
-                                                        View
-                                                    </button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
     </main>
 
-    <!-- SMS Details Overlay -->
-    <div id="smsDetailsOverlay" class="hidden fixed inset-0 bg-gray-900/50 bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-hidden">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-            <div class="flex justify-between items-center p-6 mb-2 border-b dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Details</h3>
-                <button id="closeSMSOverlay" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="px-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="smsOverlayContent">
-                <!-- Content will be loaded here -->
+    <!-- Test SMS Modal -->
+    <div id="testSmsModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70" onclick="closeTestModal()"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test SMS</h3>
+                <form method="POST">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="test_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Test Phone Number
+                            </label>
+                            <input type="text" id="test_number" name="test_number"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="09XXXXXXXXX or +639XXXXXXXXXX" required>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enter your own number to test</p>
+                        </div>
+
+                        <div>
+                            <label for="test_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Test Message
+                            </label>
+                            <textarea id="test_message" name="test_message" rows="3"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Enter test message..." required>Test SMS from MSWD System</textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="closeTestModal()"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600">
+                                Cancel
+                            </button>
+                            <button type="submit" name="test_sms"
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700">
+                                Send Test
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1418,6 +1149,89 @@ $conn->close();
                 }
             });
         });
+
+        // Modal functions
+        function openTestModal() {
+            const modal = document.getElementById('testSmsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                // Focus on the first input
+                setTimeout(() => {
+                    const testNumberInput = document.getElementById('test_number');
+                    if (testNumberInput) testNumberInput.focus();
+                }, 100);
+            }
+        }
+
+        function closeTestModal() {
+            const modal = document.getElementById('testSmsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('testSmsModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                const modalContent = modal.querySelector('.relative');
+                if (!modalContent.contains(event.target)) {
+                    closeTestModal();
+                }
+            }
+        });
+
+        // Test SMTP Connection
+        async function testSMTPConnection() {
+            const smtpHost = document.querySelector('input[name="smtp_host"]').value.trim();
+            const smtpUser = document.querySelector('input[name="smtp_user"]').value.trim();
+            const smtpPass = document.querySelector('input[name="smtp_pass"]').value.trim();
+
+            if (!smtpHost || !smtpUser || !smtpPass) {
+                alert('Please fill in all SMTP fields first');
+                return;
+            }
+
+            // Create or find result div
+            let resultDiv = document.getElementById('testResult');
+            if (!resultDiv) {
+                resultDiv = document.createElement('div');
+                resultDiv.id = 'testResult';
+                resultDiv.className = 'mt-3';
+                const form = document.querySelector('form');
+                if (form) {
+                    form.appendChild(resultDiv);
+                }
+            }
+
+            resultDiv.innerHTML = '<p class="text-gray-600 dark:text-gray-300">Testing SMTP connection...</p>';
+
+            try {
+                const formData = new FormData();
+                formData.append('smtp_host', smtpHost);
+                formData.append('smtp_user', smtpUser);
+                formData.append('smtp_pass', smtpPass);
+                formData.append('test_smtp', '1');
+
+                const response = await fetch('sms.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Reload the page to see the result
+                window.location.reload();
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                <div class="p-3 bg-red-100 border border-red-400 rounded dark:bg-red-900 dark:border-red-700">
+                    <p class="text-red-800 font-semibold dark:text-red-200">❌ Test Failed</p>
+                    <p class="text-red-700 text-sm mt-1 dark:text-red-300">${error.message}</p>
+                </div>
+            `;
+            }
+        }
 
         // Auto-hide messages
         setTimeout(() => {
@@ -1596,170 +1410,6 @@ $conn->close();
                 sidebar.classList.toggle("open");
             });
         }
-    </script>
-
-    <script>
-        // JavaScript functions for SMS page
-        function viewSMSDetails(smsId) {
-            // Show loading state
-            document.getElementById('smsOverlayContent').innerHTML = `
-            <div class="p-8 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p class="mt-4 text-gray-600 dark:text-gray-400">Loading SMS details...</p>
-            </div>
-        `;
-
-            // Show overlay
-            document.getElementById('smsDetailsOverlay').classList.remove('hidden');
-
-            // Since get_sms_details.php doesn't exist, we'll fetch from current page with AJAX
-            fetch(`sms.php?get_sms_details=${smsId}`)
-                .then(response => response.text())
-                .then(html => {
-                    // Try to extract SMS details from the page
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-
-                    // Look for the SMS log row with this ID
-                    const smsRow = doc.querySelector(`tr[data-sms-id="${smsId}"]`);
-
-                    if (smsRow) {
-                        // Extract data from the row
-                        const recipient = smsRow.querySelector('td:first-child .font-medium')?.textContent || 'N/A';
-                        const message = smsRow.querySelector('.sms-preview')?.title || 'No message content';
-                        const status = smsRow.querySelector('.sms-status-badge')?.textContent.trim() || 'Unknown';
-                        const smsType = smsRow.querySelector('td:nth-child(4) span')?.textContent.trim() || 'Outgoing';
-                        const createdAt = smsRow.querySelector('td:nth-child(6) span:first-child')?.textContent || 'N/A';
-
-                        const statusClass = getSMSStatusClassJS(status);
-                        const pulseClass = (status.toLowerCase() === 'sent' || status.toLowerCase() === 'delivered') ? 'sms-status-sent' : '';
-
-                        // Get user info
-                        const username = smsRow.querySelector('td:nth-child(2) p.text-sm.font-medium')?.textContent || 'User';
-                        const userType = smsRow.querySelector('td:nth-child(2) p.text-xs')?.textContent || 'User';
-                        const userAvatar = smsRow.querySelector('td:nth-child(2) img')?.src || `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&size=40`;
-
-                        document.getElementById('smsOverlayContent').innerHTML = `
-                            <div class="p-6 space-y-4">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Recipient</label>
-                                        <p class="mt-1 text-gray-900 dark:text-white font-medium">${recipient}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date & Time</label>
-                                        <p class="mt-1 text-gray-900 dark:text-white">${createdAt}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                                        <p class="mt-2">
-                                            <span class="px-2 py-1 text-xs font-medium rounded-full sms-status-badge ${statusClass} ${pulseClass}">
-                                                ${status.charAt(0).toUpperCase() + status.slice(1)}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
-                                        <p class="mt-2">
-                                            <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                                ${(smsType.toLowerCase() === 'outgoing') ? 
-                                                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 
-                                                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'}">
-                                                ${smsType}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sender</label>
-                                    <div class="mt-1 flex items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <img class="w-10 h-10 rounded-full object-cover mr-3" 
-                                            src="${userAvatar}" 
-                                            alt="${username}">
-                                        <div>
-                                            <p class="text-gray-900 dark:text-white font-medium">${username}</p>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">${userType}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
-                                    <div class="mt-1 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <p class="text-gray-900 dark:text-white whitespace-pre-wrap">${message}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                    } else {
-                        // Fallback if we can't find the data
-                        document.getElementById('smsOverlayContent').innerHTML = `
-                            <div class="p-6 text-center">
-                                <svg class="mx-auto h-12 w-12 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Limited Details</h3>
-                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    Full SMS details are not available. The SMS record exists but detailed information could not be loaded.
-                                </p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching SMS details:', error);
-                    document.getElementById('smsOverlayContent').innerHTML = `
-                    <div class="p-6 text-center">
-                        <svg class="mx-auto h-12 w-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Error Loading Details</h3>
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Failed to load SMS details. Please try again.
-                        </p>
-                    </div>
-                `;
-                });
-        }
-
-        // Helper function for JavaScript status classification
-        function getSMSStatusClassJS(status) {
-            if (!status) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-
-            const statusLower = status.toLowerCase();
-
-            if (statusLower.includes('sent') || statusLower.includes('delivered') || statusLower.includes('success')) {
-                return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-            } else if (statusLower.includes('failed') || statusLower.includes('error') || statusLower.includes('undelivered')) {
-                return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-            } else if (statusLower.includes('pending') || statusLower.includes('queued') || statusLower.includes('processing')) {
-                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-            } else if (statusLower.includes('cancelled') || statusLower.includes('expired')) {
-                return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-            } else {
-                return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-            }
-        }
-
-        // Close overlay
-        document.getElementById('closeSMSOverlay').addEventListener('click', function() {
-            document.getElementById('smsDetailsOverlay').classList.add('hidden');
-        });
-
-        // Close overlay when clicking outside
-        document.getElementById('smsDetailsOverlay').addEventListener('click', function(e) {
-            if (e.target.id === 'smsDetailsOverlay') {
-                document.getElementById('smsDetailsOverlay').classList.add('hidden');
-            }
-        });
-
-        // Close overlay with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.getElementById('smsDetailsOverlay').classList.add('hidden');
-            }
-        });
     </script>
 </body>
 

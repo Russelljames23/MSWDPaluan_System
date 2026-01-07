@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$dbname = "mswd_seniors";
-$username = "root";
-$password = "";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

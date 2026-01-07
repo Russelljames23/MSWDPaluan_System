@@ -1,10 +1,10 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -410,7 +410,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -1207,7 +1207,7 @@ if (empty($profile_photo_url)) {
 
                 try {
                     // First, test the API
-                    const testUrl = '../../php/accounts/accounts_api.php?test=1';
+                    const testUrl = '../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?test=1';
                     const testResponse = await fetch(testUrl);
                     const testText = await testResponse.text();
 
@@ -1223,7 +1223,7 @@ if (empty($profile_photo_url)) {
                     }
 
                     // Now fetch accounts
-                    const apiUrl = '../../php/accounts/accounts_api.php?action=get_accounts';
+                    const apiUrl = '../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?action=get_accounts';
                     console.log('Fetching accounts from:', apiUrl);
 
                     const response = await fetch(apiUrl, {
@@ -1398,7 +1398,7 @@ if (empty($profile_photo_url)) {
                 this.showNotification('Creating account...', 'info');
 
                 try {
-                    const response = await fetch('../../php/accounts/accounts_api.php', {
+                    const response = await fetch('../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1518,7 +1518,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const response = await fetch('../../php/accounts/accounts_api.php', {
+                    const response = await fetch('../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',

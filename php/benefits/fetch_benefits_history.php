@@ -3,9 +3,9 @@ header('Content-Type: application/json');
 
 // Database configuration
 $host = "localhost";
-$dbname = "mswd_seniors";
-$username = "root";
-$password = "";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 // Create connection
 $conn = new mysqli($host, $username, $password, $dbname);

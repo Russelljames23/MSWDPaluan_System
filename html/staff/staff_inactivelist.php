@@ -1,11 +1,11 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/staff_header.php";
+require_once "../../php/login/staff_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -167,7 +167,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -728,7 +728,7 @@ if (empty($profile_photo_url)) {
                     search: currentSearch,
                     filter: currentFilter
                 });
-                fetch(`../../php/inactivelist/fetch_inactive.php?${params}`)
+                fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/inactivelist/fetch_inactive.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tbody.innerHTML = "";
@@ -802,7 +802,7 @@ if (empty($profile_photo_url)) {
                 const confirm = await showConfirm(`Return ${name} to the active list?`, "Confirm Undo");
                 if (!confirm) return;
                 try {
-                    const res = await fetch(`../../php/inactivelist/undo_inactive.php?id=${id}`, {
+                    const res = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/inactivelist/undo_inactive.php?id=${id}`, {
                         method: "POST"
                     });
                     const data = await res.json();
@@ -826,7 +826,7 @@ if (empty($profile_photo_url)) {
                     const formData = new FormData();
                     formData.append("id", id);
 
-                    const response = await fetch(`../../php/archived/archived.php`, {
+                    const response = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/archived/archived.php`, {
                         method: "POST",
                         body: formData,
                     });

@@ -289,3 +289,5 @@
 [05-Jan-2026 08:24:07 Europe/Berlin] Activity logging failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
 [05-Jan-2026 08:24:44 Europe/Berlin] Error restoring addresses: SQLSTATE[21S01]: Insert value list does not match column list: 1136 Column count doesn't match value count at row 1
 [05-Jan-2026 08:24:44 Europe/Berlin] Activity logging failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[07-Jan-2026 02:05:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
+[07-Jan-2026 02:05:11 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR

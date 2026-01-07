@@ -1,5 +1,5 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/staff_header.php";
+require_once "../../php/login/staff_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $currentYear = isset($_GET['year']) && $_GET['year'] !== '' ? intval($_GET['year']) : null;
@@ -14,9 +14,9 @@ if ($currentYear !== null && ($currentYear < 2000 || $currentYear > 2100)) {
 }
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -178,7 +178,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -352,7 +352,7 @@ if (empty($profile_photo_url)) {
 
         <main class="p-4 md:ml-64 pt-20">
             <div class="w-full flex justify-between items-center mb-4">
-                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
+                <div><?php require_once "../../MSWDPALUAN_SYSTEM-MAIN/php/reports/date_filter_component.php"; ?></div>
                 <button type="button" onclick="generateReport()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     Generate Report
@@ -681,7 +681,7 @@ if (empty($profile_photo_url)) {
                     showLoading();
 
                     // Build API URL
-                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part5_backend.php';
+                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part5_backend.php';
                     apiUrl += '?';
 
                     // Add filters if provided

@@ -1,10 +1,10 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -198,7 +198,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../php/login/logout.php"
+                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -540,7 +540,7 @@ if (empty($profile_photo_url)) {
                             </button>
                         </div>
                         <!-- Modal body -->
-                        <form action="/mswdpaluan_system-main/php/benefits/save_benefits.php" method="POST" id="benefitsForm">
+                        <form action="/MSWDPALUAN_SYSTEM-MAIN/php/benefits/save_benefits.php" method="POST" id="benefitsForm">
                             <input type="hidden" name="benefits_json" id="benefits_json">
                             <div class="w-full h-full grid gap-4 mb-4 sm:grid-cols-1">
                                 <div class="flex flex-row w-full gap-2 justify-end items-end    ">
@@ -606,7 +606,7 @@ if (empty($profile_photo_url)) {
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../js/tailwind.config.js"></script>
+    <script src="/MSWDPALUAN_SYSTEM-MAIN/js/tailwind.config.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
@@ -836,7 +836,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 // Send AJAX POST
-                fetch('/mswdpaluan_system-main/php/benefits/save_benefits.php', {
+                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/save_benefits.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -908,7 +908,7 @@ if (empty($profile_photo_url)) {
             });
 
             function loadBenefits() {
-                fetch('/mswdpaluan_system-main/php/benefits/fetch_benefits.php')
+                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php')
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -945,7 +945,7 @@ if (empty($profile_photo_url)) {
                         const id = this.dataset.id;
                         showConfirmPopup("Confirm Delete", "Are you sure you want to delete this benefit?", function(confirmed) {
                             if (!confirmed) return;
-                            fetch(`/mswdpaluan_system-main/php/benefits/delete_benefit.php`, {
+                            fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/delete_benefit.php`, {
                                     method: "POST",
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -1000,7 +1000,7 @@ if (empty($profile_photo_url)) {
                 const newName = benefitModalInput.value.trim();
                 if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
 
-                fetch("/mswdpaluan_system-main/php/benefits/update_benefit.php", {
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1125,7 +1125,7 @@ if (empty($profile_photo_url)) {
                 const newName = benefitModalInput.value.trim();
                 if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
 
-                fetch("/mswdpaluan_system-main/php/benefits/update_benefit.php", {
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

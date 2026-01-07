@@ -1,11 +1,11 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -167,7 +167,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -452,11 +452,11 @@ if (empty($profile_photo_url)) {
             </section>
             <!-- PopUp Message  -->
             <div id="popupModal"
-                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center justify-center hidden z-50">
+                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center dark:text-white justify-center hidden z-50">
                 <div id="popupBox"
                     class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
                     <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
+                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-white mb-4">Message</p>
                     <div class="flex justify-end">
                         <button id="popupCloseBtn"
                             class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -722,7 +722,7 @@ if (empty($profile_photo_url)) {
                     search: currentSearch,
                     filter: currentFilter
                 });
-                fetch(`../../php/deceasedlist/fetch_deceased.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/deceasedlist/fetch_deceased.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tbody.innerHTML = "";
@@ -795,7 +795,7 @@ if (empty($profile_photo_url)) {
                 const confirm = await showConfirm(`Return ${name} to the active list?`, "Confirm Undo");
                 if (!confirm) return;
                 try {
-                    const res = await fetch(`../../php/deceasedlist/undo_deceased.php?id=${id}`, {
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/deceasedlist/undo_deceased.php?id=${id}`, {
                         method: "POST"
                     });
                     const data = await res.json();
@@ -819,7 +819,7 @@ if (empty($profile_photo_url)) {
                     const formData = new FormData();
                     formData.append("id", id);
 
-                    const response = await fetch(`../../php/archived/archived.php`, {
+                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/archived/archived.php`, {
                         method: "POST",
                         body: formData,
                     });

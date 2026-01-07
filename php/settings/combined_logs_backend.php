@@ -14,9 +14,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
 // Database connection - adjust path as needed
-$dbPath = __DIR__ . '/../../php/db.php'; // Adjusted path based on your structure
+$dbPath = __DIR__ . '/../../MSWDPALUAN_SYSTEM-MAIN/php/db.php'; // Adjusted path based on your structure
 if (!file_exists($dbPath)) {
-    $dbPath = __DIR__ . '/../../../php/db.php';
+    $dbPath = __DIR__ . '/../../../MSWDPALUAN_SYSTEM-MAIN/php/db.php';
 }
 
 if (!file_exists($dbPath)) {

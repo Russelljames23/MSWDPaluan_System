@@ -1,12 +1,12 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/staff_header.php";
+require_once "../../php/login/staff_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -168,7 +168,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -845,7 +845,7 @@ if (empty($profile_photo_url)) {
                 tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
                 try {
-                    const res = await fetch(`../../php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                    const res = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
                     const data = await res.json();
 
                     tbody.innerHTML = "";
@@ -911,7 +911,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const res = await fetch("../../php/seniorlist/senior_illness.php", {
+                    const res = await fetch("../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1070,7 +1070,7 @@ if (empty($profile_photo_url)) {
             // ---------------- FETCH BARANGAYS ----------------
             function fetchBarangays() {
                 // Use relative path instead of absolute path
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
                     .then(res => {
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status}`);
@@ -1127,7 +1127,7 @@ if (empty($profile_photo_url)) {
                 });
 
                 // Use relative path instead of absolute path
-                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
                     .then(res => {
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status}`);
@@ -1616,7 +1616,7 @@ if (empty($profile_photo_url)) {
                         }
 
                         // Use relative path for the update request
-                        const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/activelist/update_status.php", {
+                        const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/update_status.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -1876,7 +1876,7 @@ if (empty($profile_photo_url)) {
                 try {
                     console.log('📤 Sending mark inactive request:', data);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2093,7 +2093,7 @@ if (empty($profile_photo_url)) {
                 try {
                     console.log('📤 Sending mark deceased request:', data);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

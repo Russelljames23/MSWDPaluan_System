@@ -46,82 +46,86 @@ if ($year && $month) {
     $displayText = $monthNames[$month] . ' (All Years)';
 }
 
-// Try to fetch data from backend
+// Try to fetch data from backend - FIXED APPROACH
 $reportData = [];
 $hasData = false;
 $errorMessage = '';
 $apiResult = null;
 
 try {
-    // Use relative path from current directory
-    $backendFile = __DIR__ . '/../../php/reports/generate_consolidated_report_backend.php';
+    // Use server-relative path for include instead of HTTP request
+    $backendFilePath = dirname(__DIR__) . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
 
-    // Alternative path check
-    if (!file_exists($backendFile)) {
-        // Try another possible path
-        $backendFile = dirname(__DIR__) . '/../php/reports/generate_consolidated_report_backend.php';
-    }
+    // Check if backend file exists
+    if (file_exists($backendFilePath)) {
+        // Instead of making an HTTP request, directly include and call the backend
+        // First, capture the current GET parameters
+        $originalGet = $_GET;
 
-    if (file_exists($backendFile)) {
-        // Create GET parameters array for the backend
-        $backendParams = [];
-        if ($year !== null) $backendParams['year'] = $year;
-        if ($month !== null) $backendParams['month'] = $month;
+        // Set up parameters for backend
+        $_GET = [
+            'year' => $year,
+            'month' => $month
+        ];
 
-        // Build query string
-        $queryString = http_build_query($backendParams);
+        // Start output buffering
+        ob_start();
 
-        // Use cURL to call the backend
-        $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
-        $backendUrl = $baseUrl . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
+        // Include the backend file
+        include $backendFilePath;
 
-        if ($queryString) {
-            $backendUrl .= '?' . $queryString;
-        }
+        // Get the JSON response
+        $jsonResponse = ob_get_clean();
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $backendUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        // Restore original GET parameters
+        $_GET = $originalGet;
 
-        $jsonResponse = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // Decode the JSON response
+        $apiResult = json_decode($jsonResponse, true);
 
-        if (curl_errno($ch)) {
-            throw new Exception('cURL Error: ' . curl_error($ch));
-        }
+        if ($apiResult && isset($apiResult['success'])) {
+            if ($apiResult['success'] && isset($apiResult['data'])) {
+                $reportData = $apiResult['data'];
+                $hasData = true;
 
-        curl_close($ch);
-
-        if ($httpCode === 200 && $jsonResponse) {
-            $apiResult = json_decode($jsonResponse, true);
-
-            if ($apiResult && isset($apiResult['success'])) {
-                if ($apiResult['success'] && isset($apiResult['data'])) {
-                    $reportData = $apiResult['data'];
-                    $hasData = true;
-
-                    // Update display text from backend if available
-                    if (isset($apiResult['filters']['month_name']) && $apiResult['filters']['month_name'] && $apiResult['filters']['year']) {
-                        $displayText = $apiResult['filters']['month_name'] . ' ' . $apiResult['filters']['year'];
-                    }
-                } else {
-                    $errorMessage = $apiResult['message'] ?? 'Backend returned unsuccessful response';
-                    error_log("Backend error: " . $errorMessage);
+                // Update display text from backend if available
+                if (isset($apiResult['filters']['month_name']) && $apiResult['filters']['month_name'] && $apiResult['filters']['year']) {
+                    $displayText = $apiResult['filters']['month_name'] . ' ' . $apiResult['filters']['year'];
                 }
             } else {
-                $errorMessage = 'Invalid JSON response from backend';
-                error_log($errorMessage . ": " . substr($jsonResponse, 0, 200));
+                $errorMessage = $apiResult['message'] ?? 'Backend returned unsuccessful response';
+                error_log("Backend error: " . $errorMessage);
             }
         } else {
-            $errorMessage = "Backend request failed with HTTP code: $httpCode";
-            error_log($errorMessage);
+            $errorMessage = 'Invalid JSON response from backend';
+            error_log($errorMessage . ": " . substr($jsonResponse, 0, 200));
         }
     } else {
-        $errorMessage = 'Backend file not found. Checked path: ' . $backendFile;
-        error_log($errorMessage);
+        // Try alternative path
+        $alternativePath = dirname(dirname(dirname(__DIR__))) . '/MSWDPALUAN_SYSTEM-MAIN/php/reports/generate_consolidated_report_backend.php';
+        if (file_exists($alternativePath)) {
+            $backendFilePath = $alternativePath;
+
+            // Rest of the include logic here...
+            $originalGet = $_GET;
+            $_GET = ['year' => $year, 'month' => $month];
+            ob_start();
+            include $backendFilePath;
+            $jsonResponse = ob_get_clean();
+            $_GET = $originalGet;
+
+            $apiResult = json_decode($jsonResponse, true);
+
+            if ($apiResult && isset($apiResult['success']) && $apiResult['success'] && isset($apiResult['data'])) {
+                $reportData = $apiResult['data'];
+                $hasData = true;
+            } else {
+                $errorMessage = 'Backend file found but returned invalid data';
+            }
+        } else {
+            $errorMessage = 'Backend file not found. Checked paths: ' . $backendFilePath . ', ' . $alternativePath;
+            error_log($errorMessage);
+        }
     }
 } catch (Exception $e) {
     $errorMessage = 'Exception: ' . $e->getMessage();
@@ -258,7 +262,6 @@ if (!$hasData) {
         .print-page {
             padding: 20px;
             margin-bottom: 20px;
-            /* border: 1px solid #ddd; */
             background: white;
         }
 
@@ -392,16 +395,43 @@ if (!$hasData) {
             border: 1px solid #ccc;
             display: none;
         }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
-    <?php if ($errorMessage): ?>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay no-print">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex items-center space-x-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div class="text-lg font-semibold">Loading report data...</div>
+            </div>
+        </div>
+    </div>
+
+    <?php if ($errorMessage && !$hasData): ?>
         <div class="error-alert no-print">
             <strong>⚠️ Error:</strong><br>
             <?php echo htmlspecialchars($errorMessage); ?>
             <br><br>
             <small>Using fallback data for display. Backend data not available.</small>
+            <br>
+            <button onclick="retryLoadData()" class="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                Retry Loading
+            </button>
         </div>
     <?php elseif ($hasData && $apiResult): ?>
         <div class="success-alert no-print hidden">
@@ -418,17 +448,20 @@ if (!$hasData) {
 
     <div class="print-controls no-print flex flex-col items-center gap-5">
         <button onclick="window.location.href='report.php?session_context=<?php echo $ctx; ?>&year=<?php echo $year; ?>&month=<?php echo $month; ?>'"
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm ml-2">
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm">
             ← Back to Reports
         </button>
         <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
             🖨️ Print Report
         </button>
+        <button onclick="refreshData()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
+            🔄 Refresh Data
+        </button>
         <div class="text-xs text-gray-600">
             Report Period: <?php echo $displayText; ?><br>
-            <!-- Data Source: <?php echo $hasData ? 'Database' : 'Fallback Template'; ?><br> -->
+            Data Status: <?php echo $hasData ? 'Live Database' : 'Fallback Template'; ?>
             <?php if ($errorMessage): ?>
-                <span class="text-red-500">⚠️ Error encountered</span>
+                <br><span class="text-red-500">⚠️ Error encountered</span>
             <?php endif; ?>
         </div>
     </div>
@@ -917,8 +950,7 @@ if (!$hasData) {
 
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
-        // Initialize theme from localStorage or system preference
+        // Theme initialization
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -933,7 +965,6 @@ if (!$hasData) {
             setTheme(theme);
         }
 
-        // Function to set theme
         function setTheme(theme) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -944,26 +975,68 @@ if (!$hasData) {
             }
         }
 
-        // Listen for theme changes from other pages
+        // Listen for theme changes
         window.addEventListener('storage', function(e) {
             if (e.key === 'theme') {
-                const theme = e.newValue;
-                setTheme(theme);
+                setTheme(e.newValue);
             }
         });
 
-        // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
             if (!localStorage.getItem('theme')) {
                 setTheme(e.matches ? 'dark' : 'light');
             }
         });
 
-        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        // Initialize theme
         initTheme();
-    </script>
-    <script>
+
+        // Data loading functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function refreshData() {
+            showLoading();
+            window.location.reload();
+        }
+
+        function retryLoadData() {
+            showLoading();
+
+            // Try alternative loading method
+            fetch(window.location.pathname + '?retry=1&year=<?php echo $year; ?>&month=<?php echo $month; ?>')
+                .then(response => response.text())
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(error => {
+                    hideLoading();
+                    alert('Failed to reload data. Please try again.');
+                    console.error('Reload error:', error);
+                });
+        }
+
         window.onload = function() {
+            hideLoading();
+
+            <?php if ($hasData): ?>
+                // Show success message briefly
+                const successAlert = document.querySelector('.success-alert');
+                if (successAlert) {
+                    successAlert.classList.remove('hidden');
+                    setTimeout(() => {
+                        successAlert.classList.add('hidden');
+                    }, 3000);
+                }
+            <?php endif; ?>
+
             console.log('Report loaded for:', '<?php echo $displayText; ?>');
             console.log('Total seniors:', <?php echo $reportData['part1']['totals']['overall'] ?? 0; ?>);
             console.log('Data source:', '<?php echo $hasData ? "Database" : "Fallback"; ?>');
@@ -971,13 +1044,6 @@ if (!$hasData) {
             <?php if ($errorMessage): ?>
                 console.error('Error:', '<?php echo addslashes($errorMessage); ?>');
             <?php endif; ?>
-
-            // Debug info
-            console.log('URL Parameters:', {
-                year: '<?php echo $year; ?>',
-                month: '<?php echo $month; ?>',
-                session_context: '<?php echo $ctx; ?>'
-            });
         };
     </script>
 </body>

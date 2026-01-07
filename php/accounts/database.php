@@ -2,9 +2,9 @@
 class Database
 {
     private $host = "localhost";
-    private $db_name = "mswd_seniors";
-    private $username = "root";
-    private $password = "";
+    private $db_name = "u401132124_mswd_seniors";
+    private $username = "u401132124_mswdopaluan";
+    private $password = "Mswdo_PaluanSystem23";
     public $conn;
 
     public function getConnection()

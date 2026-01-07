@@ -1,12 +1,12 @@
 <?php
-require_once "/MSWDPALUAN_SYSTEM-MAIN/php/login/admin_header.php";
+require_once "../../php/login/admin_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mswd_seniors";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 $pdo = null;
 try {
@@ -168,7 +168,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../php/login/logout.php"
+                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -642,10 +642,10 @@ if (empty($profile_photo_url)) {
                 <div id="popupBox"
                     class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
                     <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
+                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-white mb-4">Message</p>
                     <div class="flex justify-end">
                         <button id="popupCloseBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            class="px-4 py-1 bg-blue-600 cursor-pointer dark:text-white text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             OK
                         </button>
                     </div>
@@ -839,7 +839,7 @@ if (empty($profile_photo_url)) {
                 tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
                 try {
-                    const res = await fetch(`../../php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
                     const data = await res.json();
 
                     tbody.innerHTML = "";
@@ -905,7 +905,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const res = await fetch("../../php/seniorlist/senior_illness.php", {
+                    const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

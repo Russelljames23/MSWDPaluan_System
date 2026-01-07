@@ -42,9 +42,9 @@ function sendJsonSuccess($message, $data = [])
 
 // Database configuration
 $host = "localhost";
-$dbname = "mswd_seniors";
-$username = "root";
-$password = "";
+$dbname = "u401132124_mswd_seniors";
+$username = "u401132124_mswdopaluan";
+$password = "Mswdo_PaluanSystem23";
 
 // Create connection (using mysqli for consistency with original code)
 $conn = new mysqli($host, $username, $password, $dbname);

@@ -15,6 +15,6 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . "/check_session.php";
 
 if (!isAdmin()) {
-    header("Location: ../../index.php?error=no_access");
+    header("Location: /index.php?error=no_access");
     exit;
 }
