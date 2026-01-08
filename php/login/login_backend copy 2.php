@@ -30,58 +30,6 @@ try {
     exit;
 }
 
-/**
- * Initialize proper session for Admin/Staff
- */
-function initUserSession($userData, $loginType, $sessionContext = null)
-{
-    if ($sessionContext) {
-        session_name('SESS_' . $sessionContext);
-    }
-    
-    @session_start();
-    
-    // Clear any existing session data
-    $_SESSION = [];
-    
-    // Set user data
-    $_SESSION['user_id'] = $userData['id'];
-    $_SESSION['id'] = $userData['id'];
-    $_SESSION['username'] = $userData['username'];
-    $_SESSION['firstname'] = $userData['firstname'] ?? '';
-    $_SESSION['lastname'] = $userData['lastname'] ?? '';
-    $_SESSION['middlename'] = $userData['middlename'] ?? '';
-    
-    // Set fullname
-    $fullname = $userData['firstname'] . ' ' . $userData['lastname'];
-    if (!empty($userData['middlename'])) {
-        $fullname = $userData['firstname'] . ' ' . $userData['middlename'] . ' ' . $userData['lastname'];
-    }
-    $_SESSION['fullname'] = $fullname;
-    
-    $_SESSION['user_type'] = $userData['user_type'];
-    $_SESSION['logged_in'] = true;
-    $_SESSION['is_verified'] = true;
-    $_SESSION['login_time'] = date('Y-m-d H:i:s');
-    $_SESSION['last_activity'] = time();
-    
-    // Set session context
-    if ($loginType === 'Admin') {
-        $_SESSION['session_context'] = 'admin';
-    } else {
-        $_SESSION['session_context'] = 'staff';
-    }
-    
-    // Store browser context if provided
-    if ($sessionContext) {
-        $_SESSION['browser_session_context'] = $sessionContext;
-    }
-    
-    session_regenerate_id(true);
-    
-    return session_id();
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = $parsedInput; // already parsed above
 

@@ -14,7 +14,7 @@ const LogManager = {
         itemsPerPage: 20,
         totalItems: 0,
         totalPages: 0,
-        apiUrl: '/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/settings/combined_logs_backend.php'
+        apiUrl: '/MSWDPALUAN_SYSTEM-MAIN/php/settings/combined_logs_backend.php'
     },
 
     init() {

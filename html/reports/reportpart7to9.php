@@ -14,9 +14,9 @@ if ($currentYear !== null && ($currentYear < 2000 || $currentYear > 2100)) {
 }
 
 $servername = "localhost";
-$dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
 $password = "Mswdo_PaluanSystem23";
+$dbname = "u401132124_mswd_seniors";
 
 $pdo = null;
 try {
@@ -102,7 +102,7 @@ if (empty($profile_photo_url)) {
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
                     <a href="#" class="flex items-center justify-between mr-4 ">
-                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
+                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -348,7 +348,7 @@ if (empty($profile_photo_url)) {
                         </a>
                     </li>
                     <li>
-                        <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../../settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
                             <svg aria-hidden="true"
                                 class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -366,7 +366,7 @@ if (empty($profile_photo_url)) {
 
         <main class="p-4 md:ml-64 pt-20">
             <div class="w-full flex justify-between items-center mb-4">
-                <div><?php require_once "/MSWDPALUAN_SYSTEM-MAIN/php/reports/date_filter_component.php"; ?></div>
+                <div><?php require_once "../../php/reports/date_filter_component.php"; ?></div>
                 <button type="button" onclick="generateReport()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     Generate Report
@@ -736,7 +736,7 @@ if (empty($profile_photo_url)) {
                     updatePeriodDisplay();
 
                     // Build API URL
-                    let apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php';
+                    let apiUrl = '../../php/reports/report_part7to9_backend.php';
                     apiUrl += '?';
 
                     // Add filters if provided
@@ -838,7 +838,7 @@ if (empty($profile_photo_url)) {
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -879,7 +879,7 @@ if (empty($profile_photo_url)) {
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -902,7 +902,7 @@ if (empty($profile_photo_url)) {
             // Function to load activities
             async function loadActivities() {
                 try {
-                    const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php?action=get_activities&_=' + Date.now();
+                    const apiUrl = '../../php/reports/report_part7to9_backend.php?action=get_activities&_=' + Date.now();
 
                     const response = await fetch(apiUrl);
                     const result = await response.json();
@@ -980,7 +980,7 @@ if (empty($profile_photo_url)) {
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -1009,7 +1009,7 @@ if (empty($profile_photo_url)) {
                     formData.append('action', 'delete_activity');
                     formData.append('activity_id', activityId);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -1038,7 +1038,7 @@ if (empty($profile_photo_url)) {
                     formData.append('month', currentMonth || new Date().getMonth() + 1);
                     formData.append('year', currentYear || new Date().getFullYear());
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/reports/report_part7to9_backend.php', {
+                    const response = await fetch('../../php/reports/report_part7to9_backend.php', {
                         method: 'POST',
                         body: formData
                     });

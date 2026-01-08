@@ -60,7 +60,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Beneficiary</title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -90,7 +90,7 @@ if (empty($profile_photo_url)) {
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
                     <a href="#" class="flex items-center justify-between mr-4 ">
-                        <img src="../img/MSWD_LOGO-removebg-preview.png"
+                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
                             alt="MSWD LOGO" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
@@ -166,7 +166,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -338,7 +338,7 @@ if (empty($profile_photo_url)) {
         <main class="p-4 md:ml-64 pt-20 flex flex-col">
             <div class="flex items-center flex-row ">
                 <div class="border border-t-0 border-l-0">
-                    <a href="staff_benefits.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
+                    <a href="./benefits.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
                         <h4 class="text-xl font-medium  px-2 dark:text-white">Benefits</h4>
                     </a>
                 </div>
@@ -380,7 +380,7 @@ if (empty($profile_photo_url)) {
                                 <!-- Add Benefit Button (Initially Hidden) -->
                                 <div id="addBenefitBtnContainer" class="flex flex-row gap-2 hidden">
                                     <button id="addBenefitBtn"
-                                        class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-green-600 rounded-sm hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
+                                        class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">
                                         💰 Add Benefit
                                     </button>
                                 </div>
@@ -424,7 +424,7 @@ if (empty($profile_photo_url)) {
                                     <tr>
                                         <th scope="col" class="px-4 py-3">
                                             <input id="selectAllCheckbox" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                class="w-4 h-4 text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300">
                                         </th>
                                         <th scope="col" class="px-4 py-3">No.</th>
                                         <th scope="col" class="px-4 py-3">Name</th>
@@ -577,72 +577,53 @@ if (empty($profile_photo_url)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../staff_js/tailwind.config.js"></script>
+    <script src="../../js/staff_tailwind.config.js"></script>
     <script src="../../js/staff_theme.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
-        (function() {
-            // Use the same StaffTheme namespace
-            const StaffTheme = {
-                init: function() {
-                    const savedTheme = localStorage.getItem('staff_theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
 
-                    let theme = 'light';
-                    if (savedTheme) {
-                        theme = savedTheme;
-                    } else if (systemPrefersDark) {
-                        theme = 'dark';
-                    }
+            setTheme(theme);
+        }
 
-                    this.set(theme);
-                    return theme;
-                },
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
-                set: function(theme) {
-                    const root = document.documentElement;
-                    const wasDark = root.classList.contains('dark');
-                    const isDark = theme === 'dark';
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
 
-                    if (isDark && !wasDark) {
-                        root.classList.add('dark');
-                        localStorage.setItem('staff_theme', 'dark');
-                    } else if (!isDark && wasDark) {
-                        root.classList.remove('dark');
-                        localStorage.setItem('staff_theme', 'light');
-                    }
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
 
-                    // Dispatch event for staff components
-                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
-                }
-            };
-
-            // Initialize theme
-            StaffTheme.init();
-
-            // Listen for storage events
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'staff_theme') {
-                    const theme = e.newValue;
-                    const currentIsDark = document.documentElement.classList.contains('dark');
-                    const newIsDark = theme === 'dark';
-
-                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
-                        StaffTheme.set(theme);
-                    }
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('staff_theme')) {
-                    StaffTheme.set(e.matches ? 'dark' : 'light');
-                }
-            });
-        })();
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
     </script>
     <!-- Beneficiary Table Script -->
     <script>
@@ -728,7 +709,7 @@ if (empty($profile_photo_url)) {
 
             // ---------------- FETCH BARANGAYS ----------------
             function fetchBarangays() {
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
                     .then(res => res.json())
                     .then(barangays => {
                         barangayList.innerHTML = "";
@@ -764,7 +745,7 @@ if (empty($profile_photo_url)) {
 
             // ---------------- FETCH BENEFITS ----------------
             function fetchBenefits() {
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php")
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -788,7 +769,7 @@ if (empty($profile_photo_url)) {
             // ---------------- FETCH BENEFITS HISTORY ----------------
             async function fetchBenefitsHistory(applicantId, fullName) {
                 try {
-                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits_history.php?applicant_id=${applicantId}`);
+                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits_history.php?applicant_id=${applicantId}`);
                     const data = await response.json();
 
                     // Update modal title
@@ -892,7 +873,7 @@ if (empty($profile_photo_url)) {
                     barangays: selectedBarangays.join(',')
                 });
 
-                fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tableBody.innerHTML = "";
@@ -925,7 +906,7 @@ if (empty($profile_photo_url)) {
                             const row = `
                         <tr class="border-b text-xs font-medium text-center border-gray-200">
                             <td class="px-4 py-3">
-                                <input type="checkbox" class="beneficiaryCheckbox border-gray-600" 
+                                <input type="checkbox" class="beneficiaryCheckbox text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300" 
                                     value="${senior.applicant_id}" data-name="${senior.full_name || 'Unknown'}">
                             </td>
                             <td>${senior.rownum}</td>
@@ -1239,7 +1220,7 @@ if (empty($profile_photo_url)) {
                     };
 
                     try {
-                        const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
+                        const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

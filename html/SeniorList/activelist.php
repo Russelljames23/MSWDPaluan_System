@@ -168,7 +168,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -390,7 +390,7 @@ if (empty($profile_photo_url)) {
                                     <!-- Update Pension Status Button (Initially Hidden) -->
                                     <div id="openModalbtn" class="flex flex-row gap-2 hidden">
                                         <button id="bulkPensionBtn"
-                                            class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-blue-600 rounded-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                            class="px-3 py-2 cursor-pointer text-xs  font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
                                             Update Pension Status
                                         </button>
                                     </div>
@@ -446,7 +446,7 @@ if (empty($profile_photo_url)) {
                                     <tr>
                                         <th scope="col" class="px-4 py-3">
                                             <input id="selectAllCheckbox" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                class="w-4 h-4 text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300">
                                         </th>
                                         <th scope="col" class="px-4 py-3">No.</th>
                                         <th scope="col" class="px-4 py-3">Name</th>
@@ -1172,7 +1172,7 @@ if (empty($profile_photo_url)) {
 
                             tr.innerHTML = `
                             <td class="px-4 py-3">
-                                <input type="checkbox" class="multiSelectCheckbox border-gray-600" 
+                                <input type="checkbox" class="multiSelectCheckbox text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300" 
                                     value="${senior.applicant_id}" data-name="${senior.full_name || 'Unknown'}" 
                                     data-status="${senior.validation || 'Unknown'}">
                             </td>

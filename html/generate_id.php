@@ -598,7 +598,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>

@@ -60,7 +60,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Benefits</title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -198,7 +198,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -836,7 +836,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 // Send AJAX POST
-                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/save_benefits.php', {
+                fetch('../php/benefits/save_benefits.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -908,7 +908,7 @@ if (empty($profile_photo_url)) {
             });
 
             function loadBenefits() {
-                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php')
+                fetch('../php/benefits/fetch_benefits.php')
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -945,7 +945,7 @@ if (empty($profile_photo_url)) {
                         const id = this.dataset.id;
                         showConfirmPopup("Confirm Delete", "Are you sure you want to delete this benefit?", function(confirmed) {
                             if (!confirmed) return;
-                            fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/delete_benefit.php`, {
+                            fetch(`../php/benefits/delete_benefit.php`, {
                                     method: "POST",
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -1000,7 +1000,7 @@ if (empty($profile_photo_url)) {
                 const newName = benefitModalInput.value.trim();
                 if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
 
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
+                fetch("../php/benefits/update_benefit.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1125,7 +1125,7 @@ if (empty($profile_photo_url)) {
                 const newName = benefitModalInput.value.trim();
                 if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
 
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
+                fetch("../php/benefits/update_benefit.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

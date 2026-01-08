@@ -1,38 +1,5 @@
 <?php
-// Debug session
-error_log("=== PAGE LOADED ===");
-error_log("Page: " . basename(__FILE__));
-error_log("Session ID: " . session_id());
-error_log("Session context: " . ($_SESSION['session_context'] ?? 'none'));
-error_log("User ID: " . ($_SESSION['user_id'] ?? 'none'));
-error_log("Staff user ID: " . ($_SESSION['staff_user_id'] ?? 'none'));
-error_log("Admin user ID: " . ($_SESSION['admin_user_id'] ?? 'none'));
-error_log("Full name: " . ($_SESSION['fullname'] ?? 'none'));
-error_log("Username: " . ($_SESSION['username'] ?? 'none'));
 require_once "../../php/login/staff_header.php";
-require_once '../../php/login/staff_session_sync.php';
-
-// Fix session handling for staff
-if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
-    // Store session context but don't use it for session name
-    $ctx = $_GET['session_context'];
-    
-    // Set a default session context if not set
-    if (!isset($_SESSION['session_context'])) {
-        $_SESSION['session_context'] = 'Staff';
-    }
-    
-    // Make sure we have a user ID
-    if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
-        $_SESSION['user_id'] = $user_id;
-    }
-    
-    // Store fullname in session if available
-    if (!isset($_SESSION['fullname']) && !empty($full_name)) {
-        $_SESSION['fullname'] = $full_name;
-    }
-}
-
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
@@ -49,7 +16,7 @@ try {
     error_log("Database connection failed: " . $e->getMessage());
     die("Database connection failed. Please try again later.");
 }
-syncStaffSession($pdo);
+
 // Fetch current user data - ADD THIS
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
@@ -1384,37 +1351,22 @@ if (empty($profile_photo_url)) {
                 // Get session context from URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const sessionContext = urlParams.get('session_context') || '';
-                
-                // CRITICAL: Add staff user info to form data
-                const staffUserId = <?php echo json_encode($_SESSION['user_id'] ?? $_SESSION['staff_user_id'] ?? 0); ?>;
-                const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff User'); ?>;
-                
-                // Add staff info to form data
-                formData.staff_user_id = staffUserId;
-                formData.staff_user_name = staffUserName;
-                formData.session_context = sessionContext;
-                formData.request_source = 'staff_register';
 
-                // Log for debugging (use console.log, not error_log)
-                console.log("Submitting with staff ID: " + staffUserId + ", context: " + sessionContext);
-                console.log("Form data:", formData);
-                
-                // URL without session_context in query string (we're passing it in POST data)
-                const url = "/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php";
+                // Add session context to the URL
+                const url = "/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php" +
+                    (sessionContext ? "?session_context=" + encodeURIComponent(sessionContext) : "");
 
                 const res = await fetch(url, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        "X-Requested-With": "XMLHttpRequest"
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify(formData),
-                    credentials: 'include' // CRITICAL: sends cookies with the request
                 });
 
                 const text = await res.text();
-                console.log("Server response:", text);
-                
+                console.log("Server response:", text); // Debug log
+
                 try {
                     const json = JSON.parse(text);
 
@@ -1428,6 +1380,7 @@ if (empty($profile_photo_url)) {
                         // Clear stored age after successful submission
                         sessionStorage.removeItem('calculatedAge');
 
+                        // RESET THE BUTTON STATE ON SUCCESS
                         isSubmitting = false;
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1435,6 +1388,7 @@ if (empty($profile_photo_url)) {
                         }
                     } else {
                         showPopup(json.error || "Submission failed.", "error");
+                        // RESET THE BUTTON STATE ON ERROR TOO
                         isSubmitting = false;
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1444,6 +1398,7 @@ if (empty($profile_photo_url)) {
                 } catch {
                     console.error("Server returned non-JSON:", text);
                     showPopup("Unexpected server response. Check console for details.", "error");
+                    // RESET THE BUTTON STATE ON PARSE ERROR
                     isSubmitting = false;
                     if (submitBtn) {
                         submitBtn.disabled = false;
@@ -1453,6 +1408,7 @@ if (empty($profile_photo_url)) {
             } catch (err) {
                 console.error("Fetch error:", err);
                 showPopup("Network error: " + err.message, "error");
+                // RESET THE BUTTON STATE ON NETWORK ERROR
                 isSubmitting = false;
                 if (submitBtn) {
                     submitBtn.disabled = false;

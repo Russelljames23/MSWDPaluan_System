@@ -291,3 +291,585 @@
 [05-Jan-2026 08:24:44 Europe/Berlin] Activity logging failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
 [07-Jan-2026 02:05:11 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 19
 [07-Jan-2026 02:05:11 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 05:45:13 Europe/Berlin] 2026-01-08 05:45:13 - Activity: REGISTER_SENIOR - New senior citizen registered successfully - Details: {"applicant_id":"81","applicant_name":"Galgos, Ma.Lelizas","full_name":"Galgos, Ma.Lelizas Gapasangras","id_number":"34233f","local_control_number":"sd3r","age":61,"birth_date":"1964-12-07","gender":"Female","civil_status":"Married","barangay":"III - Silahis ng Pag-asa","municipality":"Paluan","province":"Occidental Mindoro","registered_by":"Unknown","registered_by_id":0,"registration_date":"2026-01-08","ip_address":"::1","record_ids":{"registration_id":"18","address_id":"103","economic_status_id":"103","health_condition_id":"103"},"has_illnesses":false,"is_pensioner":0,"has_family_support":0,"validation_status":"For Validation","system_status":"Active"}
+[08-Jan-2026 05:45:13 Europe/Berlin] Fallback logger DB error: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[08-Jan-2026 06:13:29 Europe/Berlin] ActivityLogger loaded from: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register/../settings/ActivityLogger.php
+[08-Jan-2026 06:13:29 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 06:13:29 Europe/Berlin] User ID: 0, User Name: Unknown
+[08-Jan-2026 06:13:29 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 06:16:16 Europe/Berlin] ActivityLogger loaded from: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register/ActivityLogger.php
+[08-Jan-2026 06:16:16 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 06:16:16 Europe/Berlin] User ID: 0, User Name: Unknown
+[08-Jan-2026 06:16:17 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 06:36:19 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:36:19 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:36:19 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 06:36:19 Europe/Berlin] Session ID: 
+[08-Jan-2026 06:36:19 Europe/Berlin] User ID in session: NOT SET
+[08-Jan-2026 06:36:19 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 06:36:19 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 06:36:19 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 06:36:19 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 06:36:19 Europe/Berlin] Received data: {"lname":"Albanio","fname":"Clare","mname":"Paguagan","suffix":"","gender":"Female","b_date":"1965-04-08","age":"60","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Owned","house_no":"","street":"","brgy":"XI - Harison","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723","local_control_number":""}
+[08-Jan-2026 06:36:19 Europe/Berlin] Starting transaction
+[08-Jan-2026 06:36:19 Europe/Berlin] Processing applicant: Clare Albanio, Birthdate: 1965-04-08
+[08-Jan-2026 06:36:19 Europe/Berlin] Checking ID number: 0723
+[08-Jan-2026 06:36:19 Europe/Berlin] Calculated age: 60
+[08-Jan-2026 06:36:19 Europe/Berlin] Generated local control number: 0014
+[08-Jan-2026 06:36:19 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 06:36:19 Europe/Berlin] Inserting applicant with data: ["Albanio","Clare","Paguagan","","Female","60",60,"Married","1965-04-08","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Owned"]
+[08-Jan-2026 06:36:19 Europe/Berlin] Applicant inserted with ID: 84
+[08-Jan-2026 06:36:19 Europe/Berlin] Registration details inserted with ID: 21
+[08-Jan-2026 06:36:19 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 06:36:19 Europe/Berlin] ActivityLogger: Log inserted - Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 06:36:19 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 06:47:50 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:47:50 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:47:50 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 06:47:50 Europe/Berlin] Session ID: 
+[08-Jan-2026 06:47:50 Europe/Berlin] User ID in session: NOT SET
+[08-Jan-2026 06:47:50 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 06:47:50 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 06:47:50 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 06:47:50 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 06:47:50 Europe/Berlin] Received data: {"lname":"Albanio","fname":"Clares","mname":"Paguagan","suffix":"","gender":"Female","b_date":"1965-04-09","age":"60","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"II - Handang Tumulong","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723e","local_control_number":"erf34"}
+[08-Jan-2026 06:47:50 Europe/Berlin] Starting transaction
+[08-Jan-2026 06:47:50 Europe/Berlin] Processing applicant: Clares Albanio, Birthdate: 1965-04-09
+[08-Jan-2026 06:47:50 Europe/Berlin] Checking ID number: 0723e
+[08-Jan-2026 06:47:50 Europe/Berlin] Calculated age: 60
+[08-Jan-2026 06:47:50 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 06:47:50 Europe/Berlin] Inserting applicant with data: ["Albanio","Clares","Paguagan","","Female","60",60,"Married","1965-04-09","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 06:47:50 Europe/Berlin] Applicant inserted with ID: 85
+[08-Jan-2026 06:47:50 Europe/Berlin] Registration details inserted with ID: 22
+[08-Jan-2026 06:47:50 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 06:47:50 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 20
+[08-Jan-2026 06:47:50 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 20
+[08-Jan-2026 06:47:50 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 06:47:50 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 06:50:14 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:50:14 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\register\applicant.php on line 27
+[08-Jan-2026 06:50:14 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 06:50:14 Europe/Berlin] Session ID: 
+[08-Jan-2026 06:50:14 Europe/Berlin] User ID in session: NOT SET
+[08-Jan-2026 06:50:14 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 06:50:14 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 06:50:14 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 06:50:14 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 06:50:14 Europe/Berlin] Received data: {"lname":"Albanios","fname":"Claire","mname":"Paguagans","suffix":"","gender":"Female","b_date":"1965-04-11","age":"60","civil_status":"Single","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"IX - Tubili","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723es","local_control_number":"dserd"}
+[08-Jan-2026 06:50:14 Europe/Berlin] Starting transaction
+[08-Jan-2026 06:50:14 Europe/Berlin] Processing applicant: Claire Albanios, Birthdate: 1965-04-11
+[08-Jan-2026 06:50:14 Europe/Berlin] Checking ID number: 0723es
+[08-Jan-2026 06:50:14 Europe/Berlin] Calculated age: 60
+[08-Jan-2026 06:50:14 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 06:50:14 Europe/Berlin] Inserting applicant with data: ["Albanios","Claire","Paguagans","","Female","60",60,"Single","1965-04-11","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 06:50:14 Europe/Berlin] Applicant inserted with ID: 86
+[08-Jan-2026 06:50:14 Europe/Berlin] Registration details inserted with ID: 23
+[08-Jan-2026 06:50:14 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 06:50:14 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 20
+[08-Jan-2026 06:50:14 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\settings\ActivityLogger.php on line 20
+[08-Jan-2026 06:50:14 Europe/Berlin] No user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 06:50:14 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 07:11:13 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 07:11:13 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 07:11:13 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 07:11:13 Europe/Berlin] Session Status: 1
+[08-Jan-2026 07:11:13 Europe/Berlin] Session Data: []
+[08-Jan-2026 07:11:13 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 07:11:13 Europe/Berlin] User ID from session: NOT FOUND
+[08-Jan-2026 07:11:13 Europe/Berlin] Using Staff user ID: 67
+[08-Jan-2026 07:11:13 Europe/Berlin] Verified user: ID=67, Username=Staff, Type=Staff
+[08-Jan-2026 07:11:13 Europe/Berlin] Final User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 07:11:13 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 07:11:13 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 07:11:13 Europe/Berlin] Received data: {"lname":"Albanioss","fname":"Clairess","mname":"Paguaganss","suffix":"","gender":"Female","b_date":"1961-02-02","age":"64","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"VIII - Marikit","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723es","local_control_number":"sdsdfd"}
+[08-Jan-2026 07:11:13 Europe/Berlin] Starting transaction
+[08-Jan-2026 07:11:13 Europe/Berlin] Processing applicant: Clairess Albanioss, Birthdate: 1961-02-02
+[08-Jan-2026 07:11:13 Europe/Berlin] Checking ID number: 0723es
+[08-Jan-2026 07:11:13 Europe/Berlin] Duplicate ID number found: 0723es assigned to Claire Albanios
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger - User ID found: , User Name: Unknown User
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger - User ID from DB: NOT FOUND
+[08-Jan-2026 07:11:13 Europe/Berlin] No valid user ID found for activity: ERROR
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger - Executing query with params: {":user_id":0,":activity_type":"ERROR",":description":"Attempted to use duplicate ID number",":activity_details":"{\"attempted_id\":\"0723es\",\"applicant_name\":\"Clairess Albanioss\",\"existing_applicant_id\":86,\"existing_applicant_name\":\"Claire Albanios\",\"existing_birth_date\":\"1965-04-11\",\"attempted_by\":\"Unknown\"}",":ip_address":"::1",":user_agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0"}
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger Error: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[08-Jan-2026 07:11:13 Europe/Berlin] ActivityLogger SQL Error Info: ["23000",1452,"Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)"]
+[08-Jan-2026 07:14:52 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 07:14:52 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 07:14:52 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 07:14:52 Europe/Berlin] Session Status: 1
+[08-Jan-2026 07:14:52 Europe/Berlin] Session Data: []
+[08-Jan-2026 07:14:52 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 07:14:52 Europe/Berlin] User ID from session: NOT FOUND
+[08-Jan-2026 07:14:52 Europe/Berlin] Using Staff user ID: 67
+[08-Jan-2026 07:14:52 Europe/Berlin] Verified user: ID=67, Username=Staff, Type=Staff
+[08-Jan-2026 07:14:52 Europe/Berlin] Final User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 07:14:52 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 07:14:52 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 07:14:52 Europe/Berlin] Received data: {"lname":"Albanioss","fname":"clairess","mname":"Paguaganss","suffix":"","gender":"Male","b_date":"1961-02-23","age":"64","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"V - Bagong Silang","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723ess","local_control_number":"ssd22"}
+[08-Jan-2026 07:14:52 Europe/Berlin] Starting transaction
+[08-Jan-2026 07:14:52 Europe/Berlin] Processing applicant: clairess Albanioss, Birthdate: 1961-02-23
+[08-Jan-2026 07:14:52 Europe/Berlin] Checking ID number: 0723ess
+[08-Jan-2026 07:14:52 Europe/Berlin] Calculated age: 64
+[08-Jan-2026 07:14:52 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 07:14:52 Europe/Berlin] Inserting applicant with data: ["Albanioss","clairess","Paguaganss","","Male","64",64,"Married","1961-02-23","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 07:14:52 Europe/Berlin] Applicant inserted with ID: 87
+[08-Jan-2026 07:14:52 Europe/Berlin] Registration details inserted with ID: 24
+[08-Jan-2026 07:14:52 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger - User ID found: , User Name: Unknown User
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger - User ID from DB: NOT FOUND
+[08-Jan-2026 07:14:52 Europe/Berlin] No valid user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger - Executing query with params: {":user_id":0,":activity_type":"REGISTER_SENIOR",":description":"New senior citizen registered successfully",":activity_details":"{\"applicant_id\":\"87\",\"applicant_name\":\"Albanioss, clairess\",\"full_name\":\"Albanioss, clairess Paguaganss\",\"id_number\":\"0723ess\",\"local_control_number\":\"ssd22\",\"age\":64,\"birth_date\":\"1961-02-23\",\"gender\":\"Male\",\"civil_status\":\"Married\",\"barangay\":\"V - Bagong Silang\",\"municipality\":\"Paluan\",\"province\":\"Occidental Mindoro\",\"registered_by\":\"Unknown\",\"registered_by_id\":0,\"registration_date\":\"2026-01-08\",\"ip_address\":\"::1\",\"record_ids\":{\"registration_id\":\"24\",\"address_id\":\"109\",\"economic_status_id\":\"109\",\"health_condition_id\":\"109\"},\"has_illnesses\":false,\"is_pensioner\":0,\"has_family_support\":0,\"validation_status\":\"For Validation\",\"system_status\":\"Active\"}",":ip_address":"::1",":user_agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0"}
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger Error: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[08-Jan-2026 07:14:52 Europe/Berlin] ActivityLogger SQL Error Info: ["23000",1452,"Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)"]
+[08-Jan-2026 07:14:52 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 07:16:00 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 07:16:00 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 07:16:00 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 07:16:00 Europe/Berlin] Session Status: 1
+[08-Jan-2026 07:16:00 Europe/Berlin] Session Data: []
+[08-Jan-2026 07:16:00 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 07:16:00 Europe/Berlin] User ID from session: NOT FOUND
+[08-Jan-2026 07:16:00 Europe/Berlin] Using Staff user ID: 67
+[08-Jan-2026 07:16:00 Europe/Berlin] Verified user: ID=67, Username=Staff, Type=Staff
+[08-Jan-2026 07:16:00 Europe/Berlin] Final User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 07:16:00 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 07:16:00 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 07:16:00 Europe/Berlin] Received data: {"lname":"Albanioss","fname":"sdweds","mname":"Paguaganss","suffix":"","gender":"Female","b_date":"1961-03-23","age":"64","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living alone","house_no":"","street":"","brgy":"VI - San Jose","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss","local_control_number":"sdd3"}
+[08-Jan-2026 07:16:00 Europe/Berlin] Starting transaction
+[08-Jan-2026 07:16:00 Europe/Berlin] Processing applicant: sdweds Albanioss, Birthdate: 1961-03-23
+[08-Jan-2026 07:16:00 Europe/Berlin] Checking ID number: 0723esss
+[08-Jan-2026 07:16:00 Europe/Berlin] Calculated age: 64
+[08-Jan-2026 07:16:00 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 07:16:00 Europe/Berlin] Inserting applicant with data: ["Albanioss","sdweds","Paguaganss","","Female","64",64,"Married","1961-03-23","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living alone"]
+[08-Jan-2026 07:16:00 Europe/Berlin] Applicant inserted with ID: 88
+[08-Jan-2026 07:16:00 Europe/Berlin] Registration details inserted with ID: 25
+[08-Jan-2026 07:16:00 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger - User ID found: , User Name: Unknown User
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger - User ID from DB: NOT FOUND
+[08-Jan-2026 07:16:00 Europe/Berlin] No valid user ID found for activity: REGISTER_SENIOR
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger - Executing query with params: {":user_id":0,":activity_type":"REGISTER_SENIOR",":description":"New senior citizen registered successfully",":activity_details":"{\"applicant_id\":\"88\",\"applicant_name\":\"Albanioss, sdweds\",\"full_name\":\"Albanioss, sdweds Paguaganss\",\"id_number\":\"0723esss\",\"local_control_number\":\"sdd3\",\"age\":64,\"birth_date\":\"1961-03-23\",\"gender\":\"Female\",\"civil_status\":\"Married\",\"barangay\":\"VI - San Jose\",\"municipality\":\"Paluan\",\"province\":\"Occidental Mindoro\",\"registered_by\":\"Unknown\",\"registered_by_id\":0,\"registration_date\":\"2026-01-08\",\"ip_address\":\"::1\",\"record_ids\":{\"registration_id\":\"25\",\"address_id\":\"110\",\"economic_status_id\":\"110\",\"health_condition_id\":\"110\"},\"has_illnesses\":false,\"is_pensioner\":0,\"has_family_support\":0,\"validation_status\":\"For Validation\",\"system_status\":\"Active\"}",":ip_address":"::1",":user_agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0"}
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger Error: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+[08-Jan-2026 07:16:00 Europe/Berlin] ActivityLogger SQL Error Info: ["23000",1452,"Cannot add or update a child row: a foreign key constraint fails (`u401132124_mswd_seniors`.`activity_logs`, CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)"]
+[08-Jan-2026 07:16:00 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 10:55:03 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 10:55:03 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 10:55:03 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 10:55:03 Europe/Berlin] Session Status: 1
+[08-Jan-2026 10:55:03 Europe/Berlin] Session Data: []
+[08-Jan-2026 10:55:03 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 10:55:03 Europe/Berlin] === USER RESOLUTION STARTED ===
+[08-Jan-2026 10:55:03 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 10:55:03 Europe/Berlin] Session Data: []
+[08-Jan-2026 10:55:03 Europe/Berlin] Defaulting to Admin user ID: 57, Type=Admin
+[08-Jan-2026 10:55:03 Europe/Berlin] Final User ID: 57, User Name: Admin
+[08-Jan-2026 10:55:03 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 10:55:03 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 10:55:03 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 10:55:03 Europe/Berlin] Applicant.php - User ID: 0, User Name: Admin
+[08-Jan-2026 10:55:03 Europe/Berlin] Received data: {"lname":"Albaniosss","fname":"Clara","mname":"Paguagansss","suffix":"","gender":"Female","b_date":"1962-11-12","age":"63","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"VIII - Marikit","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss2","local_control_number":"22eds2"}
+[08-Jan-2026 10:55:03 Europe/Berlin] Starting transaction
+[08-Jan-2026 10:55:03 Europe/Berlin] Processing applicant: Clara Albaniosss, Birthdate: 1962-11-12
+[08-Jan-2026 10:55:03 Europe/Berlin] Checking ID number: 0723esss2
+[08-Jan-2026 10:55:03 Europe/Berlin] Calculated age: 63
+[08-Jan-2026 10:55:03 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 10:55:03 Europe/Berlin] Inserting applicant with data: ["Albaniosss","Clara","Paguagansss","","Female","63",63,"Married","1962-11-12","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 10:55:03 Europe/Berlin] Applicant inserted with ID: 89
+[08-Jan-2026 10:55:03 Europe/Berlin] Registration details inserted with ID: 26
+[08-Jan-2026 10:55:03 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 10:55:03 Europe/Berlin] ActivityLogger: No valid user found for activity: REGISTER_SENIOR
+[08-Jan-2026 10:55:03 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 10:56:56 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 10:56:56 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 10:56:56 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 10:56:56 Europe/Berlin] Session Status: 1
+[08-Jan-2026 10:56:56 Europe/Berlin] Session Data: []
+[08-Jan-2026 10:56:56 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 10:56:56 Europe/Berlin] === USER RESOLUTION STARTED ===
+[08-Jan-2026 10:56:56 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 10:56:56 Europe/Berlin] Session Data: []
+[08-Jan-2026 10:56:56 Europe/Berlin] Defaulting to Admin user ID: 57, Type=Admin
+[08-Jan-2026 10:56:56 Europe/Berlin] Final User ID: 57, User Name: Admin
+[08-Jan-2026 10:56:56 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 10:56:56 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 10:56:56 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 10:56:56 Europe/Berlin] Applicant.php - User ID: 0, User Name: Admin
+[08-Jan-2026 10:56:56 Europe/Berlin] Received data: {"lname":"Albaniossss","fname":"Marianne","mname":"Paguaganssss","suffix":"","gender":"Female","b_date":"1956-02-22","age":"69","civil_status":"Single","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"Barangay *","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss2x","local_control_number":"cxx3"}
+[08-Jan-2026 10:56:56 Europe/Berlin] Starting transaction
+[08-Jan-2026 10:56:56 Europe/Berlin] Processing applicant: Marianne Albaniossss, Birthdate: 1956-02-22
+[08-Jan-2026 10:56:56 Europe/Berlin] Checking ID number: 0723esss2x
+[08-Jan-2026 10:56:56 Europe/Berlin] Calculated age: 69
+[08-Jan-2026 10:56:56 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 10:56:56 Europe/Berlin] Inserting applicant with data: ["Albaniossss","Marianne","Paguaganssss","","Female","69",69,"Single","1956-02-22","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 10:56:56 Europe/Berlin] Applicant inserted with ID: 90
+[08-Jan-2026 10:56:56 Europe/Berlin] Registration details inserted with ID: 27
+[08-Jan-2026 10:56:56 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 10:56:56 Europe/Berlin] ActivityLogger: No valid user found for activity: REGISTER_SENIOR
+[08-Jan-2026 10:56:56 Europe/Berlin] Log result: FAILED
+[08-Jan-2026 11:11:02 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:11:02 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:11:02 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:11:02 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:11:02 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:11:02 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:11:02 Europe/Berlin] === getUserID Started ===
+[08-Jan-2026 11:11:02 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:11:02 Europe/Berlin] Verified user: ID=57, Username=Admin, Type=Admin
+[08-Jan-2026 11:11:02 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:11:02 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:11:02 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:11:02 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:11:02 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:11:02 Europe/Berlin] Applicant.php - User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:11:02 Europe/Berlin] Received data: {"lname":"Albaniosssss","fname":"Mariannes","mname":"Paguagansssss","suffix":"","gender":"Female","b_date":"1957-02-22","age":"68","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"XII - Mananao","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss2xs","local_control_number":"dsd3"}
+[08-Jan-2026 11:11:02 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:11:02 Europe/Berlin] Processing applicant: Mariannes Albaniosssss, Birthdate: 1957-02-22
+[08-Jan-2026 11:11:02 Europe/Berlin] Checking ID number: 0723esss2xs
+[08-Jan-2026 11:11:02 Europe/Berlin] Calculated age: 68
+[08-Jan-2026 11:11:02 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:11:02 Europe/Berlin] Inserting applicant with data: ["Albaniosssss","Mariannes","Paguagansssss","","Female","68",68,"Married","1957-02-22","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:11:02 Europe/Berlin] Applicant inserted with ID: 91
+[08-Jan-2026 11:11:02 Europe/Berlin] Registration details inserted with ID: 28
+[08-Jan-2026 11:11:02 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:11:02 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:11:02 Europe/Berlin] Found user ID in session[user_id]: 57
+[08-Jan-2026 11:11:02 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:11:02 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 80, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:11:02 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:12:04 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:12:04 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:12:04 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:12:04 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:12:04 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:12:04 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:12:04 Europe/Berlin] === getUserID Started ===
+[08-Jan-2026 11:12:04 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:12:04 Europe/Berlin] Verified user: ID=57, Username=Admin, Type=Admin
+[08-Jan-2026 11:12:04 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:12:04 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:12:04 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:12:04 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:12:04 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:12:04 Europe/Berlin] Applicant.php - User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:12:04 Europe/Berlin] Received data: {"lname":"Staff","fname":"Staff","mname":"Staff","suffix":"","gender":"Male","b_date":"1959-02-22","age":"66","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"II - Handang Tumulong","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss2xsx","local_control_number":"cxzc3"}
+[08-Jan-2026 11:12:04 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:12:04 Europe/Berlin] Processing applicant: Staff Staff, Birthdate: 1959-02-22
+[08-Jan-2026 11:12:04 Europe/Berlin] Checking ID number: 0723esss2xsx
+[08-Jan-2026 11:12:04 Europe/Berlin] Calculated age: 66
+[08-Jan-2026 11:12:04 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:12:04 Europe/Berlin] Inserting applicant with data: ["Staff","Staff","Staff","","Male","66",66,"Married","1959-02-22","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:12:04 Europe/Berlin] Applicant inserted with ID: 92
+[08-Jan-2026 11:12:04 Europe/Berlin] Registration details inserted with ID: 29
+[08-Jan-2026 11:12:04 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:12:04 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:12:04 Europe/Berlin] Found user ID in session[user_id]: 57
+[08-Jan-2026 11:12:04 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:12:04 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 81, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:12:04 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:24:42 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:24:42 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:24:42 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:24:42 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:24:42 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:24:42 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:24:42 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:24:42 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:24:42 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:24:42 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:24:42 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:24:42 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:24:42 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:24:42 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:24:42 Europe/Berlin] Received data: {"lname":"Admin","fname":"Admin","mname":"Admin","suffix":"","gender":"Male","b_date":"1960-02-22","age":"65","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"VIII - Marikit","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"0723esss2xsxs","local_control_number":"sdf3"}
+[08-Jan-2026 11:24:42 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:24:42 Europe/Berlin] Processing applicant: Admin Admin, Birthdate: 1960-02-22
+[08-Jan-2026 11:24:42 Europe/Berlin] Checking ID number: 0723esss2xsxs
+[08-Jan-2026 11:24:42 Europe/Berlin] Calculated age: 65
+[08-Jan-2026 11:24:42 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:24:42 Europe/Berlin] Inserting applicant with data: ["Admin","Admin","Admin","","Male","65",65,"Married","1960-02-22","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:24:42 Europe/Berlin] Applicant inserted with ID: 93
+[08-Jan-2026 11:24:42 Europe/Berlin] Registration details inserted with ID: 30
+[08-Jan-2026 11:24:42 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:24:42 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:24:42 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:24:42 Europe/Berlin] Session data: []
+[08-Jan-2026 11:24:42 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:24:42 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:24:42 Europe/Berlin] Session data: []
+[08-Jan-2026 11:24:42 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:24:42 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:24:42 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 85, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:24:42 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:25:37 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:25:37 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:25:37 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:25:37 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:25:37 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:25:37 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:25:37 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:25:37 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:25:37 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:25:37 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:25:37 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:25:37 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:25:37 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:25:37 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:25:37 Europe/Berlin] Received data: {"lname":"Staff1","fname":"Staff1","mname":"Staff1","suffix":"","gender":"Male","b_date":"1961-02-22","age":"64","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"III - Silahis ng Pag-asa","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1022d","local_control_number":"sad2"}
+[08-Jan-2026 11:25:37 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:25:37 Europe/Berlin] Processing applicant: Staff1 Staff1, Birthdate: 1961-02-22
+[08-Jan-2026 11:25:37 Europe/Berlin] Checking ID number: 1022d
+[08-Jan-2026 11:25:37 Europe/Berlin] Calculated age: 64
+[08-Jan-2026 11:25:37 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:25:37 Europe/Berlin] Inserting applicant with data: ["Staff1","Staff1","Staff1","","Male","64",64,"Married","1961-02-22","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:25:37 Europe/Berlin] Applicant inserted with ID: 94
+[08-Jan-2026 11:25:37 Europe/Berlin] Registration details inserted with ID: 31
+[08-Jan-2026 11:25:37 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:25:37 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:25:37 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:25:37 Europe/Berlin] Session data: []
+[08-Jan-2026 11:25:37 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:25:37 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:25:37 Europe/Berlin] Session data: []
+[08-Jan-2026 11:25:37 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:25:37 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:25:37 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 86, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:25:37 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:27:55 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:27:55 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:27:55 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:27:55 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:27:55 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:27:55 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:27:55 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:27:55 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:27:55 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:27:55 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:27:55 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:27:55 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:27:55 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:27:55 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:27:55 Europe/Berlin] Received data: {"lname":"Staff123","fname":"Staffs","mname":"Staff","suffix":"","gender":"Female","b_date":"1961-12-12","age":"64","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"VIII - Marikit","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1022d2","local_control_number":"23d"}
+[08-Jan-2026 11:27:55 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:27:55 Europe/Berlin] Processing applicant: Staffs Staff123, Birthdate: 1961-12-12
+[08-Jan-2026 11:27:55 Europe/Berlin] Checking ID number: 1022d2
+[08-Jan-2026 11:27:55 Europe/Berlin] Calculated age: 64
+[08-Jan-2026 11:27:55 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:27:55 Europe/Berlin] Inserting applicant with data: ["Staff123","Staffs","Staff","","Female","64",64,"Married","1961-12-12","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:27:55 Europe/Berlin] Applicant inserted with ID: 95
+[08-Jan-2026 11:27:55 Europe/Berlin] Registration details inserted with ID: 32
+[08-Jan-2026 11:27:55 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:27:55 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:27:55 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:27:55 Europe/Berlin] Session data: []
+[08-Jan-2026 11:27:55 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:27:55 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:27:55 Europe/Berlin] Session data: []
+[08-Jan-2026 11:27:55 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:27:55 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:27:55 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 87, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:27:55 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:29:41 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:29:41 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:29:41 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:29:41 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:29:41 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:29:41 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:29:41 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:29:41 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:29:41 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:29:41 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:29:41 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:29:41 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:29:41 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:29:41 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:29:41 Europe/Berlin] Received data: {"lname":"Stafffs","fname":"saewe","mname":"Staff","suffix":"","gender":"Male","b_date":"1962-02-23","age":"63","civil_status":"Separated","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"IX - Tubili","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1022d2","local_control_number":"23d"}
+[08-Jan-2026 11:29:41 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:29:41 Europe/Berlin] Processing applicant: saewe Stafffs, Birthdate: 1962-02-23
+[08-Jan-2026 11:29:41 Europe/Berlin] Checking ID number: 1022d2
+[08-Jan-2026 11:29:41 Europe/Berlin] Duplicate ID number found: 1022d2 assigned to Staffs Staff123
+[08-Jan-2026 11:29:41 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:29:41 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:29:41 Europe/Berlin] Session data: []
+[08-Jan-2026 11:29:41 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:29:41 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:29:41 Europe/Berlin] Session data: []
+[08-Jan-2026 11:29:41 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:29:41 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:29:41 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 88, Type: ERROR, User: 57
+[08-Jan-2026 11:29:57 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:29:57 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:29:57 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:29:57 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:29:57 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:29:57 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:29:58 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:29:58 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:29:58 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:29:58 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:29:58 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:29:58 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:29:58 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:29:58 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:29:58 Europe/Berlin] Received data: {"lname":"Stafffs","fname":"saewe","mname":"Staff","suffix":"","gender":"Male","b_date":"1962-02-23","age":"63","civil_status":"Separated","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"IX - Tubili","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"23ds3","local_control_number":"34ds3"}
+[08-Jan-2026 11:29:58 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:29:58 Europe/Berlin] Processing applicant: saewe Stafffs, Birthdate: 1962-02-23
+[08-Jan-2026 11:29:58 Europe/Berlin] Checking ID number: 23ds3
+[08-Jan-2026 11:29:58 Europe/Berlin] Calculated age: 63
+[08-Jan-2026 11:29:58 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:29:58 Europe/Berlin] Inserting applicant with data: ["Stafffs","saewe","Staff","","Male","63",63,"Separated","1962-02-23","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:29:58 Europe/Berlin] Applicant inserted with ID: 96
+[08-Jan-2026 11:29:58 Europe/Berlin] Registration details inserted with ID: 33
+[08-Jan-2026 11:29:58 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:29:58 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:29:58 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:29:58 Europe/Berlin] Session data: []
+[08-Jan-2026 11:29:58 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:29:58 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:29:58 Europe/Berlin] Session data: []
+[08-Jan-2026 11:29:58 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:29:58 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:29:58 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 89, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:29:58 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:33:34 Europe/Berlin] Session started with ID: 
+[08-Jan-2026 11:33:34 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:33:34 Europe/Berlin] Session ID: NO SESSION
+[08-Jan-2026 11:33:34 Europe/Berlin] Session Status: 1
+[08-Jan-2026 11:33:34 Europe/Berlin] Session Data: []
+[08-Jan-2026 11:33:34 Europe/Berlin] Session empty or no user data, checking for alternative authentication
+[08-Jan-2026 11:33:34 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:33:34 Europe/Berlin] No user ID found, checking context
+[08-Jan-2026 11:33:34 Europe/Berlin] Defaulting to Admin ID: 57
+[08-Jan-2026 11:33:35 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:33:35 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:33:35 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:33:35 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:33:35 Europe/Berlin] Applicant.php - User ID: 0, User Name: Unknown
+[08-Jan-2026 11:33:35 Europe/Berlin] Received data: {"lname":"MAderazo","fname":"Jhon","mname":"Rhein","suffix":"","gender":"Male","b_date":"1959-02-23","age":"66","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"XI - Harison","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"23ds3d","local_control_number":"fds3"}
+[08-Jan-2026 11:33:35 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:33:35 Europe/Berlin] Processing applicant: Jhon MAderazo, Birthdate: 1959-02-23
+[08-Jan-2026 11:33:35 Europe/Berlin] Checking ID number: 23ds3d
+[08-Jan-2026 11:33:35 Europe/Berlin] Calculated age: 66
+[08-Jan-2026 11:33:35 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:33:35 Europe/Berlin] Inserting applicant with data: ["MAderazo","Jhon","Rhein","","Male","66",66,"Married","1959-02-23","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 11:33:35 Europe/Berlin] Applicant inserted with ID: 97
+[08-Jan-2026 11:33:35 Europe/Berlin] Registration details inserted with ID: 34
+[08-Jan-2026 11:33:35 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:33:35 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:33:35 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:33:35 Europe/Berlin] Session data: []
+[08-Jan-2026 11:33:35 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:33:35 Europe/Berlin] === ActivityLogger: resolveUserId Started ===
+[08-Jan-2026 11:33:35 Europe/Berlin] Session data: []
+[08-Jan-2026 11:33:35 Europe/Berlin] Defaulting to Admin user ID: 57
+[08-Jan-2026 11:33:35 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:33:35 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 90, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:33:35 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:47:51 Europe/Berlin] === initializeSessionForApplicant Started ===
+[08-Jan-2026 11:47:51 Europe/Berlin] Session not started, initializing...
+[08-Jan-2026 11:47:51 Europe/Berlin] Found session_context in POST data: session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] Set session name to: SESS_session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] Found session cookie: SESS_session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] Session started with existing cookie. ID: qr1k5ku1otud8bec702d2km9ps
+[08-Jan-2026 11:47:51 Europe/Berlin] Session initialized. Context: staff, User ID: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:47:51 Europe/Berlin] Session ID: qr1k5ku1otud8bec702d2km9ps
+[08-Jan-2026 11:47:51 Europe/Berlin] Session Status: 2
+[08-Jan-2026 11:47:51 Europe/Berlin] Session Data: {"verification_user_id":67,"user_id":67,"username":"Staff","fullname":"Marianne Ygay","user_type":"Staff","role_id":null,"role_name":"Staff","permissions":[],"logged_in":true,"is_verified":true,"last_activity":1767869238,"login_time":"2026-01-08 11:42:17","session_context":"staff","staff_user_id":67,"browser_session_context":"session_1767868913226_gyrclfm6n","firstname":"Marianne","lastname":"Ygay","email":"marianneygay@gmail.com","session_initialized":true,"session_start_time":1767869271}
+[08-Jan-2026 11:47:51 Europe/Berlin] Cookies: {"SESS_session_1766138357167_82aa37k2n":"rqvi3hi7rnpi9jskgp7geg5uv3","SESS_session_1767847440163_3okjq6bjq":"juo74piec3aiumh3bde6igftup","SESS_session_1767847444615_0w4a09gef":"it7i2n4b2cmj1jfl9csgdopmhc","SESS_session_1767851154812_gxek2c4wh":"si5fkvts069svdo5ndas90252f","SESS_session_1767851206794_22atz9fru":"n4eiiaebsqoqqfvpevnjedi895","SESS_session_1767851211175_ljaiy1ecc":"obg150k8touj2hqkk0sig3kq1j","PHPSESSID":"session_1767851211175_ljaiy1ecc","SESS_session_1767865950766_yptre724m":"724f6nm87bd40ed5hhsd9mfvaq","SESS_session_1767865960178_9en0z27fa":"njco6r378j3np7s6sfo4t6mof6","SESS_session_1767866020009_o9anrlnh5":"vnosr4vvgpmes9bealnom3rmq3","SESS_session_1767866046842_08sztftrj":"ivf6n578na3geqhgchu6gaqtj5","SESS_session_1767867788354_h8yoznava":"cvh656rj0g5gu11aksolse4c21","SESS_session_1767867791848_o17vgyk40":"4ei911c33oic47n67rr7f6d8nr","SESS_session_1767867812983_1fxoboye5":"upesojl578ih55r1d53pi0eaju","SESS_session_1767868913226_gyrclfm6n":"qr1k5ku1otud8bec702d2km9ps"}
+[08-Jan-2026 11:47:51 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:47:51 Europe/Berlin] Session context: staff
+[08-Jan-2026 11:47:51 Europe/Berlin] Session user_id: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Session staff_user_id: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Session admin_user_id: none
+[08-Jan-2026 11:47:51 Europe/Berlin] Found session context: staff
+[08-Jan-2026 11:47:51 Europe/Berlin] Found staff ID in session[staff_user_id]: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] User 67 is staff: YES
+[08-Jan-2026 11:47:51 Europe/Berlin] Final resolved - User ID: 67, User Name: Marianne Ygay, Context: staff
+[08-Jan-2026 11:47:51 Europe/Berlin] Final User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 11:47:51 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:47:51 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:47:51 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:47:51 Europe/Berlin] Applicant.php - User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 11:47:51 Europe/Berlin] Received data: {"lname":"Madera","fname":"Zo","mname":"Rheinss","suffix":"","gender":"Male","b_date":"1928-12-12","age":"97","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living alone","house_no":"","street":"","brgy":"VII - Lumang Bayan","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds3ds2","local_control_number":"213esd","staff_user_id":67,"staff_user_name":"Marianne Ygay","session_context":"session_1767868913226_gyrclfm6n","request_source":"staff_register"}
+[08-Jan-2026 11:47:51 Europe/Berlin] Received data: {"lname":"Madera","fname":"Zo","mname":"Rheinss","suffix":"","gender":"Male","b_date":"1928-12-12","age":"97","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living alone","house_no":"","street":"","brgy":"VII - Lumang Bayan","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds3ds2","local_control_number":"213esd","staff_user_id":67,"staff_user_name":"Marianne Ygay","session_context":"session_1767868913226_gyrclfm6n","request_source":"staff_register"}
+[08-Jan-2026 11:47:51 Europe/Berlin] Checking for user data in request...
+[08-Jan-2026 11:47:51 Europe/Berlin] Found staff_user_id in request: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Found session_context in request: session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] After processing request - Session context: session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] After processing request - User ID: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:47:51 Europe/Berlin] Processing applicant: Zo Madera, Birthdate: 1928-12-12
+[08-Jan-2026 11:47:51 Europe/Berlin] Checking ID number: 1ds3ds2
+[08-Jan-2026 11:47:51 Europe/Berlin] Calculated age: 97
+[08-Jan-2026 11:47:51 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:47:51 Europe/Berlin] Inserting applicant with data: ["Madera","Zo","Rheinss","","Male","97",97,"Married","1928-12-12","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living alone"]
+[08-Jan-2026 11:47:51 Europe/Berlin] Applicant inserted with ID: 98
+[08-Jan-2026 11:47:51 Europe/Berlin] Registration details inserted with ID: 35
+[08-Jan-2026 11:47:51 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:47:51 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:47:51 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 11:47:51 Europe/Berlin] Session data available: YES
+[08-Jan-2026 11:47:51 Europe/Berlin] Session context: session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] Session user_id: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Session staff_user_id: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Found session context: session_1767868913226_gyrclfm6n
+[08-Jan-2026 11:47:51 Europe/Berlin] Using user_id from session: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 11:47:51 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 92, Type: REGISTER_SENIOR, User: 67
+[08-Jan-2026 11:47:51 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 11:48:43 Europe/Berlin] === initializeSessionForApplicant Started ===
+[08-Jan-2026 11:48:43 Europe/Berlin] Session not started, initializing...
+[08-Jan-2026 11:48:43 Europe/Berlin] Found session_context in POST data: session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] Set session name to: SESS_session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] Found session cookie: SESS_session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] Session started with existing cookie. ID: 4ei911c33oic47n67rr7f6d8nr
+[08-Jan-2026 11:48:43 Europe/Berlin] Session initialized. Context: admin, User ID: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 11:48:43 Europe/Berlin] Session ID: 4ei911c33oic47n67rr7f6d8nr
+[08-Jan-2026 11:48:43 Europe/Berlin] Session Status: 2
+[08-Jan-2026 11:48:43 Europe/Berlin] Session Data: {"verification_user_id":57,"user_id":57,"username":"Admin","fullname":"Russell James Tadalan","user_type":"Admin","role_id":null,"role_name":"Admin","permissions":[],"logged_in":true,"is_verified":true,"last_activity":1767869286,"login_time":"2026-01-08 11:23:23","session_context":"admin","admin_user_id":57,"browser_session_context":"session_1767867791848_o17vgyk40","firstname":"Russell James","lastname":"Tadalan","email":"russelljamestadalan23@gmail.com","session_initialized":true,"session_start_time":1767869323}
+[08-Jan-2026 11:48:43 Europe/Berlin] Cookies: {"SESS_session_1766138357167_82aa37k2n":"rqvi3hi7rnpi9jskgp7geg5uv3","SESS_session_1767847440163_3okjq6bjq":"juo74piec3aiumh3bde6igftup","SESS_session_1767847444615_0w4a09gef":"it7i2n4b2cmj1jfl9csgdopmhc","SESS_session_1767851154812_gxek2c4wh":"si5fkvts069svdo5ndas90252f","SESS_session_1767851206794_22atz9fru":"n4eiiaebsqoqqfvpevnjedi895","SESS_session_1767851211175_ljaiy1ecc":"obg150k8touj2hqkk0sig3kq1j","PHPSESSID":"session_1767851211175_ljaiy1ecc","SESS_session_1767865950766_yptre724m":"724f6nm87bd40ed5hhsd9mfvaq","SESS_session_1767865960178_9en0z27fa":"njco6r378j3np7s6sfo4t6mof6","SESS_session_1767866020009_o9anrlnh5":"vnosr4vvgpmes9bealnom3rmq3","SESS_session_1767866046842_08sztftrj":"ivf6n578na3geqhgchu6gaqtj5","SESS_session_1767867788354_h8yoznava":"cvh656rj0g5gu11aksolse4c21","SESS_session_1767867791848_o17vgyk40":"4ei911c33oic47n67rr7f6d8nr","SESS_session_1767867812983_1fxoboye5":"upesojl578ih55r1d53pi0eaju","SESS_session_1767868913226_gyrclfm6n":"qr1k5ku1otud8bec702d2km9ps"}
+[08-Jan-2026 11:48:43 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 11:48:43 Europe/Berlin] Session context: admin
+[08-Jan-2026 11:48:43 Europe/Berlin] Session user_id: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Session staff_user_id: none
+[08-Jan-2026 11:48:43 Europe/Berlin] Session admin_user_id: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Found session context: admin
+[08-Jan-2026 11:48:43 Europe/Berlin] Found admin ID in session[admin_user_id]: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Final resolved - User ID: 57, User Name: Russell James Tadalan, Context: admin
+[08-Jan-2026 11:48:43 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:48:43 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 11:48:43 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 11:48:43 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 11:48:43 Europe/Berlin] Applicant.php - User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:48:43 Europe/Berlin] Received data: {"lname":"Admin","fname":"Si","mname":"Russell","suffix":"","gender":"Male","b_date":"1960-02-23","age":"65","civil_status":"Single","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living alone","house_no":"","street":"","brgy":"XI - Harison","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds3ds2sd","local_control_number":"324de3","admin_user_id":57,"admin_user_name":"Russell James Tadalan","session_context":"session_1767867791848_o17vgyk40","request_source":"admin_register"}
+[08-Jan-2026 11:48:43 Europe/Berlin] Received data: {"lname":"Admin","fname":"Si","mname":"Russell","suffix":"","gender":"Male","b_date":"1960-02-23","age":"65","civil_status":"Single","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living alone","house_no":"","street":"","brgy":"XI - Harison","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds3ds2sd","local_control_number":"324de3","admin_user_id":57,"admin_user_name":"Russell James Tadalan","session_context":"session_1767867791848_o17vgyk40","request_source":"admin_register"}
+[08-Jan-2026 11:48:43 Europe/Berlin] Checking for user data in request...
+[08-Jan-2026 11:48:43 Europe/Berlin] Found admin_user_id in request: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Found session_context in request: session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] After processing request - Session context: session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] After processing request - User ID: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Starting transaction
+[08-Jan-2026 11:48:43 Europe/Berlin] Processing applicant: Si Admin, Birthdate: 1960-02-23
+[08-Jan-2026 11:48:43 Europe/Berlin] Checking ID number: 1ds3ds2sd
+[08-Jan-2026 11:48:43 Europe/Berlin] Calculated age: 65
+[08-Jan-2026 11:48:43 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 11:48:43 Europe/Berlin] Inserting applicant with data: ["Admin","Si","Russell","","Male","65",65,"Single","1960-02-23","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living alone"]
+[08-Jan-2026 11:48:43 Europe/Berlin] Applicant inserted with ID: 99
+[08-Jan-2026 11:48:43 Europe/Berlin] Registration details inserted with ID: 36
+[08-Jan-2026 11:48:43 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 11:48:43 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 11:48:43 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 11:48:43 Europe/Berlin] Session data available: YES
+[08-Jan-2026 11:48:43 Europe/Berlin] Session context: session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] Session user_id: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Session staff_user_id: none
+[08-Jan-2026 11:48:43 Europe/Berlin] Found session context: session_1767867791848_o17vgyk40
+[08-Jan-2026 11:48:43 Europe/Berlin] Using user_id from session: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 11:48:43 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 93, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 11:48:43 Europe/Berlin] Log result: SUCCESS

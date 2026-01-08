@@ -52,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => 'Verification code expired. Please login again.']);
         exit;
     }
-    // In verify_code_backend.php, update the successful verification section:
     if ($entered_code === $_SESSION['verification_code']) {
         $user_data = $_SESSION['pending_login'];
 
+
         session_regenerate_id(true);
 
-        // Set common session variables
+
         $_SESSION['user_id'] = $user_data['user_id'];
         $_SESSION['username'] = $user_data['username'];
         $_SESSION['fullname'] = $user_data['fullname'];
@@ -70,57 +70,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['is_verified'] = true;
         $_SESSION['last_activity'] = time();
         $_SESSION['login_time'] = date('Y-m-d H:i:s');
-
-        // Set context-specific variables
         if ($user_data['login_type'] === 'Admin') {
             $_SESSION['session_context'] = 'admin';
-            $_SESSION['admin_user_id'] = $user_data['user_id'];
         } else {
             $_SESSION['session_context'] = 'staff';
-            $_SESSION['staff_user_id'] = $user_data['user_id'];
-
-            // Also store for backward compatibility
-            $_SESSION['user_id'] = $user_data['user_id'];
         }
+
 
         $_SESSION['browser_session_context'] = $session_context_from_input;
 
-        // IMPORTANT: Get user details from database to ensure we have correct info
-        try {
-            $stmt = $pdo->prepare(
-                "SELECT id, firstname, lastname, username, user_type, email 
-             FROM users WHERE id = ? AND status = 'active'"
-            );
-            $stmt->execute([$user_data['user_id']]);
-            $dbUser = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($dbUser) {
-                // Update session with database values
-                $_SESSION['firstname'] = $dbUser['firstname'] ?? '';
-                $_SESSION['lastname'] = $dbUser['lastname'] ?? '';
-                $_SESSION['email'] = $dbUser['email'] ?? '';
-                $_SESSION['user_type'] = $dbUser['user_type'];
-
-                // Update fullname with actual database values
-                if (!empty($dbUser['firstname']) && !empty($dbUser['lastname'])) {
-                    $_SESSION['fullname'] = $dbUser['firstname'] . ' ' . $dbUser['lastname'];
-                }
-            }
-        } catch (Exception $e) {
-            error_log("Error getting user details: " . $e->getMessage());
-        }
 
         logLoginActivity($pdo, $user_data['user_id'], $user_data['login_type']);
+
 
         unset($_SESSION['verification_code']);
         unset($_SESSION['verification_expires']);
         unset($_SESSION['pending_login']);
-
         echo json_encode([
             'success' => true,
             'message' => 'Verification successful!',
-            'redirect_url' => getRedirectUrl($user_data['login_type'], $session_context_from_input),
-            'user_type' => $user_data['user_type']
+            'redirect_url' => getRedirectUrl($user_data['login_type'], $session_context_from_input)
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid verification code.']);

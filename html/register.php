@@ -1,5 +1,31 @@
 <?php
+// Debug session
+error_log("=== PAGE LOADED ===");
+error_log("Page: " . basename(__FILE__));
+error_log("Session ID: " . session_id());
+error_log("Session context: " . ($_SESSION['session_context'] ?? 'none'));
+error_log("User ID: " . ($_SESSION['user_id'] ?? 'none'));
+error_log("Staff user ID: " . ($_SESSION['staff_user_id'] ?? 'none'));
+error_log("Admin user ID: " . ($_SESSION['admin_user_id'] ?? 'none'));
+error_log("Full name: " . ($_SESSION['fullname'] ?? 'none'));
+error_log("Username: " . ($_SESSION['username'] ?? 'none'));
 require_once "../php/login/admin_header.php";
+// Fix session handling for admin
+if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
+    $ctx = $_GET['session_context'];
+    
+    if (!isset($_SESSION['session_context'])) {
+        $_SESSION['session_context'] = 'admin';
+    }
+    
+    if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
+        $_SESSION['user_id'] = $user_id;
+    }
+    
+    if (!isset($_SESSION['fullname']) && !empty($full_name)) {
+        $_SESSION['fullname'] = $full_name;
+    }
+}
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
 $servername = "localhost";
@@ -168,7 +194,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -1341,15 +1367,39 @@ if (empty($profile_photo_url)) {
             }
 
             try {
-                const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php", {
+                // Get session context from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionContext = urlParams.get('session_context') || '';
+                
+                // Add admin user info to form data
+                const adminUserId = <?php echo json_encode($_SESSION['user_id'] ?? $_SESSION['admin_user_id'] ?? 57); ?>;
+                const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>;
+                
+                // Add admin info to form data
+                formData.admin_user_id = adminUserId;
+                formData.admin_user_name = adminUserName;
+                formData.session_context = sessionContext;
+                formData.request_source = 'admin_register';
+
+                // Log for debugging
+                console.log("Submitting with admin ID: " + adminUserId + ", context: " + sessionContext);
+                console.log("Form data:", formData);
+
+                const url = "/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php";
+
+                const res = await fetch(url, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
                     },
                     body: JSON.stringify(formData),
+                    credentials: 'include'
                 });
 
                 const text = await res.text();
+                console.log("Server response:", text);
+
                 try {
                     const json = JSON.parse(text);
 
@@ -1360,10 +1410,8 @@ if (empty($profile_photo_url)) {
                         }
 
                         showPopup(successMessage, "success", true);
-                        // Clear stored age after successful submission
                         sessionStorage.removeItem('calculatedAge');
 
-                        // RESET THE BUTTON STATE ON SUCCESS
                         isSubmitting = false;
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1371,7 +1419,6 @@ if (empty($profile_photo_url)) {
                         }
                     } else {
                         showPopup(json.error || "Submission failed.", "error");
-                        // RESET THE BUTTON STATE ON ERROR TOO
                         isSubmitting = false;
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1381,7 +1428,6 @@ if (empty($profile_photo_url)) {
                 } catch {
                     console.error("Server returned non-JSON:", text);
                     showPopup("Unexpected server response. Check console for details.", "error");
-                    // RESET THE BUTTON STATE ON PARSE ERROR
                     isSubmitting = false;
                     if (submitBtn) {
                         submitBtn.disabled = false;
@@ -1389,8 +1435,8 @@ if (empty($profile_photo_url)) {
                     }
                 }
             } catch (err) {
+                console.error("Fetch error:", err);
                 showPopup("Network error: " + err.message, "error");
-                // RESET THE BUTTON STATE ON NETWORK ERROR
                 isSubmitting = false;
                 if (submitBtn) {
                     submitBtn.disabled = false;

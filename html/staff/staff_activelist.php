@@ -168,7 +168,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -345,7 +345,7 @@ if (empty($profile_photo_url)) {
                         <div class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
                             <div class="flex flex-row justify-between items-center">
                                 <h4 class="text-xl font-medium dark:text-white">Active List</h4>
-                                <button onclick="window.location.href='staff_masterlist.php?session_context=<?php echo $ctx; ?>'"
+                                <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
                                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                     type="button">
                                     <i class="fas fa-table mr-2"></i>Master List
@@ -376,7 +376,7 @@ if (empty($profile_photo_url)) {
                                     <!-- Update Pension Status Button (Initially Hidden) -->
                                     <div id="openModalbtn" class="flex flex-row gap-2 hidden">
                                         <button id="bulkPensionBtn"
-                                            class="px-3 py-2 cursor-pointer text-xs font-medium text-white bg-blue-600 rounded-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                            class="px-3 py-2 cursor-pointer text-xs  font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
                                             Update Pension Status
                                         </button>
                                     </div>
@@ -432,7 +432,7 @@ if (empty($profile_photo_url)) {
                                     <tr>
                                         <th scope="col" class="px-4 py-3">
                                             <input id="selectAllCheckbox" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                class="w-4 h-4 text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300">
                                         </th>
                                         <th scope="col" class="px-4 py-3">No.</th>
                                         <th scope="col" class="px-4 py-3">Name</th>
@@ -628,10 +628,10 @@ if (empty($profile_photo_url)) {
                 <div id="popupBox"
                     class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
                     <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-gray-300 mb-4">Message</p>
+                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-white mb-4">Message</p>
                     <div class="flex justify-end">
                         <button id="popupCloseBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            class="px-4 py-1 bg-blue-600 cursor-pointer dark:text-white text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             OK
                         </button>
                     </div>
@@ -641,72 +641,52 @@ if (empty($profile_photo_url)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/staff_tailwind.config.js"></script>
-    <script src="../../js/staff_theme.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
-        (function() {
-            // Use the same StaffTheme namespace
-            const StaffTheme = {
-                init: function() {
-                    const savedTheme = localStorage.getItem('staff_theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
 
-                    let theme = 'light';
-                    if (savedTheme) {
-                        theme = savedTheme;
-                    } else if (systemPrefersDark) {
-                        theme = 'dark';
-                    }
+            setTheme(theme);
+        }
 
-                    this.set(theme);
-                    return theme;
-                },
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
-                set: function(theme) {
-                    const root = document.documentElement;
-                    const wasDark = root.classList.contains('dark');
-                    const isDark = theme === 'dark';
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
 
-                    if (isDark && !wasDark) {
-                        root.classList.add('dark');
-                        localStorage.setItem('staff_theme', 'dark');
-                    } else if (!isDark && wasDark) {
-                        root.classList.remove('dark');
-                        localStorage.setItem('staff_theme', 'light');
-                    }
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
 
-                    // Dispatch event for staff components
-                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
-                }
-            };
-
-            // Initialize theme
-            StaffTheme.init();
-
-            // Listen for storage events
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'staff_theme') {
-                    const theme = e.newValue;
-                    const currentIsDark = document.documentElement.classList.contains('dark');
-                    const newIsDark = theme === 'dark';
-
-                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
-                        StaffTheme.set(theme);
-                    }
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('staff_theme')) {
-                    StaffTheme.set(e.matches ? 'dark' : 'light');
-                }
-            });
-        })();
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
+        initTheme();
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -845,7 +825,7 @@ if (empty($profile_photo_url)) {
                 tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
                 try {
-                    const res = await fetch(`../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
                     const data = await res.json();
 
                     tbody.innerHTML = "";
@@ -911,7 +891,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const res = await fetch("../../MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
+                    const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -1070,7 +1050,7 @@ if (empty($profile_photo_url)) {
             // ---------------- FETCH BARANGAYS ----------------
             function fetchBarangays() {
                 // Use relative path instead of absolute path
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
+                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?mode=barangays")
                     .then(res => {
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status}`);
@@ -1127,7 +1107,7 @@ if (empty($profile_photo_url)) {
                 });
 
                 // Use relative path instead of absolute path
-                fetch(`/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
                     .then(res => {
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status}`);
@@ -1178,7 +1158,7 @@ if (empty($profile_photo_url)) {
 
                             tr.innerHTML = `
                             <td class="px-4 py-3">
-                                <input type="checkbox" class="multiSelectCheckbox border-gray-600" 
+                                <input type="checkbox" class="multiSelectCheckbox text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300" 
                                     value="${senior.applicant_id}" data-name="${senior.full_name || 'Unknown'}" 
                                     data-status="${senior.validation || 'Unknown'}">
                             </td>
@@ -1206,7 +1186,7 @@ if (empty($profile_photo_url)) {
                                     class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
                                         <li>
-                                            <a href="staff_senior_view.php?session_context=<?php echo $ctx; ?>&id=${senior.applicant_id}" 
+                                            <a href="senior_view.php?session_context=<?php echo $ctx; ?>&id=${senior.applicant_id}" 
                                                class="block py-2 cursor-pointer px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 👁 View
                                             </a>
@@ -1616,7 +1596,7 @@ if (empty($profile_photo_url)) {
                         }
 
                         // Use relative path for the update request
-                        const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/update_status.php", {
+                        const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/activelist/update_status.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -1876,7 +1856,7 @@ if (empty($profile_photo_url)) {
                 try {
                     console.log('📤 Sending mark inactive request:', data);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2093,7 +2073,7 @@ if (empty($profile_photo_url)) {
                 try {
                     console.log('📤 Sending mark deceased request:', data);
 
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

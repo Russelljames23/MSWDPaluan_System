@@ -169,7 +169,7 @@ if (empty($profile_photo_url)) {
                         </div>
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
-                                <a href="../../MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
                                     class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
                                     out</a>
                             </li>
@@ -1353,7 +1353,7 @@ if (empty($profile_photo_url)) {
             const id = urlParams.get('id');
             if (!id) return;
 
-            const phpFilePath = `/MSWDPaluan_System-main/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_view.php?id=${encodeURIComponent(id)}`;
+            const phpFilePath = `/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_view.php?id=${encodeURIComponent(id)}`;
 
             fetch(phpFilePath)
                 .then(res => {
@@ -1534,7 +1534,7 @@ if (empty($profile_photo_url)) {
             // --- Load applicant data from PHP ---
             async function loadApplicant() {
                 try {
-                    const res = await fetch(`/MSWDPaluan_System-main/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}`);
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}`);
                     const json = await res.json();
                     if (json.success && json.data) {
                         fillForm(json.data);
@@ -1555,7 +1555,7 @@ if (empty($profile_photo_url)) {
                 fd.append('id', applicantId);
 
                 try {
-                    const res = await fetch('/MSWDPaluan_System-main/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php', {
+                    const res = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php', {
                         method: 'POST',
                         body: fd
                     });
