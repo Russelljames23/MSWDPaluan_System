@@ -873,3 +873,134 @@
 [08-Jan-2026 11:48:43 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
 [08-Jan-2026 11:48:43 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 93, Type: REGISTER_SENIOR, User: 57
 [08-Jan-2026 11:48:43 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 14:05:17 Europe/Berlin] === initializeSessionForApplicant Started ===
+[08-Jan-2026 14:05:17 Europe/Berlin] Session not started, initializing...
+[08-Jan-2026 14:05:17 Europe/Berlin] Found session_context in POST data: session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] Set session name to: SESS_session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] Found session cookie: SESS_session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] Session started with existing cookie. ID: f0iert95f3jncfb4cp9ruvr8tr
+[08-Jan-2026 14:05:17 Europe/Berlin] Session initialized. Context: staff, User ID: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 14:05:17 Europe/Berlin] Session ID: f0iert95f3jncfb4cp9ruvr8tr
+[08-Jan-2026 14:05:17 Europe/Berlin] Session Status: 2
+[08-Jan-2026 14:05:17 Europe/Berlin] Session Data: {"verification_user_id":67,"user_id":67,"username":"Staff","fullname":"Marianne Ygay","user_type":"Staff","role_id":null,"role_name":"Staff","permissions":[],"logged_in":true,"is_verified":true,"last_activity":1767877470,"login_time":"2026-01-08 11:55:23","session_context":"staff","staff_user_id":67,"browser_session_context":"session_1767869703502_8d3hsi96k","firstname":"Marianne","lastname":"Ygay","email":"marianneygay@gmail.com","session_initialized":true,"session_start_time":1767877517}
+[08-Jan-2026 14:05:17 Europe/Berlin] Cookies: {"SESS_session_1766138357167_82aa37k2n":"rqvi3hi7rnpi9jskgp7geg5uv3","SESS_session_1767847440163_3okjq6bjq":"juo74piec3aiumh3bde6igftup","SESS_session_1767847444615_0w4a09gef":"it7i2n4b2cmj1jfl9csgdopmhc","SESS_session_1767851154812_gxek2c4wh":"si5fkvts069svdo5ndas90252f","SESS_session_1767851206794_22atz9fru":"n4eiiaebsqoqqfvpevnjedi895","SESS_session_1767851211175_ljaiy1ecc":"obg150k8touj2hqkk0sig3kq1j","PHPSESSID":"session_1767851211175_ljaiy1ecc","SESS_session_1767865950766_yptre724m":"724f6nm87bd40ed5hhsd9mfvaq","SESS_session_1767865960178_9en0z27fa":"njco6r378j3np7s6sfo4t6mof6","SESS_session_1767866020009_o9anrlnh5":"vnosr4vvgpmes9bealnom3rmq3","SESS_session_1767866046842_08sztftrj":"ivf6n578na3geqhgchu6gaqtj5","SESS_session_1767867788354_h8yoznava":"cvh656rj0g5gu11aksolse4c21","SESS_session_1767867791848_o17vgyk40":"4ei911c33oic47n67rr7f6d8nr","SESS_session_1767867812983_1fxoboye5":"upesojl578ih55r1d53pi0eaju","SESS_session_1767868913226_gyrclfm6n":"qr1k5ku1otud8bec702d2km9ps","SESS_session_1767869664829_pumzgu21y":"c74v9qb8jc7p6jd9a2kea48c67","SESS_session_1767869703502_8d3hsi96k":"f0iert95f3jncfb4cp9ruvr8tr"}
+[08-Jan-2026 14:05:17 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 14:05:17 Europe/Berlin] Session context: staff
+[08-Jan-2026 14:05:17 Europe/Berlin] Session user_id: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Session staff_user_id: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Session admin_user_id: none
+[08-Jan-2026 14:05:17 Europe/Berlin] Found session context: staff
+[08-Jan-2026 14:05:17 Europe/Berlin] Found staff ID in session[staff_user_id]: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] User 67 is staff: YES
+[08-Jan-2026 14:05:17 Europe/Berlin] Final resolved - User ID: 67, User Name: Marianne Ygay, Context: staff
+[08-Jan-2026 14:05:17 Europe/Berlin] Final User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 14:05:17 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 14:05:17 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 14:05:17 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 14:05:17 Europe/Berlin] Applicant.php - User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 14:05:17 Europe/Berlin] Received data: {"lname":"James","fname":"Si","mname":"Russell","suffix":"","gender":"Male","b_date":"1955-02-21","age":"70","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"III - Silahis ng Pag-asa","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds2sd","local_control_number":"232eds","staff_user_id":67,"staff_user_name":"Marianne Ygay","session_context":"session_1767869703502_8d3hsi96k","request_source":"staff_register"}
+[08-Jan-2026 14:05:17 Europe/Berlin] Received data: {"lname":"James","fname":"Si","mname":"Russell","suffix":"","gender":"Male","b_date":"1955-02-21","age":"70","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","ip_group":"","birth_place":"Nueva Valencia Guimaras","educational_attainment":"Elementary Graduate","living_arrangement":"Living with relatives","house_no":"","street":"","brgy":"III - Silahis ng Pag-asa","municipality":"Paluan","province":"Occidental Mindoro","is_pensioner":0,"pension_amount":"","pension_source":"","has_permanent_income":0,"income_source":"","has_family_support":0,"support_type":"","support_cash":"","has_existing_illness":0,"illness_details":"","hospitalized_last6mos":0,"date_of_registration":"2026-01-08","id_number":"1ds2sd","local_control_number":"232eds","staff_user_id":67,"staff_user_name":"Marianne Ygay","session_context":"session_1767869703502_8d3hsi96k","request_source":"staff_register"}
+[08-Jan-2026 14:05:17 Europe/Berlin] Checking for user data in request...
+[08-Jan-2026 14:05:17 Europe/Berlin] Found staff_user_id in request: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Found session_context in request: session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] After processing request - Session context: session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] After processing request - User ID: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Starting transaction
+[08-Jan-2026 14:05:17 Europe/Berlin] Processing applicant: Si James, Birthdate: 1955-02-21
+[08-Jan-2026 14:05:17 Europe/Berlin] Checking ID number: 1ds2sd
+[08-Jan-2026 14:05:17 Europe/Berlin] Calculated age: 70
+[08-Jan-2026 14:05:17 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 14:05:17 Europe/Berlin] Inserting applicant with data: ["James","Si","Russell","","Male","70",70,"Married","1955-02-21","Filipino","Roman Catholic","Nueva Valencia Guimaras","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 14:05:17 Europe/Berlin] Applicant inserted with ID: 100
+[08-Jan-2026 14:05:17 Europe/Berlin] Registration details inserted with ID: 37
+[08-Jan-2026 14:05:17 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 14:05:17 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 14:05:17 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 14:05:17 Europe/Berlin] Session data available: YES
+[08-Jan-2026 14:05:17 Europe/Berlin] Session context: session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] Session user_id: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Session staff_user_id: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Found session context: session_1767869703502_8d3hsi96k
+[08-Jan-2026 14:05:17 Europe/Berlin] Using user_id from session: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 14:05:17 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 96, Type: REGISTER_SENIOR, User: 67
+[08-Jan-2026 14:05:17 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 20:06:32 Europe/Berlin] === initializeSessionForApplicant Started ===
+[08-Jan-2026 20:06:32 Europe/Berlin] Session not started, initializing...
+[08-Jan-2026 20:06:32 Europe/Berlin] Found session_context in POST data: session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] Set session name to: SESS_session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] Found session cookie: SESS_session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] Session started with existing cookie. ID: c74v9qb8jc7p6jd9a2kea48c67
+[08-Jan-2026 20:06:32 Europe/Berlin] Session initialized. Context: admin, User ID: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] === APPLICANT.PHP STARTED ===
+[08-Jan-2026 20:06:32 Europe/Berlin] Session ID: c74v9qb8jc7p6jd9a2kea48c67
+[08-Jan-2026 20:06:32 Europe/Berlin] Session Status: 2
+[08-Jan-2026 20:06:32 Europe/Berlin] Session Data: {"verification_user_id":57,"user_id":57,"username":"Admin","fullname":"Russell James Tadalan","user_type":"Admin","role_id":null,"role_name":"Admin","permissions":[],"logged_in":true,"is_verified":true,"last_activity":1767898999,"login_time":"2026-01-08 11:54:45","session_context":"admin","admin_user_id":57,"browser_session_context":"session_1767869664829_pumzgu21y","firstname":"Russell James","lastname":"Tadalan","email":"russelljamestadalan23@gmail.com","session_initialized":true,"session_start_time":1767899192}
+[08-Jan-2026 20:06:32 Europe/Berlin] Cookies: {"SESS_session_1766138357167_82aa37k2n":"rqvi3hi7rnpi9jskgp7geg5uv3","SESS_session_1767847440163_3okjq6bjq":"juo74piec3aiumh3bde6igftup","SESS_session_1767847444615_0w4a09gef":"it7i2n4b2cmj1jfl9csgdopmhc","SESS_session_1767851154812_gxek2c4wh":"si5fkvts069svdo5ndas90252f","SESS_session_1767851206794_22atz9fru":"n4eiiaebsqoqqfvpevnjedi895","SESS_session_1767851211175_ljaiy1ecc":"obg150k8touj2hqkk0sig3kq1j","PHPSESSID":"session_1767851211175_ljaiy1ecc","SESS_session_1767865950766_yptre724m":"724f6nm87bd40ed5hhsd9mfvaq","SESS_session_1767865960178_9en0z27fa":"njco6r378j3np7s6sfo4t6mof6","SESS_session_1767866020009_o9anrlnh5":"vnosr4vvgpmes9bealnom3rmq3","SESS_session_1767866046842_08sztftrj":"ivf6n578na3geqhgchu6gaqtj5","SESS_session_1767867788354_h8yoznava":"cvh656rj0g5gu11aksolse4c21","SESS_session_1767867791848_o17vgyk40":"4ei911c33oic47n67rr7f6d8nr","SESS_session_1767867812983_1fxoboye5":"upesojl578ih55r1d53pi0eaju","SESS_session_1767868913226_gyrclfm6n":"qr1k5ku1otud8bec702d2km9ps","SESS_session_1767869664829_pumzgu21y":"c74v9qb8jc7p6jd9a2kea48c67","SESS_session_1767869703502_8d3hsi96k":"f0iert95f3jncfb4cp9ruvr8tr"}
+[08-Jan-2026 20:06:32 Europe/Berlin] === getCurrentUserId Started ===
+[08-Jan-2026 20:06:32 Europe/Berlin] Session context: admin
+[08-Jan-2026 20:06:32 Europe/Berlin] Session user_id: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Session staff_user_id: none
+[08-Jan-2026 20:06:32 Europe/Berlin] Session admin_user_id: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Found session context: admin
+[08-Jan-2026 20:06:32 Europe/Berlin] Found admin ID in session[admin_user_id]: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Final resolved - User ID: 57, User Name: Russell James Tadalan, Context: admin
+[08-Jan-2026 20:06:32 Europe/Berlin] Final User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 20:06:32 Europe/Berlin] Looking for ActivityLogger at: C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php/settings/ActivityLogger.php
+[08-Jan-2026 20:06:32 Europe/Berlin] ActivityLogger.php loaded successfully
+[08-Jan-2026 20:06:32 Europe/Berlin] ActivityLogger initialized successfully
+[08-Jan-2026 20:06:32 Europe/Berlin] Applicant.php - User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 20:06:32 Europe/Berlin] Received data: {"lname":"Tadalans","fname":"Russells James","mname":"Pobletes","suffix":"","gender":"Male","b_date":"1962-02-21","age":"63","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","birth_place":"OMPH","educational_attainment":"Elementary Graduate","contact_number":"+639272873751","ip_group":"","house_no":"","street":"","brgy":"XII - Mananao","municipality":"Paluan","province":"Occidental Mindoro","living_arrangement":"Living with relatives","is_pensioner":"0","has_permanent_income":"0","has_family_support":"0","has_existing_illness":"0","hospitalized_last6mos":"0","date_of_registration":"2026-01-08","id_number":"1ds2sds","local_control_number":"234hsd","admin_user_id":57,"admin_user_name":"Russell James Tadalan","session_context":"session_1767869664829_pumzgu21y","request_source":"admin_register"}
+[08-Jan-2026 20:06:32 Europe/Berlin] Received data: {"lname":"Tadalans","fname":"Russells James","mname":"Pobletes","suffix":"","gender":"Male","b_date":"1962-02-21","age":"63","civil_status":"Married","citizenship":"Filipino","religion":"Roman Catholic","birth_place":"OMPH","educational_attainment":"Elementary Graduate","contact_number":"+639272873751","ip_group":"","house_no":"","street":"","brgy":"XII - Mananao","municipality":"Paluan","province":"Occidental Mindoro","living_arrangement":"Living with relatives","is_pensioner":"0","has_permanent_income":"0","has_family_support":"0","has_existing_illness":"0","hospitalized_last6mos":"0","date_of_registration":"2026-01-08","id_number":"1ds2sds","local_control_number":"234hsd","admin_user_id":57,"admin_user_name":"Russell James Tadalan","session_context":"session_1767869664829_pumzgu21y","request_source":"admin_register"}
+[08-Jan-2026 20:06:32 Europe/Berlin] Checking for user data in request...
+[08-Jan-2026 20:06:32 Europe/Berlin] Found admin_user_id in request: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Found session_context in request: session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] After processing request - Session context: session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] After processing request - User ID: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Starting transaction
+[08-Jan-2026 20:06:32 Europe/Berlin] Processing applicant: Russells James Tadalans, Birthdate: 1962-02-21
+[08-Jan-2026 20:06:32 Europe/Berlin] Checking ID number: 1ds2sds
+[08-Jan-2026 20:06:32 Europe/Berlin] Calculated age: 63
+[08-Jan-2026 20:06:32 Europe/Berlin] Date of registration: 2026-01-08
+[08-Jan-2026 20:06:32 Europe/Berlin] Inserting applicant with data: ["Tadalans","Russells James","Pobletes","","Male","63",63,"Married","1962-02-21","Filipino","Roman Catholic","OMPH","Elementary Graduate","Living with relatives"]
+[08-Jan-2026 20:06:32 Europe/Berlin] Applicant inserted with ID: 101
+[08-Jan-2026 20:06:32 Europe/Berlin] Registration details inserted with ID: 38
+[08-Jan-2026 20:06:32 Europe/Berlin] Transaction committed successfully
+[08-Jan-2026 20:06:32 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 20:06:32 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 20:06:32 Europe/Berlin] Session data available: YES
+[08-Jan-2026 20:06:32 Europe/Berlin] Session context: session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] Session user_id: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Session staff_user_id: none
+[08-Jan-2026 20:06:32 Europe/Berlin] Found session context: session_1767869664829_pumzgu21y
+[08-Jan-2026 20:06:32 Europe/Berlin] Using user_id from session: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 20:06:32 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 97, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 20:06:32 Europe/Berlin] Log result: SUCCESS
+[08-Jan-2026 20:12:37 Europe/Berlin] Processing applicant: Lenardssss Galgosss, Birthdate: 1964-12-12
+[08-Jan-2026 20:12:37 Europe/Berlin] Applicant inserted with ID: 102
+[08-Jan-2026 20:12:37 Europe/Berlin] Registration details inserted with ID: 39
+[08-Jan-2026 20:12:37 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 20:12:37 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 20:12:37 Europe/Berlin] Session data available: YES
+[08-Jan-2026 20:12:37 Europe/Berlin] Session context: session_1767899416676_eadm3sy6x
+[08-Jan-2026 20:12:37 Europe/Berlin] Session user_id: 57
+[08-Jan-2026 20:12:37 Europe/Berlin] Session staff_user_id: none
+[08-Jan-2026 20:12:37 Europe/Berlin] Found session context: session_1767899416676_eadm3sy6x
+[08-Jan-2026 20:12:37 Europe/Berlin] Using user_id from session: 57
+[08-Jan-2026 20:12:37 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[08-Jan-2026 20:12:37 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 99, Type: REGISTER_SENIOR, User: 57
+[08-Jan-2026 20:22:20 Europe/Berlin] Processing applicant: Mariannes Ygays, Birthdate: 1961-12-12
+[08-Jan-2026 20:22:20 Europe/Berlin] Applicant inserted with ID: 103
+[08-Jan-2026 20:22:20 Europe/Berlin] Registration details inserted with ID: 40
+[08-Jan-2026 20:22:20 Europe/Berlin] === ActivityLogger Started ===
+[08-Jan-2026 20:22:20 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[08-Jan-2026 20:22:20 Europe/Berlin] Session data available: YES
+[08-Jan-2026 20:22:20 Europe/Berlin] Session context: session_1767899897574_sfg3l42cj
+[08-Jan-2026 20:22:20 Europe/Berlin] Session user_id: 67
+[08-Jan-2026 20:22:20 Europe/Berlin] Session staff_user_id: 67
+[08-Jan-2026 20:22:20 Europe/Berlin] Found session context: session_1767899897574_sfg3l42cj
+[08-Jan-2026 20:22:20 Europe/Berlin] Using user_id from session: 67
+[08-Jan-2026 20:22:20 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[08-Jan-2026 20:22:20 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 102, Type: REGISTER_SENIOR, User: 67

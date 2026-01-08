@@ -16,17 +16,17 @@ require_once '../../php/login/staff_session_sync.php';
 if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
     // Store session context but don't use it for session name
     $ctx = $_GET['session_context'];
-    
+
     // Set a default session context if not set
     if (!isset($_SESSION['session_context'])) {
         $_SESSION['session_context'] = 'Staff';
     }
-    
+
     // Make sure we have a user ID
     if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
         $_SESSION['user_id'] = $user_id;
     }
-    
+
     // Store fullname in session if available
     if (!isset($_SESSION['fullname']) && !empty($full_name)) {
         $_SESSION['fullname'] = $full_name;
@@ -94,12 +94,97 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Register Senior Citizen</title>
     <link rel="stylesheet" href="../css/popup.css">
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <style>
+        .iti {
+            width: 100%;
+        }
+
+        .iti__flag {
+            background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags.png");
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 192dpi) {
+            .iti__flag {
+                background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags@2x.png");
+            }
+        }
+
+        .error-border {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .success-border {
+            border-color: #10b981 !important;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+            border: 2px solid #d1d5db;
+        }
+
+        .step-circle.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .step-circle.completed {
+            background-color: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .step-line {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #d1d5db;
+            margin: 0 10px;
+        }
+
+        .step-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .step-label.active {
+            color: #3b82f6;
+        }
+
+        .step-label.completed {
+            color: #10b981;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -370,486 +455,566 @@ if (empty($profile_photo_url)) {
             </div>
         </aside>
 
-        <!-- I Basic Information -->
+        <!-- Main Content -->
         <main class="p-4 md:ml-64 h-auto pt-20">
-            <div class="w-full  items-center justify-center">
-                <h2 class="mt-3 mb-3 text-2xl text-center tracking-tight font-bold  text-gray-900 dark:text-white">
-                    APPLICATION FORM</h2>
-            </div>
-            <form id="applicantForm" action="">
-                <section id="step1" class="bg-white flex flex-col dark:bg-gray-900  rounded-lg">
-                    <div class="p-5 mb-8 rounded-lg w-full">
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                    <div class="flex items-center justify-between mb-6">
                         <div>
-                            <h4 class="text-sm font-medium dark:text-white mb-3">I. BASIC INFORMAION</h4>
-                            <div class="flex flex-col gap-5">
-                                <div class="flex w-full  justify-between items-center gap-5">
-                                    <div class="w-90 flex flex-col gap-3">
-                                        <div class="w-90">
-                                            <label for="email"
-                                                class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Last
-                                                Name: <span class="text-red-500">*</span></label>
-                                            <input type="text" id="lname" name="lname"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="" required>
-                                        </div>
-                                        <div class="w-90">
-                                            <label for="email"
-                                                class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">First
-                                                Name: <span class="text-red-500">*</span></label>
-                                            <input type="text" id="fname" name="fname"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="" required>
-                                        </div>
-                                        <div class="w-90">
-                                            <label for="email"
-                                                class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Middle
-                                                Name: <span class="text-red-500">*</span></label>
-                                            <input type="text" id="mname" name="mname"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="" required>
-                                        </div>
-                                        <div class="w-90">
-                                            <label for="email"
-                                                class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Suffix:</label>
-                                            <input type="text" id="suffix" name="suffix"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="" required>
-                                        </div>
-                                    </div>
-                                    <div class="w-full flex gap-3 flex-col justify-between">
-                                        <div class="w-full flex flex-row gap-5 ">
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Gender: <span class="text-red-500">*</span></label>
-                                                <select id="countries" name="gender"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                    <option value=""></option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                </select>
-                                            </div>
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthdate: <span class="text-red-500">*</span></label>
-                                                <input type="date" name="b_date"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Age: <span class="text-red-500">*</span></label>
-                                                <input type="text" id="age" name="age"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Civil
-                                                    Status: <span class="text-red-500">*</span></label>
-                                                <select id="civil_status" name="civil_status"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                    <option selected>Select Civil Status</option>
-                                                    <option value="Single">Single</option>
-                                                    <option value="Married">Married</option>
-                                                    <option value="Separated">Separated</option>
-                                                    <option value="Widowed">Widowed</option>
-                                                    <option value="Divorced">Divorced</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="w-full flex flex-row gap-5 ">
+                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Senior Citizen Registration</h1>
+                            <p class="text-gray-600 dark:text-gray-300 mt-1">Fill out the application form below</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                Staff Panel
+                            </span>
+                        </div>
+                    </div>
 
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Citizenship: <span class="text-red-500">*</span></label>
-                                                <input type="text" name="citizenship"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Religion: <span class="text-red-500">*</span></label>
-                                                <input type="text" name="religion"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">IP Group:</label>
-                                                <input type="text" name="ip_group"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                        </div>
-                                        <div class="w-full flex flex-row gap-5">
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Birthplace: <span class="text-red-500">*</span></label>
-                                                <input type="text" name="birth_place"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                        </div>
-                                        <div class="w-full flex flex-row gap-5">
-                                            <div class="w-full">
-                                                <label for="email"
-                                                    class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Educational Attainment: <span class="text-red-500">*</span></label>
-                                                <input type="text" name="educational_attainment"
-                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                    placeholder="" required>
-                                            </div>
-                                        </div>
+                    <!-- Step Indicators -->
+                    <div class="step-indicator mb-8">
+                        <div class="step-circle active">1</div>
+                        <div class="step-label active">Basic Information</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Contact & Address</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Economic Status</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Health & Submit</div>
+                    </div>
+
+                    <form id="applicantForm" class="space-y-8">
+                        <!-- Step 1: Basic Information -->
+                        <div id="step1" class="form-step active">
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Personal Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div>
+                                        <label for="lname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Last Name <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="lname" name="lname" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter last name">
                                     </div>
-                                </div>
-                                <div class="flex w-full flex-row justify-between items-center gap-5">
-                                    <div class="w-50">
-                                        <label for="email"
-                                            class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Living
-                                            Arrangement: <span class="text-red-500">*</span></label>
-                                        <select id="living_arrangement" name="living_arrangement"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                            <option value=""></option>
-                                            <option value="Owned">Owned</option>
-                                            <option value="Living alone">Living alone</option>
-                                            <option value="Living with relatives">Living with relatives</option>
-                                            <option value="Rent">Rent</option>
-                                        </select>
+                                    <div>
+                                        <label for="fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            First Name <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="fname" name="fname" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter first name">
                                     </div>
-                                    <div class="w-full">
-                                        <label for="email"
-                                            class="block mb-2 text-sm font-normal text-gray-900 dark:text-gray-300">Address:</label>
-                                        <div class="flex flex-row gap-3">
-                                            <input type="text" id="house_no" name="house_no"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="House No." required>
-                                            <input type="text" id="street" name="street"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="Street" required>
-                                            <select id="brgy" name="brgy"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light">
-                                                <option selected>Barangay <span class="text-red-500">*</span></option>
-                                                <option value="I - Mapalad" class="text-gray-900">I - Mapalad</option>
-                                                <option value="II - Handang Tumulong">II - Handang Tumulong</option>
-                                                <option value="III - Silahis ng Pag-asa">III - Silahis ng Pag-asa
-                                                </option>
-                                                <option value="IV - Pag-asa ng Bayan">IV - Pag-asa ng Bayan</option>
-                                                <option value="V - Bagong Silang">V - Bagong Silang</option>
-                                                <option value="VI - San Jose">VI - San Jose</option>
-                                                <option value="VII - Lumang Bayan">VII - Lumang Bayan</option>
-                                                <option value="VIII - Marikit">VIII - Marikit</option>
-                                                <option value="IX - Tubili">IX - Tubili</option>
-                                                <option value="X - Alipaoy">X - Alipaoy</option>
-                                                <option value="XI - Harison">XI - Harison</option>
-                                                <option value="XII - Mananao">XII - Mananao</option>
-                                            </select>
-                                            <input type="text" id="municipality" name="municipality"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="City/Municipality *" required>
-                                            <input type="text" id="province" name="province"
-                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder="Province *" required>
-                                        </div>
+                                    <div>
+                                        <label for="mname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Middle Name <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="mname" name="mname" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter middle name">
+                                    </div>
+                                    <div>
+                                        <label for="suffix" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Suffix
+                                        </label>
+                                        <input type="text" id="suffix" name="suffix"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Jr., Sr., III, etc.">
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div>
+                                        <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Gender <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="gender" name="gender" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option value="">Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="b_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Birthdate <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="date" id="b_date" name="b_date" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            max="<?php echo date('Y-m-d'); ?>">
+                                    </div>
+                                    <div>
+                                        <label for="age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Age <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="number" id="age" name="age" required readonly
+                                            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="civil_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Civil Status <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="civil_status" name="civil_status" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option value="">Select Status</option>
+                                            <option value="Single">Single</option>
+                                            <option value="Married">Married</option>
+                                            <option value="Widowed">Widowed</option>
+                                            <option value="Separated">Separated</option>
+                                            <option value="Divorced">Divorced</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="citizenship" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Citizenship <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="citizenship" name="citizenship" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="e.g., Filipino">
+                                    </div>
+                                    <div>
+                                        <label for="religion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Religion <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="religion" name="religion" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="e.g., Roman Catholic">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="birth_place" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Birthplace <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="birth_place" name="birth_place" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="City, Province">
+                                    </div>
+                                    <div>
+                                        <label for="educational_attainment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Educational Attainment <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="educational_attainment" name="educational_attainment" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option value="">Select Level</option>
+                                            <option value="No Formal Education">No Formal Education</option>
+                                            <option value="Elementary Level">Elementary Level</option>
+                                            <option value="Elementary Graduate">Elementary Graduate</option>
+                                            <option value="High School Level">High School Level</option>
+                                            <option value="High School Graduate">High School Graduate</option>
+                                            <option value="College Level">College Level</option>
+                                            <option value="College Graduate">College Graduate</option>
+                                            <option value="Post Graduate">Post Graduate</option>
+                                            <option value="Vocational">Vocational</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" onclick="nextStep(2)"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    Next: Contact & Address
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <!-- step marks -->
-                    <div class="flex justify-center items-center gap-8">
-                        <div class="flex flex-col items-center gap-1">
-                            <div class="border border-gray-400 rounded-full bg-blue-500 h-4 w-4"></div>
-                            <p class="text-sm text-gray-900 dark:text-white font-medium">Step 1</p>
+
+                        <!-- Step 2: Contact & Address -->
+                        <div id="step2" class="form-step">
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Contact Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Contact Number <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="tel" id="contact_number" name="contact_number" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter phone number">
+                                        <p class="mt-1 text-xs text-gray-500">Format: +639XXXXXXXXX or 09XXXXXXXXX</p>
+                                        <div id="contact_number_error" class="mt-1 text-xs text-red-600 hidden"></div>
+                                    </div>
+                                    <div>
+                                        <label for="ip_group" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            IP Group
+                                        </label>
+                                        <input type="text" id="ip_group" name="ip_group"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Indigenous People Group (if applicable)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Address Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="house_no" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            House Number
+                                        </label>
+                                        <input type="text" id="house_no" name="house_no"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="e.g., 123">
+                                    </div>
+                                    <div>
+                                        <label for="street" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Street
+                                        </label>
+                                        <input type="text" id="street" name="street"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="e.g., Main Street">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="brgy" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Barangay <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="brgy" name="brgy" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option value="">Select Barangay</option>
+                                            <option value="I - Mapalad">I - Mapalad</option>
+                                            <option value="II - Handang Tumulong">II - Handang Tumulong</option>
+                                            <option value="III - Silahis ng Pag-asa">III - Silahis ng Pag-asa</option>
+                                            <option value="IV - Pag-asa ng Bayan">IV - Pag-asa ng Bayan</option>
+                                            <option value="V - Bagong Silang">V - Bagong Silang</option>
+                                            <option value="VI - San Jose">VI - San Jose</option>
+                                            <option value="VII - Lumang Bayan">VII - Lumang Bayan</option>
+                                            <option value="VIII - Marikit">VIII - Marikit</option>
+                                            <option value="IX - Tubili">IX - Tubili</option>
+                                            <option value="X - Alipaoy">X - Alipaoy</option>
+                                            <option value="XI - Harison">XI - Harison</option>
+                                            <option value="XII - Mananao">XII - Mananao</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="municipality" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Municipality <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="municipality" name="municipality" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            value="Paluan" readonly>
+                                    </div>
+                                    <div>
+                                        <label for="province" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Province <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="province" name="province" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            value="Occidental Mindoro" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="living_arrangement" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Living Arrangement <span class="text-red-500">*</span>
+                                </label>
+                                <select id="living_arrangement" name="living_arrangement" required
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">Select Arrangement</option>
+                                    <option value="Owned">Owned</option>
+                                    <option value="Living alone">Living alone</option>
+                                    <option value="Living with relatives">Living with relatives</option>
+                                    <option value="Rent">Rent</option>
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" onclick="prevStep(1)"
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    Previous
+                                </button>
+                                <button type="button" onclick="nextStep(3)"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    Next: Economic Status
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex flex-col items-center gap-1">
-                            <div class="border border-gray-400 rounded-full bg-gray-500 h-4 w-4"></div>
-                            <p class="text-sm text-gray-900 dark:text-white font-medium">Step 2</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex justify-end items-center  mb-2 ">
-                        <button type="button" onclick="nextStep()"
-                            class="text-white cursor-pointer bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-1 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Next</button>
-                    </div>
-                </section>
-                <section id="step2" class="bg-white hidden flex-col dark:bg-gray-900 rounded-lg">
-                    <div class="p-5 mb-10 gap-10 rounded-lg w-full flex flex-col">
-                        <div>
-                            <h4 class="text-sm font-medium dark:text-white mb-3">II. ECONOMIC STATUS</h4>
-                            <div class="flex flex-col w-full  justify-between items-center gap-5">
-                                <!-- Pensioner  -->
-                                <div class="w-full flex justify-between  flex-row gap-5 ">
-                                    <div class="w-50  flex flex-row gap-2 items-center">
-                                        <label for="email"
-                                            class="block  text-sm font-normal text-gray-900 dark:text-gray-300">Pensioner?</label>
-                                        <div class="flex flex-row gap-2 itemscenter justify-center">
-                                            <div class="flex items-center ">
-                                                <input id="" type="radio" value="1" name="is_pensioner"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for=""
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="0"
-                                                    name="is_pensioner"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+
+                        <!-- Step 3: Economic Status -->
+                        <div id="step3" class="form-step">
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Economic Status</h3>
+
+                                <!-- Pensioner Section -->
+                                <div class="mb-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <h4 class="text-md font-medium text-gray-800 dark:text-white">Pension Status</h4>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Are you a pensioner?
+                                            </label>
+                                            <div class="flex space-x-4">
+                                                <div class="flex items-center">
+                                                    <input id="is_pensioner_yes" type="radio" value="1" name="is_pensioner"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="is_pensioner_yes" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="is_pensioner_no" type="radio" value="0" name="is_pensioner" checked
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="is_pensioner_no" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-full flex flex-row gap-2 items-center">
-                                        <label for="email"
-                                            class="block text-sm w-40  font-normal text-gray-900 dark:text-gray-300">If
-                                            yes, how much?</label>
-                                        <input type="text" id="" name="pension_amount" disabled
-                                            class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                            placeholder="" required>
-                                    </div>
-                                    <div class="w-full  flex flex-row items-center gap-2">
-                                        <div class="flex flex-row w-full gap-2 items-center">
-                                            <label for="source"
-                                                class="block text-sm font-normal text-gray-900 dark:text-gray-300">Source:</label>
-                                            <select id="sourceSelect" name="pension_source" disabled
-                                                class="bg-gray-50 border cursor-pointer border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <option value=""></option>
+                                        <div>
+                                            <label for="pension_amount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Monthly Pension Amount
+                                            </label>
+                                            <input type="number" id="pension_amount" name="pension_amount" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="0.00">
+                                        </div>
+                                        <div>
+                                            <label for="pension_source" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Pension Source
+                                            </label>
+                                            <select id="pension_source" name="pension_source" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <option value="">Select Source</option>
                                                 <option value="GSIS">GSIS</option>
                                                 <option value="SSS">SSS</option>
                                                 <option value="AFPSLAI">AFPSLAI</option>
+                                                <option value="Private">Private</option>
                                                 <option value="Others">Others</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Permanent Source  -->
-                                <div class="w-full flex justify-between gap-5 pt-4 border-t border-gray-200 flex-row ">
-                                    <div class="w-110  flex flex-row gap-2 items-center ">
-                                        <label for="email"
-                                            class="block  text-sm font-normal text-gray-900 dark:text-gray-300">Permanent
-                                            Source of Income?</label>
-                                        <div class="flex flex-row gap-2 itemscenter justify-center">
-                                            <div class="flex items-center ">
-                                                <input id="" type="radio" value="1" name="has_permanent_income"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for=""
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="0"
-                                                    name="has_permanent_income"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">None</label>
-                                            </div>
-                                        </div>
+
+                                <!-- Income Source Section -->
+                                <div class="mb-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <h4 class="text-md font-medium text-gray-800 dark:text-white">Income Source</h4>
                                     </div>
-                                    <div class="w-full flex flex-row gap-2 items-center ">
-                                        <label for="email"
-                                            class="block text-sm w-50  font-normal text-gray-900 dark:text-gray-300">If
-                                            yes, from what source?</label>
-                                        <input type="text" id="" name="income_source" disabled
-                                            class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                            placeholder="" required>
-                                    </div>
-                                </div>
-                                <!-- reg support from fam  -->
-                                <div class="w-full flex justify-between flex-row gap-5 pt-4 border-t border-gray-200">
-                                    <div class="w-full   flex flex-row gap-2 items-center">
-                                        <label for="email"
-                                            class="block  text-sm font-normal text-gray-900 dark:text-gray-300">Regular
-                                            Support from Family?</label>
-                                        <div class="flex flex-row gap-2 itemscenter justify-center">
-                                            <div class="flex items-center ">
-                                                <input id="" type="radio" value="1" name="has_family_support"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for=""
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="0"
-                                                    name="has_family_support"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Permanent Source of Income?
+                                            </label>
+                                            <div class="flex space-x-4">
+                                                <div class="flex items-center">
+                                                    <input id="has_permanent_income_yes" type="radio" value="1" name="has_permanent_income"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_permanent_income_yes" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="has_permanent_income_no" type="radio" value="0" name="has_permanent_income" checked
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_permanent_income_no" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-full flex  flex-row gap-2 items-center">
-                                        <label for="email"
-                                            class="block text-sm w-50  font-normal text-gray-900 dark:text-gray-300">Type
-                                            of Support?</label>
-                                        <input type="text" id="" name="support_type" disabled
-                                            class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                            placeholder="">
-                                    </div>
-                                    <div class="w-full flex boder flex-row gap-2 items-center">
-                                        <label for="email"
-                                            class="block text-sm w-70  font-normal text-gray-900 dark:text-gray-300">Cash
-                                            (How much and how often)</label>
-                                        <div class="flex flex-row gap-2 items-center">
-                                            <input type="text" id="" name="support_cash" disabled
-                                                class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                                placeholder=""><label for="email"
-                                                class="block text-sm w-50  font-normal text-gray-900 dark:text-gray-300">In
-                                                kind (specify)</label>
+                                        <div>
+                                            <label for="income_source" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Source of Income
+                                            </label>
+                                            <input type="text" id="income_source" name="income_source" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="e.g., Business, Farming, etc.">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-medium dark:text-white mb-3">III. HEALTH CONDITION</h4>
-                            <div class="flex flex-col gap-5">
-                                <div class="w-full flex justify-between  flex-row gap-5 ">
-                                    <div class="w-120  flex flex-row gap-2  items-center">
-                                        <label for="email"
-                                            class="block  w-35 text-sm font-normal text-gray-900 dark:text-gray-300">Has
-                                            existing illness?</label>
-                                        <div class="flex flex-row gap-2 itemscenter justify-center">
-                                            <div class="flex items-center ">
-                                                <input id="" type="radio" value="1" name="has_existing_illness"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for=""
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="0"
-                                                    name="has_existing_illness"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+
+                                <!-- Family Support Section -->
+                                <div class="mb-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <h4 class="text-md font-medium text-gray-800 dark:text-white">Family Support</h4>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Regular Family Support?
+                                            </label>
+                                            <div class="flex space-x-4">
+                                                <div class="flex items-center">
+                                                    <input id="has_family_support_yes" type="radio" value="1" name="has_family_support"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_family_support_yes" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="has_family_support_no" type="radio" value="0" name="has_family_support" checked
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_family_support_no" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="w-full flex flex-row  gap-2 items-center">
-                                        <label for="email"
-                                            class="block text-sm w-60  font-normal text-gray-900 dark:text-gray-300">If
-                                            yes, please specify:</label>
-                                        <input type="text" id="" name="illness_details" disabled
-                                            class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                                            placeholder="" required>
-                                    </div>
-                                    <div class="w-150  flex flex-row   gap-2 items-center">
-                                        <label for="email"
-                                            class="block w-65  text-sm font-normal text-gray-900 dark:text-gray-300">Hospitalized
-                                            witihin the last six months?</label>
-                                        <div class="flex flex-row gap-2 itemscenter justify-center">
-                                            <div class="flex items-center ">
-                                                <input id="" type="radio" value="1" name="hospitalized_last6mos"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for=""
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input checked id="default-radio-2" type="radio" value="0"
-                                                    name="hospitalized_last6mos"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="default-radio-2"
-                                                    class=" text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
-                                            </div>
+                                        <div>
+                                            <label for="support_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Type of Support
+                                            </label>
+                                            <input type="text" id="support_type" name="support_type" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="e.g., Cash, In-kind">
+                                        </div>
+                                        <div>
+                                            <label for="support_cash" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Amount/Frequency
+                                            </label>
+                                            <input type="text" id="support_cash" name="support_cash" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="e.g., ₱5,000/month">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- step marks -->
-                    <div class="flex justify-center items-center gap-8">
-                        <div class="flex flex-col items-center gap-1">
-                            <div class="border border-gray-400 rounded-full bg-gray-500 h-4 w-4"></div>
-                            <p class="text-sm text-gray-900 dark:text-white font-medium">Step 1</p>
-                        </div>
-                        <div class="flex flex-col items-center gap-1">
-                            <div class="border border-gray-400 rounded-full bg-blue-500 h-4 w-4"></div>
-                            <p class="text-sm text-gray-900 dark:text-white font-medium">Step 2</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex justify-between">
-                        <button type="button" onclick="prevStep()"
-                            class="text-white cursor-pointer bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-1 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Back</button>
-                        <button type="button" onclick="submitForm()"
-                            class="text-white cursor-pointer bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-3 py-1 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Submit</button>
-                    </div>
-                </section>
-            </form>
-            <!-- PopUp Message  -->
-            <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50  items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
-                    id="popupBox">
-                    <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800"></h2>
-                    <p id="popupMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
-                    <button id="popupCloseBtn"
-                        class="px-4 py-1 bg-blue-600 text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">OK</button>
-                </div>
-            </div>
-            <!-- Additional Registration Data Modal -->
-            <div id="registrationModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Additional Registration Information</h2>
 
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date of Registration <span class="text-red-500">*</span></label>
-                            <input type="date" id="date_of_registration"
-                                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                value="<?php echo date('Y-m-d'); ?>" required>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ID Number <span class="text-red-500">*</span></label>
-                            <input type="text" id="id_number"
-                                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter ID Number" required>
-                            <p class="text-xs text-gray-500 mt-1">Must be unique for each applicant</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Local Control Number</label>
-                            <div class="flex items-center space-x-2">
-                                <input type="text" id="local_control_number"
-                                    class="flex-1 p-2 border border-gray-300 rounded-lg bg-gray-100"
-                                    value="Auto-generated" readonly>
-                                <button type="button" onclick="generateCustomLocalControlNumber()"
-                                    class="px-3 py-2 text-xs bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors">
-                                    Custom
+                            <div class="flex justify-between">
+                                <button type="button" onclick="prevStep(2)"
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    Previous
+                                </button>
+                                <button type="button" onclick="nextStep(4)"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    Next: Health & Submit
                                 </button>
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">Separate local reference number (auto-generated or custom)</p>
                         </div>
-                    </div>
 
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="hideRegistrationModal()"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
-                            Cancel
-                        </button>
-                        <button type="button" onclick="confirmRegistration()"
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                            Confirm Registration
-                        </button>
-                    </div>
+                        <!-- Step 4: Health & Submit -->
+                        <div id="step4" class="form-step">
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Health Condition</h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                        <div class="mb-4">
+                                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Existing Illness?
+                                            </label>
+                                            <div class="flex space-x-4">
+                                                <div class="flex items-center">
+                                                    <input id="has_existing_illness_yes" type="radio" value="1" name="has_existing_illness"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_existing_illness_yes" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="has_existing_illness_no" type="radio" value="0" name="has_existing_illness" checked
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="has_existing_illness_no" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="illness_details" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Illness Details
+                                            </label>
+                                            <input type="text" id="illness_details" name="illness_details" disabled
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Specify illness if any">
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                        <div class="mb-4">
+                                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                Hospitalized in last 6 months?
+                                            </label>
+                                            <div class="flex space-x-4">
+                                                <div class="flex items-center">
+                                                    <input id="hospitalized_last6mos_yes" type="radio" value="1" name="hospitalized_last6mos"
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="hospitalized_last6mos_yes" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Yes</label>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <input id="hospitalized_last6mos_no" type="radio" value="0" name="hospitalized_last6mos" checked
+                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="hospitalized_last6mos_no" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registration Details -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Registration Details</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="date_of_registration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Date of Registration <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="date" id="date_of_registration" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            value="<?php echo date('Y-m-d'); ?>">
+                                    </div>
+                                    <div>
+                                        <label for="id_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            ID Number <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" id="id_number" required
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="e.g., SC-2024-001">
+                                        <p class="mt-1 text-xs text-gray-500">Unique identifier for the senior</p>
+                                    </div>
+                                    <div>
+                                        <label for="local_control_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Local Control Number
+                                        </label>
+                                        <div class="flex">
+                                            <input type="text" id="local_control_number" readonly
+                                                class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                value="Auto-generated">
+                                            <button type="button" onclick="generateCustomLocalControlNumber()"
+                                                class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-r-lg text-sm px-4 py-2.5 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                                Custom
+                                            </button>
+                                        </div>
+                                        <p class="mt-1 text-xs text-gray-500">Internal reference number</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="button" onclick="prevStep(3)"
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    Previous
+                                </button>
+                                <button type="button" onclick="submitForm()"
+                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                                    Submit Application
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <!-- Modal for showing missing required fields -->
-            <div id="requiredFieldsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
-                    <h2 class="text-xl font-semibold mb-4 text-red-600">Missing Required Fields</h2>
-                    <div class="mb-4">
-                        <p class="text-gray-600 mb-3">Please fill in the following required fields:</p>
-                        <ul id="missingFieldsList" class="text-sm text-gray-700 max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-lg">
-                            <!-- Missing fields will be listed here -->
-                        </ul>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" onclick="hideRequiredFieldsModal()"
-                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                            Okay
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
+
+    <!-- Popup Modal -->
+    <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
+            id="popupBox">
+            <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800"></h2>
+            <p id="popupMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+            <button id="popupCloseBtn"
+                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">
+                OK
+            </button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="../../js/staff_tailwind.config.js"></script>
     <script src="../../js/staff_theme.js"></script>
     <script>
@@ -917,51 +1082,111 @@ if (empty($profile_photo_url)) {
             });
         })();
     </script>
-    <!-- disabled/enabled toggles input -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const birthDateInput = document.querySelector('input[name="b_date"]');
-            const ageInput = document.getElementById("age");
-
-            if (birthDateInput && ageInput) {
-                birthDateInput.addEventListener("change", () => {
-                    const birthDate = new Date(birthDateInput.value);
-                    const today = new Date();
-
-                    if (!isNaN(birthDate.getTime())) {
-                        let age = today.getFullYear() - birthDate.getFullYear();
-                        const m = today.getMonth() - birthDate.getMonth();
-
-                        // Adjust if birthday hasn't occurred yet this year
-                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                            age--;
-                        }
-
-                        ageInput.value = age >= 0 ? age : "";
-
-                        // Store the calculated age for form submission
-                        sessionStorage.setItem('calculatedAge', age);
-                    } else {
-                        ageInput.value = "";
-                        sessionStorage.removeItem('calculatedAge');
-                    }
+        // Phone number input with intl-tel-input
+        let phoneInput;
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize phone input
+            const phoneInputElement = document.querySelector("#contact_number");
+            if (phoneInputElement) {
+                phoneInput = window.intlTelInput(phoneInputElement, {
+                    initialCountry: "ph",
+                    separateDialCode: true,
+                    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
                 });
 
-                // Also calculate on page load if birth date is already filled
-                if (birthDateInput.value) {
-                    birthDateInput.dispatchEvent(new Event('change'));
-                }
+                // Add validation
+                phoneInputElement.addEventListener('blur', validatePhoneNumber);
+                phoneInputElement.addEventListener('input', function() {
+                    this.classList.remove('error-border', 'success-border');
+                    document.getElementById('contact_number_error').classList.add('hidden');
+                });
             }
 
-            // Enable/disable conditional fields based on radio button selections
+            // Age calculation
+            const birthDateInput = document.querySelector('#b_date');
+            const ageInput = document.querySelector('#age');
+
+            if (birthDateInput && ageInput) {
+                birthDateInput.addEventListener('change', calculateAge);
+                calculateAge(); // Calculate on load if date is already set
+            }
+
+            // Conditional field toggling
             setupConditionalFields();
         });
+
+        function calculateAge() {
+            const birthDateInput = document.querySelector('#b_date');
+            const ageInput = document.querySelector('#age');
+
+            if (!birthDateInput.value) {
+                ageInput.value = '';
+                return;
+            }
+
+            const birthDate = new Date(birthDateInput.value);
+            const today = new Date();
+
+            if (isNaN(birthDate.getTime())) {
+                ageInput.value = '';
+                return;
+            }
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            ageInput.value = age >= 0 ? age : '';
+        }
+
+        function validatePhoneNumber() {
+            const phoneElement = document.querySelector("#contact_number");
+            const errorElement = document.getElementById('contact_number_error');
+
+            if (!phoneInput || !phoneElement) return true;
+
+            const phoneNumber = phoneElement.value.trim();
+
+            if (!phoneNumber) {
+                phoneElement.classList.add('error-border');
+                errorElement.textContent = "Contact number is required";
+                errorElement.classList.remove('hidden');
+                return false;
+            }
+
+            // Basic validation for Philippine numbers
+            const phPattern = /^(09|\+639)\d{9}$/;
+            const cleanedNumber = phoneNumber.replace(/\D/g, '');
+
+            if (!phPattern.test(phoneNumber) && cleanedNumber.length !== 11 && cleanedNumber.length !== 12) {
+                phoneElement.classList.add('error-border');
+                errorElement.textContent = "Please enter a valid Philippine phone number (09XXXXXXXXX or +639XXXXXXXXX)";
+                errorElement.classList.remove('hidden');
+                return false;
+            }
+
+            if (phoneInput.isValidNumber()) {
+                phoneElement.classList.remove('error-border');
+                phoneElement.classList.add('success-border');
+                errorElement.classList.add('hidden');
+                return true;
+            } else {
+                phoneElement.classList.add('error-border');
+                errorElement.textContent = "Please enter a valid phone number";
+                errorElement.classList.remove('hidden');
+                return false;
+            }
+        }
 
         function setupConditionalFields() {
             // Pensioner fields
             const pensionerRadios = document.querySelectorAll('input[name="is_pensioner"]');
-            const pensionAmount = document.querySelector('input[name="pension_amount"]');
-            const pensionSource = document.querySelector('select[name="pension_source"]');
+            const pensionAmount = document.querySelector('#pension_amount');
+            const pensionSource = document.querySelector('#pension_source');
 
             pensionerRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -978,7 +1203,7 @@ if (empty($profile_photo_url)) {
 
             // Permanent Income fields
             const incomeRadios = document.querySelectorAll('input[name="has_permanent_income"]');
-            const incomeSource = document.querySelector('input[name="income_source"]');
+            const incomeSource = document.querySelector('#income_source');
 
             incomeRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -993,8 +1218,8 @@ if (empty($profile_photo_url)) {
 
             // Family Support fields
             const supportRadios = document.querySelectorAll('input[name="has_family_support"]');
-            const supportType = document.querySelector('input[name="support_type"]');
-            const supportCash = document.querySelector('input[name="support_cash"]');
+            const supportType = document.querySelector('#support_type');
+            const supportCash = document.querySelector('#support_cash');
 
             supportRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -1011,7 +1236,7 @@ if (empty($profile_photo_url)) {
 
             // Illness fields
             const illnessRadios = document.querySelectorAll('input[name="has_existing_illness"]');
-            const illnessDetails = document.querySelector('input[name="illness_details"]');
+            const illnessDetails = document.querySelector('#illness_details');
 
             illnessRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -1024,146 +1249,122 @@ if (empty($profile_photo_url)) {
                 });
             });
         }
-    </script>
 
-    <!-- Insert Applicant  -->
-    <script>
-        let isSubmitting = false;
-
-        // Required fields configuration (only text/select fields as mentioned)
-        const requiredFields = [{
-                name: 'lname',
-                label: 'Last Name'
-            },
-            {
-                name: 'fname',
-                label: 'First Name'
-            },
-            {
-                name: 'mname',
-                label: 'Middle Name'
-            },
-            {
-                name: 'gender',
-                label: 'Gender'
-            },
-            {
-                name: 'b_date',
-                label: 'Birthdate'
-            },
-            {
-                name: 'age',
-                label: 'Age'
-            },
-            {
-                name: 'civil_status',
-                label: 'Civil Status'
-            },
-            {
-                name: 'citizenship',
-                label: 'Citizenship'
-            },
-            {
-                name: 'religion',
-                label: 'Religion'
-            },
-            {
-                name: 'birth_place',
-                label: 'Birthplace'
-            },
-            {
-                name: 'educational_attainment',
-                label: 'Educational Attainment'
-            },
-            {
-                name: 'living_arrangement',
-                label: 'Living Arrangement'
-            },
-            {
-                name: 'brgy',
-                label: 'Barangay'
-            },
-            {
-                name: 'municipality',
-                label: 'City/Municipality'
-            },
-            {
-                name: 'province',
-                label: 'Province'
+        function nextStep(step) {
+            // Validate current step
+            if (!validateStep(step - 1)) {
+                return;
             }
-        ];
 
-        // Function to validate required fields
-        function validateRequiredFields() {
-            const missingFields = [];
+            // Hide current step
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
 
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    const value = element.value.trim();
-                    const isValid = value !== '' && value !== null && value !== undefined;
+            // Show next step
+            document.getElementById(`step${step}`).classList.add('active');
 
-                    // Remove existing error styling
-                    element.classList.remove('border-red-500', 'bg-red-50');
+            // Update step indicators
+            updateStepIndicators(step);
+        }
 
-                    // Add error styling if field is invalid
-                    if (!isValid) {
-                        element.classList.add('border-red-500', 'bg-red-50');
-                        missingFields.push(field.label);
+        function prevStep(step) {
+            // Hide current step
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Show previous step
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update step indicators
+            updateStepIndicators(step);
+        }
+
+        function updateStepIndicators(currentStep) {
+            const steps = document.querySelectorAll('.step-circle');
+            const labels = document.querySelectorAll('.step-label');
+
+            steps.forEach((circle, index) => {
+                const stepNumber = index + 1;
+                if (stepNumber < currentStep) {
+                    circle.classList.remove('active');
+                    circle.classList.add('completed');
+                    labels[index].classList.remove('active');
+                    labels[index].classList.add('completed');
+                } else if (stepNumber === currentStep) {
+                    circle.classList.add('active');
+                    circle.classList.remove('completed');
+                    labels[index].classList.add('active');
+                    labels[index].classList.remove('completed');
+                } else {
+                    circle.classList.remove('active', 'completed');
+                    labels[index].classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        function validateStep(stepNumber) {
+            const step = document.getElementById(`step${stepNumber}`);
+            let isValid = true;
+            let firstError = null;
+
+            // Get all required inputs in this step
+            const requiredInputs = step.querySelectorAll('[required]');
+
+            requiredInputs.forEach(input => {
+                // Skip disabled inputs
+                if (input.disabled) return;
+
+                const value = input.value.trim();
+                const isEmpty = value === '';
+
+                // Special validation for contact number
+                if (input.id === 'contact_number') {
+                    if (!validatePhoneNumber()) {
+                        isValid = false;
+                        if (!firstError) firstError = input;
+                        input.classList.add('error-border');
+                    } else {
+                        input.classList.remove('error-border');
                     }
+                } else if (isEmpty) {
+                    isValid = false;
+                    if (!firstError) firstError = input;
+                    input.classList.add('error-border');
+                } else {
+                    input.classList.remove('error-border');
                 }
             });
 
-            return missingFields;
+            // Scroll to first error if any
+            if (!isValid && firstError) {
+                firstError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                firstError.focus();
+
+                // Show error message
+                showPopup('Please fill in all required fields marked with *', 'error');
+            }
+
+            return isValid;
         }
 
-        // Function to clear error styling
-        function clearErrorStyling() {
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    element.classList.remove('border-red-500', 'bg-red-50');
-                }
-            });
+        function generateCustomLocalControlNumber() {
+            const customNumber = prompt("Enter custom local control number:", "");
+            const lcnInput = document.getElementById('local_control_number');
+
+            if (customNumber && customNumber.trim() !== "") {
+                lcnInput.value = customNumber.trim();
+                lcnInput.readOnly = false;
+                lcnInput.classList.remove('bg-gray-100');
+                lcnInput.classList.add('bg-yellow-50', 'border-yellow-300');
+            }
         }
 
-        // Function to show required fields modal
-        function showRequiredFieldsModal(missingFields) {
-            const modal = document.getElementById("requiredFieldsModal");
-            const box = modal.querySelector('div');
-            const list = document.getElementById("missingFieldsList");
-
-            // Clear previous list
-            list.innerHTML = '';
-
-            // Add missing fields to list
-            missingFields.forEach(field => {
-                const li = document.createElement('li');
-                li.className = 'py-1 px-2 border-b border-gray-200 last:border-b-0';
-                li.textContent = `• ${field}`;
-                list.appendChild(li);
-            });
-
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                box.classList.remove("scale-95", "opacity-0");
-                box.classList.add("scale-100", "opacity-100");
-            }, 10);
-        }
-
-        // Function to hide required fields modal
-        function hideRequiredFieldsModal() {
-            const modal = document.getElementById("requiredFieldsModal");
-            const box = modal.querySelector('div');
-
-            box.classList.add("scale-95", "opacity-0");
-            setTimeout(() => {
-                modal.classList.add("hidden");
-            }, 200);
-        }
-
-        // Modal popup function
-        function showPopup(message, type = "info", redirect = false) {
+        function showPopup(message, type = "info") {
             const modal = document.getElementById("popupModal");
             const box = document.getElementById("popupBox");
             const title = document.getElementById("popupTitle");
@@ -1175,353 +1376,177 @@ if (empty($profile_photo_url)) {
 
             if (type === "success") {
                 title.textContent = "✅ Success";
-                title.className = "text-xl font-semibold mb-3 text-#FFFFFF";
-                closeBtn.style.background = "#27AE60";
-                msg.style.color = "#333333";
+                title.className = "text-xl font-semibold mb-3 text-green-600";
+                closeBtn.className = "px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400";
             } else if (type === "error") {
                 title.textContent = "⚠️ Error";
-                title.className = "text-xl font-semibold  mb-3 text-#FFFFFF";
-                closeBtn.style.background = "Red";
-                msg.style.color = "#333333";
+                title.className = "text-xl font-semibold mb-3 text-red-600";
+                closeBtn.className = "px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-400";
+            } else if (type === "warning") {
+                title.textContent = "⚠️ Warning";
+                title.className = "text-xl font-semibold mb-3 text-yellow-600";
+                closeBtn.className = "px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400";
             } else {
-                title.textContent = "ℹ️ Notice";
-                title.className = "text-xl font-semibold mb-3 text-#FFFFFF";
-                closeBtn.style.background = "blue";
-                msg.style.color = "#333333";
+                title.textContent = "ℹ️ Information";
+                title.className = "text-xl font-semibold mb-3 text-blue-600";
+                closeBtn.className = "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400";
             }
 
-            // Show modal and animate
+            // Show modal
             modal.classList.remove("hidden");
             setTimeout(() => {
                 box.classList.remove("scale-95", "opacity-0");
                 box.classList.add("scale-100", "opacity-100");
             }, 10);
 
-            // Close button - FIXED: Only redirect on success, stay on page otherwise
+            // Close button handler
             closeBtn.onclick = () => {
                 box.classList.add("scale-95", "opacity-0");
                 setTimeout(() => {
                     modal.classList.add("hidden");
-                    if (redirect && type === "success") {
-                        // Reset form and stay on the same page instead of redirecting
+
+                    // If success, reset form
+                    if (type === "success") {
                         document.getElementById("applicantForm").reset();
-                        prevStep(); // Go back to step 1
-                        // Clear any stored data
-                        sessionStorage.removeItem('calculatedAge');
-                        // Clear error styling
-                        clearErrorStyling();
+                        // Reset to step 1
+                        document.querySelectorAll('.form-step').forEach(step => {
+                            step.classList.remove('active');
+                        });
+                        document.getElementById('step1').classList.add('active');
+                        updateStepIndicators(1);
+
+                        // Reset phone input
+                        if (phoneInput) {
+                            phoneInput.setNumber("");
+                        }
+
+                        // Reset conditional fields
+                        setupConditionalFields();
+                        calculateAge();
                     }
                 }, 200);
             };
         }
 
-        // Show registration modal
-        function showRegistrationModal() {
-            const modal = document.getElementById("registrationModal");
-            const box = modal.querySelector('div');
-
-            // Set default values
-            document.getElementById('date_of_registration').value = new Date().toISOString().split('T')[0];
-            document.getElementById('local_control_number').value = "Auto-generated";
-            document.getElementById('local_control_number').classList.remove('bg-yellow-100', 'border-yellow-300');
-            document.getElementById('local_control_number').classList.add('bg-gray-100', 'border-gray-300');
-            document.getElementById('id_number').value = "";
-
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                box.classList.remove("scale-95", "opacity-0");
-                box.classList.add("scale-100", "opacity-100");
-            }, 10);
-        }
-
-        // Hide registration modal
-        function hideRegistrationModal() {
-            const modal = document.getElementById("registrationModal");
-            const box = modal.querySelector('div');
-
-            box.classList.add("scale-95", "opacity-0");
-            setTimeout(() => {
-                modal.classList.add("hidden");
-            }, 200);
-        }
-
-        // Generate custom local control number
-        function generateCustomLocalControlNumber() {
-            const customLocalControlNumber = prompt("Enter custom local control number:", "");
-            if (customLocalControlNumber && customLocalControlNumber.trim() !== "") {
-                document.getElementById('local_control_number').value = customLocalControlNumber.trim();
-                document.getElementById('local_control_number').classList.remove('bg-gray-100', 'border-gray-300');
-                document.getElementById('local_control_number').classList.add('bg-yellow-100', 'border-yellow-300');
-                document.getElementById('local_control_number').readOnly = false;
-            }
-        }
-
-        function nextStep() {
-            // Validate step 1 required fields
-            const missingFields = validateRequiredFields();
-
-            if (missingFields.length > 0) {
-                showRequiredFieldsModal(missingFields);
+        async function submitForm() {
+            // Validate step 4
+            if (!validateStep(4)) {
                 return;
             }
 
-            // If validation passes, proceed to next step
-            document.getElementById("step1").classList.add("hidden");
-            document.getElementById("step2").classList.remove("hidden");
-        }
+            // Validate all required fields in the entire form
+            const requiredFields = [
+                'lname', 'fname', 'mname', 'gender', 'b_date', 'age',
+                'civil_status', 'citizenship', 'religion', 'birth_place',
+                'educational_attainment', 'brgy', 'municipality', 'province',
+                'living_arrangement', 'contact_number', 'date_of_registration',
+                'id_number'
+            ];
 
-        function prevStep() {
-            document.getElementById("step2").classList.add("hidden");
-            document.getElementById("step1").classList.remove("hidden");
-            // Clear error styling when going back
-            clearErrorStyling();
-        }
-
-        // Collect form data
-        function collectFormData() {
-            const form = document.getElementById("applicantForm");
-            const data = {};
-
-            form.querySelectorAll("input, select, textarea").forEach(el => {
-                if (!el.name) return;
-                if (el.type === "radio") {
-                    if (el.checked) data[el.name] = parseInt(el.value, 10);
-                } else if (el.type === "checkbox") {
-                    data[el.name] = el.checked ? 1 : 0;
-                } else {
-                    data[el.name] = el.value.trim();
+            let missingFields = [];
+            requiredFields.forEach(field => {
+                const element = document.querySelector(`[name="${field}"]`);
+                if (element && !element.disabled) {
+                    const value = element.value.trim();
+                    if (!value && element.required) {
+                        missingFields.push(field.replace('_', ' '));
+                    }
                 }
             });
+
+            // Special validation for radio groups
+            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
+            radioGroups.forEach(group => {
+                const radios = document.querySelectorAll(`input[name="${group}"]:checked`);
+                if (radios.length === 0) {
+                    missingFields.push(group.replace('_', ' '));
+                }
+            });
+
+            if (missingFields.length > 0) {
+                showPopup(`Please complete the following fields: ${missingFields.join(', ')}`, 'error');
+                return;
+            }
+
+            // Validate phone number
+            if (!validatePhoneNumber()) {
+                showPopup('Please enter a valid contact number', 'error');
+                return;
+            }
+
+            // Collect form data
+            const formData = collectFormData();
+
+            // Format phone number
+            if (phoneInput) {
+                formData.contact_number = phoneInput.getNumber();
+            }
+
+            // Show loading
+            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+
+            try {
+                const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showPopup(`Application submitted successfully! ID: ${result.id_number || ''}`, 'success');
+                } else {
+                    showPopup(result.error || 'Submission failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                showPopup('Network error. Please check your connection and try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
+        function collectFormData() {
+            const form = document.getElementById('applicantForm');
+            const formData = new FormData(form);
+            const data = {};
+
+            // Collect all form data
+            formData.forEach((value, key) => {
+                data[key] = value.trim();
+            });
+
+            // Collect radio button values
+            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
+            radioGroups.forEach(group => {
+                const selected = form.querySelector(`input[name="${group}"]:checked`);
+                if (selected) {
+                    data[group] = selected.value;
+                }
+            });
+
+            // Add additional fields
+            data.date_of_registration = document.getElementById('date_of_registration').value;
+            data.id_number = document.getElementById('id_number').value;
+            data.local_control_number = document.getElementById('local_control_number').value;
+
+            // Add admin user info
+            data.admin_user_id = <?php echo json_encode($_SESSION['user_id'] ?? $_SESSION['admin_user_id'] ?? 57); ?>;
+            data.admin_user_name = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>;
+            data.session_context = <?php echo json_encode($ctx ?? ''); ?>;
+            data.request_source = 'admin_register';
 
             return data;
         }
-
-        // Updated submitForm function - now shows registration modal
-        async function submitForm() {
-            if (isSubmitting) return;
-
-            // Validate required fields in step 2 (radio buttons) - KEEPING YOUR EXISTING VALIDATION
-            const step2Fields = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
-            let hasErrors = false;
-
-            step2Fields.forEach(field => {
-                const radios = document.querySelectorAll(`input[name="${field}"]:checked`);
-                if (radios.length === 0) {
-                    hasErrors = true;
-                    // Highlight the field that's missing
-                    const fieldGroup = document.querySelector(`input[name="${field}"]`).closest('.flex.items-center');
-                    if (fieldGroup) {
-                        fieldGroup.style.border = "1px solid red";
-                        fieldGroup.style.padding = "4px";
-                        fieldGroup.style.borderRadius = "4px";
-                    }
-                }
-            });
-
-            if (hasErrors) {
-                showPopup("Please complete all required fields in Step 2.", "error");
-                return;
-            }
-
-            // Show registration modal instead of submitting directly
-            showRegistrationModal();
-        }
-
-        // Confirm registration and submit form data
-        async function confirmRegistration() {
-            const dateOfRegistration = document.getElementById('date_of_registration').value;
-            const idNumber = document.getElementById('id_number').value.trim();
-            const localControlNumber = document.getElementById('local_control_number').value;
-
-            if (!dateOfRegistration) {
-                showPopup("Please select a date of registration.", "error");
-                return;
-            }
-
-            if (!idNumber) {
-                showPopup("Please enter an ID number.", "error");
-                return;
-            }
-
-            // Validate ID number format
-            const idNumberPattern = /^[A-Za-z0-9-]+$/;
-            if (!idNumberPattern.test(idNumber)) {
-                showPopup("Please enter a valid ID number (letters, numbers, and hyphens only).", "error");
-                return;
-            }
-
-            // Validate local control number if custom
-            if (localControlNumber !== "Auto-generated" && localControlNumber !== "") {
-                const controlNumberPattern = /^[A-Za-z0-9-]+$/;
-                if (!controlNumberPattern.test(localControlNumber)) {
-                    showPopup("Please enter a valid local control number (letters, numbers, and hyphens only).", "error");
-                    return;
-                }
-            }
-
-            // Add the additional data to the form data
-            const formData = collectFormData();
-            formData.date_of_registration = dateOfRegistration;
-            formData.id_number = idNumber;
-            formData.local_control_number = localControlNumber === "Auto-generated" ? "" : localControlNumber;
-
-            hideRegistrationModal();
-            await submitFormData(formData);
-        }
-
-        // Separate function for actual form submission
-        async function submitFormData(formData) {
-            if (isSubmitting) return;
-            isSubmitting = true;
-
-            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Submitting...";
-            }
-
-            try {
-                // Get session context from URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const sessionContext = urlParams.get('session_context') || '';
-                
-                // CRITICAL: Add staff user info to form data
-                const staffUserId = <?php echo json_encode($_SESSION['user_id'] ?? $_SESSION['staff_user_id'] ?? 0); ?>;
-                const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff User'); ?>;
-                
-                // Add staff info to form data
-                formData.staff_user_id = staffUserId;
-                formData.staff_user_name = staffUserName;
-                formData.session_context = sessionContext;
-                formData.request_source = 'staff_register';
-
-                // Log for debugging (use console.log, not error_log)
-                console.log("Submitting with staff ID: " + staffUserId + ", context: " + sessionContext);
-                console.log("Form data:", formData);
-                
-                // URL without session_context in query string (we're passing it in POST data)
-                const url = "/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php";
-
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    body: JSON.stringify(formData),
-                    credentials: 'include' // CRITICAL: sends cookies with the request
-                });
-
-                const text = await res.text();
-                console.log("Server response:", text);
-                
-                try {
-                    const json = JSON.parse(text);
-
-                    if (json.success) {
-                        let successMessage = "Application submitted successfully!";
-                        if (json.local_control_number) {
-                            successMessage += ` | Local Control Number: ${json.local_control_number}`;
-                        }
-
-                        showPopup(successMessage, "success", true);
-                        // Clear stored age after successful submission
-                        sessionStorage.removeItem('calculatedAge');
-
-                        isSubmitting = false;
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = "Submit";
-                        }
-                    } else {
-                        showPopup(json.error || "Submission failed.", "error");
-                        isSubmitting = false;
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = "Submit";
-                        }
-                    }
-                } catch {
-                    console.error("Server returned non-JSON:", text);
-                    showPopup("Unexpected server response. Check console for details.", "error");
-                    isSubmitting = false;
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = "Submit";
-                    }
-                }
-            } catch (err) {
-                console.error("Fetch error:", err);
-                showPopup("Network error: " + err.message, "error");
-                isSubmitting = false;
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = "Submit";
-                }
-            }
-        }
-
-        // Reset field highlighting when user interacts with radio buttons
-        document.addEventListener('change', function(e) {
-            if (e.target.type === 'radio') {
-                const fieldGroup = e.target.closest('.flex.items-center');
-                if (fieldGroup && fieldGroup.style.border === '1px solid red') {
-                    fieldGroup.style.border = '';
-                    fieldGroup.style.padding = '';
-                    fieldGroup.style.borderRadius = '';
-                }
-            }
-        });
-
-        // Add real-time validation for fields (clear errors when user starts typing)
-        document.addEventListener('DOMContentLoaded', function() {
-            requiredFields.forEach(field => {
-                const element = document.querySelector(`[name="${field.name}"]`);
-                if (element) {
-                    element.addEventListener('input', function() {
-                        if (this.value.trim() !== '') {
-                            this.classList.remove('border-red-500', 'bg-red-50');
-                        }
-                    });
-
-                    // For select elements
-                    if (element.tagName === 'SELECT') {
-                        element.addEventListener('change', function() {
-                            if (this.value !== '') {
-                                this.classList.remove('border-red-500', 'bg-red-50');
-                            }
-                        });
-                    }
-                }
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const birthDateInput = document.querySelector('input[name="b_date"]');
-            const ageInput = document.getElementById("age");
-
-            if (birthDateInput && ageInput) {
-                birthDateInput.addEventListener("change", () => {
-                    const birthDate = new Date(birthDateInput.value);
-                    const today = new Date();
-
-                    if (!isNaN(birthDate.getTime())) {
-                        let age = today.getFullYear() - birthDate.getFullYear();
-                        const m = today.getMonth() - birthDate.getMonth();
-
-                        // Adjust if birthday hasn't occurred yet this year
-                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                            age--;
-                        }
-
-                        ageInput.value = age >= 0 ? age : "";
-                    } else {
-                        ageInput.value = "";
-                    }
-                });
-            }
-        });
     </script>
 </body>
 

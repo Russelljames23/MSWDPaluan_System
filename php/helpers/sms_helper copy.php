@@ -111,7 +111,7 @@ class SMSGateway
 
     public function send($phoneNumber, $message)
     {
-        $senderId = 'SEMAPHORE';
+        $senderId = 'SEMAPHORE'; 
         error_log("\n=== SEND SMS VIA SEMAPHORE ===");
         error_log("Phone: $phoneNumber");
         error_log("Message: " . substr($message, 0, 50) . "...");
@@ -145,7 +145,6 @@ class SMSGateway
         }
 
         // REAL MODE: Send via Semaphore API
-        // REAL MODE: Send via Semaphore API
         $apiKey = $this->settings['api_key'] ?? '';
 
         if (empty($apiKey)) {
@@ -155,21 +154,28 @@ class SMSGateway
 
         // Format phone number for Semaphore (international format)
         $formattedNumber = $this->formatNumberForSemaphore($cleanNumber);
+        $senderId = $this->settings['sender_id'] ?? 'SEMAPHORE';
 
-        // Simplified validation - accept any number that can be formatted
-        if (!$formattedNumber) {
-            error_log("❌ Could not format number: $phoneNumber");
+        // IMPORTANT: Semaphore auto-corrects "SEMAPHORE" to "Semaphore" (case-sensitive)
+        // Use exactly "Semaphore" or "SEMAPHORE" - both work
+        if (strtoupper($senderId) === 'SEMAPHORE') {
+            $senderId = 'Semaphore'; // Use the exact case that works
+        }
+
+        // Validate formatted number
+        if (!$formattedNumber || !$this->validateInternationalNumber($formattedNumber)) {
+            error_log("❌ Invalid formatted number: $formattedNumber");
             return $this->errorResponse(
                 'Invalid Philippine mobile number. Use 09XXXXXXXXX (11 digits) or 9XXXXXXXXX (10 digits).'
             );
         }
 
-        // Send via Semaphore API - use same format as quick_test.php
+        // Send via Semaphore API
         $postData = [
             'apikey' => $apiKey,
             'number' => $formattedNumber,
             'message' => $message,
-            'sender_name' => 'SEMAPHORE' // Use sender_name as in quick_test.php
+            'sender_name' => 'SEMAPHORE' // Fixed: underscore and ALL CAPS
         ];
 
         error_log("Post Data (masked): " . json_encode(array_merge($postData, ['apikey' => substr($apiKey, 0, 8) . '...']), JSON_PRETTY_PRINT));
@@ -498,9 +504,9 @@ class SMSGateway
         // Remove all non-numeric characters except plus sign
         $cleaned = preg_replace('/[^0-9+]/', '', $phoneNumber);
 
-        // If it starts with +63, remove the +
+        // If it starts with +63, convert to 0 for easier processing
         if (strpos($cleaned, '+63') === 0) {
-            $cleaned = '63' . substr($cleaned, 3);
+            $cleaned = '0' . substr($cleaned, 3);
         }
 
         return $cleaned;
@@ -510,11 +516,29 @@ class SMSGateway
     {
         $number = $this->cleanPhoneNumber($phoneNumber);
 
-        // Debug log
-        error_log("Validating phone: $phoneNumber (clean: $number)");
+        // After cleaning, check various valid formats
+        // 09XXXXXXXXX → 11 digits (most common)
+        if (preg_match('/^09\d{9}$/', $number)) {
+            return true;
+        }
 
-        // Accept various Philippine mobile formats
-        if (preg_match('/^(09|9|63|\+63)\d{9,12}$/', $number)) {
+        // 9XXXXXXXXX → 10 digits
+        if (preg_match('/^9\d{9}$/', $number)) {
+            return true;
+        }
+
+        // 63XXXXXXXXX → 11 digits (country code without leading 0)
+        if (preg_match('/^63\d{9}$/', $number)) {
+            return true;
+        }
+
+        // 63XXXXXXXXXX → 12 digits (some older numbers)
+        if (preg_match('/^63\d{10}$/', $number)) {
+            return true;
+        }
+
+        // +639XXXXXXXXX → 13 characters with plus
+        if (preg_match('/^\+63\d{10}$/', $number)) {
             return true;
         }
 
@@ -525,22 +549,14 @@ class SMSGateway
     {
         $number = preg_replace('/[^0-9]/', '', $phoneNumber);
 
-        error_log("Validating international number: $phoneNumber (clean: $number)");
-
-        // Accept 639XXXXXXXXX (12 digits) - Philippine numbers with country code
-        // Format should be: 63 + 10 digits (total 12 digits)
-        if (preg_match('/^639\d{9}$/', $number)) {
+        // Accept 63XXXXXXXXX (11 digits) or 63XXXXXXXXXX (12 digits)
+        // Philippine numbers: 63 + 9 or 10 digits
+        if (preg_match('/^63\d{9,10}$/', $number)) {
             error_log("Valid international number: $phoneNumber (clean: $number)");
             return true;
         }
 
-        // Also accept 639XXXXXXXXXX (13 digits) for longer numbers
-        if (preg_match('/^639\d{10}$/', $number)) {
-            error_log("Valid international number (13 digits): $phoneNumber (clean: $number)");
-            return true;
-        }
-
-        error_log("Invalid international number: $phoneNumber (clean: $number) - Pattern: /^639\d{9,10}$/");
+        error_log("Invalid international number: $phoneNumber (clean: $number)");
         return false;
     }
 
@@ -548,19 +564,26 @@ class SMSGateway
     {
         $number = $this->cleanPhoneNumber($phoneNumber);
 
-        error_log("Formatting number: $phoneNumber (clean: $number)");
+        // 09XXXXXXXXX → convert to 639XXXXXXXXX
+        if (preg_match('/^09(\d{9})$/', $number, $m)) {
+            return '63' . $m[1];
+        }
 
-        // Remove leading 0 if present
-        if (strpos($number, '0') === 0) {
+        // 9XXXXXXXXX → convert to 639XXXXXXXXX
+        if (preg_match('/^9(\d{9})$/', $number, $m)) {
+            return '63' . $m[1];
+        }
+
+        // 63XXXXXXXXX or 63XXXXXXXXXX → already correct
+        if (preg_match('/^63\d{9,10}$/', $number)) {
+            return $number;
+        }
+
+        // If it still has +, remove it
+        if (strpos($number, '+') === 0) {
             $number = substr($number, 1);
         }
 
-        // Ensure it starts with 63
-        if (strpos($number, '63') !== 0) {
-            $number = '63' . $number;
-        }
-
-        error_log("Formatted for Semaphore: $number");
         return $number;
     }
 
