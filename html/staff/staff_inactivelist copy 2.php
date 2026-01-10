@@ -2,14 +2,11 @@
 require_once "../../php/login/staff_header.php";
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-$_SESSION['session_context'] = 'staff';
-$_SESSION['staff_user_id'] = $_SESSION['user_id'] ?? 0; // Make sure this is set
-$_SESSION['user_type'] = 'Staff';
-
 $servername = "localhost";
 $dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
 $password = "Mswdo_PaluanSystem23";
+
 $pdo = null;
 try {
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
@@ -64,7 +61,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deceased List</title>
+    <title>Inactive List</title>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -270,13 +267,12 @@ if (empty($profile_photo_url)) {
                                     List</a>
                             </li>
                             <li>
-                                <a href="staff_inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
+                                <a href="#" class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Inactive
                                     List</a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Deceased
+                                <a href="staff_deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
                                     List</a>
                             </li>
                         </ul>
@@ -347,7 +343,7 @@ if (empty($profile_photo_url)) {
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
                         <div
                             class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Deceased List</h4>
+                            <h4 class="text-xl font-medium dark:text-white">Inactive List</h4>
                             <div class="flex flex-row justify-between mt-2">
                                 <!-- Search  -->
                                 <div class="w-full md:w-1/2">
@@ -426,7 +422,8 @@ if (empty($profile_photo_url)) {
                                         <th class="px-4 py-3">Age</th>
                                         <th class="px-4 py-3">Gender</th>
                                         <th class="px-4 py-3">Civil Status</th>
-                                        <th class="px-4 py-3">Date of Death</th>
+                                        <th class="px-4 py-3">Date of Inactive</th>
+                                        <th class="px-4 py-3">Inactive Reason</th>
                                         <th class="px-4 py-3">Status</th>
                                         <th class="px-4 py-3">Action</th>
                                     </tr>
@@ -731,7 +728,7 @@ if (empty($profile_photo_url)) {
                     search: currentSearch,
                     filter: currentFilter
                 });
-                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/deceasedlist/fetch_deceased.php?${params}`)
+                fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/inactivelist/fetch_inactive.php?${params}`)
                     .then(res => res.json())
                     .then(data => {
                         tbody.innerHTML = "";
@@ -739,7 +736,7 @@ if (empty($profile_photo_url)) {
                         totalPages = data.total_pages;
 
                         if (!data.deceased || data.deceased.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No deceased records found.</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-gray-500">No Inactive records found.</td></tr>`;
                             pagination.innerHTML = "";
                             return;
                         }
@@ -759,7 +756,8 @@ if (empty($profile_photo_url)) {
                             <td>${row.age || ""}</td>
                             <td>${row.gender || ""}</td>
                             <td>${row.civil_status || ""}</td>
-                            <td>${row.date_of_death || ""}</td>
+                            <td>${row.date_of_inactive || ""}</td>
+                            <td>${row.inactive_reason || ""}</td>
                             <td class="${statusColor}">${row.validation}</td>
                             <td class="relative">
                                 <button id="${buttonId}" class="inline-flex cursor-pointer items-center p-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
@@ -770,7 +768,7 @@ if (empty($profile_photo_url)) {
                                 <div id="${dropdownId}" class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded shadow-lg">
                                     <ul class="py-1 text-sm text-gray-700">
                                         <li><button onclick="undoDeceased('${row.applicant_id}', '${row.full_name}')" class="block cursor-pointer w-full text-left px-4 py-2 hover:bg-gray-100" title="Return to active list">↩️ Undo</button></li>
-                                        
+                                        <li><button onclick="archiveDeceased('${row.applicant_id}')" class="block w-full text-left cursor-pointer px-4 py-2 hover:bg-gray-100" title="Send to archive">🗃️ Archive</button></li>
                                     </ul>
                                 </div>
                             </td>
@@ -805,57 +803,115 @@ if (empty($profile_photo_url)) {
                 if (!confirm) return;
 
                 try {
-                    // FORCE STAFF CONTEXT with same parameters as mark_deceased.php
-                    const staffUserId = <?php
-                                        if (isset($_SESSION['staff_user_id'])) {
-                                            echo $_SESSION['staff_user_id'];
-                                        } elseif (isset($_SESSION['user_id'])) {
-                                            echo $_SESSION['user_id'];
-                                        } else {
-                                            echo '0';
-                                        }
-                                        ?>;
+                    // Determine if we're in staff or admin page
+                    const isStaffPage = window.location.pathname.includes('staff_') ||
+                        document.title.toLowerCase().includes('staff') ||
+                        document.body.classList.contains('staff-page');
 
-                    const staffUserName = <?php
-                                            if (isset($_SESSION['fullname'])) {
-                                                echo json_encode($_SESSION['fullname']);
-                                            } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                                echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-                                            } elseif (isset($_SESSION['username'])) {
-                                                echo json_encode($_SESSION['username']);
-                                            } else {
-                                                echo json_encode('Staff User');
-                                            }
-                                            ?>;
-
-                    console.log('🔧 Sending staff context for undo deceased:', staffUserId, staffUserName);
-
-                    // Send as JSON like mark_deceased.php does
-                    const requestData = {
-                        id: id,
-                        session_context: 'staff',
-                        staff_user_id: staffUserId,
-                        staff_user_name: staffUserName
-                    };
-
-                    console.log('📤 Sending undo deceased request as STAFF:', requestData);
-
-                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/deceasedlist/undo_deceased.php`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(requestData)
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        showPopup(data.message || "Status updated successfully.", "success");
-                        console.log(`✅ Record restored by ${data.marked_by || 'user'} (${data.context})`);
+                    if (isStaffPage) {
+                        // FORCE STAFF CONTEXT with same parameters as mark_deceased.php
+                        const staffUserId = <?php 
+                            if (isset($_SESSION['staff_user_id'])) {
+                                echo $_SESSION['staff_user_id'];
+                            } elseif (isset($_SESSION['user_id'])) {
+                                echo $_SESSION['user_id'];
+                            } else {
+                                echo '0';
+                            }
+                        ?>;
+                        
+                        const staffUserName = <?php 
+                            if (isset($_SESSION['fullname'])) {
+                                echo json_encode($_SESSION['fullname']);
+                            } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                            } elseif (isset($_SESSION['username'])) {
+                                echo json_encode($_SESSION['username']);
+                            } else {
+                                echo json_encode('Staff User');
+                            }
+                        ?>;
+                        
+                        console.log('🔧 Sending staff context for undo inactive:', staffUserId, staffUserName);
+                        
+                        // Send as JSON like mark_deceased.php does
+                        const requestData = {
+                            id: id,
+                            session_context: 'staff',
+                            staff_user_id: staffUserId,
+                            staff_user_name: staffUserName
+                        };
+                        
+                        console.log('📤 Sending undo inactive request as STAFF:', requestData);
+                        
+                        const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/inactivelist/undo_inactive.php`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+                        const data = await res.json();
+                        
+                        if (data.success) {
+                            showPopup(data.message || "Status updated successfully.", "success");
+                            console.log(`✅ Record restored by ${data.restored_by || 'user'} (${data.context})`);
+                        } else {
+                            showPopup(data.error || "Error updating record.", "error");
+                        }
                     } else {
-                        showPopup(data.error || "Error updating record.", "error");
+                        // Admin context
+                        const adminUserId = <?php 
+                            if (isset($_SESSION['admin_user_id'])) {
+                                echo $_SESSION['admin_user_id'];
+                            } elseif (isset($_SESSION['user_id'])) {
+                                echo $_SESSION['user_id'];
+                            } else {
+                                echo '57'; // Default admin ID
+                            }
+                        ?>;
+                        
+                        const adminUserName = <?php 
+                            if (isset($_SESSION['fullname'])) {
+                                echo json_encode($_SESSION['fullname']);
+                            } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                            } elseif (isset($_SESSION['username'])) {
+                                echo json_encode($_SESSION['username']);
+                            } else {
+                                echo json_encode('Admin User');
+                            }
+                        ?>;
+                        
+                        console.log('🔧 Sending admin context for undo inactive:', adminUserId, adminUserName);
+                        
+                        // Send as JSON
+                        const requestData = {
+                            id: id,
+                            session_context: 'admin',
+                            admin_user_id: adminUserId,
+                            admin_user_name: adminUserName
+                        };
+                        
+                        console.log('📤 Sending undo inactive request as ADMIN:', requestData);
+                        
+                        const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/inactivelist/undo_inactive.php`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+                        const data = await res.json();
+                        
+                        if (data.success) {
+                            showPopup(data.message || "Status updated successfully.", "success");
+                            console.log(`✅ Record restored by ${data.restored_by || 'user'} (${data.context})`);
+                        } else {
+                            showPopup(data.error || "Error updating record.", "error");
+                        }
                     }
-
+                    
                     fetchDeceased();
                 } catch (error) {
                     console.error('❌ Error:', error);
@@ -873,39 +929,26 @@ if (empty($profile_photo_url)) {
                 document.body.appendChild(loader);
 
                 try {
-                    // Send as JSON to match backend's expected format
-                    const requestData = {
-                        id: id,
-                        applicant_id: id // Send both formats for compatibility
-                    };
+                    const formData = new FormData();
+                    formData.append("id", id);
 
                     const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/archived/archived.php`, {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(requestData)
+                        body: formData,
                     });
 
                     const result = await response.json();
                     loader.remove();
 
                     if (!response.ok || !result.success) {
-                        // If already archived, show success message
-                        if (result.already_archived) {
-                            showPopup(result.message || "Record is already archived.", "info");
-                            fetchDeceased();
-                        } else {
-                            showPopup(result.error || result.message || "Failed to archive record.", "error");
-                        }
+                        showPopup(result.message || "Failed to archive record.", "error");
                         return;
                     }
 
                     showPopup(result.message || "Record archived successfully.", "success");
                     fetchDeceased();
-                } catch (error) {
+                } catch {
                     loader.remove();
-                    console.error("Archive error:", error);
                     showPopup("Network or server error while archiving record.", "error");
                 }
             };
@@ -913,8 +956,6 @@ if (empty($profile_photo_url)) {
             fetchDeceased();
         });
     </script>
-
-
 </body>
 
 </html>

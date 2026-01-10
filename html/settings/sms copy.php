@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once "../../php/login/admin_header.php";
 require_once "../../php/helpers/sms_helper.php";
 
@@ -6,56 +9,128 @@ require_once "../../php/helpers/sms_helper.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+// Emergency fallback test
+if (isset($_GET['direct_test'])) {
+    $apiKey = '11203b3c9a4bc430dd3a1b181ece8b6c';
+    $testNumber = '09272873751';
+    $testMessage = 'Direct test from MSWD System';
 
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://api.semaphore.co/api/v4/messages");
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+        'apikey' => $apiKey,
+        'number' => '639272873751',
+        'message' => $testMessage,
+        'sender_name' => 'SEMAPHORE'
+    ]));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    echo "<pre>";
+    echo "Direct API Test Result:\n";
+    echo "HTTP Code: $httpCode\n";
+    echo "Response: $response\n";
+    echo "</pre>";
+    exit();
+}
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-// Get SMS settings - ADD DEBUGGING HERE
+// Get SMS settings - USE THE FUNCTION FROM SMS_HELPER.PHP
 $smsSettings = getSMSSettings();
-error_log("SMS Settings loaded: " . print_r($smsSettings, true));
 
-// Initialize variables to prevent warnings
+// Also update the save_settings handler to fix sender name
+if (isset($_POST['save_settings'])) {
+    // Save SMS settings
+    $settings = [
+        'provider' => $_POST['provider'] ?? 'semaphore',
+        'api_key' => trim($_POST['api_key'] ?? ''),
+        'sender_id' => 'SEMAPHORE', // FIXED: Always use SEMAPHORE
+        'is_active' => isset($_POST['is_active']) ? 1 : 0,
+        'demo_mode' => isset($_POST['demo_mode']) ? 1 : 0
+    ];
+
+    // Save settings - USE FUNCTION FROM SMS_HELPER.PHP
+    if (saveSMSSettings($settings)) {
+        $_SESSION['success'] = "SMS settings saved successfully!";
+        $smsSettings = getSMSSettings(); // Refresh
+    } else {
+        $_SESSION['error'] = "Failed to save settings.";
+    }
+
+    header("Location: sms.php?session_context=" . $ctx);
+    exit();
+}
+
+// Quick test - add this at the VERY TOP
+if (isset($_GET['test'])) {
+    // Get SMS settings first
+    $testSettings = getSMSSettings();
+    $testNumber = '09272873751'; // This should be 11 digits (09 + 9 digits)
+    $smsGateway = new SMSGateway($testSettings);
+
+    echo "<pre>";
+    echo "Testing with: $testNumber\n";
+    echo "Clean: " . preg_replace('/[^0-9+]/', '', $testNumber) . "\n";
+    echo "Valid: " . ($smsGateway->validatePhoneNumber($testNumber) ? 'YES' : 'NO') . "\n";
+    echo "Formatted: " . $smsGateway->formatNumberForSemaphore($testNumber) . "\n";
+
+    // Test the validation directly
+    $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
+    echo "Valid International: " . ($smsGateway->validateInternationalNumber($formatted) ? 'YES' : 'NO') . "\n";
+
+    // Test actual sending
+    $result = $smsGateway->send($testNumber, 'Test message');
+    echo "\nSend Result:\n";
+    print_r($result);
+    echo "</pre>";
+    exit();
+}
+
+// Initialize variables with defaults
 $success = $_SESSION['success'] ?? '';
 $error = $_SESSION['error'] ?? '';
 $smsWarning = $_SESSION['sms_warning'] ?? '';
-$templates = []; // Initialize empty array for templates
-$systemStatus = null; // Initialize system status
+$templates = [];
+$systemStatus = null;
 
-// Store messages in temporary variables BEFORE clearing session
+// Store messages in temporary variables
 $tempSuccess = $success;
 $tempError = $error;
 $tempSmsWarning = $smsWarning;
 
-// Clear session messages after storing in temp variables
+// Clear session messages
 unset($_SESSION['success'], $_SESSION['error'], $_SESSION['sms_warning']);
 
-// Database connection
+// Database connection using mysqli (consistent with sms_helper.php)
 $host = "localhost";
 $dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
 $password = "Mswdo_PaluanSystem23";
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Profile DB connection failed: " . $e->getMessage());
-    $pdo = null;
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// CREATE REQUIRED TABLES IF THEY DON'T EXIST
+createRequiredTables($conn);
 
 // Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
-if ($user_id && $pdo) {
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
-        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching user data: " . $e->getMessage());
-        $user_data = [];
-    }
+if ($user_id) {
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+    $stmt->close();
 }
 
 // Prepare full name
@@ -81,46 +156,31 @@ if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name ?: 'User') . '&background=3b82f6&color=fff&size=128';
 }
 
-$conn = new mysqli($host, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Get message templates
-if ($pdo) {
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM sms_templates WHERE is_active = 1 ORDER BY created_at DESC");
-        $stmt->execute();
-        $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching templates: " . $e->getMessage());
-        $templates = [];
+$templates = [];
+$template_query = "SELECT * FROM sms_templates WHERE is_active = 1 ORDER BY created_at DESC";
+$template_result = $conn->query($template_query);
+if ($template_result && $template_result->num_rows > 0) {
+    while ($row = $template_result->fetch_assoc()) {
+        $templates[] = $row;
     }
 }
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['save_settings'])) {
-        // Save SMS settings
-        $settings = [
-            'provider' => 'email_sms',
-            'api_key' => trim($_POST['api_key'] ?? ''),
-            'sender_id' => trim($_POST['sender_id'] ?? 'MSWDPALUAN'),
-            'smtp_host' => trim($_POST['smtp_host'] ?? 'smtp.gmail.com'),
-            'smtp_port' => trim($_POST['smtp_port'] ?? '587'),
-            'smtp_user' => trim($_POST['smtp_user'] ?? ''),
-            'smtp_pass' => trim($_POST['smtp_pass'] ?? ''),
-            'smtp_secure' => 'tls',
-            'is_active' => isset($_POST['is_active']) ? 1 : 0,
-            'demo_mode' => isset($_POST['demo_mode']) ? 1 : 0
-        ];
+        // This is handled at the top already
+    }
 
-        // Save settings
-        if (saveSMSSettings($settings)) {
-            $_SESSION['success'] = "SMS settings saved successfully!";
-            $smsSettings = getSMSSettings(); // Refresh
+    if (isset($_POST['test_connection'])) {
+        // Test API connection
+        $smsGateway = new SMSGateway($smsSettings);
+        $testResult = $smsGateway->testConnection();
+
+        if ($testResult['success']) {
+            $_SESSION['success'] = "✅ " . $testResult['message'] . "<br>" . $testResult['details'];
         } else {
-            $_SESSION['error'] = "Failed to save settings.";
+            $_SESSION['error'] = "❌ " . $testResult['message'] . "<br>" . $testResult['details'];
         }
 
         header("Location: sms.php?session_context=" . $ctx);
@@ -131,130 +191,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Send SMS
         $message = trim($_POST['broadcast_message'] ?? '');
         $recipientType = $_POST['recipient_type'] ?? 'custom';
+        $sms_type = $_POST['sms_type'] ?? 'broadcast';
 
         // Check if SMS is enabled
-        if (!$smsSettings['is_active']) {
+        if (!isset($smsSettings['is_active']) || !$smsSettings['is_active']) {
             $_SESSION['error'] = "SMS service is disabled. Please enable it in settings.";
-        } elseif (empty($message)) {
+            header("Location: sms.php?session_context=" . $ctx);
+            exit();
+        }
+
+        if (empty($message)) {
             $_SESSION['error'] = "Please enter a message.";
+            header("Location: sms.php?session_context=" . $ctx);
+            exit();
+        }
+
+        // Get recipients
+        $recipients = [];
+
+        if ($recipientType === 'custom') {
+            $customNumbers = $_POST['custom_numbers'] ?? '';
+            $numbers = explode(',', $customNumbers);
+            foreach ($numbers as $number) {
+                $cleanNumber = trim($number);
+                if (!empty($cleanNumber)) {
+                    $recipients[] = $cleanNumber;
+                }
+            }
         } else {
-            // Get recipients
-            $recipients = [];
+            // Get from database
+            $statusCondition = '';
+            if ($recipientType === 'all_active') {
+                $statusCondition = " AND status = 'Active'";
+            }
 
-            if ($recipientType === 'custom') {
-                $customNumbers = $_POST['custom_numbers'] ?? '';
-                $numbers = explode(',', $customNumbers);
-                foreach ($numbers as $number) {
-                    $cleanNumber = trim($number);
-                    if (!empty($cleanNumber)) {
-                        $recipients[] = $cleanNumber;
-                    }
-                }
-            } else {
-                // Get from database
-                $statusCondition = '';
-                if ($recipientType === 'all_active') {
-                    $statusCondition = " AND status = 'Active'";
-                }
+            $query = "SELECT contact_no FROM applicants 
+             WHERE contact_no IS NOT NULL 
+             AND contact_no != '' 
+             AND contact_no != '0' 
+             AND LENGTH(contact_no) >= 10
+             $statusCondition";
 
-                $query = "SELECT contact_no FROM applicants 
-                         WHERE contact_no IS NOT NULL 
-                         AND contact_no != '' 
-                         AND contact_no != '0' 
-                         AND LENGTH(contact_no) >= 10
-                         $statusCondition";
-
-                $result = $conn->query($query);
-                if ($result && $result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        if (!empty($row['contact_no'])) {
-                            $recipients[] = $row['contact_no'];
-                        }
+            $result = $conn->query($query);
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    if (!empty($row['contact_no'])) {
+                        $recipients[] = $row['contact_no'];
                     }
                 }
             }
+        }
 
-            // Validate and format numbers
-            $validRecipients = [];
-            foreach ($recipients as $number) {
-                $cleanNumber = preg_replace('/[^0-9+]/', '', $number);
+        if (empty($recipients)) {
+            $_SESSION['error'] = "No recipients found.";
+            header("Location: sms.php?session_context=" . $ctx);
+            exit();
+        }
 
-                // Accept various formats
-                if (preg_match('/^(09|\+639|63|9)\d{9,10}$/', $cleanNumber)) {
-                    // Format to 09XXXXXXXXX
-                    if (preg_match('/^\+639(\d{9})$/', $cleanNumber, $matches)) {
-                        $cleanNumber = '09' . $matches[1];
-                    } elseif (preg_match('/^63(\d{10})$/', $cleanNumber, $matches)) {
-                        $cleanNumber = '0' . $matches[1];
-                    } elseif (preg_match('/^9(\d{9})$/', $cleanNumber)) {
-                        $cleanNumber = '0' . $cleanNumber;
-                    }
+        // Initialize SMS Gateway
+        $smsGateway = new SMSGateway($smsSettings);
 
-                    $validRecipients[] = $cleanNumber;
+        // DEBUG: Log recipients before sending
+        error_log("Recipients before sending: " . print_r($recipients, true));
+
+        // Send SMS
+        $result = $smsGateway->sendBulk($recipients, $message);
+
+        // DEBUG: Log result
+        error_log("SendBulk result: " . print_r($result, true));
+
+        // Process results
+        if (isset($result['error'])) {
+            $_SESSION['error'] = $result['error'];
+        } else {
+            $total = $result['total'];
+            $sent = $result['sent'];
+            $failed = $result['failed'];
+            $invalid = $result['invalid'];
+            $demoMode = $result['demo_mode'] ?? false;
+
+            if ($demoMode) {
+                $_SESSION['success'] = "✅ DEMO MODE: Successfully logged {$sent} SMS messages!";
+                $_SESSION['success'] .= "<br><small>No actual SMS were sent. Disable demo mode to send real messages.</small>";
+
+                if ($invalid > 0) {
+                    $_SESSION['sms_warning'] = "Note: {$invalid} phone numbers were invalid.";
                 }
-            }
-
-            // Remove duplicates
-            $validRecipients = array_unique($validRecipients);
-
-            if (empty($validRecipients)) {
-                $_SESSION['error'] = "No valid Philippine mobile numbers found.<br>";
-                $_SESSION['error'] .= "Found " . count($recipients) . " numbers, but none matched Philippine format.<br>";
-                $_SESSION['error'] .= "Valid formats: 09XXXXXXXXX, +639XXXXXXXXXX, 9XXXXXXXXX";
             } else {
-                // Send SMS
-                $gateway = new SMSGateway($smsSettings);
-                $results = $gateway->sendBulk($validRecipients, $message);
+                if ($sent > 0) {
+                    $_SESSION['success'] = "✅ Successfully queued {$sent} SMS messages for delivery via Semaphore API!";
 
-                // Show results
-                if ($results['sent'] > 0) {
-                    if ($results['demo_mode']) {
-                        $_SESSION['success'] = "✅ DEMO MODE: Successfully logged {$results['sent']} SMS messages!<br>";
-                        $_SESSION['success'] .= "<small>No actual SMS were sent. Disable demo mode to send real messages.</small>";
-                    } else {
-                        $_SESSION['success'] = "✅ Successfully processed {$results['sent']} SMS messages!";
+                    // Add debugging info
+                    $_SESSION['success'] .= "<br><small>Check SMS logs for delivery status.</small>";
 
-                        // Add carrier info if available
-                        $carrierCount = [];
-                        foreach ($results['details'] as $detail) {
-                            if (isset($detail['carrier']) && isset($detail['status']) && $detail['status'] === 'sent') {
-                                $carrier = $detail['carrier'];
-                                $carrierCount[$carrier] = ($carrierCount[$carrier] ?? 0) + 1;
-                            }
-                        }
-
-                        if (!empty($carrierCount)) {
-                            $_SESSION['success'] .= "<br><small>Carriers: ";
-                            foreach ($carrierCount as $carrier => $count) {
-                                $_SESSION['success'] .= "$carrier($count) ";
-                            }
-                            $_SESSION['success'] .= "</small>";
-                        }
+                    if ($failed > 0) {
+                        $_SESSION['sms_warning'] = "Note: {$failed} messages failed to send.";
                     }
 
-                    if ($results['failed'] > 0) {
-                        $_SESSION['sms_warning'] = "Note: {$results['failed']} numbers failed to send.";
-                    }
-                    if ($results['invalid'] > 0) {
-                        $_SESSION['sms_warning'] = ($_SESSION['sms_warning'] ?? '') . "<br>{$results['invalid']} invalid numbers skipped.";
+                    if ($invalid > 0) {
+                        $_SESSION['sms_warning'] = ($smsWarning ?? '') . ($failed > 0 ? "<br>" : "") . "Note: {$invalid} phone numbers were invalid.";
                     }
                 } else {
-                    if ($results['demo_mode']) {
-                        $_SESSION['error'] = "DEMO MODE: Messages logged but not sent.<br>";
-                        $_SESSION['error'] .= "Valid recipients found: " . count($validRecipients) . "<br>";
-                        $_SESSION['error'] .= "Disable demo mode to send real SMS.";
-                    } else {
-                        $_SESSION['error'] = "No messages could be sent.<br>";
-                        $_SESSION['error'] .= "Valid recipients found: " . count($validRecipients) . "<br>";
+                    $_SESSION['error'] = "Failed to send any messages.";
 
-                        // Show SMTP status
-                        $smtpTest = $gateway->testSMTPConnection();
-                        if (!$smtpTest['success']) {
-                            $_SESSION['error'] .= "<br>SMTP Issue: " . $smtpTest['message'];
-                        } else {
-                            $_SESSION['error'] .= "<br>Check carrier email gateways. Some carriers may block emails.";
-                        }
+                    if ($failed > 0) {
+                        $_SESSION['error'] .= " {$failed} messages failed.";
                     }
+
+                    if ($invalid > 0) {
+                        $_SESSION['error'] .= " {$invalid} phone numbers were invalid.";
+                    }
+
+                    // Add debugging help
+                    $_SESSION['error'] .= "<br><small>Please check:";
+                    $_SESSION['error'] .= "<br>1. Your Semaphore API key is correct";
+                    $_SESSION['error'] .= "<br>2. You have sufficient credits";
+                    $_SESSION['error'] .= "<br>3. Phone numbers are valid (09XXXXXXXXX format)";
+                    $_SESSION['error'] .= "</small>";
                 }
             }
         }
@@ -263,14 +316,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['test_smtp'])) {
-        $gateway = new SMSGateway($smsSettings);
-        $testResult = $gateway->testSMTPConnection();
+    if (isset($_POST['test_api'])) {
+        // Test Semaphore API - USE SMSGateway class
+        $testNumber = trim($_POST['test_number'] ?? '');
 
-        if ($testResult['success']) {
-            $_SESSION['success'] = "✅ " . $testResult['message'];
+        if (empty($testNumber)) {
+            $_SESSION['error'] = "Please enter a test phone number.";
         } else {
-            $_SESSION['error'] = "❌ " . $testResult['message'];
+            // Initialize SMS Gateway with current settings
+            $smsGateway = new SMSGateway($smsSettings);
+
+            // Check if demo mode is on
+            $demoMode = $smsSettings['demo_mode'] ?? false;
+
+            // Debug log
+            error_log("=== TEST API DEBUG ===");
+            error_log("Test number entered: $testNumber");
+            error_log("Clean number: " . preg_replace('/[^0-9+]/', '', $testNumber));
+            error_log("Demo mode: " . ($demoMode ? 'YES' : 'NO'));
+
+            // Use SMSGateway validation method
+            $isValid = $smsGateway->validatePhoneNumber($testNumber);
+            error_log("SMSGateway validation result: " . ($isValid ? 'VALID' : 'INVALID'));
+
+            if (!$isValid) {
+                $_SESSION['error'] = "Invalid phone number format. Use: 09XXXXXXXXX or +639XXXXXXXXX";
+                $_SESSION['error'] .= "<br>You entered: " . htmlspecialchars($testNumber);
+
+                // Add debug info
+                $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
+                $_SESSION['error'] .= "<br>Formatted for API: " . htmlspecialchars($formatted);
+            } elseif ($demoMode) {
+                $_SESSION['success'] = "✅ DEMO MODE: Test SMS logged (no actual SMS sent).";
+                $_SESSION['success'] .= "<br><small>Disable demo mode to send real test SMS.</small>";
+
+                // Log to database in demo mode
+                $log_query = "INSERT INTO sms_logs 
+                (phone_number, message, status, carrier, sms_type, user_id, created_at) 
+                VALUES (?, ?, 'demo_sent', 'semaphore', 'test', ?, NOW())";
+                $stmt = $conn->prepare($log_query);
+                $testMessage = 'Test SMS from MSWD System - If you receive this, SMS is working properly.';
+                $stmt->bind_param("ssi", $testNumber, $testMessage, $user_id);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                // Send real test SMS using SMSGateway
+                $testMessage = 'Test SMS from MSWD System - If you receive this, SMS is working properly.';
+
+                error_log("Sending test SMS to: $testNumber");
+
+                // Get formatted number for debug
+                $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
+                error_log("Formatted number for API: $formatted");
+
+                // Send the SMS
+                $result = $smsGateway->send($testNumber, $testMessage);
+
+                error_log("Send result: " . print_r($result, true));
+
+                if (isset($result['success']) && $result['success']) {
+                    if ($result['status'] === 'queued' || $result['status'] === 'sent') {
+                        $_SESSION['success'] = "✅ Test SMS sent successfully! Check the recipient's phone.";
+                        if (isset($result['message_id'])) {
+                            $_SESSION['success'] .= "<br><small>Message ID: " . $result['message_id'] . "</small>";
+                        }
+                        if (isset($result['formatted_number'])) {
+                            $_SESSION['success'] .= "<br><small>Formatted: " . $result['formatted_number'] . "</small>";
+                        }
+                    } elseif (isset($result['status']) && $result['status'] === 'demo_sent') {
+                        $_SESSION['success'] = "✅ DEMO MODE: Test SMS logged (no actual SMS sent).";
+                    }
+                } else {
+                    $errorMsg = isset($result['message']) ? $result['message'] : 'Unknown error';
+                    $_SESSION['error'] = "Failed to send test SMS: " . $errorMsg;
+
+                    // Add debug info
+                    $_SESSION['error'] .= "<br><small>Check API key and internet connection.</small>";
+                    $_SESSION['error'] .= "<br><small>Formatted number: " . $formatted . "</small>";
+                }
+            }
         }
 
         header("Location: sms.php?session_context=" . $ctx);
@@ -283,33 +407,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($templateName) || empty($message)) {
             $_SESSION['error'] = "Please provide both template name and message.";
-        } elseif ($pdo) {
-            try {
-                // Check if template with same name exists
-                $stmt = $pdo->prepare("SELECT id FROM sms_templates WHERE template_name = ?");
-                $stmt->execute([$templateName]);
-                $existing = $stmt->fetch();
+        } else {
+            // Check if template exists
+            $check_query = "SELECT id FROM sms_templates WHERE template_name = ?";
+            $stmt = $conn->prepare($check_query);
+            $stmt->bind_param("s", $templateName);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-                if ($existing) {
-                    // Update existing template
-                    $stmt = $pdo->prepare("UPDATE sms_templates SET message = ?, updated_at = NOW() WHERE id = ?");
-                    $stmt->execute([$message, $existing['id']]);
-                } else {
-                    // Insert new template
-                    $stmt = $pdo->prepare("INSERT INTO sms_templates (template_name, message, is_active, created_at) VALUES (?, ?, 1, NOW())");
-                    $stmt->execute([$templateName, $message]);
-                }
+            if ($result->num_rows > 0) {
+                // Update existing
+                $row = $result->fetch_assoc();
+                $update_query = "UPDATE sms_templates SET message = ?, updated_at = NOW() WHERE id = ?";
+                $stmt = $conn->prepare($update_query);
+                $stmt->bind_param("si", $message, $row['id']);
+            } else {
+                // Insert new
+                $insert_query = "INSERT INTO sms_templates (template_name, message, is_active, created_at) VALUES (?, ?, 1, NOW())";
+                $stmt = $conn->prepare($insert_query);
+                $stmt->bind_param("ss", $templateName, $message);
+            }
 
+            if ($stmt->execute()) {
                 $_SESSION['success'] = "Template saved successfully!";
 
                 // Refresh templates
-                $stmt = $pdo->prepare("SELECT * FROM sms_templates WHERE is_active = 1 ORDER BY created_at DESC");
-                $stmt->execute();
-                $templates = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                error_log("Error saving template: " . $e->getMessage());
-                $_SESSION['error'] = "Failed to save template: " . $e->getMessage();
+                $template_result = $conn->query($template_query);
+                $templates = [];
+                if ($template_result && $template_result->num_rows > 0) {
+                    while ($row = $template_result->fetch_assoc()) {
+                        $templates[] = $row;
+                    }
+                }
+            } else {
+                $_SESSION['error'] = "Failed to save template: " . $conn->error;
             }
+            $stmt->close();
         }
 
         header("Location: sms.php?session_context=" . $ctx);
@@ -319,39 +452,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Get SMS logs
 $sms_logs = [];
-if ($pdo) {
-    try {
-        $stmt = $pdo->prepare("
-            SELECT 
-                sl.id,
-                sl.phone_number as recipient,
-                sl.message,
-                sl.status,
-                sl.carrier,
-                sl.sms_type,
-                sl.created_at,
-                u.username,
-                u.user_type,
-                u.profile_photo as user_avatar
-            FROM sms_logs sl 
-            LEFT JOIN users u ON sl.user_id = u.id 
-            WHERE sl.status IS NOT NULL
-            ORDER BY sl.created_at DESC 
-            LIMIT 50
-        ");
-        $stmt->execute();
-        $sms_logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching SMS logs: " . $e->getMessage());
+$logs_query = "SELECT sl.id, sl.phone_number as recipient, sl.message, sl.status, sl.carrier, 
+                      sl.sms_type, sl.created_at, sl.response_data,
+                      u.username, u.user_type, u.profile_photo as user_avatar
+               FROM sms_logs sl 
+               LEFT JOIN users u ON sl.user_id = u.id 
+               WHERE sl.status IS NOT NULL
+               ORDER BY sl.created_at DESC 
+               LIMIT 50";
+$logs_result = $conn->query($logs_query);
+if ($logs_result && $logs_result->num_rows > 0) {
+    while ($row = $logs_result->fetch_assoc()) {
+        $sms_logs[] = $row;
     }
 }
 
-// Calculate system status - FIXED VERSION
-// First, ensure $smsSettings is an array
-$smsSettings = $smsSettings ?? [];
-
-// Always calculate system status, even with default values
-$smtpConfigured = !empty($smsSettings['smtp_user']) && !empty($smsSettings['smtp_pass']);
+// Calculate system status
+$apiConfigured = !empty($smsSettings['api_key'] ?? '');
 $demoMode = $smsSettings['demo_mode'] ?? false;
 $isActive = $smsSettings['is_active'] ?? false;
 
@@ -359,28 +476,28 @@ if (!$isActive) {
     $systemStatus = [
         'status' => 'Disabled',
         'message' => 'SMS service is disabled. Enable it to send messages.',
-        'smtp_configured' => $smtpConfigured,
+        'api_configured' => $apiConfigured,
         'demo_mode' => $demoMode
     ];
 } elseif ($demoMode) {
     $systemStatus = [
         'status' => 'Demo Mode',
         'message' => 'SMS are being logged but not sent. Disable demo mode to send real messages.',
-        'smtp_configured' => $smtpConfigured,
+        'api_configured' => $apiConfigured,
         'demo_mode' => $demoMode
     ];
-} elseif (!$smtpConfigured) {
+} elseif (!$apiConfigured) {
     $systemStatus = [
         'status' => 'Not Configured',
-        'message' => 'SMTP settings are not configured. Please set up your email credentials.',
-        'smtp_configured' => false,
+        'message' => 'Semaphore API key is not configured. Please enter your API key.',
+        'api_configured' => false,
         'demo_mode' => $demoMode
     ];
 } else {
     $systemStatus = [
         'status' => 'Operational',
-        'message' => 'SMS service is ready to send messages.',
-        'smtp_configured' => true,
+        'message' => 'SMS service is ready to send messages via Semaphore API.',
+        'api_configured' => true,
         'demo_mode' => false
     ];
 }
@@ -390,11 +507,11 @@ function getSMSStatusClass($status)
 {
     $status = strtolower($status);
 
-    if ($status === 'sent' || $status === 'delivered' || $status === 'success') {
+    if ($status === 'sent' || $status === 'delivered' || $status === 'success' || $status === 'queued') {
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
     } elseif ($status === 'failed' || $status === 'error' || $status === 'undelivered') {
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-    } elseif ($status === 'pending' || $status === 'queued' || $status === 'processing') {
+    } elseif ($status === 'pending' || $status === 'processing' || $status === 'demo_sent') {
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
     } elseif ($status === 'cancelled' || $status === 'expired') {
         return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
@@ -420,6 +537,77 @@ function formatSMSTime($timestamp)
         return $date->format('D H:i');
     } else {
         return $date->format('M d, Y H:i');
+    }
+}
+
+// Function to create required tables
+function createRequiredTables($conn)
+{
+    // Create sms_settings table WITHOUT api_url
+    $conn->query("CREATE TABLE IF NOT EXISTS sms_settings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        provider VARCHAR(50) DEFAULT 'semaphore',
+        api_key VARCHAR(255),
+        sender_id VARCHAR(50) DEFAULT 'SEMAPHORE',
+        is_active TINYINT(1) DEFAULT 1,
+        demo_mode TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )");
+
+    // Create sms_templates table
+    $conn->query("CREATE TABLE IF NOT EXISTS sms_templates (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        template_name VARCHAR(100) NOT NULL,
+        message TEXT NOT NULL,
+        is_active TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_template_name (template_name)
+    )");
+
+    // Create sms_logs table
+    $conn->query("CREATE TABLE IF NOT EXISTS sms_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        phone_number VARCHAR(20) NOT NULL,
+        message TEXT NOT NULL,
+        status VARCHAR(50) NOT NULL,
+        carrier VARCHAR(50),
+        sms_type VARCHAR(50) DEFAULT 'outgoing',
+        user_id INT DEFAULT NULL,
+        username VARCHAR(100) DEFAULT NULL,
+        user_type VARCHAR(50) DEFAULT NULL,
+        response_data TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_phone_number (phone_number),
+        INDEX idx_status (status),
+        INDEX idx_created_at (created_at),
+        INDEX idx_user_id (user_id)
+    )");
+
+    // Insert default SMS settings if not exists
+    $result = $conn->query("SELECT id FROM sms_settings LIMIT 1");
+    if ($result->num_rows == 0) {
+        $conn->query("INSERT INTO sms_settings (provider, sender_id, is_active, demo_mode) 
+                     VALUES ('semaphore', 'SEMAPHORE', 1, 1)");
+    }
+
+    // Insert default templates if not exists
+    $result = $conn->query("SELECT id FROM sms_templates LIMIT 1");
+    if ($result->num_rows == 0) {
+        $defaultTemplates = [
+            ['Appointment Reminder', 'Good day! This is MSWD Paluan reminding you of your scheduled appointment tomorrow. Please be on time.'],
+            ['Benefits Announcement', 'Important Announcement from MSWD Paluan: Please check our office for the latest updates regarding benefits distribution.'],
+            ['Follow-up Reminder', 'Hello! This is MSWD Paluan following up on your recent application. Please visit our office for updates.'],
+            ['Holiday Announcement', 'MSWD Paluan Announcement: Our office will be closed on [Date] for [Holiday]. Normal operations will resume on [Date].']
+        ];
+
+        foreach ($defaultTemplates as $template) {
+            $stmt = $conn->prepare("INSERT INTO sms_templates (template_name, message) VALUES (?, ?)");
+            $stmt->bind_param("ss", $template[0], $template[1]);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 }
 
@@ -1098,54 +1286,70 @@ $conn->close();
             </div>
 
             <!-- SMS Settings Content -->
-            <section id="smsSection" class="bg-gray-50 dark:bg-gray-900 w-full ">
-                <div class="w-[900px] px-2">
-                    <!-- Success Message -->
+            <section id="smsSection" class="bg-gray-50 dark:bg-gray-900 w-full">
+                <div class="w-full px-4">
+                    <!-- Messages -->
                     <?php if ($tempSuccess): ?>
                         <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900 dark:border-green-700 dark:text-green-200">
                             <?php echo $tempSuccess; ?>
                         </div>
                     <?php endif; ?>
 
-                    <!-- Error Message -->
                     <?php if ($tempError): ?>
                         <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">
                             <?php echo $tempError; ?>
                         </div>
                     <?php endif; ?>
 
-                    <!-- Warning Message -->
                     <?php if ($tempSmsWarning): ?>
                         <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200">
                             <?php echo $tempSmsWarning; ?>
                         </div>
                     <?php endif; ?>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-5">
-                        <!-- SMS Settings Card -->
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">SMS Settings</h2>
-
-                            <!-- ALWAYS SHOW SYSTEM STATUS - TEST -->
-                            <div class="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200 rounded-lg">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                    </svg>
-                                    <div>
-                                        <p class="font-medium">System Status: <?php echo $systemStatus['status'] ?? 'Unknown'; ?></p>
-                                        <p class="text-sm mt-1"><?php echo $systemStatus['message'] ?? 'Unable to determine system status'; ?></p>
-                                        <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">
-                                            SMS Settings: <?php echo !empty($smsSettings) ? 'Loaded' : 'Not loaded'; ?> |
-                                            SMTP Configured: <?php echo ($systemStatus['smtp_configured'] ?? false) ? 'Yes' : 'No'; ?>
-                                        </p>
-                                    </div>
+                    <!-- System Status Card -->
+                    <!-- <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">SMS System Status</h2>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium 
+                                <?php echo ($systemStatus['status'] ?? '') === 'Operational' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : (($systemStatus['status'] ?? '') === 'Demo Mode' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'); ?>">
+                                <?php echo $systemStatus['status'] ?? 'Unknown'; ?>
+                            </span>
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-2"><?php echo $systemStatus['message'] ?? 'Unable to determine system status'; ?></p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
+                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="font-semibold text-gray-900 dark:text-white">API Status</div>
+                                <div class="<?php echo ($systemStatus['api_configured'] ?? false) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'; ?>">
+                                    <?php echo ($systemStatus['api_configured'] ?? false) ? 'Configured' : 'Not Configured'; ?>
                                 </div>
                             </div>
+                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="font-semibold text-gray-900 dark:text-white">Demo Mode</div>
+                                <div class="<?php echo ($systemStatus['demo_mode'] ?? false) ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'; ?>">
+                                    <?php echo ($systemStatus['demo_mode'] ?? false) ? 'Enabled' : 'Disabled'; ?>
+                                </div>
+                            </div>
+                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="font-semibold text-gray-900 dark:text-white">Service</div>
+                                <div class="<?php echo ($systemStatus['is_active'] ?? false) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'; ?>">
+                                    <?php echo ($systemStatus['is_active'] ?? false) ? 'Active' : 'Inactive'; ?>
+                                </div>
+                            </div>
+                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="font-semibold text-gray-900 dark:text-white">Provider</div>
+                                <div class="text-blue-600 dark:text-blue-400">Semaphore API</div>
+                            </div>
+                        </div>
+                    </div> -->
 
+                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
+                        <!-- SMS Settings Card -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Semaphore API Settings</h2>
                             <form method="POST">
                                 <div class="space-y-4">
-
                                     <!-- Service Status -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -1153,7 +1357,7 @@ $conn->close();
                                         </label>
                                         <div class="flex items-center">
                                             <input type="checkbox" id="is_active" name="is_active" value="1"
-                                                <?php echo ($smsSettings['is_active'] ?? 1) ? 'checked' : ''; ?>
+                                                <?php echo (isset($smsSettings['is_active']) && $smsSettings['is_active']) ? 'checked' : ''; ?>
                                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="is_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                 Enable SMS Service
@@ -1161,23 +1365,58 @@ $conn->close();
                                         </div>
                                     </div>
 
-                                    <!-- Sender ID -->
+                                    <!-- Demo Mode -->
+                                    <!-- <div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="demo_mode" name="demo_mode" value="1"
+                                                <?php echo (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode']) ? 'checked' : ''; ?>
+                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="demo_mode" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                Demo Mode (Log only, don't send)
+                                            </label>
+                                        </div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enable to test without sending real SMS</p>
+                                    </div> -->
+
+                                    <!-- Provider -->
                                     <div>
-                                        <label for="sender_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Sender Name
-                                        </label>
-                                        <input type="text" id="sender_id" name="sender_id"
-                                            value="<?php echo htmlspecialchars($smsSettings['sender_id'] ?? 'MSWDPALUAN'); ?>"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="MSWDPALUAN"
-                                            maxlength="11">
-                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Will appear as sender in SMS (max 11 characters)</p>
+                                        <input type="hidden" name="provider" value="semaphore">
                                     </div>
 
-                                    <input type="hidden" name="provider" value="email_sms">
-                                    <input type="hidden" name="api_key" value="">
+                                    <!-- API Key -->
+                                    <!-- <div>
+                                        <label for="api_key" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Semaphore API Key
+                                        </label>
+                                        <input type="text" id="api_key" name="api_key"
+                                            value="<?php echo htmlspecialchars($smsSettings['api_key'] ?? ''); ?>"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter your Semaphore API key">
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                            Get your API key from <a href="https://semaphore.co" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">semaphore.co</a>
+                                        </p>
+                                        <?php if (empty($smsSettings['api_key'] ?? '')): ?>
+                                            <div class="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-xs rounded">
+                                                💡 <strong>Note:</strong> Your Semaphore API key is: <code class="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">11203b3c9a4bc430dd3a1b181ece8b6c</code>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
 
-                                    <div class="grid grid-cols-1 gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <div>
+                                        <label for="sender_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Sender Name (Fixed)
+                                        </label>
+                                        <input type="text" id="sender_id" name="sender_id" readonly
+                                            value="SEMAPHORE"
+                                            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                            title="Sender name is fixed to 'SEMAPHORE' for your Semaphore account">
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                            Your Semaphore account uses 'SEMAPHORE' as sender name (auto-converts to 'MFDELIVERY').
+                                        </p>
+                                    </div> -->
+
+                                    <!-- Save Button -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-700">
                                         <button type="submit" name="save_settings"
                                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             Save Settings
@@ -1185,55 +1424,214 @@ $conn->close();
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                            <!-- Test API Form -->
+                            <!-- <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Test API Connection</h3>
 
+                                <?php
+                                if (!empty($smsSettings['api_key'])): ?>
+                                    <form method="POST" class="mb-3">
+                                        <button type="submit" name="test_connection"
+                                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                            Test API Connection
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
 
-                        <!-- Message Templates Card -->
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Message Templates</h2>
-                            <form method="POST" class="mb-4">
-                                <div class="space-y-4">
+                                <form method="POST" class="space-y-3">
                                     <div>
-                                        <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Template Message
+                                        <label for="test_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Test Phone Number
                                         </label>
-                                        <textarea id="message" name="message" rows="3"
+                                        <input type="text" id="test_number" name="test_number"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Enter template message..."></textarea>
+                                            placeholder="09123456789"
+                                            value="">
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enter a valid Philippine mobile number (09XXXXXXXXX)</p>
+                                    </div>
+                                    <button type="submit" name="test_api"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        Send Test SMS
+                                    </button>
+                                </form>
+                            </div> -->
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Send SMS</h2>
+                            <form method="POST" id="sendSMSForm">
+                                <div class="space-y-4">
+                                    <!-- Recipient Type -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Send to
+                                        </label>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center">
+                                                <input type="radio" id="recipient_custom" name="recipient_type" value="custom" checked
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="recipient_custom" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                    Custom Numbers
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="radio" id="recipient_all" name="recipient_type" value="all"
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="recipient_all" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                    All Applicants
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="radio" id="recipient_active" name="recipient_type" value="all_active"
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="recipient_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                    Active Applicants Only
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <button type="submit" name="save_template"
-                                        class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
-                                        Save Template
-                                    </button>
+                                    <!-- Custom Numbers -->
+                                    <div id="customNumbersSection">
+                                        <label for="custom_numbers" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Phone Numbers (comma-separated)
+                                        </label>
+                                        <textarea id="custom_numbers" name="custom_numbers" rows="2"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="09123456789, 09234567890"></textarea>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Separate multiple numbers with commas</p>
+                                    </div>
+
+                                    <!-- Message -->
+                                    <div>
+                                        <label for="broadcast_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Message
+                                        </label>
+                                        <textarea id="broadcast_message" name="broadcast_message" rows="3"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter your message here..."></textarea>
+                                        <div class="mt-1 flex justify-between">
+                                            <span id="charCount" class="text-xs text-gray-500 dark:text-gray-400">0/160</span>
+                                            <!-- <span class="text-xs text-gray-500 dark:text-gray-400">SMS Type:
+                                                <select name="sms_type" class="text-xs border-none bg-transparent">
+                                                    <option value="broadcast">Broadcast</option>
+                                                    <option value="announcement">Announcement</option>
+                                                    <option value="reminder">Reminder</option>
+                                                    <option value="notification">Notification</option>
+                                                </select>
+                                            </span> -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Send Button -->
+                                    <div class="pt-4">
+                                        <button type="submit" name="send_sms" id="sendSMSBtn"
+                                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            Send SMS Messages
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
 
-                            <div class="mt-4">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Saved Templates</h3>
-                                <div class="space-y-2 max-h-60 overflow-y-auto">
+                            <!-- Quick Templates -->
+                            <!-- <div class="mt-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Quick Templates</h3>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <?php if (!empty($templates)): ?>
+                                        <?php foreach ($templates as $template): ?>
+                                            <button type="button" onclick="useTemplate('<?php echo addslashes($template['message']); ?>')"
+                                                class="text-left p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition">
+                                                <div class="font-medium text-gray-900 dark:text-white"><?php echo htmlspecialchars($template['template_name']); ?></div>
+                                                <div class="text-sm text-gray-600 dark:text-gray-300 truncate">
+                                                    <?php echo htmlspecialchars(substr($template['message'], 0, 60)); ?>
+                                                    <?php if (strlen($template['message']) > 60): ?>...<?php endif; ?>
+                                                </div>
+                                            </button>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">No templates saved yet. Create some above!</p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div> -->
+                        </div>
+                        <!-- In the debug panel, add: -->
+                        <!-- <p><a href="sms.php?direct_test=1&session_context=<?php echo $ctx; ?>" class="text-blue-600 dark:text-blue-400">Test direct API call</a></p> -->
+                        <!-- Send SMS Card -->
+                        <!-- <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">   
+                        </div> -->
+                    </div>
+
+                    <!-- Message Templates Card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Message Templates</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Save Template Form -->
+                            <div>
+                                <form method="POST">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="template_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Template Name
+                                            </label>
+                                            <input type="text" id="template_name" name="template_name"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Enter template name">
+                                        </div>
+                                        <div>
+                                            <label for="template_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Template Message
+                                            </label>
+                                            <textarea id="template_message" name="message" rows="4"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Enter template message..."></textarea>
+                                        </div>
+                                        <button type="submit" name="save_template"
+                                            class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+                                            Save Template
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Saved Templates List -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Saved Templates</h3>
+                                <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
                                     <?php if (empty($templates)): ?>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">No templates saved yet.</p>
+                                        <div class="p-4 text-center bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <p class="text-gray-500 dark:text-gray-400">No templates saved yet.</p>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Default templates have been created for you.</p>
+                                        </div>
                                     <?php else: ?>
                                         <?php foreach ($templates as $template): ?>
-                                            <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition">
                                                 <div class="flex justify-between items-start">
-                                                    <div>
-                                                        <h4 class="font-medium text-gray-900 dark:text-white">
-                                                            <?php echo htmlspecialchars($template['template_name']); ?>
+                                                    <div class="flex-1">
+                                                        <div class="flex items-center mb-1">
+                                                            <h4 class="font-medium text-gray-900 dark:text-white">
+                                                                <?php echo htmlspecialchars($template['template_name']); ?>
+                                                            </h4>
                                                             <?php if (!$template['is_active']): ?>
-                                                                <span class="ml-2 text-xs text-red-500 dark:text-red-400">(Inactive)</span>
+                                                                <span class="ml-2 text-xs px-2 py-0.5 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded">Inactive</span>
                                                             <?php endif; ?>
-                                                        </h4>
-                                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                                        </div>
+                                                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
                                                             <?php echo htmlspecialchars(substr($template['message'], 0, 100)); ?>
-                                                            <?php echo strlen($template['message']) > 100 ? '...' : ''; ?>
+                                                            <?php if (strlen($template['message']) > 100): ?>...<?php endif; ?>
+                                                        </p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                            Created: <?php echo date('M d, Y', strtotime($template['created_at'])); ?>
                                                         </p>
                                                     </div>
-                                                    <div class="flex space-x-2">
-                                                        <button type="button" onclick="useTemplate(<?php echo htmlspecialchars(json_encode($template['message'])); ?>)"
-                                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm">
+                                                    <div class="flex space-x-2 ml-4">
+                                                        <button type="button"
+                                                            onclick="useTemplate('<?php echo addslashes($template['message']); ?>')"
+                                                            class="px-3 py-1.5 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 rounded-lg transition">
                                                             Use
+                                                        </button>
+                                                        <button type="button"
+                                                            onclick="useTemplateAndSend('<?php echo addslashes($template['message']); ?>')"
+                                                            class="px-3 py-1.5 text-sm bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 rounded-lg transition">
+                                                            Use & Send
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1243,14 +1641,20 @@ $conn->close();
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <!-- SMS Logs Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mt-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                         <div class="border-b dark:border-gray-700 p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Logs</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Recent SMS message history</p>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Logs</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Recent SMS message history</p>
+                                </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    Showing last <?php echo count($sms_logs); ?> messages
+                                </div>
+                            </div>
                         </div>
 
                         <?php if (empty($sms_logs)): ?>
@@ -1265,14 +1669,13 @@ $conn->close();
                             </div>
                         <?php else: ?>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 sms-table">
+                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
                                             <th scope="col" class="px-6 py-3">Recipient</th>
-                                            <th scope="col" class="px-6 py-3 hidden md:table-cell">User</th>
                                             <th scope="col" class="px-6 py-3">Message</th>
-                                            <th scope="col" class="px-6 py-3 hidden lg:table-cell">Type</th>
                                             <th scope="col" class="px-6 py-3">Status</th>
+                                            <th scope="col" class="px-6 py-3">Type</th>
                                             <th scope="col" class="px-6 py-3">Time</th>
                                             <th scope="col" class="px-6 py-3">Actions</th>
                                         </tr>
@@ -1281,54 +1684,34 @@ $conn->close();
                                         <?php foreach ($sms_logs as $log): ?>
                                             <?php
                                             $statusClass = getSMSStatusClass($log['status']);
-                                            $pulseClass = (strtolower($log['status']) === 'sent' || strtolower($log['status']) === 'delivered') ? 'sms-status-sent' : '';
+                                            $pulseClass = (strtolower($log['status']) === 'sent' || strtolower($log['status']) === 'queued') ? 'sms-status-sent' : '';
                                             ?>
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-sms-id="<?php echo $log['id']; ?>">
+                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                 <td class="px-6 py-4">
                                                     <div class="font-medium text-gray-900 dark:text-white">
                                                         <?php echo htmlspecialchars($log['recipient'] ?? 'N/A'); ?>
                                                     </div>
+                                                    <?php if ($log['carrier'] && $log['carrier'] !== 'demo'): ?>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                            <?php echo htmlspecialchars(ucfirst($log['carrier'])); ?>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </td>
-                                                <td class="px-6 py-4 hidden md:table-cell">
-                                                    <div class="flex items-center">
-                                                        <div class="flex-shrink-0 w-8 h-8">
-                                                            <img class="w-8 h-8 rounded-full object-cover"
-                                                                src="<?php echo htmlspecialchars($log['user_avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($log['username'] ?? 'User') . '&background=random&color=fff&size=32'); ?>"
-                                                                alt="<?php echo htmlspecialchars($log['username'] ?? 'User'); ?>">
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                                                <?php echo htmlspecialchars($log['username'] ?? 'User'); ?>
-                                                            </p>
-                                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                                <?php echo htmlspecialchars($log['user_type'] ?? 'User'); ?>
-                                                            </p>
-                                                        </div>
+                                                <td class="px-6 py-4">
+                                                    <div class="max-w-xs truncate" title="<?php echo htmlspecialchars($log['message'] ?? ''); ?>">
+                                                        <?php echo htmlspecialchars(substr($log['message'] ?? '', 0, 50)); ?>
+                                                        <?php if (strlen($log['message'] ?? '') > 50): ?>...<?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-4">
-                                                    <div class="sms-preview" title="<?php echo htmlspecialchars($log['message'] ?? ''); ?>">
-                                                        <?php
-                                                        $message = $log['message'] ?? '';
-                                                        if (strlen($message) > 50) {
-                                                            echo htmlspecialchars(substr($message, 0, 50)) . '...';
-                                                        } else {
-                                                            echo htmlspecialchars($message);
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4 hidden lg:table-cell">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
-                    <?php echo (($log['sms_type'] ?? 'outgoing') === 'outgoing') ?
-                                                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                                                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['sms_type'] ?? 'outgoing')); ?>
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full <?php echo $statusClass . ' ' . $pulseClass; ?>">
+                                                        <?php echo htmlspecialchars(ucfirst($log['status'] ?? 'unknown')); ?>
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full sms-status-badge <?php echo $statusClass . ' ' . $pulseClass; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['status'] ?? 'unknown')); ?>
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                                        <?php echo ($log['sms_type'] ?? 'broadcast') === 'test' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'; ?>">
+                                                        <?php echo htmlspecialchars(ucfirst($log['sms_type'] ?? 'broadcast')); ?>
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4">
@@ -1342,8 +1725,8 @@ $conn->close();
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-4">
-                                                    <button type="button" onclick="viewSMSDetails(<?php echo $log['id']; ?>)"
-                                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
+                                                    <button type="button" onclick="viewSMSDetails('<?php echo $log['id']; ?>')"
+                                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition">
                                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -1362,27 +1745,145 @@ $conn->close();
             </section>
         </div>
     </main>
-
-    <!-- SMS Details Overlay -->
-    <div id="smsDetailsOverlay" class="hidden fixed inset-0 bg-gray-900/50 bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-hidden">
+    <!-- Debug Panel (hidden by default) -->
+    <details class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+        <summary class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+            Debug Information
+        </summary>
+        <div class="mt-2 text-xs">
+            <pre class="bg-gray-200 dark:bg-gray-900 p-3 rounded overflow-auto max-h-60"><?php
+                                                                                            echo "API Key: " . (empty($smsSettings['api_key']) ? 'Not set' : substr($smsSettings['api_key'], 0, 10) . '...') . "\n";
+                                                                                            echo "Sender ID: " . ($smsSettings['sender_id'] ?? 'MSWDPALUAN') . "\n";
+                                                                                            echo "Demo Mode: " . (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'Yes' : 'No') . "\n";
+                                                                                            echo "Active: " . (isset($smsSettings['is_active']) && $smsSettings['is_active'] ? 'Yes' : 'No') . "\n";
+                                                                                            echo "Provider: Semaphore\n";
+                                                                                            echo "Templates: " . count($templates) . "\n";
+                                                                                            echo "Logs: " . count($sms_logs) . "\n";
+                                                                                            ?></pre>
+        </div>
+    </details>
+    <!-- SMS Details Modal -->
+    <div id="smsDetailsModal" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-            <div class="flex justify-between items-center p-6 mb-2 border-b dark:border-gray-700">
+            <div class="flex justify-between items-center p-6 border-b dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Details</h3>
-                <button id="closeSMSOverlay" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                <button id="closeModal" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <div class="px-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="smsOverlayContent">
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="smsModalContent">
                 <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/tailwind.config.js"></script>
     <script>
+        // Simplified phone validation
+        function validatePhoneNumber(number) {
+            const clean = number.replace(/[^0-9+]/g, '');
+            // Accept: 09XXXXXXXXX, 9XXXXXXXXX, 63XXXXXXXXX, +639XXXXXXXXX
+            return /^(09|9|63|\+63)\d{9,12}$/.test(clean);
+        }
+
+        // Real-time validation
+        document.getElementById('test_number')?.addEventListener('input', function(e) {
+            const number = this.value.trim();
+            if (!number) {
+                this.classList.remove('border-red-500', 'border-green-500');
+                return;
+            }
+
+            // Simple validation - just check if it looks like a Philippine number
+            const clean = number.replace(/[^0-9]/g, '');
+            const isValid = (clean.length >= 10 && clean.length <= 13) &&
+                (clean.startsWith('9') || clean.startsWith('09') || clean.startsWith('63'));
+
+            if (isValid) {
+                this.classList.remove('border-red-500');
+                this.classList.add('border-green-500');
+            } else {
+                this.classList.remove('border-green-500');
+                this.classList.add('border-red-500');
+            }
+        });
+
+        document.getElementById('custom_numbers')?.addEventListener('input', function(e) {
+            const numbers = this.value.split(',').map(num => num.trim()).filter(num => num);
+            let validCount = 0;
+
+            numbers.forEach(num => {
+                if (validatePhoneNumber(num)) {
+                    validCount++;
+                }
+            });
+
+            // Update validation display
+            const existing = this.parentNode.querySelector('.number-validation');
+            if (existing) existing.remove();
+
+            if (numbers.length > 0) {
+                const validCountEl = document.createElement('div');
+                validCountEl.className = 'number-validation text-xs mt-1';
+                validCountEl.textContent = `${validCount} of ${numbers.length} numbers are valid`;
+                validCountEl.style.color = validCount === numbers.length ? 'green' : (validCount > 0 ? 'orange' : 'red');
+                this.parentNode.appendChild(validCountEl);
+            }
+        });
+
+        // Update the send button click handler
+        document.getElementById('sendSMSBtn')?.addEventListener('click', function(e) {
+            const message = document.getElementById('broadcast_message').value;
+            const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
+
+            if (!message.trim()) {
+                e.preventDefault();
+                alert('Please enter a message');
+                return;
+            }
+
+            if (recipientType === 'custom') {
+                const numbersInput = document.getElementById('custom_numbers');
+                const numbers = numbersInput.value.split(',').map(num => num.trim()).filter(num => num);
+
+                if (numbers.length === 0) {
+                    e.preventDefault();
+                    alert('Please enter at least one phone number');
+                    return;
+                }
+
+                // Validate each number
+                const invalidNumbers = [];
+                numbers.forEach(num => {
+                    if (!validatePhoneNumber(num)) {
+                        invalidNumbers.push(num);
+                    }
+                });
+
+                if (invalidNumbers.length > 0) {
+                    e.preventDefault();
+                    alert(`The following phone numbers appear invalid:\n\n${invalidNumbers.join('\n')}\n\nPlease use format: 09XXXXXXXXX`);
+                    return;
+                }
+            }
+
+            const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
+            const totalRecipients = recipientType === 'custom' ?
+                document.getElementById('custom_numbers').value.split(',').filter(n => n.trim()).length :
+                'multiple';
+
+            if (demoMode) {
+                if (!confirm(`⚠️ DEMO MODE ENABLED\n\n${totalRecipients} SMS will be logged but NOT sent.\n\nClick OK to continue in demo mode.`)) {
+                    e.preventDefault();
+                }
+            } else {
+                if (!confirm(`Are you sure you want to send ${totalRecipients} SMS?\n\nThis will use your Semaphore credits.`)) {
+                    e.preventDefault();
+                }
+            }
+        });
         // Character counter
         const messageInput = document.getElementById('broadcast_message');
         const charCount = document.getElementById('charCount');
@@ -1400,7 +1901,7 @@ $conn->close();
                     charCount.classList.remove('text-red-600', 'font-bold');
                 } else {
                     charCount.classList.remove('text-red-600', 'text-yellow-600', 'font-bold');
-                    charCount.classList.add('text-gray-500');
+                    charCount.classList.add('text-gray-500', 'dark:text-gray-400');
                 }
             });
             messageInput.dispatchEvent(new Event('input'));
@@ -1409,15 +1910,35 @@ $conn->close();
         // Toggle custom numbers input
         document.querySelectorAll('input[name="recipient_type"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                const customNumbersInput = document.getElementById('custom_numbers');
-                if (customNumbersInput) {
-                    customNumbersInput.disabled = this.value !== 'custom';
-                    if (this.value === 'custom') {
-                        customNumbersInput.focus();
-                    }
+                const customNumbersSection = document.getElementById('customNumbersSection');
+                if (customNumbersSection) {
+                    customNumbersSection.style.display = this.value === 'custom' ? 'block' : 'none';
                 }
             });
         });
+
+        // Use template function
+        function useTemplate(message) {
+            const messageInput = document.getElementById('broadcast_message');
+            if (messageInput) {
+                messageInput.value = message;
+                messageInput.dispatchEvent(new Event('input'));
+                messageInput.focus();
+            }
+        }
+
+        // Use template and send immediately
+        function useTemplateAndSend(message) {
+            useTemplate(message);
+
+            // Set recipient to custom and show numbers input
+            document.getElementById('recipient_custom').checked = true;
+            document.getElementById('customNumbersSection').style.display = 'block';
+            document.getElementById('custom_numbers').focus();
+
+            // Show confirmation
+            alert('Template loaded. Please enter phone numbers and click "Send SMS Messages".');
+        }
 
         // Auto-hide messages
         setTimeout(() => {
@@ -1428,339 +1949,195 @@ $conn->close();
             });
         }, 5000);
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up recipient type toggles
-            const recipientRadios = document.querySelectorAll('input[name="recipient_type"]');
-            if (recipientRadios.length > 0) {
-                recipientRadios[0].dispatchEvent(new Event('change'));
-            }
-
-            // Show configuration guide if SMTP not set
-            const smtpUser = document.querySelector('input[name="smtp_user"]');
-            const smtpPass = document.querySelector('input[name="smtp_pass"]');
-
-            if (smtpUser && smtpPass && (!smtpUser.value || !smtpPass.value)) {
-                showConfigurationGuide();
-            }
-        });
-
-        function showConfigurationGuide() {
-            const guideHtml = `
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900 dark:border-blue-700">
-                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">📋 SMS Configuration Guide</h4>
-                <ol class="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-decimal list-inside">
-                    <li><strong>For Gmail Users:</strong>
-                        <ul class="ml-4 mt-1 list-disc">
-                            <li>Enable 2-Factor Authentication in your Google Account</li>
-                            <li>Generate an "App Password" from Google Security settings</li>
-                            <li>Use the app password (16 characters) in SMTP Password field</li>
-                        </ul>
-                    </li>
-                    <li><strong>For Other Email:</strong>
-                        <ul class="ml-4 mt-1 list-disc">
-                            <li>Check your email provider's SMTP settings</li>
-                            <li>Use your email and password</li>
-                            <li>Common ports: 587 (TLS) or 465 (SSL)</li>
-                        </ul>
-                    </li>
-                    <li><strong>Test Mode:</strong>
-                        <ul class="ml-4 mt-1 list-disc">
-                            <li>Enable "Demo Mode" to test without sending real SMS</li>
-                            <li>All SMS will be logged but not sent</li>
-                            <li>Disable demo mode when ready to send real SMS</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-        `;
-
-            const settingsCard = document.querySelector('.bg-white.rounded-lg.shadow.p-6');
-            if (settingsCard) {
-                const form = settingsCard.querySelector('form');
-                if (form) {
-                    form.insertAdjacentHTML('beforeend', guideHtml);
-                }
-            }
-        }
-
-        // Use template function
-        function useTemplate(message) {
-            const messageInput = document.getElementById('broadcast_message');
-            if (messageInput) {
-                messageInput.value = message;
-                messageInput.dispatchEvent(new Event('input'));
-            }
-        }
-
-        // Theme Switcher
-        document.addEventListener('DOMContentLoaded', function() {
-            const navThemeToggle = document.getElementById('nav-theme-toggle');
-            const navThemeLightIcon = document.getElementById('nav-theme-light-icon');
-            const navThemeDarkIcon = document.getElementById('nav-theme-dark-icon');
-            const navThemeText = document.getElementById('nav-theme-text');
-
-            // Function to update theme icons based on current theme
-            function updateThemeUI(isDarkMode) {
-                if (isDarkMode) {
-                    // If dark mode is active, show light icon (for switching to light mode)
-                    if (navThemeLightIcon) navThemeLightIcon.classList.remove('hidden');
-                    if (navThemeDarkIcon) navThemeDarkIcon.classList.add('hidden');
-                    if (navThemeText) navThemeText.textContent = 'Light Mode';
-                } else {
-                    // If light mode is active, show dark icon (for switching to dark mode)
-                    if (navThemeLightIcon) navThemeLightIcon.classList.add('hidden');
-                    if (navThemeDarkIcon) navThemeDarkIcon.classList.remove('hidden');
-                    if (navThemeText) navThemeText.textContent = 'Dark Mode';
-                }
-            }
-
-            // Function to set theme
-            function setTheme(theme) {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-                updateThemeUI(theme === 'dark');
-            }
-
-            // Initialize theme
-            function initTheme() {
-                // Check localStorage for saved theme
-                const savedTheme = localStorage.getItem('theme');
-
-                // Check for system preference
-                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                // Determine which theme to use
-                let theme = 'light';
-                if (savedTheme) {
-                    theme = savedTheme;
-                } else if (systemPrefersDark) {
-                    theme = 'dark';
-                }
-
-                // Apply the theme
-                setTheme(theme);
-
-                // Update UI
-                updateThemeUI(theme === 'dark');
-            }
-
-            // Initialize theme on page load
-            initTheme();
-
-            // Toggle theme when button is clicked
-            if (navThemeToggle) {
-                navThemeToggle.addEventListener('click', function() {
-                    const isDark = document.documentElement.classList.contains('dark');
-                    setTheme(isDark ? 'light' : 'dark');
-                });
-            }
-
-            // Listen for theme changes from other tabs/windows
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'theme') {
-                    const theme = e.newValue;
-                    setTheme(theme);
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                // Only apply system theme if no user preference is saved
-                if (!localStorage.getItem('theme')) {
-                    setTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-
-            // Optional: Add keyboard shortcut for theme toggle (Alt+T)
-            document.addEventListener('keydown', function(e) {
-                if (e.altKey && e.key === 't') {
-                    const isDark = document.documentElement.classList.contains('dark');
-                    setTheme(isDark ? 'light' : 'dark');
-                    e.preventDefault();
-                }
-            });
-        });
-
-        // Sidebar toggle
-        let sidebar = document.querySelector(".sidebar");
-        let closeBtn = document.querySelector("#btn");
-
-        if (closeBtn) {
-            closeBtn.addEventListener("click", () => {
-                sidebar.classList.toggle("open");
-            });
-        }
-    </script>
-
-    <script>
-        // JavaScript functions for SMS page
+        // SMS Details Modal
         function viewSMSDetails(smsId) {
-            // Show loading state
-            document.getElementById('smsOverlayContent').innerHTML = `
-            <div class="p-8 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p class="mt-4 text-gray-600 dark:text-gray-400">Loading SMS details...</p>
-            </div>
-        `;
+            const modalContent = document.getElementById('smsModalContent');
+            modalContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading SMS details...</p>
+                    </div>
+                </div>
+            `;
 
-            // Show overlay
-            document.getElementById('smsDetailsOverlay').classList.remove('hidden');
+            document.getElementById('smsDetailsModal').classList.remove('hidden');
 
-            // Since get_sms_details.php doesn't exist, we'll fetch from current page with AJAX
-            fetch(`sms.php?get_sms_details=${smsId}`)
-                .then(response => response.text())
-                .then(html => {
-                    // Try to extract SMS details from the page
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-
-                    // Look for the SMS log row with this ID
-                    const smsRow = doc.querySelector(`tr[data-sms-id="${smsId}"]`);
-
-                    if (smsRow) {
-                        // Extract data from the row
-                        const recipient = smsRow.querySelector('td:first-child .font-medium')?.textContent || 'N/A';
-                        const message = smsRow.querySelector('.sms-preview')?.title || 'No message content';
-                        const status = smsRow.querySelector('.sms-status-badge')?.textContent.trim() || 'Unknown';
-                        const smsType = smsRow.querySelector('td:nth-child(4) span')?.textContent.trim() || 'Outgoing';
-                        const createdAt = smsRow.querySelector('td:nth-child(6) span:first-child')?.textContent || 'N/A';
-
-                        const statusClass = getSMSStatusClassJS(status);
-                        const pulseClass = (status.toLowerCase() === 'sent' || status.toLowerCase() === 'delivered') ? 'sms-status-sent' : '';
-
-                        // Get user info
-                        const username = smsRow.querySelector('td:nth-child(2) p.text-sm.font-medium')?.textContent || 'User';
-                        const userType = smsRow.querySelector('td:nth-child(2) p.text-xs')?.textContent || 'User';
-                        const userAvatar = smsRow.querySelector('td:nth-child(2) img')?.src || `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&size=40`;
-
-                        document.getElementById('smsOverlayContent').innerHTML = `
-                            <div class="p-6 space-y-4">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Recipient</label>
-                                        <p class="mt-1 text-gray-900 dark:text-white font-medium">${recipient}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date & Time</label>
-                                        <p class="mt-1 text-gray-900 dark:text-white">${createdAt}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                                        <p class="mt-2">
-                                            <span class="px-2 py-1 text-xs font-medium rounded-full sms-status-badge ${statusClass} ${pulseClass}">
-                                                ${status.charAt(0).toUpperCase() + status.slice(1)}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
-                                        <p class="mt-2">
-                                            <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                                ${(smsType.toLowerCase() === 'outgoing') ? 
-                                                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 
-                                                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'}">
-                                                ${smsType}
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sender</label>
-                                    <div class="mt-1 flex items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <img class="w-10 h-10 rounded-full object-cover mr-3" 
-                                            src="${userAvatar}" 
-                                            alt="${username}">
-                                        <div>
-                                            <p class="text-gray-900 dark:text-white font-medium">${username}</p>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">${userType}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
-                                    <div class="mt-1 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <p class="text-gray-900 dark:text-white whitespace-pre-wrap">${message}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                    } else {
-                        // Fallback if we can't find the data
-                        document.getElementById('smsOverlayContent').innerHTML = `
-                            <div class="p-6 text-center">
-                                <svg class="mx-auto h-12 w-12 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Limited Details</h3>
-                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    Full SMS details are not available. The SMS record exists but detailed information could not be loaded.
-                                </p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching SMS details:', error);
-                    document.getElementById('smsOverlayContent').innerHTML = `
-                    <div class="p-6 text-center">
-                        <svg class="mx-auto h-12 w-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Error Loading Details</h3>
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Failed to load SMS details. Please try again.
-                        </p>
+            // Simple details display
+            setTimeout(() => {
+                modalContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                            <p class="text-sm text-blue-800 dark:text-blue-200">Note: Full SMS details feature is being implemented.</p>
+                            <p class="text-xs text-blue-600 dark:text-blue-300 mt-1">The SMS system is working! All messages are being logged to the database.</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 dark:text-gray-400">SMS ID: <span class="font-mono">${smsId}</span></p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Check the SMS logs table above for message details.</p>
+                        </div>
                     </div>
                 `;
-                });
+            }, 500);
         }
 
-        // Helper function for JavaScript status classification
-        function getSMSStatusClassJS(status) {
-            if (!status) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-
-            const statusLower = status.toLowerCase();
-
-            if (statusLower.includes('sent') || statusLower.includes('delivered') || statusLower.includes('success')) {
-                return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-            } else if (statusLower.includes('failed') || statusLower.includes('error') || statusLower.includes('undelivered')) {
-                return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-            } else if (statusLower.includes('pending') || statusLower.includes('queued') || statusLower.includes('processing')) {
-                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-            } else if (statusLower.includes('cancelled') || statusLower.includes('expired')) {
-                return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-            } else {
-                return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-            }
-        }
-
-        // Close overlay
-        document.getElementById('closeSMSOverlay').addEventListener('click', function() {
-            document.getElementById('smsDetailsOverlay').classList.add('hidden');
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('smsDetailsModal').classList.add('hidden');
         });
 
-        // Close overlay when clicking outside
-        document.getElementById('smsDetailsOverlay').addEventListener('click', function(e) {
-            if (e.target.id === 'smsDetailsOverlay') {
-                document.getElementById('smsDetailsOverlay').classList.add('hidden');
+        // Close modal when clicking outside
+        document.getElementById('smsDetailsModal').addEventListener('click', function(e) {
+            if (e.target.id === 'smsDetailsModal') {
+                document.getElementById('smsDetailsModal').classList.add('hidden');
             }
         });
 
-        // Close overlay with Escape key
+        // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                document.getElementById('smsDetailsOverlay').classList.add('hidden');
+                document.getElementById('smsDetailsModal').classList.add('hidden');
+            }
+        });
+
+        // Send SMS confirmation
+        document.getElementById('sendSMSBtn').addEventListener('click', function(e) {
+            const message = document.getElementById('broadcast_message').value;
+            const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
+
+            if (recipientType === 'custom') {
+                const numbers = document.getElementById('custom_numbers').value;
+                if (!numbers.trim() && message.trim()) {
+                    e.preventDefault();
+                    alert('Please enter phone numbers for custom recipients.');
+                    return;
+                }
+            }
+
+            // Show confirmation for demo mode
+            const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
+            if (demoMode && message.trim()) {
+                if (!confirm('⚠️ DEMO MODE ENABLED\nNo actual SMS will be sent. Messages will only be logged.\n\nContinue?')) {
+                    e.preventDefault();
+                }
+            } else if (message.trim()) {
+                // Ask for confirmation when sending real SMS
+                if (!confirm('Are you sure you want to send this SMS? This will use your Semaphore credits.')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize recipient type
+            document.querySelector('input[name="recipient_type"][value="custom"]').dispatchEvent(new Event('change'));
+
+            // Auto-fill API key if empty
+            const apiKeyField = document.getElementById('api_key');
+            if (apiKeyField && !apiKeyField.value) {
+                // Pre-fill with the provided API key
+                apiKeyField.value = '11203b3c9a4bc430dd3a1b181ece8b6c';
+            }
+        });
+
+        // Add API key placeholder with the actual key
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-fill API key if empty
+            const apiKeyField = document.getElementById('api_key');
+            if (apiKeyField && !apiKeyField.value) {
+                apiKeyField.value = '11203b3c9a4bc430dd3a1b181ece8b6c';
+                apiKeyField.placeholder = 'Your Semaphore API key is pre-filled';
+            }
+
+            // Enhanced phone number validation
+            document.getElementById('sendSMSBtn').addEventListener('click', function(e) {
+                const message = document.getElementById('broadcast_message').value;
+                const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
+
+                if (!message.trim()) {
+                    e.preventDefault();
+                    alert('Please enter a message');
+                    return;
+                }
+
+                if (recipientType === 'custom') {
+                    const numbers = document.getElementById('custom_numbers').value;
+                    if (!numbers.trim()) {
+                        e.preventDefault();
+                        alert('Please enter phone numbers for custom recipients.');
+                        return;
+                    }
+                }
+
+                const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
+                if (demoMode) {
+                    if (!confirm('⚠️ DEMO MODE ENABLED\nNo actual SMS will be sent. Messages will only be logged.\n\nContinue?')) {
+                        e.preventDefault();
+                    }
+                } else {
+                    if (!confirm(`Are you sure you want to send this SMS?
+            
+Recipients: ${recipientType === 'custom' ? 'Custom numbers' : (recipientType === 'all_active' ? 'Active applicants' : 'All applicants')}
+Message length: ${message.length} characters
+
+This will use your Semaphore credits.`)) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            // Validate phone numbers as user types
+            document.getElementById('custom_numbers')?.addEventListener('input', function(e) {
+                const numbers = this.value.split(',').map(num => num.trim()).filter(num => num);
+                const validNumbers = numbers.filter(num => /^(09|\+639|639|9)\d{9,10}$/.test(num.replace(/[^0-9+]/g, '')));
+
+                if (numbers.length > 0) {
+                    const validCount = document.createElement('div');
+                    validCount.className = 'text-xs mt-1';
+                    validCount.textContent = `${validNumbers.length} of ${numbers.length} numbers appear valid`;
+                    validCount.style.color = validNumbers.length === numbers.length ? 'green' : 'orange';
+
+                    const existing = this.parentNode.querySelector('.number-validation');
+                    if (existing) existing.remove();
+                    validCount.className += ' number-validation';
+                    this.parentNode.appendChild(validCount);
+                }
+            });
+        });
+        // Add to your existing JavaScript in sms.php
+        document.getElementById('test_number')?.addEventListener('blur', function(e) {
+            const number = this.value.trim();
+            const clean = number.replace(/[^0-9]/g, '');
+
+            if (clean.length === 11 && clean.startsWith('09')) {
+                // Valid 09XXXXXXXXX format
+                this.classList.remove('border-red-500');
+                this.classList.add('border-green-500');
+            } else if (clean.length === 10 && clean.startsWith('9')) {
+                // Valid 9XXXXXXXXX format
+                this.classList.remove('border-red-500');
+                this.classList.add('border-green-500');
+            } else if (clean.length === 12 && (clean.startsWith('63') || clean.startsWith('639'))) {
+                // Valid with country code
+                this.classList.remove('border-red-500');
+                this.classList.add('border-green-500');
+            } else if (number) {
+                // Invalid
+                this.classList.remove('border-green-500');
+                this.classList.add('border-red-500');
+            } else {
+                // Empty
+                this.classList.remove('border-red-500', 'border-green-500');
             }
         });
     </script>
 </body>
 
 </html>
+<?php
+// Debug information
+error_log("=== SMS DEBUG INFO ===");
+error_log("Sender ID from settings: " . ($smsSettings['sender_id'] ?? 'NOT SET'));
+error_log("Demo Mode: " . (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'YES' : 'NO'));
+error_log("API Key: " . (!empty($smsSettings['api_key']) ? 'SET' : 'NOT SET'));
+?>

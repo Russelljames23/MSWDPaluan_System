@@ -64,24 +64,24 @@ if ($applicant_id && $pdo) {
         $stmt = $pdo->prepare("SELECT first_name, last_name, middle_name FROM applicants WHERE applicant_id = ?");
         $stmt->execute([$applicant_id]);
         $applicant = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         if ($applicant) {
             // Build the name in the format: Last Name, First Name Middle Name
             $applicant_name_for_title = trim(
                 ($applicant['last_name'] ?? '') . ', ' .
-                    ($applicant['first_name'] ?? '') . ' ' .
-                    ($applicant['middle_name'] ?? '')
+                ($applicant['first_name'] ?? '') . ' ' .
+                ($applicant['middle_name'] ?? '')
             );
-
+            
             // Clean up extra spaces and punctuation
             $applicant_name_for_title = preg_replace('/\s+/', ' ', $applicant_name_for_title);
             $applicant_name_for_title = rtrim($applicant_name_for_title, ', .');
-
+            
             // If the name is too long, truncate it
             if (strlen($applicant_name_for_title) > 50) {
                 $applicant_name_for_title = substr($applicant_name_for_title, 0, 47) . '...';
             }
-
+            
             // Add "Profile" suffix
             $applicant_name_for_title .= " - Profile";
         }
@@ -107,39 +107,34 @@ if ($applicant_id && $pdo) {
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter:
-                brightness(1.3)
-                /* Make brighter */
-                contrast(1.2)
-                /* Increase contrast */
-                saturate(1.5)
-                /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)
-                /* Blue glow */
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-
+            
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-
+            
             /* Inner glow effect */
-            box-shadow:
+            box-shadow: 
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-
+            
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-
+        
         @keyframes pulse-glow {
             from {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
-
             to {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -156,14 +151,14 @@ if ($applicant_id && $pdo) {
             body * {
                 visibility: hidden !important;
             }
-
+            
             .print-ready,
             .print-ready *,
             section.bg-gray-50,
             section.bg-gray-50 * {
                 visibility: visible !important;
             }
-
+            
             section.bg-gray-50 {
                 position: absolute !important;
                 left: 0 !important;
@@ -174,19 +169,19 @@ if ($applicant_id && $pdo) {
                 padding: 20px !important;
                 margin: 0 !important;
             }
-
+            
             /* Hide non-printable elements */
-            nav,
-            aside,
+            nav, 
+            aside, 
             .no-print,
             #actionDropdownButton,
             #actionDropdown,
             #default-modal,
-            main>div:first-child,
-            .bg-gray-50~* {
+            main > div:first-child,
+            .bg-gray-50 ~ * {
                 display: none !important;
             }
-
+            
             /* Style form inputs for printing */
             input[readonly],
             input[type="text"][readonly] {
@@ -198,35 +193,35 @@ if ($applicant_id && $pdo) {
                 print-color-adjust: exact !important;
                 font-weight: normal !important;
             }
-
+            
             /* Make checkmarks more visible */
             input[value="✓"] {
                 font-weight: bold !important;
                 color: black !important;
             }
-
+            
             /* Remove dark mode for printing */
             .dark\:text-white,
             .dark\:bg-gray-900 {
                 color: black !important;
                 background: white !important;
             }
-
-
-
+            
+            
+            
             /* Ensure proper layout */
             .flex {
                 display: flex !important;
             }
-
+            
             .flex-row {
                 flex-direction: row !important;
             }
-
+            
             .flex-col {
                 flex-direction: column !important;
             }
-
+            
             /* Remove any shadows */
             * {
                 box-shadow: none !important;
@@ -1398,7 +1393,7 @@ if ($applicant_id && $pdo) {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             if (!id) return;
-            const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
+
             const phpFilePath = `/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_view.php?id=${encodeURIComponent(id)}`;
 
             fetch(phpFilePath)
@@ -1580,11 +1575,7 @@ if ($applicant_id && $pdo) {
             // --- Load applicant data from PHP ---
             async function loadApplicant() {
                 try {
-                    // Get current user info
-                    const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
-                    const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>;
-
-                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}&session_context=admin&admin_user_id=${adminUserId}`);
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php?id=${encodeURIComponent(applicantId)}`);
                     const json = await res.json();
                     if (json.success && json.data) {
                         fillForm(json.data);
@@ -1603,11 +1594,6 @@ if ($applicant_id && $pdo) {
             window.submitForm = async function() {
                 const fd = new FormData(form);
                 fd.append('id', applicantId);
-
-                // Add admin context
-                fd.append('session_context', 'admin');
-                fd.append('admin_user_id', <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>);
-                fd.append('admin_user_name', <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>);
 
                 try {
                     const res = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_edit.php', {
@@ -1723,23 +1709,23 @@ if ($applicant_id && $pdo) {
                     color: #000;
                 }
             `;
-
+            
             // Add the style to document head
             document.head.appendChild(style);
-
+            
             // Force light theme for printing
             const htmlElement = document.documentElement;
             const wasDark = htmlElement.classList.contains('dark');
             if (wasDark) {
                 htmlElement.classList.remove('dark');
             }
-
+            
             // Add print-ready class to form container
             const formContainer = document.querySelector('.print-ready');
             if (formContainer) {
                 formContainer.classList.add('print-section');
             }
-
+            
             // Enhance checkmarks visibility
             document.querySelectorAll('input[type="text"][readonly]').forEach(input => {
                 if (input.value === '✓') {
@@ -1748,10 +1734,10 @@ if ($applicant_id && $pdo) {
                     input.style.fontSize = '14px';
                 }
             });
-
+            
             // Trigger print
             window.print();
-
+            
             // Clean up after printing
             setTimeout(() => {
                 // Remove the temporary style
@@ -1759,17 +1745,17 @@ if ($applicant_id && $pdo) {
                 if (printStyle) {
                     document.head.removeChild(printStyle);
                 }
-
+                
                 // Restore dark mode if it was enabled
                 if (wasDark) {
                     htmlElement.classList.add('dark');
                 }
-
+                
                 // Remove print-ready class
                 if (formContainer) {
                     formContainer.classList.remove('print-section');
                 }
-
+                
                 // Restore checkmarks styling
                 document.querySelectorAll('input[type="text"][readonly]').forEach(input => {
                     if (input.value === '✓') {
@@ -1779,7 +1765,7 @@ if ($applicant_id && $pdo) {
                     }
                 });
             }, 100);
-
+            
             return false;
         }
     </script>

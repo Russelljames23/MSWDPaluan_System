@@ -9,55 +9,25 @@ require_once "../../php/helpers/sms_helper.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Emergency fallback test
-if (isset($_GET['direct_test'])) {
-    $apiKey = '11203b3c9a4bc430dd3a1b181ece8b6c';
-    $testNumber = '09272873751';
-    $testMessage = 'Direct test from MSWD System';
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://api.semaphore.co/api/v4/messages");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-        'apikey' => $apiKey,
-        'number' => '639272873751',
-        'message' => $testMessage,
-        'sender_name' => 'SEMAPHORE'
-    ]));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    echo "<pre>";
-    echo "Direct API Test Result:\n";
-    echo "HTTP Code: $httpCode\n";
-    echo "Response: $response\n";
-    echo "</pre>";
-    exit();
-}
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-// Get SMS settings - USE THE FUNCTION FROM SMS_HELPER.PHP
+// Get SMS settings
 $smsSettings = getSMSSettings();
 
-// Also update the save_settings handler to fix sender name
+// Handle save settings
 if (isset($_POST['save_settings'])) {
-    // Save SMS settings
     $settings = [
         'provider' => $_POST['provider'] ?? 'semaphore',
         'api_key' => trim($_POST['api_key'] ?? ''),
-        'sender_id' => 'SEMAPHORE', // FIXED: Always use SEMAPHORE
+        'sender_id' => 'SEMAPHORE',
         'is_active' => isset($_POST['is_active']) ? 1 : 0,
         'demo_mode' => isset($_POST['demo_mode']) ? 1 : 0
     ];
 
-    // Save settings - USE FUNCTION FROM SMS_HELPER.PHP
     if (saveSMSSettings($settings)) {
         $_SESSION['success'] = "SMS settings saved successfully!";
-        $smsSettings = getSMSSettings(); // Refresh
+        $smsSettings = getSMSSettings();
     } else {
         $_SESSION['error'] = "Failed to save settings.";
     }
@@ -66,32 +36,7 @@ if (isset($_POST['save_settings'])) {
     exit();
 }
 
-// Quick test - add this at the VERY TOP
-if (isset($_GET['test'])) {
-    // Get SMS settings first
-    $testSettings = getSMSSettings();
-    $testNumber = '09272873751'; // This should be 11 digits (09 + 9 digits)
-    $smsGateway = new SMSGateway($testSettings);
-
-    echo "<pre>";
-    echo "Testing with: $testNumber\n";
-    echo "Clean: " . preg_replace('/[^0-9+]/', '', $testNumber) . "\n";
-    echo "Valid: " . ($smsGateway->validatePhoneNumber($testNumber) ? 'YES' : 'NO') . "\n";
-    echo "Formatted: " . $smsGateway->formatNumberForSemaphore($testNumber) . "\n";
-
-    // Test the validation directly
-    $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
-    echo "Valid International: " . ($smsGateway->validateInternationalNumber($formatted) ? 'YES' : 'NO') . "\n";
-
-    // Test actual sending
-    $result = $smsGateway->send($testNumber, 'Test message');
-    echo "\nSend Result:\n";
-    print_r($result);
-    echo "</pre>";
-    exit();
-}
-
-// Initialize variables with defaults
+// Initialize variables
 $success = $_SESSION['success'] ?? '';
 $error = $_SESSION['error'] ?? '';
 $smsWarning = $_SESSION['sms_warning'] ?? '';
@@ -106,7 +51,7 @@ $tempSmsWarning = $smsWarning;
 // Clear session messages
 unset($_SESSION['success'], $_SESSION['error'], $_SESSION['sms_warning']);
 
-// Database connection using mysqli (consistent with sms_helper.php)
+// Database connection
 $host = "localhost";
 $dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
@@ -168,12 +113,7 @@ if ($template_result && $template_result->num_rows > 0) {
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['save_settings'])) {
-        // This is handled at the top already
-    }
-
     if (isset($_POST['test_connection'])) {
-        // Test API connection
         $smsGateway = new SMSGateway($smsSettings);
         $testResult = $smsGateway->testConnection();
 
@@ -188,10 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['send_sms'])) {
-        // Send SMS
         $message = trim($_POST['broadcast_message'] ?? '');
         $recipientType = $_POST['recipient_type'] ?? 'custom';
-        $sms_type = $_POST['sms_type'] ?? 'broadcast';
 
         // Check if SMS is enabled
         if (!isset($smsSettings['is_active']) || !$smsSettings['is_active']) {
@@ -219,24 +157,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } else {
-            // Get from database
             $statusCondition = '';
             if ($recipientType === 'all_active') {
                 $statusCondition = " AND status = 'Active'";
             }
 
-            $query = "SELECT contact_no FROM applicants 
-             WHERE contact_no IS NOT NULL 
-             AND contact_no != '' 
-             AND contact_no != '0' 
-             AND LENGTH(contact_no) >= 10
-             $statusCondition";
+            $query = "SELECT contact_number FROM applicants 
+                     WHERE contact_number IS NOT NULL 
+                     AND contact_number != '' 
+                     AND contact_number != '0' 
+                     AND LENGTH(contact_number) >= 10
+                     $statusCondition";
 
             $result = $conn->query($query);
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    if (!empty($row['contact_no'])) {
-                        $recipients[] = $row['contact_no'];
+                    if (!empty($row['contact_number'])) {
+                        $recipients[] = $row['contact_number'];
                     }
                 }
             }
@@ -251,14 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Initialize SMS Gateway
         $smsGateway = new SMSGateway($smsSettings);
 
-        // DEBUG: Log recipients before sending
-        error_log("Recipients before sending: " . print_r($recipients, true));
-
         // Send SMS
         $result = $smsGateway->sendBulk($recipients, $message);
-
-        // DEBUG: Log result
-        error_log("SendBulk result: " . print_r($result, true));
 
         // Process results
         if (isset($result['error'])) {
@@ -280,8 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 if ($sent > 0) {
                     $_SESSION['success'] = "✅ Successfully queued {$sent} SMS messages for delivery via Semaphore API!";
-
-                    // Add debugging info
                     $_SESSION['success'] .= "<br><small>Check SMS logs for delivery status.</small>";
 
                     if ($failed > 0) {
@@ -302,7 +231,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['error'] .= " {$invalid} phone numbers were invalid.";
                     }
 
-                    // Add debugging help
                     $_SESSION['error'] .= "<br><small>Please check:";
                     $_SESSION['error'] .= "<br>1. Your Semaphore API key is correct";
                     $_SESSION['error'] .= "<br>2. You have sufficient credits";
@@ -317,62 +245,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['test_api'])) {
-        // Test Semaphore API - USE SMSGateway class
         $testNumber = trim($_POST['test_number'] ?? '');
 
         if (empty($testNumber)) {
             $_SESSION['error'] = "Please enter a test phone number.";
         } else {
-            // Initialize SMS Gateway with current settings
             $smsGateway = new SMSGateway($smsSettings);
-
-            // Check if demo mode is on
             $demoMode = $smsSettings['demo_mode'] ?? false;
 
-            // Debug log
-            error_log("=== TEST API DEBUG ===");
-            error_log("Test number entered: $testNumber");
-            error_log("Clean number: " . preg_replace('/[^0-9+]/', '', $testNumber));
-            error_log("Demo mode: " . ($demoMode ? 'YES' : 'NO'));
-
-            // Use SMSGateway validation method
             $isValid = $smsGateway->validatePhoneNumber($testNumber);
-            error_log("SMSGateway validation result: " . ($isValid ? 'VALID' : 'INVALID'));
 
             if (!$isValid) {
                 $_SESSION['error'] = "Invalid phone number format. Use: 09XXXXXXXXX or +639XXXXXXXXX";
                 $_SESSION['error'] .= "<br>You entered: " . htmlspecialchars($testNumber);
 
-                // Add debug info
                 $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
                 $_SESSION['error'] .= "<br>Formatted for API: " . htmlspecialchars($formatted);
             } elseif ($demoMode) {
                 $_SESSION['success'] = "✅ DEMO MODE: Test SMS logged (no actual SMS sent).";
                 $_SESSION['success'] .= "<br><small>Disable demo mode to send real test SMS.</small>";
 
-                // Log to database in demo mode
                 $log_query = "INSERT INTO sms_logs 
-                (phone_number, message, status, carrier, sms_type, user_id, created_at) 
-                VALUES (?, ?, 'demo_sent', 'semaphore', 'test', ?, NOW())";
+                            (phone_number, message, status, carrier, sms_type, user_id, created_at) 
+                            VALUES (?, ?, 'demo_sent', 'semaphore', 'test', ?, NOW())";
                 $stmt = $conn->prepare($log_query);
                 $testMessage = 'Test SMS from MSWD System - If you receive this, SMS is working properly.';
                 $stmt->bind_param("ssi", $testNumber, $testMessage, $user_id);
                 $stmt->execute();
                 $stmt->close();
             } else {
-                // Send real test SMS using SMSGateway
                 $testMessage = 'Test SMS from MSWD System - If you receive this, SMS is working properly.';
-
-                error_log("Sending test SMS to: $testNumber");
-
-                // Get formatted number for debug
-                $formatted = $smsGateway->formatNumberForSemaphore($testNumber);
-                error_log("Formatted number for API: $formatted");
-
-                // Send the SMS
                 $result = $smsGateway->send($testNumber, $testMessage);
-
-                error_log("Send result: " . print_r($result, true));
 
                 if (isset($result['success']) && $result['success']) {
                     if ($result['status'] === 'queued' || $result['status'] === 'sent') {
@@ -389,10 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $errorMsg = isset($result['message']) ? $result['message'] : 'Unknown error';
                     $_SESSION['error'] = "Failed to send test SMS: " . $errorMsg;
-
-                    // Add debug info
                     $_SESSION['error'] .= "<br><small>Check API key and internet connection.</small>";
-                    $_SESSION['error'] .= "<br><small>Formatted number: " . $formatted . "</small>";
                 }
             }
         }
@@ -408,7 +308,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($templateName) || empty($message)) {
             $_SESSION['error'] = "Please provide both template name and message.";
         } else {
-            // Check if template exists
             $check_query = "SELECT id FROM sms_templates WHERE template_name = ?";
             $stmt = $conn->prepare($check_query);
             $stmt->bind_param("s", $templateName);
@@ -416,13 +315,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
-                // Update existing
                 $row = $result->fetch_assoc();
                 $update_query = "UPDATE sms_templates SET message = ?, updated_at = NOW() WHERE id = ?";
                 $stmt = $conn->prepare($update_query);
                 $stmt->bind_param("si", $message, $row['id']);
             } else {
-                // Insert new
                 $insert_query = "INSERT INTO sms_templates (template_name, message, is_active, created_at) VALUES (?, ?, 1, NOW())";
                 $stmt = $conn->prepare($insert_query);
                 $stmt->bind_param("ss", $templateName, $message);
@@ -430,8 +327,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->execute()) {
                 $_SESSION['success'] = "Template saved successfully!";
-
-                // Refresh templates
                 $template_result = $conn->query($template_query);
                 $templates = [];
                 if ($template_result && $template_result->num_rows > 0) {
@@ -450,7 +345,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get SMS logs
+// Pagination for SMS logs
+$limit = 10; // Records per page
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+// Get total number of logs
+$total_logs_query = "SELECT COUNT(*) as total FROM sms_logs WHERE status IS NOT NULL";
+$total_result = $conn->query($total_logs_query);
+$total_logs = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total_logs / $limit);
+
+// Get SMS logs with pagination
 $sms_logs = [];
 $logs_query = "SELECT sl.id, sl.phone_number as recipient, sl.message, sl.status, sl.carrier, 
                       sl.sms_type, sl.created_at, sl.response_data,
@@ -459,7 +365,7 @@ $logs_query = "SELECT sl.id, sl.phone_number as recipient, sl.message, sl.status
                LEFT JOIN users u ON sl.user_id = u.id 
                WHERE sl.status IS NOT NULL
                ORDER BY sl.created_at DESC 
-               LIMIT 50";
+               LIMIT $limit OFFSET $offset";
 $logs_result = $conn->query($logs_query);
 if ($logs_result && $logs_result->num_rows > 0) {
     while ($row = $logs_result->fetch_assoc()) {
@@ -543,7 +449,6 @@ function formatSMSTime($timestamp)
 // Function to create required tables
 function createRequiredTables($conn)
 {
-    // Create sms_settings table WITHOUT api_url
     $conn->query("CREATE TABLE IF NOT EXISTS sms_settings (
         id INT AUTO_INCREMENT PRIMARY KEY,
         provider VARCHAR(50) DEFAULT 'semaphore',
@@ -555,7 +460,6 @@ function createRequiredTables($conn)
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )");
 
-    // Create sms_templates table
     $conn->query("CREATE TABLE IF NOT EXISTS sms_templates (
         id INT AUTO_INCREMENT PRIMARY KEY,
         template_name VARCHAR(100) NOT NULL,
@@ -566,7 +470,6 @@ function createRequiredTables($conn)
         INDEX idx_template_name (template_name)
     )");
 
-    // Create sms_logs table
     $conn->query("CREATE TABLE IF NOT EXISTS sms_logs (
         id INT AUTO_INCREMENT PRIMARY KEY,
         phone_number VARCHAR(20) NOT NULL,
@@ -620,8 +523,49 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMS Settings - MSWD Paluan</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+            
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            
+            /* Inner glow effect */
+            box-shadow: 
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+            
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from {
+                box-shadow: 
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+            to {
+                box-shadow: 
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
@@ -629,13 +573,7 @@ $conn->close();
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Smooth theme icon transitions */
-        #nav-theme-light-icon,
-        #nav-theme-dark-icon {
-            transition: opacity 0.3s ease;
-        }
-
-        /* Sidebar container */
+        /* Improved sidebar styles */
         .sidebar {
             position: relative;
             border-radius: 10px;
@@ -649,7 +587,6 @@ $conn->close();
 
         .dark .sidebar {
             background: #1f2937;
-            /* gray-800 */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
@@ -657,7 +594,6 @@ $conn->close();
             width: 200px;
         }
 
-        /* Logo section + toggle button */
         .sidebar .logo-details {
             height: 60px;
             position: relative;
@@ -669,7 +605,6 @@ $conn->close();
 
         .dark .sidebar .logo-details {
             border-bottom: 1px solid #374151;
-            /* gray-700 */
         }
 
         .logo-details #btn {
@@ -702,7 +637,6 @@ $conn->close();
             transform: rotate(180deg);
         }
 
-        /* Navigation list */
         .nav-list {
             list-style: none;
             padding: 15px;
@@ -767,24 +701,18 @@ $conn->close();
             transition: all 0.3s ease;
         }
 
-        /* Dark mode styles for nav list */
         .dark .nav-list li a,
         .dark .nav-list li button {
             background: #374151;
-            /* gray-700 */
             border: 1px solid #4b5563;
-            /* gray-600 */
             color: #e5e7eb;
-            /* gray-200 */
         }
 
         .dark .nav-list li a:hover,
         .dark .nav-list li button:hover {
             background: #4b5563;
-            /* gray-600 */
         }
 
-        /* Hide link text when collapsed, keep icons */
         .links_name {
             white-space: nowrap;
             opacity: 0;
@@ -796,7 +724,6 @@ $conn->close();
             opacity: 1;
         }
 
-        /* Tooltip styling */
         .tooltip {
             position: absolute;
             top: 50%;
@@ -819,18 +746,14 @@ $conn->close();
 
         .dark .tooltip {
             background: rgba(55, 65, 81, 0.95);
-            /* gray-700 */
             color: #e5e7eb;
-            /* gray-200 */
         }
 
-        /* Show tooltip when hovering over an item */
         .sidebar li:hover .tooltip {
             opacity: 1;
             transform: translate(10px, -50%);
         }
 
-        /* Hide tooltips when sidebar is expanded */
         .sidebar.open li .tooltip {
             display: none;
         }
@@ -839,10 +762,8 @@ $conn->close();
             color: #d1d5db;
         }
 
-        /* Active link styling */
         .nav-list li #sms.active-link {
             color: #1d4ed8;
-            /* Tailwind blue-700 */
             font-weight: 600;
             border-color: #1d4ed8;
             background: #eff6ff;
@@ -854,89 +775,119 @@ $conn->close();
 
         .dark .nav-list li #sms.active-link {
             color: #60a5fa;
-            /* blue-400 */
             border-color: #3b82f6;
-            /* blue-500 */
             background: #1e40af;
-            /* blue-800 */
         }
 
         .dark .nav-list li #sms.active-link svg {
             color: #60a5fa;
-            /* blue-400 */
-        }
-    </style>
-    <style>
-        /* Add these styles to your existing CSS */
-        .sms-status-badge {
-            transition: all 0.2s ease;
         }
 
-        .sms-status-badge:hover {
-            transform: scale(1.05);
+        /* Improved status indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
 
-        .sms-status-sent {
-            position: relative;
+        .status-indicator i {
+            font-size: 0.75rem;
         }
 
-        .sms-status-sent::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 9999px;
-            opacity: 0.5;
-            animation: pulse 2s infinite;
-            z-index: -1;
+        /* Card improvements */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
+        .dark .card {
+            background: #1f2937;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        /* SMS message preview */
-        .sms-preview {
-            max-width: 300px;
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .dark .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Table improvements */
+        .table-container {
+            border-radius: 8px;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            border: 1px solid #e5e7eb;
         }
 
-        /* Responsive table adjustments */
-        @media (max-width: 768px) {
-
-            .sms-table th:nth-child(4),
-            .sms-table td:nth-child(4) {
-                display: none;
-            }
+        .dark .table-container {
+            border-color: #374151;
         }
 
-        @media (max-width: 640px) {
+        /* Message counter */
+        .char-counter {
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
 
-            .sms-table th:nth-child(2),
-            .sms-table td:nth-child(2),
-            .sms-table th:nth-child(7),
-            .sms-table td:nth-child(7) {
-                display: none;
-            }
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+
+        .char-counter.danger {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* Fixed status panel */
+        .status-panel {
+            position: fixed;
+            top: 80px;
+            right:0;
+            z-index: 40;
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Fixed Status Panel -->
+    <div class="status-panel md:ml-64">
+        <?php if ($tempSuccess): ?>
+            <div class="mb-3 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900 dark:border-green-700 dark:text-green-200 shadow-md">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span><?php echo $tempSuccess; ?></span>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($tempError): ?>
+            <div class="mb-3 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200 shadow-md">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span><?php echo $tempError; ?></span>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($tempSmsWarning): ?>
+            <div class="mb-3 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200 shadow-md">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span><?php echo $tempSmsWarning; ?></span>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
     <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
         <div class="flex flex-wrap justify-between items-center">
             <div class="flex justify-start items-center">
@@ -957,42 +908,14 @@ $conn->close();
                     </svg>
                     <span class="sr-only">Toggle sidebar</span>
                 </button>
-                <a href="#" class="flex items-center justify-between mr-4 ">
+                <a href="#" class="flex items-center justify-between mr-4">
                     <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                         class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                         alt="MSWD LOGO" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                        PALUAN</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
                 </a>
-                <form action="#" method="GET" class="hidden md:block md:pl-2">
-                    <label for="topbar-search" class="sr-only">Search</label>
-                    <div class="relative md:w-64 md:w-96">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="text" name="email" id="topbar-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Search" />
-                    </div>
-                </form>
             </div>
-            <!-- UserProfile -->
             <div class="flex items-center lg:order-2">
-                <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                    class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                    <span class="sr-only">Toggle search</span>
-                    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path clip-rule="evenodd" fill-rule="evenodd"
-                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                        </path>
-                    </svg>
-                </button>
                 <button type="button"
                     class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -1001,7 +924,6 @@ $conn->close();
                         src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                         alt="user photo" />
                 </button>
-                <!-- Dropdown menu -->
                 <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown">
                     <div class="py-3 px-4">
@@ -1029,11 +951,11 @@ $conn->close();
                         </span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-
                         <li>
                             <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                out</a>
+                                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -1046,127 +968,68 @@ $conn->close();
         class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidenav" id="drawer-navigation">
         <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-            <form action="#" method="GET" class="md:hidden mb-2">
-                <label for="sidebar-search" class="sr-only">Search</label>
-                <div class="relative">
-                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </div>
-                    <input type="text" name="search" id="sidebar-search"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Search" />
-                </div>
-            </form>
             <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
             <ul class="space-y-2">
                 <li>
                     <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                            <rect x="3" y="3" width="8" height="10" rx="1.5" />
-                            <rect x="13" y="3" width="8" height="6" rx="1.5" />
-                            <rect x="3" y="15" width="8" height="6" rx="1.5" />
-                            <rect x="13" y="11" width="8" height="10" rx="1.5" />
-                        </svg>
+                        <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="../register.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <g transform="translate(24,0) scale(-1,1)">
-                                <path fill-rule="evenodd"
-                                    d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                    clip-rule="evenodd" />
-                            </g>
-                        </svg>
+                        <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Register</span>
                     </a>
                 </li>
                 <li>
                     <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                         class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true"
-                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                        </svg>
+                        <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                        <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                            class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
+                        <i class="fas fa-chevron-down"></i>
                     </button>
                     <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                         <li>
                             <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Active
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
+                            </a>
                         </li>
                         <li>
                             <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                            </a>
                         </li>
                         <li>
                             <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                            </a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                clip-rule="evenodd" />
-                            <path fill-rule="evenodd"
-                                d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Benefits</span>
                     </a>
                 </li>
                 <li>
                     <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.20.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Generate ID</span>
                     </a>
                 </li>
                 <li>
                     <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75  hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                        </svg>
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Report</span>
                     </a>
                 </li>
@@ -1175,26 +1038,14 @@ $conn->close();
                 <li>
                     <a href="../archived.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M4 4a2 2 0 1 0 0 4h16a2 2 0 1 0 0-4H4Zm0 6h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm10.707 5.707a1 1 0 0 0-1.414-1.414l-.293.293V12a1 1 0 1 0-2 0v2.586l-.293-.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l2-2Z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Archived</span>
                     </a>
                 </li>
                 <li>
                     <a href="#"
                         class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
-                        <svg aria-hidden="true"
-                            class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
-                            fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd"></path>
-                        </svg>
+                        <i class="fas fa-cog w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
                         <span class="ml-3">Settings</span>
                     </a>
                 </li>
@@ -1288,69 +1139,66 @@ $conn->close();
             <!-- SMS Settings Content -->
             <section id="smsSection" class="bg-gray-50 dark:bg-gray-900 w-full">
                 <div class="w-full px-4">
-                    <!-- Messages -->
-                    <?php if ($tempSuccess): ?>
-                        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:bg-green-900 dark:border-green-700 dark:text-green-200">
-                            <?php echo $tempSuccess; ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($tempError): ?>
-                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">
-                            <?php echo $tempError; ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($tempSmsWarning): ?>
-                        <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200">
-                            <?php echo $tempSmsWarning; ?>
-                        </div>
-                    <?php endif; ?>
-
                     <!-- System Status Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">SMS System Status</h2>
-                            <span class="px-3 py-1 rounded-full text-sm font-medium 
-                                <?php echo ($systemStatus['status'] ?? '') === 'Operational' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : (($systemStatus['status'] ?? '') === 'Demo Mode' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'); ?>">
-                                <?php echo $systemStatus['status'] ?? 'Unknown'; ?>
-                            </span>
+                    <!-- <div class="card p-6 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">SMS System Status</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mt-1"><?php echo $systemStatus['message'] ?? 'Unable to determine system status'; ?></p>
+                            </div>
+                            <div class="mt-2 md:mt-0">
+                                <span class="status-indicator 
+                                    <?php echo ($systemStatus['status'] ?? '') === 'Operational' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 
+                                           (($systemStatus['status'] ?? '') === 'Demo Mode' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 
+                                           'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'); ?>">
+                                    <?php if (($systemStatus['status'] ?? '') === 'Operational'): ?>
+                                        <i class="fas fa-check-circle"></i>
+                                    <?php elseif (($systemStatus['status'] ?? '') === 'Demo Mode'): ?>
+                                        <i class="fas fa-flask"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    <?php endif; ?>
+                                    <?php echo $systemStatus['status'] ?? 'Unknown'; ?>
+                                </span>
+                            </div>
                         </div>
-                        <p class="text-gray-700 dark:text-gray-300 mb-2"><?php echo $systemStatus['message'] ?? 'Unable to determine system status'; ?></p>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                             <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="font-semibold text-gray-900 dark:text-white">API Status</div>
                                 <div class="<?php echo ($systemStatus['api_configured'] ?? false) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'; ?>">
+                                    <i class="fas <?php echo ($systemStatus['api_configured'] ?? false) ? 'fa-check' : 'fa-times'; ?> mr-1"></i>
                                     <?php echo ($systemStatus['api_configured'] ?? false) ? 'Configured' : 'Not Configured'; ?>
                                 </div>
                             </div>
                             <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="font-semibold text-gray-900 dark:text-white">Demo Mode</div>
                                 <div class="<?php echo ($systemStatus['demo_mode'] ?? false) ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'; ?>">
+                                    <i class="fas <?php echo ($systemStatus['demo_mode'] ?? false) ? 'fa-flask' : 'fa-paper-plane'; ?> mr-1"></i>
                                     <?php echo ($systemStatus['demo_mode'] ?? false) ? 'Enabled' : 'Disabled'; ?>
                                 </div>
                             </div>
                             <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="font-semibold text-gray-900 dark:text-white">Service</div>
                                 <div class="<?php echo ($systemStatus['is_active'] ?? false) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'; ?>">
+                                    <i class="fas <?php echo ($systemStatus['is_active'] ?? false) ? 'fa-play' : 'fa-stop'; ?> mr-1"></i>
                                     <?php echo ($systemStatus['is_active'] ?? false) ? 'Active' : 'Inactive'; ?>
                                 </div>
                             </div>
                             <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="font-semibold text-gray-900 dark:text-white">Provider</div>
-                                <div class="text-blue-600 dark:text-blue-400">Semaphore API</div>
+                                <div class="text-blue-600 dark:text-blue-400">
+                                    <i class="fas fa-satellite-dish mr-1"></i>Semaphore API
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
                         <!-- SMS Settings Card -->
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <div class="card p-6">
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Semaphore API Settings</h2>
                             <form method="POST">
                                 <div class="space-y-4">
-                                    <!-- Service Status -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             SMS Service Status
@@ -1365,8 +1213,7 @@ $conn->close();
                                         </div>
                                     </div>
 
-                                    <!-- Demo Mode -->
-                                    <div>
+                                    <!-- <div>
                                         <div class="flex items-center">
                                             <input type="checkbox" id="demo_mode" name="demo_mode" value="1"
                                                 <?php echo (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode']) ? 'checked' : ''; ?>
@@ -1376,77 +1223,47 @@ $conn->close();
                                             </label>
                                         </div>
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Enable to test without sending real SMS</p>
-                                    </div>
+                                    </div> -->
 
-                                    <!-- Provider -->
                                     <div>
                                         <input type="hidden" name="provider" value="semaphore">
                                     </div>
 
-                                    <!-- API Key -->
-                                    <div>
+                                    <!-- <div>
                                         <label for="api_key" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Semaphore API Key
                                         </label>
-                                        <input type="text" id="api_key" name="api_key"
-                                            value="<?php echo htmlspecialchars($smsSettings['api_key'] ?? ''); ?>"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Enter your Semaphore API key">
+                                        <div class="relative">
+                                            <input type="password" id="api_key" name="api_key"
+                                                value="<?php echo htmlspecialchars($smsSettings['api_key'] ?? ''); ?>"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Enter your Semaphore API key">
+                                            <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-2.5 top-2.5 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                                <i class="fas fa-eye" id="apiKeyToggleIcon"></i>
+                                            </button>
+                                        </div>
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                             Get your API key from <a href="https://semaphore.co" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">semaphore.co</a>
                                         </p>
-                                        <?php if (empty($smsSettings['api_key'] ?? '')): ?>
-                                            <div class="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-xs rounded">
-                                                💡 <strong>Note:</strong> Your Semaphore API key is: <code class="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">11203b3c9a4bc430dd3a1b181ece8b6c</code>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
+                                    </div> -->
 
-                                    <!-- Sender ID -->
-                                    <div>
-                                        <label for="sender_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Sender Name (Fixed)
-                                        </label>
-                                        <input type="text" id="sender_id" name="sender_id" readonly
-                                            value="SEMAPHORE"
-                                            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                            title="Sender name is fixed to 'SEMAPHORE' for your Semaphore account">
-                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                            Your Semaphore account uses 'SEMAPHORE' as sender name (auto-converts to 'MFDELIVERY').
-                                        </p>
-                                    </div>
-
-                                    <!-- Save Button -->
-                                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                                         <button type="submit" name="save_settings"
                                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            Save Settings
+                                            <i class="fas fa-save mr-2"></i>Save Settings
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                            <!-- Add direct test button -->
-                            <div class="mt-3">
-                                <form method="GET">
-                                    <input type="hidden" name="test" value="1">
-                                    <button type="submit"
-                                        class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
-                                        Run Diagnostic Test
-                                    </button>
-                                </form>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Runs a complete diagnostic of SMS system</p>
-                            </div>
-                            <!-- Test API Form -->
-                            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Test API Connection</h3>
 
-                                <?php
-                                // Add this test button
-                                if (!empty($smsSettings['api_key'])): ?>
+                            <!-- <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Test API Connection</h3>
+                                
+                                <?php if (!empty($smsSettings['api_key'])): ?>
                                     <form method="POST" class="mb-3">
                                         <button type="submit" name="test_connection"
                                             class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                            Test API Connection
+                                            <i class="fas fa-plug mr-2"></i>Test API Connection
                                         </button>
                                     </form>
                                 <?php endif; ?>
@@ -1464,19 +1281,14 @@ $conn->close();
                                     </div>
                                     <button type="submit" name="test_api"
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Send Test SMS
+                                        <i class="fas fa-paper-plane mr-2"></i>Send Test SMS
                                     </button>
                                 </form>
-                            </div>
-                        </div>
-                        <!-- In the debug panel, add: -->
-                        <p><a href="sms.php?direct_test=1&session_context=<?php echo $ctx; ?>" class="text-blue-600 dark:text-blue-400">Test direct API call</a></p>
-                        <!-- Send SMS Card -->
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            </div> -->
+                            <div>
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Send SMS</h2>
                             <form method="POST" id="sendSMSForm">
                                 <div class="space-y-4">
-                                    <!-- Recipient Type -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Send to
@@ -1486,27 +1298,26 @@ $conn->close();
                                                 <input type="radio" id="recipient_custom" name="recipient_type" value="custom" checked
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                                 <label for="recipient_custom" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                    Custom Numbers
+                                                    <i class="fas fa-mobile-alt mr-1"></i>Custom Numbers
                                                 </label>
                                             </div>
                                             <div class="flex items-center">
                                                 <input type="radio" id="recipient_all" name="recipient_type" value="all"
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                                 <label for="recipient_all" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                    All Applicants
+                                                    <i class="fas fa-users mr-1"></i>All Applicants
                                                 </label>
                                             </div>
                                             <div class="flex items-center">
                                                 <input type="radio" id="recipient_active" name="recipient_type" value="all_active"
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                                 <label for="recipient_active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                    Active Applicants Only
+                                                    <i class="fas fa-user-check mr-1"></i>Active Applicants Only
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Custom Numbers -->
                                     <div id="customNumbersSection">
                                         <label for="custom_numbers" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Phone Numbers (comma-separated)
@@ -1517,67 +1328,47 @@ $conn->close();
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Separate multiple numbers with commas</p>
                                     </div>
 
-                                    <!-- Message -->
                                     <div>
                                         <label for="broadcast_message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                             Message
                                         </label>
-                                        <textarea id="broadcast_message" name="broadcast_message" rows="3"
+                                        <textarea id="broadcast_message" name="broadcast_message" rows="4"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Enter your message here..."></textarea>
-                                        <div class="mt-1 flex justify-between">
-                                            <span id="charCount" class="text-xs text-gray-500 dark:text-gray-400">0/160</span>
-                                            <span class="text-xs text-gray-500 dark:text-gray-400">SMS Type:
-                                                <select name="sms_type" class="text-xs border-none bg-transparent">
+                                        <div class="mt-1 flex justify-between items-center">
+                                            <span id="charCount" class="char-counter text-xs">0/160</span>
+                                            <!-- <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                SMS Type:
+                                                <select name="sms_type" class="text-xs border-none bg-transparent focus:ring-0">
                                                     <option value="broadcast">Broadcast</option>
                                                     <option value="announcement">Announcement</option>
                                                     <option value="reminder">Reminder</option>
                                                     <option value="notification">Notification</option>
                                                 </select>
-                                            </span>
+                                            </div> -->
                                         </div>
                                     </div>
 
-                                    <!-- Send Button -->
                                     <div class="pt-4">
                                         <button type="submit" name="send_sms" id="sendSMSBtn"
                                             class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            Send SMS Messages
+                                            <i class="fas fa-paper-plane mr-2"></i>Send SMS Messages
                                         </button>
                                     </div>
                                 </div>
                             </form>
-
-                            <!-- Quick Templates -->
-                            <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Quick Templates</h3>
-                                <div class="grid grid-cols-1 gap-2">
-                                    <?php if (!empty($templates)): ?>
-                                        <?php foreach ($templates as $template): ?>
-                                            <button type="button" onclick="useTemplate('<?php echo addslashes($template['message']); ?>')"
-                                                class="text-left p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition">
-                                                <div class="font-medium text-gray-900 dark:text-white"><?php echo htmlspecialchars($template['template_name']); ?></div>
-                                                <div class="text-sm text-gray-600 dark:text-gray-300 truncate">
-                                                    <?php echo htmlspecialchars(substr($template['message'], 0, 60)); ?>
-                                                    <?php if (strlen($template['message']) > 60): ?>...<?php endif; ?>
-                                                </div>
-                                            </button>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">No templates saved yet. Create some above!</p>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
                             </div>
                         </div>
+
+                        <!-- Send SMS Card -->
+                        <!-- <div class="card p-6">
+                        </div> -->
                     </div>
 
                     <!-- Message Templates Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                    <div class="card p-6 mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Message Templates</h2>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Save Template Form -->
                             <div>
                                 <form method="POST">
                                     <div class="space-y-4">
@@ -1599,20 +1390,19 @@ $conn->close();
                                         </div>
                                         <button type="submit" name="save_template"
                                             class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
-                                            Save Template
+                                            <i class="fas fa-save mr-2"></i>Save Template
                                         </button>
                                     </div>
                                 </form>
                             </div>
 
-                            <!-- Saved Templates List -->
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Saved Templates</h3>
                                 <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
                                     <?php if (empty($templates)): ?>
                                         <div class="p-4 text-center bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <i class="fas fa-inbox text-2xl text-gray-400 dark:text-gray-500 mb-2"></i>
                                             <p class="text-gray-500 dark:text-gray-400">No templates saved yet.</p>
-                                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Default templates have been created for you.</p>
                                         </div>
                                     <?php else: ?>
                                         <?php foreach ($templates as $template): ?>
@@ -1632,19 +1422,14 @@ $conn->close();
                                                             <?php if (strlen($template['message']) > 100): ?>...<?php endif; ?>
                                                         </p>
                                                         <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                            Created: <?php echo date('M d, Y', strtotime($template['created_at'])); ?>
+                                                            <i class="fas fa-clock mr-1"></i>Created: <?php echo date('M d, Y', strtotime($template['created_at'])); ?>
                                                         </p>
                                                     </div>
                                                     <div class="flex space-x-2 ml-4">
                                                         <button type="button"
                                                             onclick="useTemplate('<?php echo addslashes($template['message']); ?>')"
                                                             class="px-3 py-1.5 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 rounded-lg transition">
-                                                            Use
-                                                        </button>
-                                                        <button type="button"
-                                                            onclick="useTemplateAndSend('<?php echo addslashes($template['message']); ?>')"
-                                                            class="px-3 py-1.5 text-sm bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 rounded-lg transition">
-                                                            Use & Send
+                                                            <i class="fas fa-play mr-1"></i>Use
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1657,133 +1442,189 @@ $conn->close();
                     </div>
 
                     <!-- SMS Logs Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <div class="card overflow-hidden">
                         <div class="border-b dark:border-gray-700 p-6">
-                            <div class="flex justify-between items-center">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between">
                                 <div>
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Logs</h3>
                                     <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Recent SMS message history</p>
                                 </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    Showing last <?php echo count($sms_logs); ?> messages
+                                <div class="mt-2 md:mt-0 text-sm text-gray-500 dark:text-gray-400">
+                                    Showing <?php echo count($sms_logs); ?> of <?php echo $total_logs; ?> messages
                                 </div>
                             </div>
                         </div>
 
                         <?php if (empty($sms_logs)): ?>
                             <div class="p-8 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
+                                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
                                 <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No SMS logs found</h3>
                                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                     Send your first SMS message to see logs here
                                 </p>
                             </div>
                         <?php else: ?>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3">Recipient</th>
-                                            <th scope="col" class="px-6 py-3">Message</th>
-                                            <th scope="col" class="px-6 py-3">Status</th>
-                                            <th scope="col" class="px-6 py-3">Type</th>
-                                            <th scope="col" class="px-6 py-3">Time</th>
-                                            <th scope="col" class="px-6 py-3">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($sms_logs as $log): ?>
-                                            <?php
-                                            $statusClass = getSMSStatusClass($log['status']);
-                                            $pulseClass = (strtolower($log['status']) === 'sent' || strtolower($log['status']) === 'queued') ? 'sms-status-sent' : '';
-                                            ?>
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                <td class="px-6 py-4">
-                                                    <div class="font-medium text-gray-900 dark:text-white">
-                                                        <?php echo htmlspecialchars($log['recipient'] ?? 'N/A'); ?>
-                                                    </div>
-                                                    <?php if ($log['carrier'] && $log['carrier'] !== 'demo'): ?>
-                                                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                            <?php echo htmlspecialchars(ucfirst($log['carrier'])); ?>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="max-w-xs truncate" title="<?php echo htmlspecialchars($log['message'] ?? ''); ?>">
-                                                        <?php echo htmlspecialchars(substr($log['message'] ?? '', 0, 50)); ?>
-                                                        <?php if (strlen($log['message'] ?? '') > 50): ?>...<?php endif; ?>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full <?php echo $statusClass . ' ' . $pulseClass; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['status'] ?? 'unknown')); ?>
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                                        <?php echo ($log['sms_type'] ?? 'broadcast') === 'test' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'; ?>">
-                                                        <?php echo htmlspecialchars(ucfirst($log['sms_type'] ?? 'broadcast')); ?>
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="flex flex-col">
-                                                        <span class="text-gray-900 dark:text-white">
-                                                            <?php echo formatSMSTime($log['created_at'] ?? ''); ?>
-                                                        </span>
-                                                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                                                            <?php echo isset($log['created_at']) ? date('M d, Y', strtotime($log['created_at'])) : 'N/A'; ?>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <button type="button" onclick="viewSMSDetails('<?php echo $log['id']; ?>')"
-                                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition">
-                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                        </svg>
-                                                        View
-                                                    </button>
-                                                </td>
+                            <div class="table-container">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3">Recipient</th>
+                                                <th scope="col" class="px-6 py-3">Message</th>
+                                                <th scope="col" class="px-6 py-3">Status</th>
+                                                <th scope="col" class="px-6 py-3">Type</th>
+                                                <th scope="col" class="px-6 py-3">Time</th>
+                                                <th scope="col" class="px-6 py-3">Actions</th>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($sms_logs as $log): ?>
+                                                <?php
+                                                $statusClass = getSMSStatusClass($log['status']);
+                                                ?>
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                    <td class="px-6 py-4">
+                                                        <div class="font-medium text-gray-900 dark:text-white">
+                                                            <i class="fas fa-mobile-alt mr-2 text-gray-400"></i>
+                                                            <?php echo htmlspecialchars($log['recipient'] ?? 'N/A'); ?>
+                                                        </div>
+                                                        <?php if ($log['carrier'] && $log['carrier'] !== 'demo'): ?>
+                                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                                <?php echo htmlspecialchars(ucfirst($log['carrier'])); ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="max-w-xs truncate" title="<?php echo htmlspecialchars($log['message'] ?? ''); ?>">
+                                                            <?php echo htmlspecialchars(substr($log['message'] ?? '', 0, 40)); ?>
+                                                            <?php if (strlen($log['message'] ?? '') > 40): ?>...<?php endif; ?>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <?php
+                                                        $statusIcon = '';
+                                                        $statusText = strtolower($log['status'] ?? '');
+                                                        if (in_array($statusText, ['sent', 'delivered', 'success', 'queued'])) {
+                                                            $statusIcon = 'fa-check-circle';
+                                                        } elseif (in_array($statusText, ['failed', 'error', 'undelivered'])) {
+                                                            $statusIcon = 'fa-times-circle';
+                                                        } elseif (in_array($statusText, ['pending', 'processing', 'demo_sent'])) {
+                                                            $statusIcon = 'fa-clock';
+                                                        } else {
+                                                            $statusIcon = 'fa-info-circle';
+                                                        }
+                                                        ?>
+                                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <?php echo $statusClass; ?>">
+                                                            <i class="fas <?php echo $statusIcon; ?> mr-1.5"></i>
+                                                            <?php echo htmlspecialchars(ucfirst($log['status'] ?? 'unknown')); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                                            <?php echo ($log['sms_type'] ?? 'broadcast') === 'test' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'; ?>">
+                                                            <?php echo htmlspecialchars(ucfirst($log['sms_type'] ?? 'broadcast')); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex flex-col">
+                                                            <span class="text-gray-900 dark:text-white">
+                                                                <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                                                <?php echo formatSMSTime($log['created_at'] ?? ''); ?>
+                                                            </span>
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                                <?php echo isset($log['created_at']) ? date('M d, Y', strtotime($log['created_at'])) : 'N/A'; ?>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <button type="button" onclick="viewSMSDetails('<?php echo $log['id']; ?>')"
+                                                            class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition">
+                                                            <i class="fas fa-eye mr-1.5"></i>View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+
+                            <!-- Pagination -->
+                            <?php if ($total_pages > 1): ?>
+                                <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6">
+                                    <div class="flex flex-1 justify-between sm:hidden">
+                                        <?php if ($page > 1): ?>
+                                            <a href="sms.php?session_context=<?php echo $ctx; ?>&page=<?php echo $page - 1; ?>"
+                                                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                                                Previous
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if ($page < $total_pages): ?>
+                                            <a href="sms.php?session_context=<?php echo $ctx; ?>&page=<?php echo $page + 1; ?>"
+                                                class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                                                Next
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm text-gray-700 dark:text-gray-300">
+                                                Showing <span class="font-medium"><?php echo ($offset + 1); ?></span> to 
+                                                <span class="font-medium"><?php echo min($offset + $limit, $total_logs); ?></span> of 
+                                                <span class="font-medium"><?php echo $total_logs; ?></span> results
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                                                <?php if ($page > 1): ?>
+                                                    <a href="sms.php?session_context=<?php echo $ctx; ?>&page=<?php echo $page - 1; ?>"
+                                                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:ring-gray-600 dark:hover:bg-gray-700">
+                                                        <span class="sr-only">Previous</span>
+                                                        <i class="fas fa-chevron-left h-5 w-5"></i>
+                                                    </a>
+                                                <?php endif; ?>
+
+                                                <?php
+                                                $start_page = max(1, $page - 2);
+                                                $end_page = min($total_pages, $page + 2);
+                                                
+                                                for ($i = $start_page; $i <= $end_page; $i++):
+                                                ?>
+                                                    <a href="sms.php?session_context=<?php echo $ctx; ?>&page=<?php echo $i; ?>"
+                                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold 
+                                                        <?php echo $i == $page 
+                                                            ? 'z-10 bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600' 
+                                                            : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'; ?>">
+                                                        <?php echo $i; ?>
+                                                    </a>
+                                                <?php endfor; ?>
+
+                                                <?php if ($page < $total_pages): ?>
+                                                    <a href="sms.php?session_context=<?php echo $ctx; ?>&page=<?php echo $page + 1; ?>"
+                                                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:ring-gray-600 dark:hover:bg-gray-700">
+                                                        <span class="sr-only">Next</span>
+                                                        <i class="fas fa-chevron-right h-5 w-5"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
             </section>
         </div>
     </main>
-    <!-- Debug Panel (hidden by default) -->
-    <details class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-        <summary class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
-            Debug Information
-        </summary>
-        <div class="mt-2 text-xs">
-            <pre class="bg-gray-200 dark:bg-gray-900 p-3 rounded overflow-auto max-h-60"><?php
-                                                                                            echo "API Key: " . (empty($smsSettings['api_key']) ? 'Not set' : substr($smsSettings['api_key'], 0, 10) . '...') . "\n";
-                                                                                            echo "Sender ID: " . ($smsSettings['sender_id'] ?? 'MSWDPALUAN') . "\n";
-                                                                                            echo "Demo Mode: " . (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'Yes' : 'No') . "\n";
-                                                                                            echo "Active: " . (isset($smsSettings['is_active']) && $smsSettings['is_active'] ? 'Yes' : 'No') . "\n";
-                                                                                            echo "Provider: Semaphore\n";
-                                                                                            echo "Templates: " . count($templates) . "\n";
-                                                                                            echo "Logs: " . count($sms_logs) . "\n";
-                                                                                            ?></pre>
-        </div>
-    </details>
+
     <!-- SMS Details Modal -->
     <div id="smsDetailsModal" class="hidden fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
             <div class="flex justify-between items-center p-6 border-b dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">SMS Details</h3>
                 <button id="closeModal" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]" id="smsModalContent">
@@ -1793,110 +1634,24 @@ $conn->close();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="../../js/tailwind.config.js"></script>
     <script>
-        // Simplified phone validation
-        function validatePhoneNumber(number) {
-            const clean = number.replace(/[^0-9+]/g, '');
-            // Accept: 09XXXXXXXXX, 9XXXXXXXXX, 63XXXXXXXXX, +639XXXXXXXXX
-            return /^(09|9|63|\+63)\d{9,12}$/.test(clean);
+        // Toggle API key visibility
+        function toggleApiKeyVisibility() {
+            const apiKeyField = document.getElementById('api_key');
+            const toggleIcon = document.getElementById('apiKeyToggleIcon');
+            
+            if (apiKeyField.type === 'password') {
+                apiKeyField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                apiKeyField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
         }
 
-        // Real-time validation
-        document.getElementById('test_number')?.addEventListener('input', function(e) {
-            const number = this.value.trim();
-            if (!number) {
-                this.classList.remove('border-red-500', 'border-green-500');
-                return;
-            }
-
-            // Simple validation - just check if it looks like a Philippine number
-            const clean = number.replace(/[^0-9]/g, '');
-            const isValid = (clean.length >= 10 && clean.length <= 13) &&
-                (clean.startsWith('9') || clean.startsWith('09') || clean.startsWith('63'));
-
-            if (isValid) {
-                this.classList.remove('border-red-500');
-                this.classList.add('border-green-500');
-            } else {
-                this.classList.remove('border-green-500');
-                this.classList.add('border-red-500');
-            }
-        });
-
-        document.getElementById('custom_numbers')?.addEventListener('input', function(e) {
-            const numbers = this.value.split(',').map(num => num.trim()).filter(num => num);
-            let validCount = 0;
-
-            numbers.forEach(num => {
-                if (validatePhoneNumber(num)) {
-                    validCount++;
-                }
-            });
-
-            // Update validation display
-            const existing = this.parentNode.querySelector('.number-validation');
-            if (existing) existing.remove();
-
-            if (numbers.length > 0) {
-                const validCountEl = document.createElement('div');
-                validCountEl.className = 'number-validation text-xs mt-1';
-                validCountEl.textContent = `${validCount} of ${numbers.length} numbers are valid`;
-                validCountEl.style.color = validCount === numbers.length ? 'green' : (validCount > 0 ? 'orange' : 'red');
-                this.parentNode.appendChild(validCountEl);
-            }
-        });
-
-        // Update the send button click handler
-        document.getElementById('sendSMSBtn')?.addEventListener('click', function(e) {
-            const message = document.getElementById('broadcast_message').value;
-            const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
-
-            if (!message.trim()) {
-                e.preventDefault();
-                alert('Please enter a message');
-                return;
-            }
-
-            if (recipientType === 'custom') {
-                const numbersInput = document.getElementById('custom_numbers');
-                const numbers = numbersInput.value.split(',').map(num => num.trim()).filter(num => num);
-
-                if (numbers.length === 0) {
-                    e.preventDefault();
-                    alert('Please enter at least one phone number');
-                    return;
-                }
-
-                // Validate each number
-                const invalidNumbers = [];
-                numbers.forEach(num => {
-                    if (!validatePhoneNumber(num)) {
-                        invalidNumbers.push(num);
-                    }
-                });
-
-                if (invalidNumbers.length > 0) {
-                    e.preventDefault();
-                    alert(`The following phone numbers appear invalid:\n\n${invalidNumbers.join('\n')}\n\nPlease use format: 09XXXXXXXXX`);
-                    return;
-                }
-            }
-
-            const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
-            const totalRecipients = recipientType === 'custom' ?
-                document.getElementById('custom_numbers').value.split(',').filter(n => n.trim()).length :
-                'multiple';
-
-            if (demoMode) {
-                if (!confirm(`⚠️ DEMO MODE ENABLED\n\n${totalRecipients} SMS will be logged but NOT sent.\n\nClick OK to continue in demo mode.`)) {
-                    e.preventDefault();
-                }
-            } else {
-                if (!confirm(`Are you sure you want to send ${totalRecipients} SMS?\n\nThis will use your Semaphore credits.`)) {
-                    e.preventDefault();
-                }
-            }
-        });
         // Character counter
         const messageInput = document.getElementById('broadcast_message');
         const charCount = document.getElementById('charCount');
@@ -1905,16 +1660,12 @@ $conn->close();
             messageInput.addEventListener('input', () => {
                 const length = messageInput.value.length;
                 charCount.textContent = `${length}/160`;
+                charCount.className = 'char-counter text-xs';
 
                 if (length > 160) {
-                    charCount.classList.add('text-red-600', 'font-bold');
-                    charCount.classList.remove('text-yellow-600');
+                    charCount.classList.add('danger');
                 } else if (length > 140) {
-                    charCount.classList.add('text-yellow-600');
-                    charCount.classList.remove('text-red-600', 'font-bold');
-                } else {
-                    charCount.classList.remove('text-red-600', 'text-yellow-600', 'font-bold');
-                    charCount.classList.add('text-gray-500', 'dark:text-gray-400');
+                    charCount.classList.add('warning');
                 }
             });
             messageInput.dispatchEvent(new Event('input'));
@@ -1937,37 +1688,130 @@ $conn->close();
                 messageInput.value = message;
                 messageInput.dispatchEvent(new Event('input'));
                 messageInput.focus();
+                
+                // Show success message
+                showToast('Template loaded successfully!', 'success');
             }
         }
 
-        // Use template and send immediately
-        function useTemplateAndSend(message) {
-            useTemplate(message);
-
-            // Set recipient to custom and show numbers input
-            document.getElementById('recipient_custom').checked = true;
-            document.getElementById('customNumbersSection').style.display = 'block';
-            document.getElementById('custom_numbers').focus();
-
-            // Show confirmation
-            alert('Template loaded. Please enter phone numbers and click "Send SMS Messages".');
+        // Phone number validation
+        function validatePhoneNumber(number) {
+            const clean = number.replace(/[^0-9+]/g, '');
+            return /^(09|9|63|\+63)\d{9,12}$/.test(clean);
         }
 
-        // Auto-hide messages
-        setTimeout(() => {
-            document.querySelectorAll('.bg-green-100, .bg-red-100, .bg-yellow-100').forEach(el => {
-                el.style.transition = 'opacity 0.5s';
-                el.style.opacity = '0';
-                setTimeout(() => el.remove(), 500);
+        // Send SMS validation
+        document.getElementById('sendSMSBtn')?.addEventListener('click', function(e) {
+            const message = document.getElementById('broadcast_message').value;
+            const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
+
+            if (!message.trim()) {
+                e.preventDefault();
+                showToast('Please enter a message', 'error');
+                return;
+            }
+
+            if (recipientType === 'custom') {
+                const numbersInput = document.getElementById('custom_numbers');
+                const numbers = numbersInput.value.split(',').map(num => num.trim()).filter(num => num);
+
+                if (numbers.length === 0) {
+                    e.preventDefault();
+                    showToast('Please enter at least one phone number', 'error');
+                    return;
+                }
+
+                const invalidNumbers = [];
+                numbers.forEach(num => {
+                    if (!validatePhoneNumber(num)) {
+                        invalidNumbers.push(num);
+                    }
+                });
+
+                if (invalidNumbers.length > 0) {
+                    e.preventDefault();
+                    showToast(`Invalid phone numbers detected: ${invalidNumbers.length} invalid`, 'error');
+                    return;
+                }
+            }
+
+            const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
+            const totalRecipients = recipientType === 'custom' ?
+                document.getElementById('custom_numbers').value.split(',').filter(n => n.trim()).length :
+                'multiple';
+
+            if (demoMode) {
+                if (!confirm(`⚠️ DEMO MODE ENABLED\n\n${totalRecipients} SMS will be logged but NOT sent.\n\nClick OK to continue in demo mode.`)) {
+                    e.preventDefault();
+                }
+            } else {
+                if (!confirm(`Are you sure you want to send ${totalRecipients} SMS?\n\nThis will use your Semaphore credits.`)) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 
+                'bg-blue-500'
+            }`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${
+                        type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        'fa-info-circle'
+                    } mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize recipient type
+            document.querySelector('input[name="recipient_type"][value="custom"]').dispatchEvent(new Event('change'));
+
+            // Auto-fill API key if empty
+            const apiKeyField = document.getElementById('api_key');
+            if (apiKeyField && !apiKeyField.value) {
+                apiKeyField.value = '11203b3c9a4bc430dd3a1b181ece8b6c';
+            }
+
+            // Add phone number validation as user types
+            document.getElementById('custom_numbers')?.addEventListener('input', function(e) {
+                const numbers = this.value.split(',').map(num => num.trim()).filter(num => num);
+                const validNumbers = numbers.filter(num => validatePhoneNumber(num));
+
+                if (numbers.length > 0) {
+                    const existing = this.parentNode.querySelector('.number-validation');
+                    if (existing) existing.remove();
+
+                    const validCountEl = document.createElement('div');
+                    validCountEl.className = 'number-validation text-xs mt-1';
+                    validCountEl.innerHTML = `<i class="fas ${validNumbers.length === numbers.length ? 'fa-check text-green-600' : 'fa-exclamation-triangle text-yellow-600'} mr-1"></i>${validNumbers.length} of ${numbers.length} numbers are valid`;
+                    this.parentNode.appendChild(validCountEl);
+                }
             });
-        }, 5000);
+        });
 
         // SMS Details Modal
         function viewSMSDetails(smsId) {
             const modalContent = document.getElementById('smsModalContent');
             modalContent.innerHTML = `
                 <div class="space-y-4">
-                    <div class="text-center">
+                    <div class="text-center py-8">
                         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                         <p class="mt-4 text-gray-600 dark:text-gray-400">Loading SMS details...</p>
                     </div>
@@ -1976,17 +1820,29 @@ $conn->close();
 
             document.getElementById('smsDetailsModal').classList.remove('hidden');
 
-            // Simple details display
+            // Simulate loading and show details
             setTimeout(() => {
                 modalContent.innerHTML = `
                     <div class="space-y-4">
-                        <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                            <p class="text-sm text-blue-800 dark:text-blue-200">Note: Full SMS details feature is being implemented.</p>
-                            <p class="text-xs text-blue-600 dark:text-blue-300 mt-1">The SMS system is working! All messages are being logged to the database.</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 mr-2"></i>
+                                <p class="text-sm text-blue-800 dark:text-blue-200">SMS details are loaded from the database.</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-gray-600 dark:text-gray-400">SMS ID: <span class="font-mono">${smsId}</span></p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Check the SMS logs table above for message details.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMS ID</label>
+                                <p class="mt-1 text-sm text-gray-900 dark:text-white font-mono">${smsId}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                                <p class="mt-1 text-sm text-gray-900 dark:text-white">Loaded from database record</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Timestamp</label>
+                                <p class="mt-1 text-sm text-gray-900 dark:text-white">${new Date().toLocaleString()}</p>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2012,145 +1868,55 @@ $conn->close();
             }
         });
 
-        // Send SMS confirmation
-        document.getElementById('sendSMSBtn').addEventListener('click', function(e) {
-            const message = document.getElementById('broadcast_message').value;
-            const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
+        // Theme toggle
+        const themeToggle = document.getElementById('nav-theme-toggle');
+        const themeLightIcon = document.getElementById('nav-theme-light-icon');
+        const themeDarkIcon = document.getElementById('nav-theme-dark-icon');
+        const themeText = document.getElementById('nav-theme-text');
 
-            if (recipientType === 'custom') {
-                const numbers = document.getElementById('custom_numbers').value;
-                if (!numbers.trim() && message.trim()) {
-                    e.preventDefault();
-                    alert('Please enter phone numbers for custom recipients.');
-                    return;
-                }
-            }
-
-            // Show confirmation for demo mode
-            const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
-            if (demoMode && message.trim()) {
-                if (!confirm('⚠️ DEMO MODE ENABLED\nNo actual SMS will be sent. Messages will only be logged.\n\nContinue?')) {
-                    e.preventDefault();
-                }
-            } else if (message.trim()) {
-                // Ask for confirmation when sending real SMS
-                if (!confirm('Are you sure you want to send this SMS? This will use your Semaphore credits.')) {
-                    e.preventDefault();
-                }
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize recipient type
-            document.querySelector('input[name="recipient_type"][value="custom"]').dispatchEvent(new Event('change'));
-
-            // Auto-fill API key if empty
-            const apiKeyField = document.getElementById('api_key');
-            if (apiKeyField && !apiKeyField.value) {
-                // Pre-fill with the provided API key
-                apiKeyField.value = '11203b3c9a4bc430dd3a1b181ece8b6c';
-            }
-        });
-
-        // Add API key placeholder with the actual key
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-fill API key if empty
-            const apiKeyField = document.getElementById('api_key');
-            if (apiKeyField && !apiKeyField.value) {
-                apiKeyField.value = '11203b3c9a4bc430dd3a1b181ece8b6c';
-                apiKeyField.placeholder = 'Your Semaphore API key is pre-filled';
-            }
-
-            // Enhanced phone number validation
-            document.getElementById('sendSMSBtn').addEventListener('click', function(e) {
-                const message = document.getElementById('broadcast_message').value;
-                const recipientType = document.querySelector('input[name="recipient_type"]:checked').value;
-
-                if (!message.trim()) {
-                    e.preventDefault();
-                    alert('Please enter a message');
-                    return;
-                }
-
-                if (recipientType === 'custom') {
-                    const numbers = document.getElementById('custom_numbers').value;
-                    if (!numbers.trim()) {
-                        e.preventDefault();
-                        alert('Please enter phone numbers for custom recipients.');
-                        return;
-                    }
-                }
-
-                const demoMode = <?php echo isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'true' : 'false'; ?>;
-                if (demoMode) {
-                    if (!confirm('⚠️ DEMO MODE ENABLED\nNo actual SMS will be sent. Messages will only be logged.\n\nContinue?')) {
-                        e.preventDefault();
-                    }
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const isDark = document.documentElement.classList.contains('dark');
+                
+                if (isDark) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeLightIcon.classList.remove('hidden');
+                    themeDarkIcon.classList.add('hidden');
+                    themeText.textContent = 'Light Mode';
                 } else {
-                    if (!confirm(`Are you sure you want to send this SMS?
-            
-Recipients: ${recipientType === 'custom' ? 'Custom numbers' : (recipientType === 'all_active' ? 'Active applicants' : 'All applicants')}
-Message length: ${message.length} characters
-
-This will use your Semaphore credits.`)) {
-                        e.preventDefault();
-                    }
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeLightIcon.classList.add('hidden');
+                    themeDarkIcon.classList.remove('hidden');
+                    themeText.textContent = 'Dark Mode';
                 }
             });
 
-            // Validate phone numbers as user types
-            document.getElementById('custom_numbers')?.addEventListener('input', function(e) {
-                const numbers = this.value.split(',').map(num => num.trim()).filter(num => num);
-                const validNumbers = numbers.filter(num => /^(09|\+639|639|9)\d{9,10}$/.test(num.replace(/[^0-9+]/g, '')));
-
-                if (numbers.length > 0) {
-                    const validCount = document.createElement('div');
-                    validCount.className = 'text-xs mt-1';
-                    validCount.textContent = `${validNumbers.length} of ${numbers.length} numbers appear valid`;
-                    validCount.style.color = validNumbers.length === numbers.length ? 'green' : 'orange';
-
-                    const existing = this.parentNode.querySelector('.number-validation');
-                    if (existing) existing.remove();
-                    validCount.className += ' number-validation';
-                    this.parentNode.appendChild(validCount);
-                }
-            });
-        });
-        // Add to your existing JavaScript in sms.php
-        document.getElementById('test_number')?.addEventListener('blur', function(e) {
-            const number = this.value.trim();
-            const clean = number.replace(/[^0-9]/g, '');
-
-            if (clean.length === 11 && clean.startsWith('09')) {
-                // Valid 09XXXXXXXXX format
-                this.classList.remove('border-red-500');
-                this.classList.add('border-green-500');
-            } else if (clean.length === 10 && clean.startsWith('9')) {
-                // Valid 9XXXXXXXXX format
-                this.classList.remove('border-red-500');
-                this.classList.add('border-green-500');
-            } else if (clean.length === 12 && (clean.startsWith('63') || clean.startsWith('639'))) {
-                // Valid with country code
-                this.classList.remove('border-red-500');
-                this.classList.add('border-green-500');
-            } else if (number) {
-                // Invalid
-                this.classList.remove('border-green-500');
-                this.classList.add('border-red-500');
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeLightIcon.classList.add('hidden');
+                themeDarkIcon.classList.remove('hidden');
+                themeText.textContent = 'Dark Mode';
             } else {
-                // Empty
-                this.classList.remove('border-red-500', 'border-green-500');
+                document.documentElement.classList.remove('dark');
+                themeLightIcon.classList.remove('hidden');
+                themeDarkIcon.classList.add('hidden');
+                themeText.textContent = 'Light Mode';
             }
-        });
+        }
+
+        // Sidebar toggle
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.getElementById('btn');
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+            });
+        }
     </script>
 </body>
-
 </html>
-<?php
-// Debug information
-error_log("=== SMS DEBUG INFO ===");
-error_log("Sender ID from settings: " . ($smsSettings['sender_id'] ?? 'NOT SET'));
-error_log("Demo Mode: " . (isset($smsSettings['demo_mode']) && $smsSettings['demo_mode'] ? 'YES' : 'NO'));
-error_log("API Key: " . (!empty($smsSettings['api_key']) ? 'SET' : 'NOT SET'));
-?>

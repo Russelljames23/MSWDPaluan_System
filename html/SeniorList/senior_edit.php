@@ -18,7 +18,7 @@ try {
     die("Database connection failed. Please try again later.");
 }
 
-// Fetch current user data - ADD THIS
+// Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -33,7 +33,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name - ADD THIS
+// Prepare full name
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -42,7 +42,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL - ADD THIS
+// Get profile photo URL
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../../' . $user_data['profile_photo'];
@@ -51,10 +51,11 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo - ADD THIS
+// Fallback to avatar if no profile photo
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
+
 // Get applicant ID from URL
 $applicant_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ctx = urlencode($_GET['session_context'] ?? session_id());
@@ -87,10 +88,29 @@ function formatYearForInput($year)
     return (int)$year;
 }
 
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Helper function to get array value with trimming
+function getArrayValue($array, $key, $default = '')
+{
+    if (is_array($array) && isset($array[$key]) && $array[$key] !== null) {
+        return trim($array[$key]);
+    }
+    return $default;
+}
 
+// Form options - UPDATED living_arrangements to match your database values
+$genders = ['Male', 'Female'];
+$civil_statuses = ['Single', 'Married', 'Widowed', 'Separated', 'Divorced'];
+$educational_levels = ['Elementary', 'High School', 'College', 'Vocational', 'Post-Graduate', 'None'];
+// UPDATED: Changed to match your database values and form requirements
+$living_arrangements = ['Owned', 'Living alone', 'Living with relatives', 'Rent'];
+$status_options = ['Active', 'Inactive', 'Deceased'];
+$validation_options = ['Validated', 'For Validation'];
+$registration_statuses = ['Pending', 'Approved', 'Rejected', 'On Hold'];
+$pension_sources = ['SSS', 'GSIS', 'PVAO', 'Private', 'Others'];
+$income_sources = ['Pension', 'Work', 'Business', 'Family Support', 'Government Assistance', 'Others'];
+$support_types = ['Cash', 'In-kind', 'Both'];
+
+try {
     // Check if form is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Start transaction
@@ -116,6 +136,7 @@ try {
             'status' => $_POST['status'] ?? 'Active',
             'validation' => $_POST['validation'] ?? 'For Validation',
             'living_arrangement' => $_POST['living_arrangement'] ?? '',
+            'contact_number' => trim($_POST['contact_number'] ?? ''),
             'date_of_death' => !empty($_POST['date_of_death']) ? $_POST['date_of_death'] : null,
             'inactive_reason' => trim($_POST['inactive_reason'] ?? ''),
             'date_of_inactive' => !empty($_POST['date_of_inactive']) ? $_POST['date_of_inactive'] : null
@@ -126,13 +147,11 @@ try {
         if (empty($applicant_data['last_name'])) $errors[] = "Last name is required";
         if (empty($applicant_data['birth_date'])) $errors[] = "Birth date is required";
         if (empty($applicant_data['gender'])) $errors[] = "Gender is required";
+        if (empty($applicant_data['living_arrangement'])) $errors[] = "Living arrangement is required"; // Added
 
         // If no errors, proceed with updates
         if (empty($errors)) {
             try {
-                // Debug: Check what data is being received
-                error_log("Updating applicant ID: $applicant_id");
-
                 // Update applicants table
                 $stmt = $pdo->prepare("
                     UPDATE applicants SET 
@@ -141,8 +160,8 @@ try {
                         religion = ?, citizenship = ?, educational_attainment = ?,
                         specialization_skills = ?, community_involvement = ?,
                         problems_needs = ?, remarks = ?, status = ?, validation = ?,
-                        living_arrangement = ?, date_of_death = ?, inactive_reason = ?,
-                        date_of_inactive = ?, date_modified = NOW()
+                        living_arrangement = ?, contact_number = ?, date_of_death = ?, 
+                        inactive_reason = ?, date_of_inactive = ?, date_modified = NOW()
                     WHERE applicant_id = ?
                 ");
 
@@ -165,6 +184,7 @@ try {
                     $applicant_data['status'],
                     $applicant_data['validation'],
                     $applicant_data['living_arrangement'],
+                    $applicant_data['contact_number'],
                     $applicant_data['date_of_death'],
                     $applicant_data['inactive_reason'],
                     $applicant_data['date_of_inactive'],
@@ -526,26 +546,11 @@ try {
                 // Commit transaction
                 $pdo->commit();
 
-                // Set success message and reload data
+                // Set success message
                 $success_message = "Senior information updated successfully!";
 
-                // Fetch updated data to show in form
-                $stmt = $pdo->prepare("
-                    SELECT a.*,
-                           CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name
-                    FROM applicants a 
-                    WHERE a.applicant_id = ?
-                ");
-                $stmt->execute([$applicant_id]);
-                $senior_data['applicant'] = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // Fetch other updated data
-                $stmt = $pdo->prepare("SELECT * FROM addresses WHERE applicant_id = ?");
-                $stmt->execute([$applicant_id]);
-                $senior_data['address'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
-
-                // ... (fetch other tables as you had before) ...
-
+                // Force a page refresh to show updated data
+                echo '<meta http-equiv="refresh" content="0">';
             } catch (Exception $e) {
                 $pdo->rollBack();
                 $errors[] = "Error updating data: " . $e->getMessage();
@@ -556,7 +561,7 @@ try {
         }
     }
 
-    // Fetch existing data for the form
+    // Always fetch fresh data for the form (whether POST or GET)
     $stmt = $pdo->prepare("
         SELECT a.*,
                CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name
@@ -571,64 +576,37 @@ try {
         exit();
     }
 
-    // Fetch address information
+    // Fetch other related data
     $stmt = $pdo->prepare("SELECT * FROM addresses WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['address'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch demographic information
     $stmt = $pdo->prepare("SELECT * FROM applicant_demographics WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['demographic'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch educational background
     $stmt = $pdo->prepare("SELECT * FROM applicant_educational_background WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['education'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch registration details
     $stmt = $pdo->prepare("SELECT * FROM applicant_registration_details WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['registration'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch economic status
     $stmt = $pdo->prepare("SELECT * FROM economic_status WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['economic'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch health condition
     $stmt = $pdo->prepare("SELECT * FROM health_condition WHERE applicant_id = ?");
     $stmt->execute([$applicant_id]);
     $senior_data['health'] = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-    // Fetch illnesses
     $stmt = $pdo->prepare("SELECT * FROM senior_illness WHERE applicant_id = ? ORDER BY illness_date DESC");
     $stmt->execute([$applicant_id]);
     $senior_data['illnesses'] = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
-
-// Helper function to get array value
-function getArrayValue($array, $key, $default = '')
-{
-    if (is_array($array) && isset($array[$key])) {
-        return $array[$key];
-    }
-    return $default;
-}
-
-// Form options
-$genders = ['Male', 'Female'];
-$civil_statuses = ['Single', 'Married', 'Widowed', 'Separated', 'Divorced'];
-$educational_levels = ['Elementary', 'High School', 'College', 'Vocational', 'Post-Graduate', 'None'];
-$living_arrangements = ['Alone', 'With Spouse', 'With Children', 'With Relatives', 'Institution'];
-$status_options = ['Active', 'Inactive', 'Deceased'];
-$validation_options = ['Validated', 'For Validation'];
-$registration_statuses = ['Pending', 'Approved', 'Rejected', 'On Hold'];
-$pension_sources = ['SSS', 'GSIS', 'PVAO', 'Private', 'Others'];
-$income_sources = ['Pension', 'Work', 'Business', 'Family Support', 'Government Assistance', 'Others'];
-$support_types = ['Cash', 'In-kind', 'Both'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -637,6 +615,46 @@ $support_types = ['Cash', 'In-kind', 'Both'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Senior Information - <?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'full_name', 'Senior')); ?></title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+            
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            
+            /* Inner glow effect */
+            box-shadow: 
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+            
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from {
+                box-shadow: 
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+            to {
+                box-shadow: 
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -731,42 +749,14 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="#" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                            PALUAN</span>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
                     </a>
-                    <form action="#" method="GET" class="hidden md:block md:pl-2">
-                        <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
-                            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <input type="text" name="email" id="topbar-search"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Search" />
-                        </div>
-                    </form>
                 </div>
-                <!-- UserProfile -->
                 <div class="flex items-center lg:order-2">
-                    <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">Toggle search</span>
-                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </button>
                     <button type="button"
                         class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -775,17 +765,14 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
-                    <!-- Dropdown menu -->
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                                 <?php
-                                // Display fullname with fallback
                                 if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                     echo htmlspecialchars($_SESSION['fullname']);
                                 } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                    // Construct fullname from first and last name if available
                                     echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                                 } else {
                                     echo 'User';
@@ -794,11 +781,9 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
                                 <?php
-                                // Display user type with proper formatting
                                 if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                     echo htmlspecialchars($_SESSION['user_type']);
                                 } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                    // Fallback to role_name if available
                                     echo htmlspecialchars($_SESSION['role_name']);
                                 } else {
                                     echo 'User Type';
@@ -809,152 +794,83 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                    out</a>
+                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </nav>
+
         <!-- Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
             <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-                <form action="#" method="GET" class="md:hidden mb-2">
-                    <label for="sidebar-search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="text" name="search" id="sidebar-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Search" />
-                    </div>
-                </form>
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../admin_dashoard.php?session_context=<?php echo $ctx; ?>"
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="currentColor"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
-                                <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
-                                <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
-                                <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
-                                <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
-                            </svg>
-
+                            <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="../register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <g transform="translate(24,0) scale(-1,1)">
-                                    <path fill-rule="evenodd"
-                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                        clip-rule="evenodd" />
-                                </g>
-                            </svg>
-
-
+                            <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
-
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                    d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                            </svg>
+                            <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                            <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-chevron-down"></i>
                         </button>
-                        <ul id="dropdown-pages" class="py-2 space-y-2">
+                        <ul id="dropdown-pages" class=" py-2 space-y-2">
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Active
-                                    List</a>
+                                    class="flex items-center p-2 pl-11 w-full text-base text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                                    <i class="fas fa-check-circle mr-2 text-sm text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>Active List
+                                </a>
                             </li>
                             <li>
-                                <a href="./inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                    List</a>
+                                <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                                </a>
                             </li>
                             <li>
-                                <a href="./deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                    List</a>
+                                <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                                </a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                    clip-rule="evenodd" />
-                                <path fill-rule="evenodd"
-                                    d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Benefits</span>
                         </a>
+                    </li>
                     <li>
                         <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Generate ID</span>
                         </a>
+                    </li>
                     <li>
                         <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                            </svg>
-
+                            <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
@@ -963,27 +879,14 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                     <li>
                         <a href="../archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 1 0 0 4h16a2 2 0 1 0 0-4H4Zm0 6h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm10.707 5.707a1 1 0 0 0-1.414-1.414l-.293.293V12a1 1 0 1 0-2 0v2.586l-.293-.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l2-2Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-
+                            <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Archived</span>
                         </a>
                     </li>
                     <li>
                         <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Settings</span>
                         </a>
                     </li>
@@ -1143,16 +1046,28 @@ $support_types = ['Cash', 'In-kind', 'Both'];
 
                             <!-- Living Arrangement -->
                             <div>
-                                <label for="living_arrangement" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Living Arrangement</label>
-                                <select id="living_arrangement" name="living_arrangement"
+                                <label for="living_arrangement" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white required">Living Arrangement</label>
+                                <select id="living_arrangement" name="living_arrangement" required
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value="">Select Arrangement</option>
-                                    <?php foreach ($living_arrangements as $arrangement): ?>
-                                        <option value="<?php echo $arrangement; ?>" <?php echo (getArrayValue($senior_data['applicant'], 'living_arrangement') == $arrangement) ? 'selected' : ''; ?>>
-                                            <?php echo $arrangement; ?>
+                                    <?php
+                                    $current_living_arrangement = getArrayValue($senior_data['applicant'], 'living_arrangement');
+                                    foreach ($living_arrangements as $arrangement):
+                                        $selected = (trim($current_living_arrangement) === trim($arrangement)) ? 'selected' : '';
+                                    ?>
+                                        <option value="<?php echo htmlspecialchars($arrangement); ?>" <?php echo $selected; ?>>
+                                            <?php echo htmlspecialchars($arrangement); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                            </div>
+                            <!-- Contact Number -->
+                            <div>
+                                <label for="contact_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact Number</label>
+                                <input type="tel" id="contact_number" name="contact_number"
+                                    value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'contact_number')); ?>"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="e.g., 09123456789">
                             </div>
                         </div>
 
@@ -1886,6 +1801,10 @@ $support_types = ['Cash', 'In-kind', 'Both'];
                                         <p id="review-civilstatus" class="font-medium"></p>
                                     </div>
                                     <div>
+                                        <p class="text-sm text-gray-500">Contact Number</p>
+                                        <p id="review-contact" class="font-medium"></p>
+                                    </div>
+                                    <div>
                                         <p class="text-sm text-gray-500">Status</p>
                                         <p id="review-status" class="font-medium"></p>
                                     </div>
@@ -2155,6 +2074,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             const middleName = document.getElementById('middle_name').value;
             const lastName = document.getElementById('last_name').value;
             const suffix = document.getElementById('suffix').value;
+            const contactNumber = document.getElementById('contact_number').value;
 
             let fullName = `${lastName}${suffix ? ' ' + suffix : ''}, ${firstName}`;
             if (middleName) fullName += ` ${middleName.charAt(0)}.`;
@@ -2163,6 +2083,7 @@ $support_types = ['Cash', 'In-kind', 'Both'];
             document.getElementById('review-birthdate').textContent = document.getElementById('birth_date').value;
             document.getElementById('review-gender').textContent = document.getElementById('gender').value;
             document.getElementById('review-civilstatus').textContent = document.getElementById('civil_status').value;
+            document.getElementById('review-contact').textContent = contactNumber || 'Not specified';
             document.getElementById('review-status').textContent = document.getElementById('status').value;
             document.getElementById('review-validation').textContent = document.getElementById('validation').value;
 

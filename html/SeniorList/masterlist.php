@@ -55,6 +55,7 @@ if (!empty($user_data['profile_photo'])) {
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
+
 // Initialize variables
 // Handle barangays as array (from checkboxes) or comma-separated string
 $filtered_barangays = [];
@@ -190,6 +191,12 @@ try {
                 es.has_insurance,
                 es.has_tin,
                 es.has_philhealth,
+                -- Add the specific number fields
+                a.living_arrangement,           -- FROM applicants table
+                es.tin_number,                  -- FROM economic_status
+                es.philhealth_number,           -- FROM economic_status
+                es.gsis_number,                 -- FROM economic_status
+                es.sss_number,                  -- FROM economic_status
                 
                 -- Health condition
                 hc.has_existing_illness,
@@ -357,6 +364,262 @@ function formatEmpty($value)
 {
     return (!empty($value) && $value !== '') ? htmlspecialchars($value) : '';
 }
+
+// Handle export request
+if (isset($_GET['export']) && $_GET['export'] === 'excel' && isset($_GET['export_all']) && $_GET['export_all'] === 'true') {
+    // Build the same query as before but without LIMIT
+    $where_conditions = [];
+    $params = [];
+
+    // Filter by barangay
+    if (!empty($filtered_barangays)) {
+        $barangay_placeholders = implode(',', array_fill(0, count($filtered_barangays), '?'));
+        $where_conditions[] = "ad.barangay IN ($barangay_placeholders)";
+        $params = array_merge($params, $filtered_barangays);
+    }
+    // Clean barangay names for display
+    $cleaned_barangays = [];
+    foreach ($barangays as $barangay) {
+        // Remove any special characters that could cause issues
+        $cleaned = preg_replace('/[\\\\\/\?\*\[\]]/', '', $barangay);
+        $cleaned = trim($cleaned);
+        if (!empty($cleaned)) {
+            $cleaned_barangays[] = $cleaned;
+        }
+    }
+    $barangays = array_unique($cleaned_barangays);
+    // Filter by search term
+    if (!empty($search_term)) {
+        $where_conditions[] = "(CONCAT(a.last_name, ' ', a.first_name, ' ', COALESCE(a.middle_name, '')) LIKE ? 
+                               OR a.control_number LIKE ? 
+                               OR ar.id_number LIKE ?)";
+        $search_param = "%$search_term%";
+        $params[] = $search_param;
+        $params[] = $search_param;
+        $params[] = $search_param;
+    }
+
+    $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
+
+    // Modified SQL without LIMIT for export
+    $export_sql = "
+        SELECT 
+            a.applicant_id,
+            a.last_name,
+            a.first_name,
+            a.middle_name,
+            a.suffix,
+            CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name,
+            a.birth_date,
+            YEAR(CURDATE()) - YEAR(a.birth_date) - 
+            (DATE_FORMAT(CURDATE(), '%m%d') < DATE_FORMAT(a.birth_date, '%m%d')) as age,
+            a.gender,
+            a.civil_status,
+            a.religion,
+            a.birth_place,
+            a.educational_attainment,
+            a.specialization_skills,
+            a.community_involvement,
+            a.problems_needs,
+            a.remarks,
+            a.status,
+            a.validation,
+            a.control_number,
+            a.date_created,
+            a.date_modified,
+            
+            -- Address information
+            ad.house_no,
+            ad.street,
+            ad.barangay,
+            ad.municipality,
+            ad.province,
+            
+            -- Registration details
+            ar.id_number,
+            ar.local_control_number,
+            ar.registration_status,
+            
+            -- Demographic information
+            adem.is_ip_member,
+            adem.ip_group,
+            adem.tribal_affiliation,
+            adem.dialect_spoken,
+            
+            -- Education background
+            aeb.school_name,
+            aeb.year_graduated,
+            aeb.course_taken,
+            
+            -- Economic status
+            es.is_pensioner,
+            es.pension_amount,
+            es.pension_source,
+            es.pension_source_other,
+            es.has_permanent_income,
+            es.has_family_support,
+            es.income_source,
+            es.income_source_detail,
+            es.support_type,
+            es.support_cash,
+            es.support_in_kind,
+            es.assets_properties,
+            es.living_residing_with,
+            es.monthly_income,
+            es.has_sss,
+            es.has_gsis,
+            es.has_pvao,
+            es.has_insurance,
+            es.has_tin,
+            es.has_philhealth,
+            es.tin_number,
+            es.philhealth_number,
+            es.gsis_number,
+            es.sss_number,
+            a.living_arrangement,
+            
+            -- Health condition
+            hc.has_existing_illness,
+            hc.illness_details,
+            hc.hospitalized_last6mos,
+            hc.has_disability
+            
+        FROM applicants a
+        LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id
+        LEFT JOIN applicant_registration_details ar ON a.applicant_id = ar.applicant_id
+        LEFT JOIN applicant_demographics adem ON a.applicant_id = adem.applicant_id
+        LEFT JOIN applicant_educational_background aeb ON a.applicant_id = aeb.applicant_id
+        LEFT JOIN economic_status es ON a.applicant_id = es.applicant_id
+        LEFT JOIN health_condition hc ON a.applicant_id = hc.applicant_id
+        $where_clause
+        ORDER BY ad.barangay, a.last_name, a.first_name
+    ";
+
+    try {
+        $stmt = $pdo->prepare($export_sql);
+        $stmt->execute($params);
+        $all_seniors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch benefits for all seniors
+        $senior_ids = array_column($all_seniors, 'applicant_id');
+        $all_benefits = [];
+
+        if (!empty($senior_ids)) {
+            $placeholders = implode(',', array_fill(0, count($senior_ids), '?'));
+            $benefits_sql = "
+                SELECT applicant_id, program_type, service_category 
+                FROM senior_benefits_view 
+                WHERE applicant_id IN ($placeholders)
+            ";
+            $benefits_stmt = $pdo->prepare($benefits_sql);
+            $benefits_stmt->execute($senior_ids);
+            $all_benefits = $benefits_stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // Organize benefits by senior ID
+        $benefits_by_senior = [];
+        foreach ($all_benefits as $benefit) {
+            $senior_id = $benefit['applicant_id'];
+            if (!isset($benefits_by_senior[$senior_id])) {
+                $benefits_by_senior[$senior_id] = [];
+            }
+            $benefits_by_senior[$senior_id][] = $benefit;
+        }
+
+        // Process seniors data
+        $seniors_data = [];
+        foreach ($all_seniors as $senior) {
+            $senior_id = $senior['applicant_id'];
+
+            // Extract date parts
+            $birth_date = $senior['birth_date'];
+            $birth_year = $birth_date && $birth_date != '0000-00-00' ? date('Y', strtotime($birth_date)) : '';
+            $birth_month = $birth_date && $birth_date != '0000-00-00' ? date('F', strtotime($birth_date)) : '';
+            $birth_day = $birth_date && $birth_date != '0000-00-00' ? date('d', strtotime($birth_date)) : '';
+
+            // Get benefits
+            $senior_benefits = $benefits_by_senior[$senior_id] ?? [];
+
+            $hasBenefit = function ($program_type, $service_category) use ($senior_benefits) {
+                foreach ($senior_benefits as $benefit) {
+                    if ($benefit['program_type'] == $program_type && $benefit['service_category'] == $service_category) {
+                        return '✓';
+                    }
+                }
+                return '';
+            };
+
+            // Categorize benefits
+            $national_aics = [
+                'Food' => $hasBenefit('DSWD', 'AICS_Food'),
+                'Burial' => $hasBenefit('DSWD', 'AICS_Burial'),
+                'Medical' => $hasBenefit('DSWD', 'AICS_Medical'),
+                'Transpo' => $hasBenefit('DSWD', 'AICS_Transpo')
+            ];
+
+            $national_other = [
+                'SocPen' => $hasBenefit('DSWD', 'SocPen'),
+                'Pantawid' => $hasBenefit('DSWD', 'Pantawid'),
+                'Livelihood' => $hasBenefit('DSWD', 'Livelihood')
+            ];
+
+            $local_aics = [
+                'Food' => $hasBenefit('Local', 'AICS_Food'),
+                'Burial' => $hasBenefit('Local', 'AICS_Burial'),
+                'Medical' => $hasBenefit('Local', 'AICS_Medical'),
+                'Transpo' => $hasBenefit('Local', 'AICS_Transpo')
+            ];
+
+            $local_other = [
+                'SocPen' => $hasBenefit('Local', 'SocPen'),
+                'Livelihood' => $hasBenefit('Local', 'Livelihood')
+            ];
+
+            // Other pension status
+            $other_pension = '';
+            if ($senior['is_pensioner'] && $senior['pension_source'] == 'Others') {
+                $other_pension = 'Yes';
+            }
+
+            // Monthly income formatting
+            $monthly_income = $senior['monthly_income'] ? '₱' . number_format($senior['monthly_income'], 2) : 'Not specified';
+
+            // Store processed data
+            $seniors_data[] = [
+                'basic' => $senior,
+                'birth_parts' => [
+                    'year' => $birth_year,
+                    'month' => $birth_month,
+                    'day' => $birth_day
+                ],
+                'benefits' => [
+                    'national_aics' => $national_aics,
+                    'national_other' => $national_other,
+                    'local_aics' => $local_aics,
+                    'local_other' => $local_other
+                ],
+                'other_pension' => $other_pension,
+                'monthly_income' => $monthly_income
+            ];
+        }
+
+        // Return JSON response
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data' => $seniors_data,
+            'total' => count($seniors_data)
+        ]);
+        exit();
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'Database error: ' . $e->getMessage()
+        ]);
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -365,11 +628,52 @@ function formatEmpty($value)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master List - Demographic Data</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+            
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+            
+            /* Inner glow effect */
+            box-shadow: 
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+            
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from {
+                box-shadow: 
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+            to {
+                box-shadow: 
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .demographic-table {
             width: 100%;
@@ -484,42 +788,14 @@ function formatEmpty($value)
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="#" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                            PALUAN</span>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
                     </a>
-                    <form action="#" method="GET" class="hidden md:block md:pl-2">
-                        <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
-                            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <input type="text" name="email" id="topbar-search"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Search" />
-                        </div>
-                    </form>
                 </div>
-                <!-- UserProfile -->
                 <div class="flex items-center lg:order-2">
-                    <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">Toggle search</span>
-                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </button>
                     <button type="button"
                         class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -528,17 +804,14 @@ function formatEmpty($value)
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
-                    <!-- Dropdown menu -->
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                                 <?php
-                                // Display fullname with fallback
                                 if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                     echo htmlspecialchars($_SESSION['fullname']);
                                 } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                    // Construct fullname from first and last name if available
                                     echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                                 } else {
                                     echo 'User';
@@ -547,11 +820,9 @@ function formatEmpty($value)
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
                                 <?php
-                                // Display user type with proper formatting
                                 if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                     echo htmlspecialchars($_SESSION['user_type']);
                                 } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                    // Fallback to role_name if available
                                     echo htmlspecialchars($_SESSION['role_name']);
                                 } else {
                                     echo 'User Type';
@@ -562,8 +833,9 @@ function formatEmpty($value)
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                    out</a>
+                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -576,139 +848,68 @@ function formatEmpty($value)
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
             <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-                <form action="#" method="GET" class="md:hidden mb-2">
-                    <label for="sidebar-search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="text" name="search" id="sidebar-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Search" />
-                    </div>
-                </form>
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
                         <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="currentColor"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
-                                <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
-                                <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
-                                <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
-                                <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
-                            </svg>
-
+                            <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="../register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <g transform="translate(24,0) scale(-1,1)">
-                                    <path fill-rule="evenodd"
-                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                        clip-rule="evenodd" />
-                                </g>
-                            </svg>
-
-
+                            <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
-
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                    d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                            </svg>
+                            <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                            <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-chevron-down"></i>
                         </button>
-                        <ul id="dropdown-pages" class="py-2 space-y-2">
+                        <ul id="dropdown-pages" class=" py-2 space-y-2">
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">Active
-                                    List</a>
+                                    class="flex items-center p-2 pl-11 w-full text-base text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                                    <i class="fas fa-check-circle mr-2 text-sm text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>Active List
+                                </a>
                             </li>
                             <li>
-                                <a href="./inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                    List</a>
+                                <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                                </a>
                             </li>
                             <li>
-                                <a href="./deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                    List</a>
+                                <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                                </a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                    clip-rule="evenodd" />
-                                <path fill-rule="evenodd"
-                                    d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Benefits</span>
                         </a>
+                    </li>
                     <li>
                         <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Generate ID</span>
                         </a>
+                    </li>
                     <li>
                         <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                            </svg>
-
+                            <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
@@ -717,27 +918,14 @@ function formatEmpty($value)
                     <li>
                         <a href="../archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 1 0 0 4h16a2 2 0 1 0 0-4H4Zm0 6h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm10.707 5.707a1 1 0 0 0-1.414-1.414l-.293.293V12a1 1 0 1 0-2 0v2.586l-.293-.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l2-2Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-
+                            <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Archived</span>
                         </a>
                     </li>
                     <li>
                         <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Settings</span>
                         </a>
                     </li>
@@ -858,7 +1046,7 @@ function formatEmpty($value)
                                                 <label class="checkbox-label">
                                                     <input type="checkbox" name="barangays[]"
                                                         value="<?php echo htmlspecialchars($barangay); ?>"
-                                                        class="barangay-checkbox auto-filter"
+                                                        class="barangay-checkbox auto-filter text-blue-600 bg-gray-200  rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-200 dark:border-gray-300"
                                                         <?php echo in_array($barangay, $filtered_barangays) ? 'checked' : ''; ?>>
                                                     <span class="text-sm"><?php echo htmlspecialchars($barangay); ?></span>
                                                 </label>
@@ -969,7 +1157,7 @@ function formatEmpty($value)
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700 overflow-x-auto">
                     <table class="demographic-table dark:bg-gray-800">
                         <thead class=" text-center text-gray-700  bg-gray-50 dark:bg-gray-800 dark:text-white">
-                            <tr >
+                            <tr>
                                 <th colspan="2" rowspan="4">Province</th>
                                 <th colspan="2" rowspan="4">Municipality</th>
                                 <th colspan="2" rowspan="4">Barangay</th>
@@ -1136,12 +1324,21 @@ function formatEmpty($value)
                                         <td><?php echo formatEmpty($basic['educational_attainment']); ?></td>
 
                                         <!-- ID NUMBERS (6 columns) -->
+                                        <!-- ID NUMBERS (6 columns) -->
                                         <td><?php echo formatEmpty($basic['id_number']); ?></td>
-                                        <td><?php echo formatYesNo($basic['has_tin']); ?></td>
-                                        <td><?php echo formatYesNo($basic['has_philhealth']); ?></td>
-                                        <td><?php echo formatYesNo($basic['has_gsis']); ?></td>
-                                        <td><?php echo formatYesNo($basic['has_sss']); ?></td>
-                                        <td><?php echo $senior['other_pension']; ?></td>
+                                        <td><?php echo formatEmpty($basic['tin_number']); ?></td>
+                                        <td><?php echo formatEmpty($basic['philhealth_number']); ?></td>
+                                        <td><?php echo formatEmpty($basic['gsis_number']); ?></td>
+                                        <td><?php echo formatEmpty($basic['sss_number']); ?></td>
+                                        <td>
+                                            <?php
+                                            $other_pension = '';
+                                            if ($basic['is_pensioner'] && $basic['pension_source'] == 'Others') {
+                                                $other_pension = 'Yes';
+                                            }
+                                            echo $other_pension ?: 'No';
+                                            ?>
+                                        </td>
 
                                         <!-- Monthly Income -->
                                         <td><?php echo $senior['monthly_income']; ?></td>
@@ -1155,7 +1352,7 @@ function formatEmpty($value)
                                         <td></td>
 
                                         <!-- Living/Residing with (2 columns) -->
-                                        <td><?php echo formatEmpty($basic['living_residing_with']); ?></td>
+                                        <td><?php echo formatEmpty($basic['living_arrangement']); ?></td>
                                         <td></td>
 
                                         <!-- Specialization/Skills (2 columns) -->
@@ -2034,121 +2231,378 @@ function formatEmpty($value)
             worksheet.mergeCells('BI10:BJ10');
         }
 
+        // Helper function to style data rows
+        function styleDataRows(worksheet) {
+            for (let i = 13; i <= worksheet.rowCount; i++) {
+                const row = worksheet.getRow(i);
+                row.height = 20;
+                row.eachCell((cell, colNumber) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFFFFFF'
+                        }
+                    };
+                    cell.font = {
+                        color: {
+                            argb: 'FF000000'
+                        },
+                        name: 'Calibri',
+                        size: 9
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        bottom: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        left: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        right: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        }
+                    };
+                });
+            }
+        }
+
+        // Function to sanitize worksheet names (remove invalid Excel characters)
+        function sanitizeSheetName(name) {
+            if (!name) return 'Sheet';
+
+            // Replace invalid characters with underscores
+            // Excel doesn't allow: \ / ? * [ ]
+            // Also limit length to 31 characters (Excel limit)
+            let sanitized = name.replace(/[\\/\?\*\[\]]/g, '_');
+
+            // Remove leading/trailing apostrophes and spaces
+            sanitized = sanitized.replace(/^[\s']+|[\s']+$/g, '');
+
+            // Truncate to 31 characters (Excel limit)
+            if (sanitized.length > 31) {
+                sanitized = sanitized.substring(0, 31);
+            }
+
+            // Ensure name is not empty
+            if (!sanitized.trim()) {
+                sanitized = 'Sheet_' + Date.now();
+            }
+
+            return sanitized;
+        }
+
+        // Function to create a unique sheet name
+        function createUniqueSheetName(workbook, baseName) {
+            let sheetName = sanitizeSheetName(baseName);
+            let counter = 1;
+            let originalName = sheetName;
+
+            // Check if sheet name already exists
+            while (workbook.getWorksheet(sheetName)) {
+                sheetName = sanitizeSheetName(`${originalName}_${counter}`);
+                counter++;
+                if (counter > 100) { // Safety limit
+                    sheetName = sanitizeSheetName(`${originalName}_${Date.now()}`);
+                    break;
+                }
+            }
+
+            return sheetName;
+        }
+
+        // Function to create a worksheet with error handling
+        function createWorksheetSafely(workbook, desiredName, data) {
+            try {
+                const sheetName = createUniqueSheetName(workbook, desiredName);
+                const worksheet = workbook.addWorksheet(sheetName);
+
+                // Add headers
+                addHeadersToWorksheet(worksheet);
+
+                // Add data if available
+                if (data && data.length > 0) {
+                    data.forEach(rowData => {
+                        try {
+                            worksheet.addRow(rowData);
+                        } catch (rowError) {
+                            console.error('Error adding row:', rowError);
+                            // Continue with next row
+                        }
+                    });
+
+                    // Style data rows
+                    try {
+                        styleDataRows(worksheet);
+                    } catch (styleError) {
+                        console.error('Error styling rows:', styleError);
+                    }
+
+                    // Add summary
+                    const lastRow = worksheet.rowCount;
+                    if (lastRow > 12) { // Check if we have data rows
+                        try {
+                            worksheet.mergeCells(`A${lastRow + 2}:BJ${lastRow + 2}`);
+                            const summaryCell = worksheet.getCell(`A${lastRow + 2}`);
+                            const displayName = desiredName || sheetName;
+                            summaryCell.value = `TOTAL FOR ${displayName.toUpperCase()}: ${data.length} SENIOR CITIZENS`;
+                            summaryCell.font = {
+                                bold: true,
+                                size: 11,
+                                name: 'Calibri'
+                            };
+                            summaryCell.alignment = {
+                                horizontal: 'center'
+                            };
+                            summaryCell.fill = {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: 'FFE6F3FF'
+                                }
+                            };
+                        } catch (summaryError) {
+                            console.error('Error adding summary:', summaryError);
+                        }
+                    }
+                } else {
+                    // No data message
+                    try {
+                        worksheet.mergeCells('A13:BJ13');
+                        const noDataCell = worksheet.getCell('A13');
+                        noDataCell.value = `No data found for ${desiredName || sheetName}`;
+                        noDataCell.font = {
+                            italic: true,
+                            size: 11,
+                            name: 'Calibri'
+                        };
+                        noDataCell.alignment = {
+                            horizontal: 'center'
+                        };
+                    } catch (msgError) {
+                        console.error('Error adding no data message:', msgError);
+                    }
+                }
+
+                return worksheet;
+            } catch (error) {
+                console.error(`Error creating worksheet "${desiredName}":`, error);
+                return null;
+            }
+        }
+
+        // Add this function to handle server-side data fetching for export
+        async function fetchAllFilteredData() {
+            try {
+                // Show loading
+                const exportBtn = document.querySelector('button[onclick*="exportToExcel"]');
+                const originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading Data...';
+                exportBtn.disabled = true;
+
+                // Gather all current filter parameters
+                const params = new URLSearchParams(window.location.search);
+
+                // Remove pagination parameters
+                params.delete('page');
+
+                // Add export flag
+                params.append('export', 'excel');
+                params.append('export_all', 'true');
+
+                // Fetch all data from server
+                const response = await fetch(`masterlist.php?${params.toString()}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                const result = await response.json();
+
+                // Restore button
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to fetch data');
+                }
+
+                return result.data || [];
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+
+                // Restore button
+                const exportBtn = document.querySelector('button[onclick*="exportToExcel"]');
+                if (exportBtn) {
+                    exportBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i>Export to Excel';
+                    exportBtn.disabled = false;
+                }
+
+                alert('Error fetching data for export: ' + error.message);
+                return [];
+            }
+        }
+
         // Helper function to create a data row from senior data
         function createDataRow(senior) {
-            const basic = senior.basic;
-            const birth_parts = senior.birth_parts;
-            const benefits = senior.benefits;
+            const basic = senior.basic || {};
+            const birth_parts = senior.birth_parts || {};
+            const benefits = senior.benefits || {};
 
-            // Helper function to format Yes/No values
             function formatYesNo(value) {
                 if (value == 1 || value === true || value === '1') return 'Yes';
                 if (value == 0 || value === false || value === '0') return 'No';
                 return '';
             }
 
+            function getValue(obj, key, defaultValue = '') {
+                if (obj && typeof obj[key] !== 'undefined') {
+                    const val = obj[key];
+                    return val !== null && val !== '' ? val : defaultValue;
+                }
+                return defaultValue;
+            }
+
+            function getBenefit(benefitObj, category, type, defaultValue = '') {
+                if (benefitObj && benefitObj[category] && typeof benefitObj[category][type] !== 'undefined') {
+                    return benefitObj[category][type] || defaultValue;
+                }
+                return defaultValue;
+            }
+
             return [
                 // Province (2 columns)
-                basic['province'] || '', '',
+                getValue(basic, 'province'), '',
                 // Municipality (2 columns)
-                basic['municipality'] || '', '',
+                getValue(basic, 'municipality'), '',
                 // Barangay (2 columns)
-                basic['barangay'] || '', '',
+                getValue(basic, 'barangay'), '',
                 // NAME (4 columns)
-                basic['last_name'] || '',
-                basic['suffix'] || '',
-                basic['first_name'] || '',
-                basic['middle_name'] || '',
+                getValue(basic, 'last_name'),
+                getValue(basic, 'suffix'),
+                getValue(basic, 'first_name'),
+                getValue(basic, 'middle_name'),
                 // DOUBLE ENTRY IDENTIFIER
-                basic['full_name'] || '',
+                getValue(basic, 'full_name'),
                 // BIRTH DATE (3 columns)
-                birth_parts['year'] || '',
-                birth_parts['month'] || '',
-                birth_parts['day'] || '',
+                getValue(birth_parts, 'year'),
+                getValue(birth_parts, 'month'),
+                getValue(birth_parts, 'day'),
                 // OTHER INFORMATION (5 columns)
-                basic['age'] || '',
-                basic['gender'] || '',
-                basic['birth_place'] || '',
-                basic['civil_status'] || '',
-                basic['religion'] || '',
+                getValue(basic, 'age'),
+                getValue(basic, 'gender'),
+                getValue(basic, 'birth_place'),
+                getValue(basic, 'civil_status'),
+                getValue(basic, 'religion'),
                 // STATUS
-                basic['status'] || '',
+                getValue(basic, 'status'),
                 // Program and Services - NATIONAL AICS (4 columns)
-                benefits['national_aics']['Food'] || '',
-                benefits['national_aics']['Burial'] || '',
-                benefits['national_aics']['Medical'] || '',
-                benefits['national_aics']['Transpo'] || '',
+                getBenefit(benefits, 'national_aics', 'Food'),
+                getBenefit(benefits, 'national_aics', 'Burial'),
+                getBenefit(benefits, 'national_aics', 'Medical'),
+                getBenefit(benefits, 'national_aics', 'Transpo'),
                 // Program and Services - NATIONAL OTHER (3 columns)
-                benefits['national_other']['SocPen'] || '',
-                benefits['national_other']['Pantawid'] || '',
-                benefits['national_other']['Livelihood'] || '',
+                getBenefit(benefits, 'national_other', 'SocPen'),
+                getBenefit(benefits, 'national_other', 'Pantawid'),
+                getBenefit(benefits, 'national_other', 'Livelihood'),
                 // Program and Services - LOCAL AICS (4 columns)
-                benefits['local_aics']['Food'] || '',
-                benefits['local_aics']['Burial'] || '',
-                benefits['local_aics']['Medical'] || '',
-                benefits['local_aics']['Transpo'] || '',
+                getBenefit(benefits, 'local_aics', 'Food'),
+                getBenefit(benefits, 'local_aics', 'Burial'),
+                getBenefit(benefits, 'local_aics', 'Medical'),
+                getBenefit(benefits, 'local_aics', 'Transpo'),
                 // Program and Services - LOCAL OTHER (3 columns)
-                benefits['local_other']['SocPen'] || '',
-                benefits['local_other']['SocPen'] || '', // Duplicate for Prov/Munis
-                benefits['local_other']['Livelihood'] || '',
+                getBenefit(benefits, 'local_other', 'SocPen'),
+                getBenefit(benefits, 'local_other', 'SocPen'), // Duplicate for Prov/Munis
+                getBenefit(benefits, 'local_other', 'Livelihood'),
                 // Other Pensions (4 columns)
-                formatYesNo(basic['has_sss']),
-                formatYesNo(basic['has_gsis']),
-                formatYesNo(basic['has_pvao']),
-                formatYesNo(basic['has_insurance']),
+                formatYesNo(getValue(basic, 'has_sss')),
+                formatYesNo(getValue(basic, 'has_gsis')),
+                formatYesNo(getValue(basic, 'has_pvao')),
+                formatYesNo(getValue(basic, 'has_insurance')),
                 // IP Group
-                basic['ip_group'] || '',
+                getValue(basic, 'ip_group'),
                 // Educational Attainment
-                basic['educational_attainment'] || '',
+                getValue(basic, 'educational_attainment'),
                 // ID NUMBERS (6 columns)
-                basic['id_number'] || '',
-                formatYesNo(basic['has_tin']),
-                formatYesNo(basic['has_philhealth']),
-                formatYesNo(basic['has_gsis']),
-                formatYesNo(basic['has_sss']),
+                getValue(basic, 'id_number'),
+                getValue(basic, 'tin_number'),
+                getValue(basic, 'philhealth_number'),
+                getValue(basic, 'gsis_number'),
+                getValue(basic, 'sss_number'),
                 senior['other_pension'] || '',
                 // Monthly Income
                 senior['monthly_income'] || '',
                 // Source of Income (2 columns)
-                basic['income_source'] || '',
-                basic['income_source_detail'] || '',
+                getValue(basic, 'income_source'),
+                getValue(basic, 'income_source_detail'),
                 // Assets & Properties (2 columns)
-                basic['assets_properties'] || '',
+                getValue(basic, 'assets_properties'),
                 '',
                 // Living/Residing with (2 columns)
-                basic['living_residing_with'] || '',
+                getValue(basic, 'living_arrangement'),
                 '',
                 // Specialization/Skills (2 columns)
-                basic['specialization_skills'] || '',
+                getValue(basic, 'specialization_skills'),
                 '',
                 // Involvement in Community Activities (2 columns)
-                basic['community_involvement'] || '',
+                getValue(basic, 'community_involvement'),
                 '',
                 // Problems/Needs Commonly Encountered (8 columns)
-                basic['problems_needs'] || '',
+                getValue(basic, 'problems_needs'),
                 '',
-                formatYesNo(basic['has_existing_illness']),
-                formatYesNo(basic['has_disability']),
+                formatYesNo(getValue(basic, 'has_existing_illness')),
+                formatYesNo(getValue(basic, 'has_disability')),
                 '',
                 '',
                 '',
-                basic['remarks'] || ''
+                getValue(basic, 'remarks')
             ];
         }
 
-        // Main export function with multiple sheets per barangay
-        async function exportMasterlistToExcel() {
+        // Main export function - THIS IS THE FUNCTION THAT GETS CALLED
+        async function exportToExcel() {
             try {
-                // Check if we have access to the PHP data
-                if (!window.seniorsData || window.seniorsData.length === 0) {
+                // First fetch ALL filtered data from server
+                const allSeniorsData = await fetchAllFilteredData();
+
+                if (!allSeniorsData || allSeniorsData.length === 0) {
                     alert('No data available to export!');
                     return;
                 }
 
+                console.log(`Exporting ${allSeniorsData.length} records...`);
+
+                // Show progress
+                const exportBtn = document.querySelector('button[onclick*="exportToExcel"]');
+                const originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Exporting...';
+                exportBtn.disabled = true;
+
                 // Create workbook
                 const workbook = new ExcelJS.Workbook();
+                workbook.creator = 'MSWD Paluan System';
+                workbook.created = new Date();
 
-                // Define all barangays with their Roman numerals
+                // Predefined barangays with Roman numerals
                 const barangays = [{
                         roman: 'I',
                         name: 'I - Mapalad',
@@ -2211,32 +2665,33 @@ function formatEmpty($value)
                     }
                 ];
 
-                // Group data by barangay using the PHP data
+                // Group data by barangay
                 const dataByBarangay = {};
+                const otherBarangays = {};
 
-                // Initialize empty arrays for each barangay
+                // Initialize arrays for each barangay
                 barangays.forEach(barangay => {
                     dataByBarangay[barangay.filterName] = [];
                 });
 
-                // Track other barangays not in our list
-                const otherBarangays = {};
-
-                // Group the data from PHP
-                window.seniorsData.forEach(senior => {
-                    const barangayName = senior.basic['barangay'] || '';
+                // Process each senior and group by barangay
+                allSeniorsData.forEach(senior => {
+                    const basic = senior.basic;
+                    const barangayName = basic.barangay || '';
 
                     if (barangayName) {
-                        // Find matching barangay - try exact match first
+                        // Sanitize the barangay name before matching
+                        const cleanBarangayName = barangayName.trim();
+
                         let matchedBarangay = barangays.find(b =>
-                            b.filterName.toLowerCase() === barangayName.toLowerCase()
+                            b.filterName.toLowerCase() === cleanBarangayName.toLowerCase()
                         );
 
-                        // If not found, try partial match
+                        // Try partial match if exact not found
                         if (!matchedBarangay) {
                             matchedBarangay = barangays.find(b =>
-                                barangayName.toLowerCase().includes(b.filterName.toLowerCase()) ||
-                                b.filterName.toLowerCase().includes(barangayName.toLowerCase())
+                                cleanBarangayName.toLowerCase().includes(b.filterName.toLowerCase()) ||
+                                b.filterName.toLowerCase().includes(cleanBarangayName.toLowerCase())
                             );
                         }
 
@@ -2247,55 +2702,33 @@ function formatEmpty($value)
                             const rowData = createDataRow(senior);
                             dataByBarangay[matchedBarangay.filterName].push(rowData);
                         } else {
-                            // If barangay not in our list, add to "Other" category
-                            if (!otherBarangays[barangayName]) {
-                                otherBarangays[barangayName] = [];
+                            // Sanitize barangay name before using as key
+                            const sanitizedKey = sanitizeSheetName(cleanBarangayName);
+                            if (!otherBarangays[sanitizedKey]) {
+                                otherBarangays[sanitizedKey] = {
+                                    originalName: cleanBarangayName,
+                                    data: []
+                                };
                             }
                             const rowData = createDataRow(senior);
-                            otherBarangays[barangayName].push(rowData);
+                            otherBarangays[sanitizedKey].data.push(rowData);
                         }
                     }
                 });
 
-                // Create a summary sheet with ALL data
-                const summarySheet = workbook.addWorksheet('Summary');
-                addHeadersToWorksheet(summarySheet);
+                // 1. Create Summary Sheet with ALL data
+                try {
+                    const summarySheet = createWorksheetSafely(workbook, 'Summary', allSeniorsData.map(senior => createDataRow(senior)));
 
-                // Add all data to summary sheet
-                window.seniorsData.forEach(senior => {
-                    const rowData = createDataRow(senior);
-                    summarySheet.addRow(rowData);
-                });
-
-                // Style data rows in summary sheet
-                styleDataRows(summarySheet);
-
-                // Create individual sheets for each predefined barangay
-                barangays.forEach(barangay => {
-                    const sheetName = barangay.name;
-                    const worksheet = workbook.addWorksheet(sheetName);
-
-                    // Add headers
-                    addHeadersToWorksheet(worksheet);
-
-                    // Add data for this barangay
-                    const barangayData = dataByBarangay[barangay.filterName] || [];
-                    if (barangayData.length > 0) {
-                        barangayData.forEach(rowData => {
-                            worksheet.addRow(rowData);
-                        });
-
-                        // Style data rows
-                        styleDataRows(worksheet);
-
-                        // Add a summary row at the end
-                        const lastRow = worksheet.rowCount;
-                        worksheet.mergeCells(`A${lastRow + 2}:BJ${lastRow + 2}`);
-                        const summaryCell = worksheet.getCell(`A${lastRow + 2}`);
-                        summaryCell.value = `TOTAL FOR ${barangay.filterName.toUpperCase()}: ${barangayData.length} SENIOR CITIZENS`;
+                    // Add grand summary at the bottom
+                    if (summarySheet && summarySheet.rowCount > 12) {
+                        const lastRowSummary = summarySheet.rowCount;
+                        summarySheet.mergeCells(`A${lastRowSummary + 2}:BJ${lastRowSummary + 2}`);
+                        const summaryCell = summarySheet.getCell(`A${lastRowSummary + 2}`);
+                        summaryCell.value = `GRAND TOTAL: ${allSeniorsData.length} SENIOR CITIZENS`;
                         summaryCell.font = {
                             bold: true,
-                            size: 11,
+                            size: 12,
                             name: 'Calibri'
                         };
                         summaryCell.alignment = {
@@ -2305,47 +2738,51 @@ function formatEmpty($value)
                             type: 'pattern',
                             pattern: 'solid',
                             fgColor: {
-                                argb: 'FFE6F3FF'
+                                argb: 'FFC6E0B4'
                             }
                         };
-                    } else {
-                        // Add a message if no data for this barangay
-                        worksheet.mergeCells('A13:BJ13');
-                        const noDataCell = worksheet.getCell('A13');
-                        noDataCell.value = `No data found for ${barangay.filterName}`;
-                        noDataCell.font = {
-                            italic: true,
-                            size: 11,
-                            name: 'Calibri'
-                        };
-                        noDataCell.alignment = {
-                            horizontal: 'center'
-                        };
+                    }
+                } catch (summaryError) {
+                    console.error('Error creating summary sheet:', summaryError);
+                }
+
+                // 2. Create individual sheets for each predefined barangay
+                barangays.forEach(barangay => {
+                    const barangayData = dataByBarangay[barangay.filterName] || [];
+                    if (barangayData.length > 0) {
+                        createWorksheetSafely(workbook, barangay.name, barangayData);
                     }
                 });
 
-                // Create sheets for other barangays not in the predefined list
-                const otherBarangayNames = Object.keys(otherBarangays);
-                if (otherBarangayNames.length > 0) {
-                    // Create one sheet per other barangay if there are few, otherwise combine
-                    if (otherBarangayNames.length <= 5) {
-                        otherBarangayNames.forEach(barangayName => {
-                            const safeSheetName = barangayName.substring(0, 31); // Excel sheet name limit
-                            const worksheet = workbook.addWorksheet(safeSheetName);
+                // 3. Create sheets for other barangays
+                const otherBarangayKeys = Object.keys(otherBarangays);
+                if (otherBarangayKeys.length > 0) {
+                    if (otherBarangayKeys.length <= 10) {
+                        // Create individual sheets for other barangays (if not too many)
+                        otherBarangayKeys.forEach(key => {
+                            const barangayInfo = otherBarangays[key];
+                            createWorksheetSafely(workbook, barangayInfo.originalName, barangayInfo.data);
+                        });
+                    } else {
+                        // If too many other barangays, combine into one sheet
+                        let combinedData = [];
+                        let totalOther = 0;
 
-                            addHeadersToWorksheet(worksheet);
-
-                            const barangayData = otherBarangays[barangayName];
-                            barangayData.forEach(rowData => {
-                                worksheet.addRow(rowData);
+                        otherBarangayKeys.forEach(key => {
+                            const barangayInfo = otherBarangays[key];
+                            barangayInfo.data.forEach(rowData => {
+                                combinedData.push(rowData);
                             });
+                            totalOther += barangayInfo.data.length;
+                        });
 
-                            styleDataRows(worksheet);
+                        const otherSheet = createWorksheetSafely(workbook, 'Other Barangays', combinedData);
 
-                            const lastRow = worksheet.rowCount;
-                            worksheet.mergeCells(`A${lastRow + 2}:BJ${lastRow + 2}`);
-                            const summaryCell = worksheet.getCell(`A${lastRow + 2}`);
-                            summaryCell.value = `TOTAL FOR ${barangayName.toUpperCase()}: ${barangayData.length} SENIOR CITIZENS`;
+                        if (otherSheet && otherSheet.rowCount > 12) {
+                            const lastRowOther = otherSheet.rowCount;
+                            otherSheet.mergeCells(`A${lastRowOther + 4}:BJ${lastRowOther + 4}`);
+                            const summaryCell = otherSheet.getCell(`A${lastRowOther + 4}`);
+                            summaryCell.value = `TOTAL FOR ${otherBarangayKeys.length} OTHER BARANGAYS: ${totalOther} SENIOR CITIZENS`;
                             summaryCell.font = {
                                 bold: true,
                                 size: 11,
@@ -2361,118 +2798,58 @@ function formatEmpty($value)
                                     argb: 'FFE6F3FF'
                                 }
                             };
-                        });
-                    } else {
-                        // If too many other barangays, combine into one sheet
-                        const otherSheet = workbook.addWorksheet('Other Barangays');
-                        addHeadersToWorksheet(otherSheet);
-
-                        let totalOther = 0;
-                        otherBarangayNames.forEach(barangayName => {
-                            const barangayData = otherBarangays[barangayName];
-                            barangayData.forEach(rowData => {
-                                otherSheet.addRow(rowData);
-                            });
-                            totalOther += barangayData.length;
-                        });
-
-                        styleDataRows(otherSheet);
-
-                        const lastRow = otherSheet.rowCount;
-                        otherSheet.mergeCells(`A${lastRow + 2}:BJ${lastRow + 2}`);
-                        const summaryCell = otherSheet.getCell(`A${lastRow + 2}`);
-                        summaryCell.value = `TOTAL FOR ${otherBarangayNames.length} OTHER BARANGAYS: ${totalOther} SENIOR CITIZENS`;
-                        summaryCell.font = {
-                            bold: true,
-                            size: 11,
-                            name: 'Calibri'
-                        };
-                        summaryCell.alignment = {
-                            horizontal: 'center'
-                        };
-                        summaryCell.fill = {
-                            type: 'pattern',
-                            pattern: 'solid',
-                            fgColor: {
-                                argb: 'FFE6F3FF'
-                            }
-                        };
+                        }
                     }
                 }
 
-                // Generate filename
+                // Generate filename with filters
                 const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                const fileName = `Demographic_Master_List_${timestamp}.xlsx`;
+                const params = new URLSearchParams(window.location.search);
+                const searchTerm = params.get('search');
+                const barangayFilter = params.get('barangays');
 
-                // Save the file
+                let fileName = `Demographic_Master_List_${timestamp}`;
+
+                if (searchTerm) {
+                    fileName += `_search_${searchTerm.substring(0, 20).replace(/[^\w]/g, '_')}`;
+                }
+                if (barangayFilter) {
+                    fileName += `_barangay_filter`;
+                }
+
+                fileName += '.xlsx';
+
+                // Save file
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 });
                 saveAs(blob, fileName);
 
+                // Restore button
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+
                 // Show success message
-                const totalSheets = barangays.length + 1 + (otherBarangayNames.length > 0 ?
-                    (otherBarangayNames.length <= 5 ? otherBarangayNames.length : 1) : 0);
-                alert(`Excel file exported successfully with ${totalSheets} sheets!`);
+                const totalSheets = workbook.worksheets.length;
+                alert(`✅ Excel file exported successfully!\n\n📊 Total Records: ${allSeniorsData.length}\n📁 Total Sheets: ${totalSheets}\n💾 File: ${fileName}`);
 
             } catch (error) {
                 console.error('Error exporting to Excel:', error);
-                alert('Error exporting to Excel: ' + error.message);
-            }
-        }
 
-        // Helper function to style data rows
-        function styleDataRows(worksheet) {
-            for (let i = 13; i <= worksheet.rowCount; i++) {
-                const row = worksheet.getRow(i);
-                row.height = 20;
-                row.eachCell((cell, colNumber) => {
-                    cell.fill = {
-                        type: 'pattern',
-                        pattern: 'solid',
-                        fgColor: {
-                            argb: 'FFFFFFFF'
-                        }
-                    };
-                    cell.font = {
-                        color: {
-                            argb: 'FF000000'
-                        },
-                        name: 'Calibri',
-                        size: 9
-                    };
-                    cell.alignment = {
-                        vertical: 'middle',
-                        horizontal: 'center'
-                    };
-                    cell.border = {
-                        top: {
-                            style: 'thin',
-                            color: {
-                                argb: 'FFD9D9D9'
-                            }
-                        },
-                        bottom: {
-                            style: 'thin',
-                            color: {
-                                argb: 'FFD9D9D9'
-                            }
-                        },
-                        left: {
-                            style: 'thin',
-                            color: {
-                                argb: 'FFD9D9D9'
-                            }
-                        },
-                        right: {
-                            style: 'thin',
-                            color: {
-                                argb: 'FFD9D9D9'
-                            }
-                        }
-                    };
-                });
+                // Restore button
+                const exportBtn = document.querySelector('button[onclick*="exportToExcel"]');
+                if (exportBtn) {
+                    exportBtn.innerHTML = '<i class="fas fa-file-excel mr-2"></i>Export to Excel';
+                    exportBtn.disabled = false;
+                }
+
+                // Show user-friendly error message
+                if (error.message.includes('worksheet name') && error.message.includes('cannot include')) {
+                    alert('Error: Some barangay names contain invalid characters for Excel sheet names.\n\nPlease check your barangay names in the database and remove special characters like: * ? : \\ / [ ]');
+                } else {
+                    alert('Error exporting to Excel: ' + error.message);
+                }
             }
         }
 
@@ -2507,11 +2884,8 @@ function formatEmpty($value)
                 }, 800);
             });
 
-            // Update the Export to Excel button to use the new function
-            const exportButton = document.querySelector('button[onclick*="exportToExcel"]');
-            if (exportButton) {
-                exportButton.onclick = exportMasterlistToExcel;
-            }
+            // Remove the old exportMasterlistToExcel function call
+            // The exportToExcel function is already the main function
         });
     </script>
 </body>

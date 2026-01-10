@@ -1,7 +1,10 @@
 <?php
 require_once "../../php/login/staff_header.php";
+
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
+$_SESSION['session_context'] = 'staff';
+$_SESSION['user_type'] = 'Staff';
 
 $servername = "localhost";
 $dbname = "u401132124_mswd_seniors";
@@ -825,7 +828,10 @@ if (empty($profile_photo_url)) {
                 tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
                 try {
-                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}`);
+                    // Get staff user ID from PHP session
+                    const staffUserId = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
+                    const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff'); ?>;
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}&session_context=staff&staff_user_id=${staffUserId}`);
                     const data = await res.json();
 
                     tbody.innerHTML = "";
@@ -891,6 +897,10 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
+                    // Determine if we're in staff or admin context
+                    const isStaffPage = window.location.pathname.includes('staff_');
+                    const sessionContext = isStaffPage ? 'staff' : 'admin';
+                    const userId = <?php echo json_encode($_SESSION['user_id'] ?? 0); ?>;
                     const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                         method: "POST",
                         headers: {
@@ -900,6 +910,8 @@ if (empty($profile_photo_url)) {
                             applicant_id: window.currentApplicantId,
                             illness_name,
                             illness_date,
+                            session_context: sessionContext,
+                            [isStaffPage ? 'staff_user_id' : 'admin_user_id']: userId
                         }),
                     });
                     const data = await res.json();
@@ -1186,7 +1198,7 @@ if (empty($profile_photo_url)) {
                                     class="hidden absolute right-0 top-8 z-50 w-44 bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
                                         <li>
-                                            <a href="senior_view.php?session_context=<?php echo $ctx; ?>&id=${senior.applicant_id}" 
+                                            <a href="staff_senior_view.php?session_context=<?php echo $ctx; ?>&id=${senior.applicant_id}" 
                                                class="block py-2 cursor-pointer px-4 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 👁 View
                                             </a>
@@ -1723,6 +1735,7 @@ if (empty($profile_photo_url)) {
         });
 
         // ---------------- SEND TO INACTIVE FUNCTIONALITY ----------------
+        // ---------------- SEND TO INACTIVE FUNCTIONALITY ----------------
         window.markInactive = async (id) => {
             const applicantId = id;
             console.log('🔄 markInactive called with ID:', applicantId);
@@ -1746,60 +1759,60 @@ if (empty($profile_photo_url)) {
             inactiveModal.id = 'inactiveModal';
             inactiveModal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
             inactiveModal.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-95 opacity-0 transition-all duration-200">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Send to Inactive</h2>
-                            <button type="button" id="closeInactiveModal" class="text-gray-400 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            Mark <span class="font-semibold">${fullName}</span> as inactive?
-                        </p>
-                        
-                        <form id="inactiveForm" class="space-y-4">
-                            <input type="hidden" name="applicant_id" value="${applicantId}">
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Date of Inactivity *
-                                </label>
-                                <input type="date" name="date_of_inactive" required
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-500"
-                                    value="${new Date().toISOString().split('T')[0]}">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Reason for Inactivity *
-                                </label>
-                                <input type="text" name="reason" required
-                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-500"
-                                    placeholder="Enter reason for inactivity"
-                                    maxlength="255">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Please provide a clear reason for marking this senior as inactive
-                                </p>
-                            </div>
-                            
-                            <div class="flex justify-end space-x-3 pt-4">
-                                <button type="button" id="cancelInactive"
-                                    class="px-3 py-1 text-sm cursor-pointer font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500">
-                                    Cancel
-                                </button>
-                                <button type="submit" id="submitInactive"
-                                    class="px-3 py-1 text-sm cursor-pointer font-medium text-white bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors duration-200">
-                                    Mark as Inactive
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-95 opacity-0 transition-all duration-200">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Send to Inactive</h2>
+                    <button type="button" id="closeInactiveModal" class="text-gray-400 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
-            `;
+                
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Mark <span class="font-semibold">${fullName}</span> as inactive?
+                </p>
+                
+                <form id="inactiveForm" class="space-y-4">
+                    <input type="hidden" id="inactiveApplicantId" name="applicant_id" value="${applicantId}">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Date of Inactivity *
+                        </label>
+                        <input type="date" id="inactiveDate" name="date_of_inactive" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-500"
+                            value="${new Date().toISOString().split('T')[0]}">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Reason for Inactivity *
+                        </label>
+                        <input type="text" id="inactiveReason" name="reason" required
+                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-500"
+                            placeholder="Enter reason for inactivity"
+                            maxlength="255">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Please provide a clear reason for marking this senior as inactive
+                        </p>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelInactive"
+                            class="px-3 py-1 text-sm cursor-pointer font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitInactive"
+                            class="px-3 py-1 text-sm cursor-pointer font-medium text-white bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors duration-200">
+                            Mark as Inactive
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
 
             document.body.appendChild(inactiveModal);
             document.body.style.overflow = 'hidden';
@@ -1825,16 +1838,12 @@ if (empty($profile_photo_url)) {
             const handleSubmit = async (e) => {
                 e.preventDefault();
 
-                const formData = new FormData(form);
-                const data = {
-                    applicant_id: formData.get('applicant_id'),
-                    date_of_inactive: formData.get('date_of_inactive'),
-                    reason: formData.get('reason').trim()
-                };
+                const applicantId = modal.querySelector('#inactiveApplicantId').value;
+                const date_of_inactive = modal.querySelector('#inactiveDate').value;
+                const reason = modal.querySelector('#inactiveReason').value.trim();
 
                 // Validate
-                if (!data.reason) {
-                    // Use alert as fallback if showPopup is not available
+                if (!reason) {
                     if (typeof showPopup === 'function') {
                         showPopup('Please enter a reason for inactivity.', 'error');
                     } else {
@@ -1843,8 +1852,7 @@ if (empty($profile_photo_url)) {
                     return;
                 }
 
-                if (!data.date_of_inactive) {
-                    // Use alert as fallback if showPopup is not available
+                if (!date_of_inactive) {
                     if (typeof showPopup === 'function') {
                         showPopup('Please select a date of inactivity.', 'error');
                     } else {
@@ -1854,7 +1862,22 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    console.log('📤 Sending mark inactive request:', data);
+                    console.log('📤 Sending mark inactive request for staff...');
+
+                    // For STAFF context - get staff user data from PHP
+                    const staffUserId = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
+                    const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff User'); ?>;
+
+                    const data = {
+                        applicant_id: applicantId,
+                        date_of_inactive: date_of_inactive,
+                        reason: reason,
+                        session_context: 'staff',
+                        staff_user_id: staffUserId,
+                        staff_user_name: staffUserName
+                    };
+
+                    console.log('Staff data being sent:', data);
 
                     const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
                         method: 'POST',
@@ -1874,7 +1897,6 @@ if (empty($profile_photo_url)) {
                     // SUCCESS - Close modal and show popup
                     closeModal();
 
-                    // Use alert as fallback if showPopup is not available
                     if (typeof showPopup === 'function') {
                         showPopup('Senior successfully marked as inactive!', 'success');
                     } else {
@@ -1893,7 +1915,6 @@ if (empty($profile_photo_url)) {
 
                 } catch (error) {
                     console.error('❌ Error:', error);
-                    // Use alert as fallback if showPopup is not available
                     if (typeof showPopup === 'function') {
                         showPopup('Error: ' + error.message, 'error');
                     } else {
@@ -1930,7 +1951,7 @@ if (empty($profile_photo_url)) {
 
             // Focus on reason input
             setTimeout(() => {
-                const reasonInput = modal.querySelector('input[name="reason"]');
+                const reasonInput = modal.querySelector('#inactiveReason');
                 if (reasonInput) reasonInput.focus();
             }, 100);
 
@@ -1988,47 +2009,47 @@ if (empty($profile_photo_url)) {
             deceasedModal.id = 'deceasedModal';
             deceasedModal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
             deceasedModal.innerHTML = `
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-95 opacity-0 transition-all duration-200">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Mark as Deceased</h2>
-                    <button type="button" id="closeDeceasedModal" class="text-gray-400 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-95 opacity-0 transition-all duration-200">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Mark as Deceased</h2>
+                            <button type="button" id="closeDeceasedModal" class="text-gray-400 cursor-pointer hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            Mark <span class="font-semibold">${fullName}</span> as deceased?
+                        </p>
+                        
+                        <form id="deceasedForm" class="space-y-4">
+                            <input type="hidden" name="applicant_id" value="${applicantId}">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Date of Death *
+                                </label>
+                                <input type="date" name="date_of_death" required
+                                    class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-red-500"
+                                    value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            
+                            <div class="flex justify-end space-x-3 pt-4">
+                                <button type="button" id="cancelDeceased"
+                                    class="px-3 py-1 text-sm cursor-pointer font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500">
+                                    Cancel
+                                </button>
+                                <button type="submit" id="submitDeceased"
+                                    class="px-3 py-1 text-sm cursor-pointer font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200">
+                                    Confirm Deceased
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Mark <span class="font-semibold">${fullName}</span> as deceased?
-                </p>
-                
-                <form id="deceasedForm" class="space-y-4">
-                    <input type="hidden" name="applicant_id" value="${applicantId}">
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Date of Death *
-                        </label>
-                        <input type="date" name="date_of_death" required
-                            class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-red-500"
-                            value="${new Date().toISOString().split('T')[0]}">
-                    </div>
-                    
-                    <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" id="cancelDeceased"
-                            class="px-3 py-1 text-sm cursor-pointer font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500">
-                            Cancel
-                        </button>
-                        <button type="submit" id="submitDeceased"
-                            class="px-3 py-1 text-sm cursor-pointer font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200">
-                            Confirm Deceased
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    `;
+            `;
 
             document.body.appendChild(deceasedModal);
             document.body.style.overflow = 'hidden';
@@ -2072,6 +2093,93 @@ if (empty($profile_photo_url)) {
 
                 try {
                     console.log('📤 Sending mark deceased request:', data);
+
+                    // DETERMINE CONTEXT BASED ON CURRENT PAGE
+                    // Check URL path and other indicators
+                    const isStaffPage = window.location.pathname.includes('staff_') ||
+                        window.location.pathname.includes('/staff/') ||
+                        window.location.pathname.includes('staff_activelist') ||
+                        document.title.toLowerCase().includes('staff') ||
+                        document.body.classList.contains('staff-page');
+
+                    console.log('📱 Page analysis:');
+                    console.log('- Current URL:', window.location.pathname);
+                    console.log('- Current page title:', document.title);
+                    console.log('- Is staff page?', isStaffPage);
+
+                    // Add context-specific data
+                    if (isStaffPage) {
+                        // STAFF CONTEXT
+                        const staffUserId = <?php
+                                            // Get staff user ID from PHP
+                                            if (isset($_SESSION['staff_user_id'])) {
+                                                echo json_encode($_SESSION['staff_user_id']);
+                                            } elseif (isset($_SESSION['user_id'])) {
+                                                echo json_encode($_SESSION['user_id']);
+                                            } else {
+                                                echo '0';
+                                            }
+                                            ?>;
+
+                        const staffUserName = <?php
+                                                // Get staff name from PHP
+                                                if (isset($_SESSION['fullname'])) {
+                                                    echo json_encode($_SESSION['fullname']);
+                                                } elseif (isset($_SESSION['username'])) {
+                                                    echo json_encode($_SESSION['username']);
+                                                } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                                    echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                                } else {
+                                                    echo json_encode('Staff User');
+                                                }
+                                                ?>;
+
+                        console.log('👨‍💼 Adding staff context:');
+                        console.log('- staff_user_id:', staffUserId);
+                        console.log('- staff_user_name:', staffUserName);
+
+                        // Add to request data
+                        data.session_context = 'staff';
+                        data.staff_user_id = staffUserId;
+                        data.staff_user_name = staffUserName;
+
+                    } else {
+                        // ADMIN CONTEXT
+                        const adminUserId = <?php
+                                            // Get admin user ID from PHP
+                                            if (isset($_SESSION['admin_user_id'])) {
+                                                echo json_encode($_SESSION['admin_user_id']);
+                                            } elseif (isset($_SESSION['user_id'])) {
+                                                echo json_encode($_SESSION['user_id']);
+                                            } else {
+                                                echo '57';
+                                            }
+                                            ?>;
+
+                        const adminUserName = <?php
+                                                // Get admin name from PHP
+                                                if (isset($_SESSION['fullname'])) {
+                                                    echo json_encode($_SESSION['fullname']);
+                                                } elseif (isset($_SESSION['username'])) {
+                                                    echo json_encode($_SESSION['username']);
+                                                } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                                    echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                                } else {
+                                                    echo json_encode('Admin User');
+                                                }
+                                                ?>;
+
+                        console.log('👨‍💼 Adding admin context:');
+                        console.log('- admin_user_id:', adminUserId);
+                        console.log('- admin_user_name:', adminUserName);
+
+                        // Add to request data
+                        data.session_context = 'admin';
+                        data.admin_user_id = adminUserId;
+                        data.admin_user_name = adminUserName;
+                    }
+
+                    console.log('📦 Final data being sent:', data);
 
                     const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
                         method: 'POST',

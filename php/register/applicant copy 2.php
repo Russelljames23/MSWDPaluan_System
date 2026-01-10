@@ -24,12 +24,31 @@ ob_start();
 function initializeSessionForApplicant()
 {
     if (session_status() === PHP_SESSION_NONE) {
-        // Simply start the session - DO NOT change session name
+        // Check for session context from input
+        $sessionContext = null;
+        $input = file_get_contents('php://input');
+        
+        if (!empty($input)) {
+            $postData = json_decode($input, true);
+            if ($postData && isset($postData['session_context'])) {
+                $sessionContext = $postData['session_context'];
+            }
+        }
+        
+        if (!$sessionContext && isset($_GET['session_context'])) {
+            $sessionContext = $_GET['session_context'];
+        }
+        
+        // Set session name if context provided
+        if ($sessionContext && preg_match('/^[a-zA-Z0-9_-]+$/', $sessionContext)) {
+            session_name('SESS_' . $sessionContext);
+        }
+        
         @session_start();
         
         // Set default session context if not set
         if (!isset($_SESSION['session_context'])) {
-            $_SESSION['session_context'] = 'admin';
+            $_SESSION['session_context'] = $sessionContext ?: 'admin';
         }
         
         // Ensure basic session structure
