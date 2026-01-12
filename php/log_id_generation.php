@@ -1,76 +1,52 @@
 <?php
-// Start session but don't require it
+// Start session with proper context detection
 @session_start();
+
+// Force context based on referrer URL
+$referrer = $_SERVER['HTTP_REFERER'] ?? '';
+if (strpos($referrer, 'staff_generate_id.php') !== false) {
+    $_SESSION['session_context'] = 'Staff';
+    error_log("Setting context to STAFF based on referrer: " . $referrer);
+} elseif (strpos($referrer, 'generate_id.php') !== false) {
+    $_SESSION['session_context'] = 'Admin';
+    error_log("Setting context to ADMIN based on referrer: " . $referrer);
+} else {
+    // Default to admin if can't determine
+    $_SESSION['session_context'] = 'Admin';
+    error_log("Defaulting context to ADMIN. Referrer: " . $referrer);
+}
+
+// Also check POST data for explicit context
+$input = json_decode(file_get_contents('php://input'), true);
+if ($input && isset($input['user_context'])) {
+    if ($input['user_context'] === 'Staff') {
+        $_SESSION['session_context'] = 'Staff';
+        error_log("Setting context to STAFF based on POST data");
+    } elseif ($input['user_context'] === 'Admin') {
+        $_SESSION['session_context'] = 'Admin';
+        error_log("Setting context to ADMIN based on POST data");
+    }
+}
+
 require_once "db.php";
 require_once "id_generation_functions.php";
 
 header('Content-Type: application/json');
-
-// Get POST data
-$input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input || !isset($input['seniors']) || !isset($input['osca_head']) || !isset($input['municipal_mayor'])) {
     echo json_encode(['success' => false, 'error' => 'Invalid input data']);
     exit;
 }
 
-// Get user info - FIRST try from POST data, then from session
-$user_id = null;
-$user_name = 'System Administrator';
+// Get user info with proper context detection
+$user_info = getUserInfoForLogging();
 
-// Try to get user from session first (most reliable)
-if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
-    $user_id = intval($_SESSION['id']);
-
-    // Get user name from session or database
-    if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
-        $user_name = trim($_SESSION['fullname']);
-    } elseif (isset($_SESSION['firstname']) || isset($_SESSION['lastname'])) {
-        $user_name = trim(($_SESSION['firstname'] ?? '') . ' ' . ($_SESSION['lastname'] ?? ''));
-    }
-
-    // If user name is still empty, get from database
-    if (empty($user_name) || $user_name === ' ') {
-        try {
-            $user_sql = "SELECT CONCAT(firstname, ' ', lastname) as fullname FROM users WHERE id = ?";
-            $user_stmt = $conn->prepare($user_sql);
-            $user_stmt->execute([$user_id]);
-            $user_data = $user_stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user_data && !empty($user_data['fullname'])) {
-                $user_name = trim($user_data['fullname']);
-            }
-        } catch (Exception $e) {
-            // Silently fail and use default
-        }
-    }
-}
-
-// If still no valid user_id, use admin user (id 57 from your users table)
-if (!$user_id || $user_id <= 0) {
-    $user_id = 57; // Default to admin user from your users table
-
-    // Get admin name from database
-    try {
-        $admin_sql = "SELECT CONCAT(firstname, ' ', lastname) as fullname FROM users WHERE id = ?";
-        $admin_stmt = $conn->prepare($admin_sql);
-        $admin_stmt->execute([$user_id]);
-        $admin_data = $admin_stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($admin_data && !empty($admin_data['fullname'])) {
-            $user_name = trim($admin_data['fullname']);
-        } else {
-            $user_name = 'Admin'; // Fallback
-        }
-    } catch (Exception $e) {
-        $user_name = 'Admin';
-    }
-}
-
-// Validate user info
-if (empty($user_name) || $user_name === ' ') {
-    $user_name = 'System Administrator';
-}
+error_log("=== LOG_ID_GENERATION ===");
+error_log("Final user context: " . $user_info['context']);
+error_log("User ID: " . $user_info['id']);
+error_log("User Name: " . $user_info['name']);
+error_log("User Type: " . $user_info['user_type']);
+error_log("Seniors count: " . count($input['seniors']));
 
 // Validate seniors data
 if (!is_array($input['seniors']) || count($input['seniors']) === 0) {
@@ -86,19 +62,43 @@ $data = [
 ];
 
 try {
-    // Log the ID generation - WITHOUT triggering activity logs
-    $result = logIDGeneration(0, $data, $user_id, $user_name);
+    // Log the ID generation with proper user context
+    $result = logIDGeneration($data, $user_info['id'], $user_info['name'], $user_info['context']);
 
     if ($result['success']) {
-        echo json_encode([
+        $response = [
             'success' => true,
             'batch_number' => $result['batch_number'],
             'batch_id' => $result['batch_id'],
-            'message' => 'ID generation logged successfully'
-        ]);
+            'message' => 'ID generation logged successfully',
+            'user_info' => [
+                'id' => $user_info['id'],
+                'name' => $user_info['name'],
+                'type' => $user_info['user_type'],
+                'context' => $user_info['context']
+            ],
+            'user_context' => $user_info['context']
+        ];
+
+        error_log("Success response: " . json_encode($response));
+        echo json_encode($response);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to log ID generation: ' . ($result['error'] ?? 'Unknown error')]);
+        $response = [
+            'success' => false,
+            'error' => 'Failed to log ID generation: ' . ($result['error'] ?? 'Unknown error'),
+            'user_context' => $user_info['context']
+        ];
+
+        error_log("Error response: " . json_encode($response));
+        echo json_encode($response);
     }
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    $response = [
+        'success' => false,
+        'error' => 'Database error: ' . $e->getMessage(),
+        'user_context' => $user_info['context'] ?? 'unknown'
+    ];
+
+    error_log("Exception response: " . json_encode($response));
+    echo json_encode($response);
 }

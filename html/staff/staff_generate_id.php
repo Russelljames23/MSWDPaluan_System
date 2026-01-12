@@ -251,11 +251,57 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate Senior Citizen ID - MSWD Paluan</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+
+            /* Inner glow effect */
+            box-shadow:
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                box-shadow:
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+
+            to {
+                box-shadow:
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @media print {
             body * {
@@ -292,7 +338,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             body {
                 margin: 0;
                 padding: 0;
-                font-family: "Times New Roman", Times, serif !important;
+                /* font-family: "Times New Roman", Times, serif !important; */
             }
 
             /* Ensure benefits page prints correctly */
@@ -487,7 +533,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         }
 
         /* Add this to ensure all text uses Times New Roman */
-        body,
+
         html,
         .preview-content,
         #preview-content {
@@ -501,6 +547,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
 <body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
+        <!-- Navigation remains the same -->
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
@@ -521,42 +568,14 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="#" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4">
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                            PALUAN</span>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
                     </a>
-                    <form action="#" method="GET" class="hidden md:block md:pl-2">
-                        <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
-                            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <input type="text" name="email" id="topbar-search"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Search" />
-                        </div>
-                    </form>
                 </div>
-                <!-- UserProfile -->
                 <div class="flex items-center lg:order-2">
-                    <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">Toggle search</span>
-                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </button>
                     <button type="button"
                         class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -565,17 +584,14 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
-                    <!-- Dropdown menu -->
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                                 <?php
-                                // Display fullname with fallback
                                 if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                     echo htmlspecialchars($_SESSION['fullname']);
                                 } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                    // Construct fullname from first and last name if available
                                     echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                                 } else {
                                     echo 'User';
@@ -584,11 +600,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
                                 <?php
-                                // Display user type with proper formatting
                                 if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                     echo htmlspecialchars($_SESSION['user_type']);
                                 } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                    // Fallback to role_name if available
                                     echo htmlspecialchars($_SESSION['role_name']);
                                 } else {
                                     echo 'User Type';
@@ -599,8 +613,9 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                    out</a>
+                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -613,152 +628,84 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
             <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-                <form action="#" method="GET" class="md:hidden mb-2">
-                    <label for="sidebar-search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="text" name="search" id="sidebar-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Search" />
-                    </div>
-                </form>
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="staffindex.php?session_context=<?php echo $ctx; ?>"
+                        <a href="./staffindex.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="currentColor"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
-                                <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
-                                <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
-                                <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
-                                <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
-                            </svg>
-
+                            <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="staff_register.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <g transform="translate(24,0) scale(-1,1)">
-                                    <path fill-rule="evenodd"
-                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                        clip-rule="evenodd" />
-                                </g>
-                            </svg>
+                        <a href="./staff_register.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                    d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                            </svg>
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                            <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-chevron-down"></i>
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="staff_activelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
-                                    List</a>
+                                <a href="./staff_activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
+                                </a>
                             </li>
                             <li>
-                                <a href="staff_inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                    List</a>
+                                <a href="./staff_inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                                </a>
                             </li>
                             <li>
-                                <a href="staff_deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                    List</a>
+                                <a href="./staff_deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                                </a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="staff_benefits.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                    clip-rule="evenodd" />
-                                <path fill-rule="evenodd"
-                                    d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <a href="./staff_benefits.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Benefits</span>
                         </a>
                     </li>
                     <li>
                         <a href="#"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fas fa-id-card w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
                             <span class="ml-3">Generate ID</span>
                         </a>
                     </li>
                     <li>
-                        <a href="staff_report.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                            </svg>
-
+                        <a href="./staff_report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
                 </ul>
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
-                        <a href="staff_profile.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                        <a href="./staff_archived.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Archived</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./staff_profile.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Settings</span>
                         </a>
                     </li>
@@ -856,7 +803,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             <tbody id="seniors-table-body">
                                 <?php if (empty($seniors)): ?>
                                     <tr>
-                                        <td colspan="10" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="11" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                             No active senior citizens found.
                                         </td>
                                     </tr>
@@ -886,6 +833,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                     data-age="<?php echo htmlspecialchars($senior['age'] ?? ''); ?>"
                                                     data-gender="<?php echo htmlspecialchars($senior['gender'] ?? ''); ?>"
                                                     data-barangay="<?php echo htmlspecialchars($senior['barangay'] ?? ''); ?>"
+                                                    data-municipality="<?php echo htmlspecialchars($senior['municipality'] ?? 'Paluan'); ?>"
+                                                    data-province="<?php echo htmlspecialchars($senior['province'] ?? 'Occidental Mindoro'); ?>"
                                                     data-id-number="<?php echo htmlspecialchars($senior['id_number'] ?? 'N/A'); ?>"
                                                     data-date-issued="<?php echo htmlspecialchars($senior['date_of_registration'] ?? ''); ?>"
                                                     data-local-control="<?php echo htmlspecialchars($senior['local_control_number'] ?? ''); ?>">
@@ -1031,7 +980,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             </div>
 
                             <div class="pt-4 border-t dark:border-gray-700">
-
                                 <div class="flex flex-wrap gap-3">
                                     <button id="preview-ids-btn"
                                         class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-blue-300 focus:outline-none inline-flex items-center">
@@ -1040,19 +988,19 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                         </svg>
                                         Preview IDs
                                     </button>
-                                    <!-- <button id="generate-pdf-btn"
-                                        class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-green-300 focus:outline-none inline-flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" />
-                                        </svg>
-                                        Generate PDF
-                                    </button> -->
                                     <button id="print-ids-btn"
                                         class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-purple-300 focus:outline-none inline-flex items-center">
                                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
                                         </svg>
                                         Print IDs
+                                    </button>
+                                    <button id="clear-selection-btn"
+                                        class="px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-gray-300 focus:outline-none inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        Clear Selection
                                     </button>
                                 </div>
                             </div>
@@ -1106,72 +1054,47 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/staff_tailwind.config.js"></script>
-    <script src="../../js/staff_theme.js"></script>
+    <script src="/MSWDPALUAN_SYSTEM-MAIN/js/tailwind.config.js"></script>
     <script>
-        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
-        // Initialize theme from localStorage or system preference
+        // ---------- THEME INITIALIZATION ----------
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
-        (function() {
-            // Use the same StaffTheme namespace
-            const StaffTheme = {
-                init: function() {
-                    const savedTheme = localStorage.getItem('staff_theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = 'light';
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
 
-                    let theme = 'light';
-                    if (savedTheme) {
-                        theme = savedTheme;
-                    } else if (systemPrefersDark) {
-                        theme = 'dark';
-                    }
+            setTheme(theme);
+        }
 
-                    this.set(theme);
-                    return theme;
-                },
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
-                set: function(theme) {
-                    const root = document.documentElement;
-                    const wasDark = root.classList.contains('dark');
-                    const isDark = theme === 'dark';
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const theme = e.newValue;
+                setTheme(theme);
+            }
+        });
 
-                    if (isDark && !wasDark) {
-                        root.classList.add('dark');
-                        localStorage.setItem('staff_theme', 'dark');
-                    } else if (!isDark && wasDark) {
-                        root.classList.remove('dark');
-                        localStorage.setItem('staff_theme', 'light');
-                    }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
 
-                    // Dispatch event for staff components
-                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
-                }
-            };
-
-            // Initialize theme
-            StaffTheme.init();
-
-            // Listen for storage events
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'staff_theme') {
-                    const theme = e.newValue;
-                    const currentIsDark = document.documentElement.classList.contains('dark');
-                    const newIsDark = theme === 'dark';
-
-                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
-                        StaffTheme.set(theme);
-                    }
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('staff_theme')) {
-                    StaffTheme.set(e.matches ? 'dark' : 'light');
-                }
-            });
-        })();
+        initTheme();
     </script>
     <script>
         // Global variables
@@ -1179,31 +1102,36 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         let currentPreviewPage = 1;
         let totalPreviewPages = 1;
         let allPreviewPages = [];
+        let pageChangeInProgress = false;
 
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Load saved selections from localStorage
+            loadSelectionsFromStorage();
+
+            // Initialize checkboxes based on saved selections
+            initializeCheckboxes();
+
             // Event listeners for buttons
-            document.getElementById('select-all-btn').addEventListener('click', selectAll);
+            document.getElementById('select-all-btn').addEventListener('click', selectAllOnCurrentPage);
             document.getElementById('deselect-all-btn').addEventListener('click', deselectAll);
             document.getElementById('master-checkbox').addEventListener('change', toggleMasterCheckbox);
             document.getElementById('preview-ids-btn').addEventListener('click', previewIDs);
             document.getElementById('print-ids-btn').addEventListener('click', printIDs);
+            document.getElementById('clear-selection-btn').addEventListener('click', clearAllSelections);
             document.getElementById('close-preview-btn').addEventListener('click', closePreview);
             document.getElementById('print-preview-btn').addEventListener('click', printPreview);
 
-            // Use event delegation for buttons in the modal (which might not exist yet)
+            // Use event delegation for buttons in the modal
             document.addEventListener('click', function(e) {
-                // Check if the clicked element is the prev page button
                 if (e.target && e.target.id === 'prev-page-btn') {
                     prevPage();
                 }
 
-                // Check if the clicked element is the next page button
                 if (e.target && e.target.id === 'next-page-btn') {
                     nextPage();
                 }
 
-                // Also check if clicked on a child element inside the button
                 if (e.target && (e.target.closest('#prev-page-btn'))) {
                     prevPage();
                 }
@@ -1221,35 +1149,99 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             // Add event listeners to checkboxes
             document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('senior-checkbox')) {
-                    const checkbox = e.target;
-                    const id = checkbox.dataset.id;
-                    const name = checkbox.dataset.name;
-
-                    if (checkbox.checked) {
-                        selectedSeniors.set(id, {
-                            name: name,
-                            birthdate: checkbox.dataset.birthdate,
-                            age: checkbox.dataset.age,
-                            gender: checkbox.dataset.gender,
-                            barangay: checkbox.dataset.barangay,
-                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
-                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
-                            idNumber: checkbox.dataset.idNumber,
-                            dateIssued: checkbox.dataset.dateIssued, // This is date_of_registration from database
-                            localControl: checkbox.dataset.localControl
-                        });
-                    } else {
-                        selectedSeniors.delete(id);
-                    }
-
-                    updateSelectedList();
-                    updateMasterCheckbox();
+                    handleCheckboxChange(e.target);
                 }
             });
 
-            // Update selected list initially
+            // Save selections before page navigation
+            document.addEventListener('click', function(e) {
+                const paginationLink = e.target.closest('.pagination-btn, a[href*="page="]');
+                if (paginationLink && !paginationLink.classList.contains('active')) {
+                    saveSelectionsToStorage();
+                }
+            });
+
+            // Initialize selected list
             updateSelectedList();
         });
+
+        // Save selections to localStorage
+        function saveSelectionsToStorage() {
+            const selections = {};
+            selectedSeniors.forEach((value, key) => {
+                selections[key] = value;
+            });
+            localStorage.setItem('selectedSeniors', JSON.stringify(selections));
+        }
+
+        // Load selections from localStorage
+        function loadSelectionsFromStorage() {
+            const saved = localStorage.getItem('selectedSeniors');
+            if (saved) {
+                try {
+                    const selections = JSON.parse(saved);
+                    selectedSeniors = new Map(Object.entries(selections));
+                } catch (e) {
+                    console.error('Error loading selections:', e);
+                    selectedSeniors = new Map();
+                }
+            }
+        }
+
+        // Clear all selections from localStorage and memory
+        function clearAllSelections() {
+            if (confirm('Are you sure you want to clear all selected seniors?')) {
+                selectedSeniors.clear();
+                localStorage.removeItem('selectedSeniors');
+
+                // Uncheck all checkboxes
+                document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+
+                updateSelectedList();
+                updateMasterCheckbox();
+                showNotification('All selections cleared successfully', 'success');
+            }
+        }
+
+        // Initialize checkboxes based on saved selections
+        function initializeCheckboxes() {
+            document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
+                const id = checkbox.dataset.id;
+                if (selectedSeniors.has(id)) {
+                    checkbox.checked = true;
+                }
+            });
+            updateMasterCheckbox();
+        }
+
+        // Handle checkbox change
+        function handleCheckboxChange(checkbox) {
+            const id = checkbox.dataset.id;
+            const name = checkbox.dataset.name;
+
+            if (checkbox.checked) {
+                selectedSeniors.set(id, {
+                    name: name,
+                    birthdate: checkbox.dataset.birthdate,
+                    age: checkbox.dataset.age,
+                    gender: checkbox.dataset.gender,
+                    barangay: checkbox.dataset.barangay,
+                    municipality: checkbox.dataset.municipality || 'Paluan',
+                    province: checkbox.dataset.province || 'Occidental Mindoro',
+                    idNumber: checkbox.dataset.idNumber,
+                    dateIssued: checkbox.dataset.dateIssued,
+                    localControl: checkbox.dataset.localControl
+                });
+            } else {
+                selectedSeniors.delete(id);
+            }
+
+            updateSelectedList();
+            updateMasterCheckbox();
+            saveSelectionsToStorage();
+        }
 
         // Filter table based on search and filters
         function filterTable() {
@@ -1283,6 +1275,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
                 row.style.display = show ? '' : 'none';
             });
+
+            updateMasterCheckbox();
         }
 
         // Update selected list display
@@ -1300,15 +1294,15 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             let html = '<div class="space-y-1 max-h-32 overflow-y-auto">';
             selectedSeniors.forEach((senior, id) => {
                 html += `
-            <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
-                <span class="truncate">${senior.name}</span>
-                <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        `;
+                    <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                        <span class="truncate">${senior.name}</span>
+                        <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
             });
             html += '</div>';
             listContainer.innerHTML = html;
@@ -1318,50 +1312,77 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         function removeSelected(id) {
             selectedSeniors.delete(id);
 
-            // Uncheck in table
+            // Uncheck in table if visible
             const checkbox = document.querySelector(`.senior-checkbox[data-id="${id}"]`);
             if (checkbox) checkbox.checked = false;
 
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Select all seniors on current page
-        function selectAll() {
+        function selectAllOnCurrentPage() {
             const checkboxes = document.querySelectorAll('.senior-checkbox');
+            let selectedCount = 0;
+
             checkboxes.forEach(checkbox => {
                 if (checkbox.closest('tr').style.display !== 'none') {
-                    checkbox.checked = true;
-                    const id = checkbox.dataset.id;
-                    if (!selectedSeniors.has(id)) {
-                        selectedSeniors.set(id, {
-                            name: checkbox.dataset.name,
-                            birthdate: checkbox.dataset.birthdate,
-                            age: checkbox.dataset.age,
-                            gender: checkbox.dataset.gender,
-                            barangay: checkbox.dataset.barangay,
-                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
-                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
-                            idNumber: checkbox.dataset.idNumber,
-                            dateIssued: checkbox.dataset.dateIssued,
-                            localControl: checkbox.dataset.localControl
-                        });
+                    if (!checkbox.checked) {
+                        checkbox.checked = true;
+                        const id = checkbox.dataset.id;
+                        if (!selectedSeniors.has(id)) {
+                            selectedSeniors.set(id, {
+                                name: checkbox.dataset.name,
+                                birthdate: checkbox.dataset.birthdate,
+                                age: checkbox.dataset.age,
+                                gender: checkbox.dataset.gender,
+                                barangay: checkbox.dataset.barangay,
+                                municipality: checkbox.dataset.municipality || 'Paluan',
+                                province: checkbox.dataset.province || 'Occidental Mindoro',
+                                idNumber: checkbox.dataset.idNumber,
+                                dateIssued: checkbox.dataset.dateIssued,
+                                localControl: checkbox.dataset.localControl
+                            });
+                            selectedCount++;
+                        }
                     }
                 }
             });
 
+            if (selectedCount > 0) {
+                showNotification(`Added ${selectedCount} seniors from current page to selection`, 'success');
+            }
+
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Deselect all seniors
         function deselectAll() {
-            selectedSeniors.clear();
-            document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
+            // Only deselect visible checkboxes on current page
+            const checkboxes = document.querySelectorAll('.senior-checkbox:checked');
+            let deselectedCount = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.closest('tr').style.display !== 'none') {
+                    const id = checkbox.dataset.id;
+                    if (selectedSeniors.has(id)) {
+                        selectedSeniors.delete(id);
+                        checkbox.checked = false;
+                        deselectedCount++;
+                    }
+                }
             });
+
+            if (deselectedCount > 0) {
+                showNotification(`Removed ${deselectedCount} seniors from current page from selection`, 'success');
+            }
+
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Toggle master checkbox
@@ -1369,7 +1390,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             const masterCheckbox = document.getElementById('master-checkbox');
 
             if (masterCheckbox.checked) {
-                selectAll();
+                selectAllOnCurrentPage();
             } else {
                 deselectAll();
             }
@@ -1378,13 +1399,13 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Update master checkbox state
         function updateMasterCheckbox() {
             const masterCheckbox = document.getElementById('master-checkbox');
-            const checkboxes = document.querySelectorAll('.senior-checkbox:not([style*="display: none"])');
-            const checkedCount = document.querySelectorAll('.senior-checkbox:checked').length;
+            const visibleCheckboxes = document.querySelectorAll('.senior-checkbox:not([style*="display: none"])');
+            const visibleChecked = document.querySelectorAll('.senior-checkbox:checked:not([style*="display: none"])');
 
-            if (checkedCount === 0) {
+            if (visibleChecked.length === 0) {
                 masterCheckbox.checked = false;
                 masterCheckbox.indeterminate = false;
-            } else if (checkedCount === checkboxes.length) {
+            } else if (visibleChecked.length === visibleCheckboxes.length) {
                 masterCheckbox.checked = true;
                 masterCheckbox.indeterminate = false;
             } else {
@@ -1396,7 +1417,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Preview IDs
         function previewIDs() {
             if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
+                showNotification('Please select at least one senior citizen.', 'warning');
                 return;
             }
 
@@ -1442,12 +1463,12 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             return pages;
         }
 
-        // Generate front page with ID cards
+        // Generate front page with ID cards (same as before)
         function generateFrontPage(seniors) {
             let html = `
-        <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
-            <div class="print-grid">
-    `;
+                <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
+                    <div class="print-grid">
+            `;
 
             seniors.forEach(senior => {
                 // Format birth date
@@ -1475,66 +1496,66 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 }
 
                 html += `
-            <div class="id-card">
-                <!-- Republic Header -->
-                <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
-                    <div>
-                        <div style="font-size: 7.5pt;">Republic of the Philippines</div>
-                        <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
-                        <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
-                    </div>
-                    <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
-                </div>
-                
-                <!-- ID Content -->
-                <div class="id-content" style="font-size: 8pt;">
-                    <div style="margin-bottom: 1px;" class="name flex flex-row gap-1">
-                        <div style="font-weight: bold; font-size: 8pt;">Name:</div>
-                        <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
-                    </div>
-                    <div class="3rdrow flex flex-row justify-between align-middle mt-1">
-                        <div class="dsd flex flex-col text-align: left; w-[2.15in]">
-                            <div style="margin-bottom: 2px; " class="address flex flex-row">
-                                <div style="font-weight: bold; font-size: 8pt;">Address:</div>
-                                <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${fullAddress || 'N/A'}</div>
+                    <div class="id-card">
+                        <!-- Republic Header -->
+                        <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                            <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
+                            <div>
+                                <div style="font-size: 7.5pt;">Republic of the Philippines</div>
+                                <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
+                                <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
-                                <div class="dob text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dob}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
+                            <img src="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png" alt="Mindoro Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
+                        </div>
+                        
+                        <!-- ID Content -->
+                        <div class="id-content" style="font-size: 8pt;">
+                            <div style="margin-bottom: 1px;" class="name flex flex-row gap-1">
+                                <div style="font-weight: bold; font-size: 8pt;">Name:</div>
+                                <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
+                            </div>
+                            <div class="3rdrow flex flex-row justify-between align-middle mt-1">
+                                <div class="dsd flex flex-col text-align: left; w-[2.15in]">
+                                    <div style="margin-bottom: 2px; " class="address flex flex-row">
+                                        <div style="font-weight: bold; font-size: 8pt;">Address:</div>
+                                        <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${fullAddress || 'N/A'}</div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
+                                        <div class="dob text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dob}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
+                                        </div>
+                                        <div  class="gender text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${genderCode}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Sex</div>
+                                        </div>
+                                        <div  class="dateissued text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div  class="gender text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${genderCode}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Sex</div>
+                                <div style="height:1in; width:1in; border: 1px solid #000;" class="idpicture"></div>
+                            </div>
+                            <div class="flex flex-row justify-between align-middle">
+                                <div style="text-align: left;">
+                                    <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
                                 </div>
-                                <div  class="dateissued text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
+                                <div style="text-align: right; margin-right:0.5in;">
+                                    <div style="font-size: 8pt; font-weight: bold;" class="validity-number">
+                                        I.D No. <span style="font-weight: bold; text-decoration: underline;" class="id-number">${idNumber}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div style="height:1in; width:1in; border: 1px solid #000;" class="idpicture"></div>
-                    </div>
-                    <div class="flex flex-row justify-between align-middle">
-                        <div style="text-align: left;">
-                            <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
-                            <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
-                        </div>
-                        <div style="text-align: right; margin-right:0.5in;">
-                            <div style="font-size: 8pt; font-weight: bold;" class="validity-number">
-                                I.D No. <span style="font-weight: bold; text-decoration: underline;" class="id-number">${idNumber}</span>
-                            </div>
+                        
+                        <!-- Non-Transferable Notice -->
+                        <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
+                            THIS CARD IS NON-TRANSFERABLE
                         </div>
                     </div>
-                </div>
-                
-                <!-- Non-Transferable Notice -->
-                <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
-                    THIS CARD IS NON-TRANSFERABLE
-                </div>
-            </div>
-        `;
+                `;
             });
 
             // Fill empty spots with blank ID cards (to maintain 9 per page)
@@ -1543,57 +1564,57 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
 
             html += `
-            </div>
-        </div>
-    `;
+                    </div>
+                </div>
+            `;
 
             return html;
         }
 
-        // Generate back page with benefits (9 copies, one for each ID on front page)
+        // Generate back page with benefits (same as before)
         function generateBackPage(oscaHead, municipalMayor) {
             return `
-        <div class="print-page benefits-page">
-            <div class="print-grid">
-                ${Array(9).fill().map(() => `
-                <div class="benefits-card">
-                    <div class="benefits-header">
-                        Benefits and Privileges under Republic Act No. 9994
-                    </div>
-                    
-                    <div class="benefits-list">
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in purchase medicines</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount on theatres, cinema houses and concert halls, etc.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in fare for domestic air, sea travel and public land transportation</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount in basic necessities and prime commodities</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 12% VAT - exemption on the purchase of goods & service which are entitled to the 20% discount</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
-                        
-                        <div class="benefits-notice">
-                            Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
-                        </div>
-                    </div>
-                    
-                    <div class="benefits-footer">
-                        <div class="signatures-container">
-                            <div class="signature-item">
-                                <div class="signature-name">${oscaHead}</div>
-                                <div class="signature-title">OSCA HEAD</div>
+                <div class="print-page benefits-page">
+                    <div class="print-grid">
+                        ${Array(9).fill().map(() => `
+                        <div class="benefits-card">
+                            <div class="benefits-header">
+                                Benefits and Privileges under Republic Act No. 9994
                             </div>
-                            <div class="signature-item">
-                                <div class="signature-name">${municipalMayor}</div>
-                                <div class="signature-title">Municipal Mayor</div>
+                            
+                            <div class="benefits-list">
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in purchase medicines</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount on theatres, cinema houses and concert halls, etc.</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in fare for domestic air, sea travel and public land transportation</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount in basic necessities and prime commodities</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 12% VAT - exemption on the purchase of goods & service which are entitled to the 20% discount</div>
+                                <div><img src="/MSWDPALUAN_SYSTEM-MAIN/img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
+                                
+                                <div class="benefits-notice">
+                                    Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
+                                </div>
+                            </div>
+                            
+                            <div class="benefits-footer">
+                                <div class="signatures-container">
+                                    <div class="signature-item">
+                                        <div class="signature-name">${oscaHead}</div>
+                                        <div class="signature-title">OSCA HEAD</div>
+                                    </div>
+                                    <div class="signature-item">
+                                        <div class="signature-name">${municipalMayor}</div>
+                                        <div class="signature-title">Municipal Mayor</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        `).join('')}
                     </div>
                 </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
+            `;
         }
 
         // Format date to MM/DD/YYYY
@@ -1618,12 +1639,10 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         function displayPreviewPage() {
             const previewContent = document.getElementById('preview-content');
             if (allPreviewPages[currentPreviewPage - 1]) {
-                // Create a centered container for the preview
                 const container = document.createElement('div');
                 container.className = 'flex flex-col items-center justify-center w-full';
                 container.innerHTML = allPreviewPages[currentPreviewPage - 1];
 
-                // Clear and add centered content
                 previewContent.innerHTML = '';
                 previewContent.appendChild(container);
             }
@@ -1634,7 +1653,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             document.getElementById('current-page').textContent = currentPreviewPage;
             document.getElementById('total-pages').textContent = totalPreviewPages;
 
-            // Show/hide navigation buttons
             document.getElementById('prev-page-btn').style.display = currentPreviewPage > 1 ? 'block' : 'none';
             document.getElementById('next-page-btn').style.display = currentPreviewPage < totalPreviewPages ? 'block' : 'none';
         }
@@ -1657,62 +1675,16 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
         }
 
-        // Generate PDF
-        function generatePDF() {
-            if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
-                return;
-            }
-
-            // Prepare data for PDF generation
-            const seniorsArray = Array.from(selectedSeniors, ([id, data]) => ({
-                id,
-                ...data
-            }));
-
-            const oscaHead = document.getElementById('osca-head').value;
-            const municipalMayor = document.getElementById('municipal-mayor').value;
-
-            // Create form and submit to PHP script
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '../MSWDPALUAN_SYSTEM-MAIN/php/generate_id_pdf.php';
-            form.style.display = 'none';
-
-            const seniorsInput = document.createElement('input');
-            seniorsInput.type = 'hidden';
-            seniorsInput.name = 'seniors';
-            seniorsInput.value = JSON.stringify(seniorsArray);
-            form.appendChild(seniorsInput);
-
-            const oscaHeadInput = document.createElement('input');
-            oscaHeadInput.type = 'hidden';
-            oscaHeadInput.name = 'osca_head';
-            oscaHeadInput.value = oscaHead;
-            form.appendChild(oscaHeadInput);
-
-            const mayorInput = document.createElement('input');
-            mayorInput.type = 'hidden';
-            mayorInput.name = 'municipal_mayor';
-            mayorInput.value = municipalMayor;
-            form.appendChild(mayorInput);
-
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-        }
-
         // Print IDs (direct print from browser)
         function printIDs() {
             if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
+                showNotification('Please select at least one senior citizen.', 'warning');
                 return;
             }
 
             // First show preview, then trigger print
             previewIDs();
 
-            // After a short delay, trigger print
             setTimeout(() => {
                 document.getElementById('print-preview-btn').click();
             }, 500);
@@ -1735,7 +1707,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     <title>Senior Citizen IDs - Print</title>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <!-- Import Maiandra GD font -->
                     <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
                     <style>
                         @page {
@@ -2330,34 +2301,84 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 seniors: seniorsArray,
                 osca_head: document.getElementById('osca-head').value,
                 municipal_mayor: document.getElementById('municipal-mayor').value
-                // Don't pass user_id and user_name - let PHP handle it from session
             };
 
             console.log('Logging ID generation for', seniorsArray.length, 'seniors');
             console.log('Sample data:', seniorsArray[0]);
+            console.log('Full logData:', logData);
 
-            // Send AJAX request
-            fetch('../MSWDPALUAN_SYSTEM-MAIN/php/log_id_generation.php', {
+            // Send AJAX request with better error handling
+            fetch('../../php/log_id_generation.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(logData)
+            })
+            .then(async response => {
+                // Clone the response to read it multiple times if needed
+                const responseClone = response.clone();
+                
+                try {
+                    // First try to parse as JSON
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    return result;
+                } catch (jsonError) {
+                    // If JSON parsing fails, try to read as text
+                    console.error('JSON parse error:', jsonError);
+                    
+                    const text = await responseClone.text();
+                    console.error('Raw response text:', text);
+                    
+                    // Check if it's an HTML error page
+                    if (text.includes('<!DOCTYPE') || text.includes('<html') || text.includes('<br />')) {
+                        throw new Error('Server returned HTML instead of JSON. Check PHP errors.');
+                    }
+                    
+                    throw new Error(`Invalid response: ${text.substring(0, 200)}`);
+                }
+            })
+            .then(result => {
+                if (result.success) {
+                    console.log('✅ ID generation logged successfully. Batch:', result.batch_number);
+                    showNotification('✅ ID generation logged successfully! Batch: ' + result.batch_number, 'success');
+                    
+                    // Clear selections after successful logging
+                    selectedSeniors.clear();
+                    localStorage.removeItem('selectedSeniors');
+                    document.querySelectorAll('.senior-checkbox').forEach(cb => cb.checked = false);
+                    updateSelectedList();
+                    updateMasterCheckbox();
+                    
+                    console.log('Selections cleared after successful logging');
+                } else {
+                    console.error('❌ Server reported failure:', result.error);
+                    showNotification('❌ ID generation failed: ' + result.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error logging ID generation:', error);
+                showNotification('❌ Error: ' + error.message, 'error');
+                
+                // Also log to server console for debugging
+                fetch('../../php/log_debug.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(logData)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        console.log('✅ ID generation logged successfully. Batch:', result.batch_number);
-                        showNotification('✅ ID generation logged successfully! Batch: ' + result.batch_number, 'success');
-                    } else {
-                        console.error('❌ Failed to log ID generation:', result.error);
-                        showNotification('⚠️ ID generation log failed: ' + result.error, 'warning');
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ Error logging ID generation:', error);
-                    showNotification('❌ Error logging ID generation. Please check console.', 'error');
+                    body: JSON.stringify({
+                        error: error.message,
+                        timestamp: new Date().toISOString(),
+                        seniorsCount: seniorsArray.length
+                    })
                 });
+            });
         }
 
         /**
@@ -2415,7 +2436,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
          */
         async function checkIDStatus(applicantId) {
             try {
-                const response = await fetch(`../MSWDPALUAN_SYSTEM-MAIN/php/check_id_status.php?applicant_id=${applicantId}`);
+                const response = await fetch(`../php/check_id_status.php?applicant_id=${applicantId}`);
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -2424,31 +2445,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     has_id: false
                 };
             }
-        }
-
-        /**
-         * Add ID status indicators to table rows (optional enhancement)
-         */
-        function addIDStatusIndicators() {
-            document.querySelectorAll('.senior-checkbox').forEach(async (checkbox) => {
-                const applicantId = checkbox.dataset.id;
-                const row = checkbox.closest('tr');
-
-                // Check if this senior already has an ID
-                const status = await checkIDStatus(applicantId);
-
-                if (status.has_id) {
-                    // Add a badge to indicate ID exists
-                    const statusCell = row.querySelector('td:last-child');
-                    if (statusCell) {
-                        const badge = document.createElement('span');
-                        badge.className = 'ml-2 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full';
-                        badge.textContent = 'ID Printed';
-                        badge.title = `Printed on: ${status.print_date}`;
-                        statusCell.appendChild(badge);
-                    }
-                }
-            });
         }
     </script>
 </body>

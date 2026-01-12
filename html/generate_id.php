@@ -1,12 +1,37 @@
 <?php
+// Start session immediately
+if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+}
+
+// FORCE ADMIN CONTEXT
+$_SESSION['page_context'] = 'admin';
+$_SESSION['current_page'] = 'generate_id.php';
+
+// Restore original user type if coming from staff page
+if (isset($_SESSION['original_user_info'])) {
+    $_SESSION['user_type'] = $_SESSION['original_user_info']['user_type'] ?? 'Admin';
+    unset($_SESSION['original_user_info']);
+}
+
+error_log("================================================");
+error_log("🚨 ADMIN PAGE LOADED - FORCING ADMIN CONTEXT");
+error_log("Page Context: " . ($_SESSION['page_context'] ?? 'none'));
+error_log("User Type: " . ($_SESSION['user_type'] ?? 'none'));
+error_log("================================================");
+
+// Now include other files
 require_once "../php/login/admin_header.php";
 require_once "../php/db.php";
+require_once "../php/context_manager.php"; // Include context manager
 require_once "../php/id_generation_functions.php";
 
+// Initialize context manager
+ContextManager::initialize();
 $servername = "localhost";
-$dbname = "u401132124_mswd_seniors";
 $username = "u401132124_mswdopaluan";
 $password = "Mswdo_PaluanSystem23";
+$dbname = "u401132124_mswd_seniors";
 
 $pdo = null;
 try {
@@ -18,7 +43,7 @@ try {
     die("Database connection failed. Please try again later.");
 }
 
-// Fetch current user data - ADD THIS
+// Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -33,7 +58,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name - ADD THIS
+// Prepare full name
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -42,7 +67,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL - ADD THIS
+// Get profile photo URL
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../' . $user_data['profile_photo'];
@@ -51,10 +76,11 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo - ADD THIS
+// Fallback to avatar if no profile photo
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
+
 // Initialize variables
 $seniors = [];
 $barangays = [];
@@ -232,7 +258,7 @@ try {
 // Fetch barangays
 $barangays = [];
 try {
-    $barangay_query = "SELECT DISTINCT * FROM addresses WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
+    $barangay_query = "SELECT DISTINCT barangay FROM addresses WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
     $barangay_stmt = $conn->query($barangay_query);
     if ($barangay_stmt) {
         $barangays = safeFetchAll($barangay_stmt);
@@ -258,34 +284,39 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter: 
-                brightness(1.3)      /* Make brighter */
-                contrast(1.2)        /* Increase contrast */
-                saturate(1.5)        /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-            
+
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-            
+
             /* Inner glow effect */
-            box-shadow: 
+            box-shadow:
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-            
+
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-        
+
         @keyframes pulse-glow {
             from {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
+
             to {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -528,7 +559,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         }
 
         /* Add this to ensure all text uses Times New Roman */
-        
+
         html,
         .preview-content,
         #preview-content {
@@ -542,6 +573,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
 <body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
+        <!-- Navigation remains the same -->
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
@@ -797,7 +829,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             <tbody id="seniors-table-body">
                                 <?php if (empty($seniors)): ?>
                                     <tr>
-                                        <td colspan="10" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="11" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                             No active senior citizens found.
                                         </td>
                                     </tr>
@@ -827,6 +859,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                     data-age="<?php echo htmlspecialchars($senior['age'] ?? ''); ?>"
                                                     data-gender="<?php echo htmlspecialchars($senior['gender'] ?? ''); ?>"
                                                     data-barangay="<?php echo htmlspecialchars($senior['barangay'] ?? ''); ?>"
+                                                    data-municipality="<?php echo htmlspecialchars($senior['municipality'] ?? 'Paluan'); ?>"
+                                                    data-province="<?php echo htmlspecialchars($senior['province'] ?? 'Occidental Mindoro'); ?>"
                                                     data-id-number="<?php echo htmlspecialchars($senior['id_number'] ?? 'N/A'); ?>"
                                                     data-date-issued="<?php echo htmlspecialchars($senior['date_of_registration'] ?? ''); ?>"
                                                     data-local-control="<?php echo htmlspecialchars($senior['local_control_number'] ?? ''); ?>">
@@ -972,7 +1006,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             </div>
 
                             <div class="pt-4 border-t dark:border-gray-700">
-
                                 <div class="flex flex-wrap gap-3">
                                     <button id="preview-ids-btn"
                                         class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-blue-300 focus:outline-none inline-flex items-center">
@@ -981,19 +1014,19 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                         </svg>
                                         Preview IDs
                                     </button>
-                                    <!-- <button id="generate-pdf-btn"
-                                        class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-green-300 focus:outline-none inline-flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" />
-                                        </svg>
-                                        Generate PDF
-                                    </button> -->
                                     <button id="print-ids-btn"
                                         class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-purple-300 focus:outline-none inline-flex items-center">
                                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
                                         </svg>
                                         Print IDs
+                                    </button>
+                                    <button id="clear-selection-btn"
+                                        class="px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg text-sm focus:ring-4 focus:ring-gray-300 focus:outline-none inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        Clear Selection
                                     </button>
                                 </div>
                             </div>
@@ -1049,8 +1082,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
     <script>
-        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
-        // Initialize theme from localStorage or system preference
+        // ---------- THEME INITIALIZATION ----------
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1065,7 +1097,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             setTheme(theme);
         }
 
-        // Function to set theme
         function setTheme(theme) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -1076,7 +1107,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
         }
 
-        // Listen for theme changes from other pages
         window.addEventListener('storage', function(e) {
             if (e.key === 'theme') {
                 const theme = e.newValue;
@@ -1084,14 +1114,12 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
         });
 
-        // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
             if (!localStorage.getItem('theme')) {
                 setTheme(e.matches ? 'dark' : 'light');
             }
         });
 
-        // Initialize theme on page load (BEFORE DOMContentLoaded)
         initTheme();
     </script>
     <script>
@@ -1100,31 +1128,36 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         let currentPreviewPage = 1;
         let totalPreviewPages = 1;
         let allPreviewPages = [];
+        let pageChangeInProgress = false;
 
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Load saved selections from localStorage
+            loadSelectionsFromStorage();
+
+            // Initialize checkboxes based on saved selections
+            initializeCheckboxes();
+
             // Event listeners for buttons
-            document.getElementById('select-all-btn').addEventListener('click', selectAll);
+            document.getElementById('select-all-btn').addEventListener('click', selectAllOnCurrentPage);
             document.getElementById('deselect-all-btn').addEventListener('click', deselectAll);
             document.getElementById('master-checkbox').addEventListener('change', toggleMasterCheckbox);
             document.getElementById('preview-ids-btn').addEventListener('click', previewIDs);
             document.getElementById('print-ids-btn').addEventListener('click', printIDs);
+            document.getElementById('clear-selection-btn').addEventListener('click', clearAllSelections);
             document.getElementById('close-preview-btn').addEventListener('click', closePreview);
             document.getElementById('print-preview-btn').addEventListener('click', printPreview);
 
-            // Use event delegation for buttons in the modal (which might not exist yet)
+            // Use event delegation for buttons in the modal
             document.addEventListener('click', function(e) {
-                // Check if the clicked element is the prev page button
                 if (e.target && e.target.id === 'prev-page-btn') {
                     prevPage();
                 }
 
-                // Check if the clicked element is the next page button
                 if (e.target && e.target.id === 'next-page-btn') {
                     nextPage();
                 }
 
-                // Also check if clicked on a child element inside the button
                 if (e.target && (e.target.closest('#prev-page-btn'))) {
                     prevPage();
                 }
@@ -1142,35 +1175,99 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             // Add event listeners to checkboxes
             document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('senior-checkbox')) {
-                    const checkbox = e.target;
-                    const id = checkbox.dataset.id;
-                    const name = checkbox.dataset.name;
-
-                    if (checkbox.checked) {
-                        selectedSeniors.set(id, {
-                            name: name,
-                            birthdate: checkbox.dataset.birthdate,
-                            age: checkbox.dataset.age,
-                            gender: checkbox.dataset.gender,
-                            barangay: checkbox.dataset.barangay,
-                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
-                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
-                            idNumber: checkbox.dataset.idNumber,
-                            dateIssued: checkbox.dataset.dateIssued, // This is date_of_registration from database
-                            localControl: checkbox.dataset.localControl
-                        });
-                    } else {
-                        selectedSeniors.delete(id);
-                    }
-
-                    updateSelectedList();
-                    updateMasterCheckbox();
+                    handleCheckboxChange(e.target);
                 }
             });
 
-            // Update selected list initially
+            // Save selections before page navigation
+            document.addEventListener('click', function(e) {
+                const paginationLink = e.target.closest('.pagination-btn, a[href*="page="]');
+                if (paginationLink && !paginationLink.classList.contains('active')) {
+                    saveSelectionsToStorage();
+                }
+            });
+
+            // Initialize selected list
             updateSelectedList();
         });
+
+        // Save selections to localStorage
+        function saveSelectionsToStorage() {
+            const selections = {};
+            selectedSeniors.forEach((value, key) => {
+                selections[key] = value;
+            });
+            localStorage.setItem('selectedSeniors', JSON.stringify(selections));
+        }
+
+        // Load selections from localStorage
+        function loadSelectionsFromStorage() {
+            const saved = localStorage.getItem('selectedSeniors');
+            if (saved) {
+                try {
+                    const selections = JSON.parse(saved);
+                    selectedSeniors = new Map(Object.entries(selections));
+                } catch (e) {
+                    console.error('Error loading selections:', e);
+                    selectedSeniors = new Map();
+                }
+            }
+        }
+
+        // Clear all selections from localStorage and memory
+        function clearAllSelections() {
+            if (confirm('Are you sure you want to clear all selected seniors?')) {
+                selectedSeniors.clear();
+                localStorage.removeItem('selectedSeniors');
+
+                // Uncheck all checkboxes
+                document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+
+                updateSelectedList();
+                updateMasterCheckbox();
+                showNotification('All selections cleared successfully', 'success');
+            }
+        }
+
+        // Initialize checkboxes based on saved selections
+        function initializeCheckboxes() {
+            document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
+                const id = checkbox.dataset.id;
+                if (selectedSeniors.has(id)) {
+                    checkbox.checked = true;
+                }
+            });
+            updateMasterCheckbox();
+        }
+
+        // Handle checkbox change
+        function handleCheckboxChange(checkbox) {
+            const id = checkbox.dataset.id;
+            const name = checkbox.dataset.name;
+
+            if (checkbox.checked) {
+                selectedSeniors.set(id, {
+                    name: name,
+                    birthdate: checkbox.dataset.birthdate,
+                    age: checkbox.dataset.age,
+                    gender: checkbox.dataset.gender,
+                    barangay: checkbox.dataset.barangay,
+                    municipality: checkbox.dataset.municipality || 'Paluan',
+                    province: checkbox.dataset.province || 'Occidental Mindoro',
+                    idNumber: checkbox.dataset.idNumber,
+                    dateIssued: checkbox.dataset.dateIssued,
+                    localControl: checkbox.dataset.localControl
+                });
+            } else {
+                selectedSeniors.delete(id);
+            }
+
+            updateSelectedList();
+            updateMasterCheckbox();
+            saveSelectionsToStorage();
+        }
 
         // Filter table based on search and filters
         function filterTable() {
@@ -1204,6 +1301,8 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
 
                 row.style.display = show ? '' : 'none';
             });
+
+            updateMasterCheckbox();
         }
 
         // Update selected list display
@@ -1221,15 +1320,15 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             let html = '<div class="space-y-1 max-h-32 overflow-y-auto">';
             selectedSeniors.forEach((senior, id) => {
                 html += `
-            <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
-                <span class="truncate">${senior.name}</span>
-                <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        `;
+                    <div class="flex justify-between items-center text-sm p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                        <span class="truncate">${senior.name}</span>
+                        <button class="text-red-500 hover:text-red-700 ml-2" onclick="removeSelected('${id}')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
             });
             html += '</div>';
             listContainer.innerHTML = html;
@@ -1239,50 +1338,77 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         function removeSelected(id) {
             selectedSeniors.delete(id);
 
-            // Uncheck in table
+            // Uncheck in table if visible
             const checkbox = document.querySelector(`.senior-checkbox[data-id="${id}"]`);
             if (checkbox) checkbox.checked = false;
 
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Select all seniors on current page
-        function selectAll() {
+        function selectAllOnCurrentPage() {
             const checkboxes = document.querySelectorAll('.senior-checkbox');
+            let selectedCount = 0;
+
             checkboxes.forEach(checkbox => {
                 if (checkbox.closest('tr').style.display !== 'none') {
-                    checkbox.checked = true;
-                    const id = checkbox.dataset.id;
-                    if (!selectedSeniors.has(id)) {
-                        selectedSeniors.set(id, {
-                            name: checkbox.dataset.name,
-                            birthdate: checkbox.dataset.birthdate,
-                            age: checkbox.dataset.age,
-                            gender: checkbox.dataset.gender,
-                            barangay: checkbox.dataset.barangay,
-                            municipality: checkbox.dataset.municipality || 'Paluan', // Add municipality
-                            province: checkbox.dataset.province || 'Occidental Mindoro', // Add province
-                            idNumber: checkbox.dataset.idNumber,
-                            dateIssued: checkbox.dataset.dateIssued,
-                            localControl: checkbox.dataset.localControl
-                        });
+                    if (!checkbox.checked) {
+                        checkbox.checked = true;
+                        const id = checkbox.dataset.id;
+                        if (!selectedSeniors.has(id)) {
+                            selectedSeniors.set(id, {
+                                name: checkbox.dataset.name,
+                                birthdate: checkbox.dataset.birthdate,
+                                age: checkbox.dataset.age,
+                                gender: checkbox.dataset.gender,
+                                barangay: checkbox.dataset.barangay,
+                                municipality: checkbox.dataset.municipality || 'Paluan',
+                                province: checkbox.dataset.province || 'Occidental Mindoro',
+                                idNumber: checkbox.dataset.idNumber,
+                                dateIssued: checkbox.dataset.dateIssued,
+                                localControl: checkbox.dataset.localControl
+                            });
+                            selectedCount++;
+                        }
                     }
                 }
             });
 
+            if (selectedCount > 0) {
+                showNotification(`Added ${selectedCount} seniors from current page to selection`, 'success');
+            }
+
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Deselect all seniors
         function deselectAll() {
-            selectedSeniors.clear();
-            document.querySelectorAll('.senior-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
+            // Only deselect visible checkboxes on current page
+            const checkboxes = document.querySelectorAll('.senior-checkbox:checked');
+            let deselectedCount = 0;
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.closest('tr').style.display !== 'none') {
+                    const id = checkbox.dataset.id;
+                    if (selectedSeniors.has(id)) {
+                        selectedSeniors.delete(id);
+                        checkbox.checked = false;
+                        deselectedCount++;
+                    }
+                }
             });
+
+            if (deselectedCount > 0) {
+                showNotification(`Removed ${deselectedCount} seniors from current page from selection`, 'success');
+            }
+
             updateSelectedList();
             updateMasterCheckbox();
+            saveSelectionsToStorage();
         }
 
         // Toggle master checkbox
@@ -1290,7 +1416,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             const masterCheckbox = document.getElementById('master-checkbox');
 
             if (masterCheckbox.checked) {
-                selectAll();
+                selectAllOnCurrentPage();
             } else {
                 deselectAll();
             }
@@ -1299,13 +1425,13 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Update master checkbox state
         function updateMasterCheckbox() {
             const masterCheckbox = document.getElementById('master-checkbox');
-            const checkboxes = document.querySelectorAll('.senior-checkbox:not([style*="display: none"])');
-            const checkedCount = document.querySelectorAll('.senior-checkbox:checked').length;
+            const visibleCheckboxes = document.querySelectorAll('.senior-checkbox:not([style*="display: none"])');
+            const visibleChecked = document.querySelectorAll('.senior-checkbox:checked:not([style*="display: none"])');
 
-            if (checkedCount === 0) {
+            if (visibleChecked.length === 0) {
                 masterCheckbox.checked = false;
                 masterCheckbox.indeterminate = false;
-            } else if (checkedCount === checkboxes.length) {
+            } else if (visibleChecked.length === visibleCheckboxes.length) {
                 masterCheckbox.checked = true;
                 masterCheckbox.indeterminate = false;
             } else {
@@ -1317,7 +1443,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         // Preview IDs
         function previewIDs() {
             if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
+                showNotification('Please select at least one senior citizen.', 'warning');
                 return;
             }
 
@@ -1363,12 +1489,12 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             return pages;
         }
 
-        // Generate front page with ID cards
+        // Generate front page with ID cards (same as before)
         function generateFrontPage(seniors) {
             let html = `
-        <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
-            <div class="print-grid">
-    `;
+                <div class="print-page id-front-page" style="width: 13in; height: 8.5in;">
+                    <div class="print-grid">
+            `;
 
             seniors.forEach(senior => {
                 // Format birth date
@@ -1396,66 +1522,66 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 }
 
                 html += `
-            <div class="id-card">
-                <!-- Republic Header -->
-                <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                    <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
-                    <div>
-                        <div style="font-size: 7.5pt;">Republic of the Philippines</div>
-                        <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
-                        <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
-                    </div>
-                    <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
-                </div>
-                
-                <!-- ID Content -->
-                <div class="id-content" style="font-size: 8pt;">
-                    <div style="margin-bottom: 1px;" class="name flex flex-row gap-1">
-                        <div style="font-weight: bold; font-size: 8pt;">Name:</div>
-                        <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
-                    </div>
-                    <div class="3rdrow flex flex-row justify-between align-middle mt-1">
-                        <div class="dsd flex flex-col text-align: left; w-[2.15in]">
-                            <div style="margin-bottom: 2px; " class="address flex flex-row">
-                                <div style="font-weight: bold; font-size: 8pt;">Address:</div>
-                                <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${fullAddress || 'N/A'}</div>
+                    <div class="id-card">
+                        <!-- Republic Header -->
+                        <div class="id-header" style="font-size: 6pt; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                            <img src="../img/MSWD_LOGO-removebg-preview.png" alt="PH Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
+                            <div>
+                                <div style="font-size: 7.5pt;">Republic of the Philippines</div>
+                                <div style="font-size: 7.5pt;">Office for Senior Citizens Affairs (OSCA)</div>
+                                <div style="font-size: 7.5pt;">Paluan, Occidental Mindoro</div>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
-                                <div class="dob text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dob}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
+                            <img src="../img/paluan.png" alt="Mindoro Seal" class="w-[.51in] h-[.51in] rounded-full vertical-align-middle">
+                        </div>
+                        
+                        <!-- ID Content -->
+                        <div class="id-content" style="font-size: 8pt;">
+                            <div style="margin-bottom: 1px;" class="name flex flex-row gap-1">
+                                <div style="font-weight: bold; font-size: 8pt;">Name:</div>
+                                <div class="id-name" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${senior.name}</div>
+                            </div>
+                            <div class="3rdrow flex flex-row justify-between align-middle mt-1">
+                                <div class="dsd flex flex-col text-align: left; w-[2.15in]">
+                                    <div style="margin-bottom: 2px; " class="address flex flex-row">
+                                        <div style="font-weight: bold; font-size: 8pt;">Address:</div>
+                                        <div class="id-address" style="font-size: 8pt; font-weight: bold; margin-left: 5px;">${fullAddress || 'N/A'}</div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;">
+                                        <div class="dob text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dob}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date of Birth</div>
+                                        </div>
+                                        <div  class="gender text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${genderCode}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Sex</div>
+                                        </div>
+                                        <div  class="dateissued text-center">
+                                            <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
+                                            <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div  class="gender text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${genderCode}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Sex</div>
+                                <div style="height:1in; width:1in; border: 1px solid #000;" class="idpicture"></div>
+                            </div>
+                            <div class="flex flex-row justify-between align-middle">
+                                <div style="text-align: left;">
+                                    <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
+                                    <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
                                 </div>
-                                <div  class="dateissued text-center">
-                                    <div style="font-size: 8pt; font-weight: bold; text-decoration: underline;">${dateIssued}</div>
-                                    <div style="font-size: 8pt; font-weight: bold;">Date Issued</div>
+                                <div style="text-align: right; margin-right:0.5in;">
+                                    <div style="font-size: 8pt; font-weight: bold;" class="validity-number">
+                                        I.D No. <span style="font-weight: bold; text-decoration: underline;" class="id-number">${idNumber}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div style="height:1in; width:1in; border: 1px solid #000;" class="idpicture"></div>
-                    </div>
-                    <div class="flex flex-row justify-between align-middle">
-                        <div style="text-align: left;">
-                            <div style="border-bottom: 1px solid #000; width: 100%;" class="left-0"></div>
-                            <div style="font-size: 8pt; font-weight: bold;">Signature / Thumbmark</div>
-                        </div>
-                        <div style="text-align: right; margin-right:0.5in;">
-                            <div style="font-size: 8pt; font-weight: bold;" class="validity-number">
-                                I.D No. <span style="font-weight: bold; text-decoration: underline;" class="id-number">${idNumber}</span>
-                            </div>
+                        
+                        <!-- Non-Transferable Notice -->
+                        <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
+                            THIS CARD IS NON-TRANSFERABLE
                         </div>
                     </div>
-                </div>
-                
-                <!-- Non-Transferable Notice -->
-                <div class="id-footer" style="font-size: 7pt; font-weight: bold; color: red; text-align: center;">
-                    THIS CARD IS NON-TRANSFERABLE
-                </div>
-            </div>
-        `;
+                `;
             });
 
             // Fill empty spots with blank ID cards (to maintain 9 per page)
@@ -1464,57 +1590,57 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
 
             html += `
-            </div>
-        </div>
-    `;
+                    </div>
+                </div>
+            `;
 
             return html;
         }
 
-        // Generate back page with benefits (9 copies, one for each ID on front page)
+        // Generate back page with benefits (same as before)
         function generateBackPage(oscaHead, municipalMayor) {
             return `
-        <div class="print-page benefits-page">
-            <div class="print-grid">
-                ${Array(9).fill().map(() => `
-                <div class="benefits-card">
-                    <div class="benefits-header">
-                        Benefits and Privileges under Republic Act No. 9994
-                    </div>
-                    
-                    <div class="benefits-list">
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in purchase medicines</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount on theatres, cinema houses and concert halls, etc.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in fare for domestic air, sea travel and public land transportation</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount in basic necessities and prime commodities</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 12% VAT - exemption on the purchase of goods & service which are entitled to the 20% discount</div>
-                        <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
-                        
-                        <div class="benefits-notice">
-                            Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
-                        </div>
-                    </div>
-                    
-                    <div class="benefits-footer">
-                        <div class="signatures-container">
-                            <div class="signature-item">
-                                <div class="signature-name">${oscaHead}</div>
-                                <div class="signature-title">OSCA HEAD</div>
+                <div class="print-page benefits-page">
+                    <div class="print-grid">
+                        ${Array(9).fill().map(() => `
+                        <div class="benefits-card">
+                            <div class="benefits-header">
+                                Benefits and Privileges under Republic Act No. 9994
                             </div>
-                            <div class="signature-item">
-                                <div class="signature-name">${municipalMayor}</div>
-                                <div class="signature-title">Municipal Mayor</div>
+                            
+                            <div class="benefits-list">
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> Free medical/dental diagnostic & laboratory fees in all government facilities.</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in purchase medicines</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in Hotels, Restaurant, and Recreation Centers & Funeral Parlors.</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount on theatres, cinema houses and concert halls, etc.</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in medical/ dental services, diagnostic & laboratory fees in private facilities.</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 20% discount in fare for domestic air, sea travel and public land transportation</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount in basic necessities and prime commodities</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 12% VAT - exemption on the purchase of goods & service which are entitled to the 20% discount</div>
+                                <div><img src="../img/Screenshot 2025-12-19 130648.png" alt="" class="w-[2pt] h-[2pt] rounded-full vertical-align-middle"> 5% discount monthly utilization of water/electricity provided that the water and electricity meter bases are under the name of senior citizens</div>
+                                
+                                <div class="benefits-notice">
+                                    Persons and Corporations violating RA 9994 shall be penalized. Only for the exclusive use of Senior Citizens; abuse of privileges is punishable by law.
+                                </div>
+                            </div>
+                            
+                            <div class="benefits-footer">
+                                <div class="signatures-container">
+                                    <div class="signature-item">
+                                        <div class="signature-name">${oscaHead}</div>
+                                        <div class="signature-title">OSCA HEAD</div>
+                                    </div>
+                                    <div class="signature-item">
+                                        <div class="signature-name">${municipalMayor}</div>
+                                        <div class="signature-title">Municipal Mayor</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        `).join('')}
                     </div>
                 </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
+            `;
         }
 
         // Format date to MM/DD/YYYY
@@ -1539,12 +1665,10 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
         function displayPreviewPage() {
             const previewContent = document.getElementById('preview-content');
             if (allPreviewPages[currentPreviewPage - 1]) {
-                // Create a centered container for the preview
                 const container = document.createElement('div');
                 container.className = 'flex flex-col items-center justify-center w-full';
                 container.innerHTML = allPreviewPages[currentPreviewPage - 1];
 
-                // Clear and add centered content
                 previewContent.innerHTML = '';
                 previewContent.appendChild(container);
             }
@@ -1555,7 +1679,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             document.getElementById('current-page').textContent = currentPreviewPage;
             document.getElementById('total-pages').textContent = totalPreviewPages;
 
-            // Show/hide navigation buttons
             document.getElementById('prev-page-btn').style.display = currentPreviewPage > 1 ? 'block' : 'none';
             document.getElementById('next-page-btn').style.display = currentPreviewPage < totalPreviewPages ? 'block' : 'none';
         }
@@ -1578,62 +1701,16 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
         }
 
-        // Generate PDF
-        function generatePDF() {
-            if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
-                return;
-            }
-
-            // Prepare data for PDF generation
-            const seniorsArray = Array.from(selectedSeniors, ([id, data]) => ({
-                id,
-                ...data
-            }));
-
-            const oscaHead = document.getElementById('osca-head').value;
-            const municipalMayor = document.getElementById('municipal-mayor').value;
-
-            // Create form and submit to PHP script
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '../MSWDPALUAN_SYSTEM-MAIN/php/generate_id_pdf.php';
-            form.style.display = 'none';
-
-            const seniorsInput = document.createElement('input');
-            seniorsInput.type = 'hidden';
-            seniorsInput.name = 'seniors';
-            seniorsInput.value = JSON.stringify(seniorsArray);
-            form.appendChild(seniorsInput);
-
-            const oscaHeadInput = document.createElement('input');
-            oscaHeadInput.type = 'hidden';
-            oscaHeadInput.name = 'osca_head';
-            oscaHeadInput.value = oscaHead;
-            form.appendChild(oscaHeadInput);
-
-            const mayorInput = document.createElement('input');
-            mayorInput.type = 'hidden';
-            mayorInput.name = 'municipal_mayor';
-            mayorInput.value = municipalMayor;
-            form.appendChild(mayorInput);
-
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-        }
-
         // Print IDs (direct print from browser)
         function printIDs() {
             if (selectedSeniors.size === 0) {
-                alert('Please select at least one senior citizen.');
+                showNotification('Please select at least one senior citizen.', 'warning');
                 return;
             }
 
             // First show preview, then trigger print
             previewIDs();
 
-            // After a short delay, trigger print
             setTimeout(() => {
                 document.getElementById('print-preview-btn').click();
             }, 500);
@@ -1656,7 +1733,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     <title>Senior Citizen IDs - Print</title>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <!-- Import Maiandra GD font -->
                     <link href="https://fonts.cdnfonts.com/css/maiandra-gd" rel="stylesheet">
                     <style>
                         @page {
@@ -2213,7 +2289,18 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 logIDGenerationToDatabase();
             }, 1000);
         }
-
+        /**
+         * Detect user context from URL or session
+         */
+        function detectUserContext() {
+            const url = window.location.href;
+            if (url.includes('staff_generate_id.php')) {
+                return 'staff';
+            } else if (url.includes('generate_id.php')) {
+                return 'admin';
+            }
+            return 'admin'; // default
+        }
         /**
          * Log ID generation to database after successful print
          */
@@ -2230,8 +2317,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 let localControl = data.localControl;
 
                 if (idNumber === 'N/A' || !idNumber) {
-                    // Generate a temporary ID number
-                    idNumber = 'TEMP-' + Date.now() + '-' + id;
+                    idNumber = 'PALUAN-' + Date.now().toString().slice(-6) + '-' + id;
                 }
 
                 if (localControl === 'N/A' || !localControl) {
@@ -2246,41 +2332,92 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                 };
             });
 
-            // Prepare data for logging
+            // Prepare data for logging with context
             const logData = {
                 seniors: seniorsArray,
                 osca_head: document.getElementById('osca-head').value,
-                municipal_mayor: document.getElementById('municipal-mayor').value
-                // Don't pass user_id and user_name - let PHP handle it from session
+                municipal_mayor: document.getElementById('municipal-mayor').value,
+                user_context: detectUserContext()
             };
 
-            console.log('Logging ID generation for', seniorsArray.length, 'seniors');
-            console.log('Sample data:', seniorsArray[0]);
+            console.log('Logging ID generation for', seniorsArray.length, 'seniors as', logData.user_context);
 
-            // Send AJAX request
-            fetch('../MSWDPALUAN_SYSTEM-MAIN/php/log_id_generation.php', {
+            // Send AJAX request with context
+            fetch('../php/log_id_generation.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify(logData)
                 })
-                .then(response => response.json())
+                .then(async response => {
+                    const responseClone = response.clone();
+
+                    try {
+                        const result = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
+                        }
+
+                        return result;
+                    } catch (jsonError) {
+                        const text = await responseClone.text();
+                        console.error('Raw response text:', text);
+
+                        if (text.includes('<!DOCTYPE') || text.includes('<html') || text.includes('<br />')) {
+                            throw new Error('Server returned HTML instead of JSON. Check PHP errors.');
+                        }
+
+                        throw new Error(`Invalid response: ${text.substring(0, 200)}`);
+                    }
+                })
                 .then(result => {
                     if (result.success) {
-                        console.log('✅ ID generation logged successfully. Batch:', result.batch_number);
+                        console.log('✅ ID generation logged successfully as', result.user_context, 'Batch:', result.batch_number);
                         showNotification('✅ ID generation logged successfully! Batch: ' + result.batch_number, 'success');
+
+                        // Clear selections after successful logging
+                        selectedSeniors.clear();
+                        localStorage.removeItem('selectedSeniors');
+                        document.querySelectorAll('.senior-checkbox').forEach(cb => cb.checked = false);
+                        updateSelectedList();
+                        updateMasterCheckbox();
                     } else {
-                        console.error('❌ Failed to log ID generation:', result.error);
-                        showNotification('⚠️ ID generation log failed: ' + result.error, 'warning');
+                        console.error('❌ Server reported failure:', result.error);
+                        showNotification('❌ ID generation failed: ' + result.error, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('❌ Error logging ID generation:', error);
-                    showNotification('❌ Error logging ID generation. Please check console.', 'error');
+                    showNotification('❌ Error: ' + error.message, 'error');
                 });
         }
+function verifyUserContext() {
+    const currentUrl = window.location.href;
+    const isStaffPage = currentUrl.includes('staff_generate_id.php');
+    const isAdminPage = currentUrl.includes('generate_id.php');
+    
+    console.log("🔍 VERIFYING USER CONTEXT");
+    console.log("Current URL:", currentUrl);
+    console.log("Is Staff Page:", isStaffPage);
+    console.log("Is Admin Page:", isAdminPage);
+    
+    if (isStaffPage) {
+        console.log("🚨 THIS SHOULD BE STAFF CONTEXT");
+        // Force staff context in localStorage
+        localStorage.setItem('expected_context', 'staff');
+    } else if (isAdminPage) {
+        console.log("🚨 THIS SHOULD BE ADMIN CONTEXT");
+        localStorage.setItem('expected_context', 'admin');
+    }
+}
 
+// Call this when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    verifyUserContext();
+});
         /**
          * Show notification message
          */
@@ -2336,7 +2473,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
          */
         async function checkIDStatus(applicantId) {
             try {
-                const response = await fetch(`../MSWDPALUAN_SYSTEM-MAIN/php/check_id_status.php?applicant_id=${applicantId}`);
+                const response = await fetch(`../php/check_id_status.php?applicant_id=${applicantId}`);
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -2345,31 +2482,6 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                     has_id: false
                 };
             }
-        }
-
-        /**
-         * Add ID status indicators to table rows (optional enhancement)
-         */
-        function addIDStatusIndicators() {
-            document.querySelectorAll('.senior-checkbox').forEach(async (checkbox) => {
-                const applicantId = checkbox.dataset.id;
-                const row = checkbox.closest('tr');
-
-                // Check if this senior already has an ID
-                const status = await checkIDStatus(applicantId);
-
-                if (status.has_id) {
-                    // Add a badge to indicate ID exists
-                    const statusCell = row.querySelector('td:last-child');
-                    if (statusCell) {
-                        const badge = document.createElement('span');
-                        badge.className = 'ml-2 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full';
-                        badge.textContent = 'ID Printed';
-                        badge.title = `Printed on: ${status.print_date}`;
-                        statusCell.appendChild(badge);
-                    }
-                }
-            });
         }
     </script>
 </body>

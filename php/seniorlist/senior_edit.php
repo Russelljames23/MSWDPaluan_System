@@ -1,4 +1,4 @@
-<?php
+    <?php
 // senior_edit.php - FIXED VERSION WITH PROPER STAFF/ADMIN DETECTION FOR BOTH GET AND POST
 // GET -> fetch applicant (JSON)
 // POST -> update applicant (form-data)

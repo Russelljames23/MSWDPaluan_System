@@ -61,6 +61,51 @@ if (empty($profile_photo_url)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beneficiary</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+
+            /* Inner glow effect */
+            box-shadow:
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                box-shadow:
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+
+            to {
+                box-shadow:
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -1220,12 +1265,19 @@ if (empty($profile_photo_url)) {
                     };
 
                     try {
+                        const staffUserId = <?php echo json_encode($user_id ?? 0); ?>;
                         const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(benefitData)
+                            body: JSON.stringify({
+                                applicant_ids: Array.from(window.globalSelectedBeneficiaries.keys()),
+                                benefits: selectedBenefits,
+                                date: formData.get('benefitDate'),
+                                session_context: "staff", // For staff side
+                                staff_user_id: staffUserId // Get from PHP
+                            })
                         });
 
                         const result = await response.json();

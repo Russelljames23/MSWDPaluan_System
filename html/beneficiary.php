@@ -1159,12 +1159,19 @@ if (empty($profile_photo_url)) {
                     };
 
                     try {
+                        const adminUserId = <?php echo json_encode($user_id ?? 0); ?>;
                         const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/add_benefits.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(benefitData)
+                             body: JSON.stringify({
+                                applicant_ids: Array.from(window.globalSelectedBeneficiaries.keys()),
+                                benefits: selectedBenefits,
+                                date: formData.get('benefitDate'),
+                                session_context: "admin", // For admin side
+                                admin_user_id: adminUserId // Get from PHP
+                            })
                         });
 
                         const result = await response.json();

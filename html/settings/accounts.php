@@ -1145,7 +1145,7 @@ if (empty($profile_photo_url)) {
 
                 try {
                     // First, test the API
-                    const testUrl = '../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?test=1';
+                    const testUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?test=1';
                     const testResponse = await fetch(testUrl);
                     const testText = await testResponse.text();
 
@@ -1161,7 +1161,7 @@ if (empty($profile_photo_url)) {
                     }
 
                     // Now fetch accounts
-                    const apiUrl = '../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?action=get_accounts';
+                    const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?action=get_accounts';
                     console.log('Fetching accounts from:', apiUrl);
 
                     const response = await fetch(apiUrl, {
@@ -1336,7 +1336,7 @@ if (empty($profile_photo_url)) {
                 this.showNotification('Creating account...', 'info');
 
                 try {
-                    const response = await fetch('../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1456,7 +1456,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const response = await fetch('../../MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',

@@ -61,6 +61,51 @@ if (empty($profile_photo_url)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benefits</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+
+            /* Inner glow effect */
+            box-shadow:
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                box-shadow:
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+
+            to {
+                box-shadow:
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -849,7 +894,9 @@ if (empty($profile_photo_url)) {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            benefits: benefitsArray
+                            benefits: benefitsArray,
+                            session_context: 'staff', // Add this
+                            staff_user_id: <?php echo $user_id; ?> // Add this
                         })
                     })
                     .then(res => res.json())
@@ -889,17 +936,26 @@ if (empty($profile_photo_url)) {
         });
     </script>
 
-    <!-- fetchBenefits -->
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // DOM Elements
             const benefitsTableBody = document.querySelector("#deceasedTable tbody");
-
-            // Popup elements
             const popupModal = document.getElementById("popupModal");
             const popupTitle = document.getElementById("popupTitle");
             const popupMessage = document.getElementById("popupMessage");
             const popupCloseBtn = document.getElementById("popupCloseBtn");
+            const benefitModal = document.getElementById("benefitModal");
+            const benefitModalTitle = document.getElementById("benefitModalTitle");
+            const benefitModalInput = document.getElementById("benefitModalInput");
+            const benefitModalSave = document.getElementById("benefitModalSave");
+            const benefitModalCancel = document.getElementById("benefitModalCancel");
 
+            // Variables
+            let currentEditId = null;
+            const staffUserId = <?php echo json_encode($user_id ?? 0); ?>;
+
+            // ========== POPUP FUNCTIONS ==========
             function showPopup(title, message) {
                 popupTitle.textContent = title;
                 popupMessage.textContent = message;
@@ -909,150 +965,27 @@ if (empty($profile_photo_url)) {
                 }, 10);
             }
 
-            popupCloseBtn.addEventListener("click", function() {
-                popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
-                setTimeout(() => popupModal.classList.add("hidden"), 300);
-            });
-
-            function loadBenefits() {
-                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php')
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            benefitsTableBody.innerHTML = "";
-                            data.benefits.forEach(benefit => {
-                                const row = document.createElement("tr");
-                                row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700", "dark:text-white");
-                                row.innerHTML = `
-                                    <td class="px-4 py-3 text-gray-700 dark:text-white">${benefit.benefit_name}</td>
-                                    <td class="px-15 py-3 flex items-center justify-end space-x-2">
-                                        <button class="edit-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white" data-id="${benefit.id}" type="button" title="Edit">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-10 10A2 2 0 016 16H4a1 1 0 01-1-1v-2a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0z"/></svg>
-                                        </button>
-                                        <button class="delete-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600" data-id="${benefit.id}" type="button" title="Delete">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h1v10a2 2 0 002 2h8a2 2 0 002-2V6h1a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 4a1 1 0 012 0v8a1 1 0 11-2 0V6zm4 0a1 1 0 112 0v8a1 1 0 11-2 0V6z" clip-rule="evenodd"/></svg>
-                                        </button>
-                                    </td>
-                                `;
-                                benefitsTableBody.appendChild(row);
-                            });
-
-                            attachDeleteButtons();
-                        } else {
-                            showPopup("Error", data.message || "Failed to load benefits.");
-                        }
-                    })
-                    .catch(err => showPopup("Error", "Failed to fetch benefits."));
-            }
-
-            // Delete logic remains unchanged
-            function attachDeleteButtons() {
-                document.querySelectorAll(".delete-btn").forEach(btn => {
-                    btn.addEventListener("click", function() {
-                        const id = this.dataset.id;
-                        showConfirmPopup("Confirm Delete", "Are you sure you want to delete this benefit?", function(confirmed) {
-                            if (!confirmed) return;
-                            fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/delete_benefit.php`, {
-                                    method: "POST",
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        id
-                                    })
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        showPopup("Success", "Benefit deleted successfully!");
-                                        loadBenefits();
-                                    } else {
-                                        showPopup("Error", data.message || "Failed to delete benefit.");
-                                    }
-                                })
-                                .catch(err => showPopup("Error", "Failed to delete benefit."));
-                        });
-                    });
-                });
-            }
-
-            // --- EDIT MODAL HANDLER ONLY ---
-            const benefitModal = document.getElementById("benefitModal");
-            const benefitModalTitle = document.getElementById("benefitModalTitle");
-            const benefitModalInput = document.getElementById("benefitModalInput");
-            const benefitModalSave = document.getElementById("benefitModalSave");
-            const benefitModalCancel = document.getElementById("benefitModalCancel");
-            let currentEditId = null;
-
-            document.body.addEventListener("click", function(e) {
-                if (e.target.closest(".edit-btn")) {
-                    const btn = e.target.closest(".edit-btn");
-                    const row = btn.closest("tr");
-                    const id = btn.dataset.id;
-                    const name = row.querySelector("td:first-child").textContent.trim();
-                    currentEditId = id;
-                    benefitModalTitle.textContent = "Edit Benefit";
-                    benefitModalInput.value = name;
-                    benefitModal.classList.remove("hidden");
-                }
-            });
-
-            benefitModalCancel.addEventListener("click", () => {
-                benefitModal.classList.add("hidden");
-                currentEditId = null;
-                benefitModalInput.value = "";
-            });
-
-            benefitModalSave.addEventListener("click", () => {
-                const newName = benefitModalInput.value.trim();
-                if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
-
-                fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id: currentEditId,
-                            benefit_name: newName
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.success) {
-                            showPopup("Success", data.message || "Benefit updated successfully!");
-                            benefitModal.classList.add("hidden");
-                            currentEditId = null;
-                            benefitModalInput.value = "";
-                            loadBenefits();
-                        } else {
-                            console.error("Update Response:", data);
-                            showPopup("Error", (data && data.message) || "Failed to update benefit.");
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Fetch error:", err);
-                        showPopup("Error", "Failed to update benefit.");
-                    });
-            });
-
-            // Keep reusable confirm popup
             function showConfirmPopup(title, message, callback) {
                 popupTitle.textContent = title;
                 popupMessage.textContent = message;
                 popupCloseBtn.textContent = "Cancel";
-                let okBtn = document.createElement("button");
+
+                // Create OK button
+                const okBtn = document.createElement("button");
                 okBtn.textContent = "OK";
                 okBtn.className = popupCloseBtn.className;
                 okBtn.style.marginLeft = "10px";
                 okBtn.style.backgroundColor = "#27AE60";
-                popupModal.querySelector("#popupBox").appendChild(okBtn);
+
+                // Add OK button temporarily
+                const popupBox = popupModal.querySelector("#popupBox");
+                popupBox.appendChild(okBtn);
 
                 popupModal.classList.remove("hidden");
-                setTimeout(() => popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100"), 10);
+                setTimeout(() => popupBox.classList.add("scale-100", "opacity-100"), 10);
 
                 function cleanUp() {
-                    popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
+                    popupBox.classList.remove("scale-100", "opacity-100");
                     setTimeout(() => {
                         popupModal.classList.add("hidden");
                         okBtn.remove();
@@ -1064,73 +997,116 @@ if (empty($profile_photo_url)) {
                     callback(true);
                     cleanUp();
                 };
+
                 popupCloseBtn.onclick = () => {
                     callback(false);
                     cleanUp();
                 };
             }
 
-            loadBenefits();
-        });
-    </script>
+            // ========== LOAD BENEFITS ==========
+            function loadBenefits() {
+                fetch('/MSWDPALUAN_SYSTEM-MAIN/php/benefits/fetch_benefits.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            benefitsTableBody.innerHTML = "";
+                            data.benefits.forEach(benefit => {
+                                const row = document.createElement("tr");
+                                row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700", "dark:text-white");
+                                row.innerHTML = `
+                                <td class="px-4 py-3 text-gray-700 dark:text-white">${benefit.benefit_name}</td>
+                                <td class="px-15 py-3 flex items-center justify-end space-x-2">
+                                    <button class="edit-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white" data-id="${benefit.id}" type="button" title="Edit">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-10 10A2 2 0 016 16H4a1 1 0 01-1-1v-2a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0z"/></svg>
+                                    </button>
+                                    <button class="delete-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-600" data-id="${benefit.id}" type="button" title="Delete">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h1v10a2 2 0 002 2h8a2 2 0 002-2V6h1a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 4a1 1 0 012 0v8a1 1 0 11-2 0V6zm4 0a1 1 0 112 0v8a1 1 0 11-2 0V6z" clip-rule="evenodd"/></svg>
+                                    </button>
+                                </td>
+                            `;
+                                benefitsTableBody.appendChild(row);
+                            });
 
-    <!-- ediBenefit -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const benefitModal = document.getElementById("benefitModal");
-            const benefitModalTitle = document.getElementById("benefitModalTitle");
-            const benefitModalInput = document.getElementById("benefitModalInput");
-            const benefitModalSave = document.getElementById("benefitModalSave");
-            const benefitModalCancel = document.getElementById("benefitModalCancel");
-
-            // Popup elements
-            const popupModal = document.getElementById("popupModal");
-            const popupTitle = document.getElementById("popupTitle");
-            const popupMessage = document.getElementById("popupMessage");
-            const popupCloseBtn = document.getElementById("popupCloseBtn");
-
-            let currentEditId = null;
-
-            function showPopup(title, message) {
-                popupTitle.textContent = title;
-                popupMessage.textContent = message;
-                popupModal.classList.remove("hidden");
-                setTimeout(() => {
-                    popupModal.querySelector("#popupBox").classList.add("scale-100", "opacity-100");
-                }, 10);
+                            attachDeleteButtons();
+                            attachEditButtons(); // Re-attach edit buttons after loading
+                        } else {
+                            showPopup("Error", data.message || "Failed to load benefits.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Load benefits error:", err);
+                        showPopup("Error", "Failed to fetch benefits.");
+                    });
             }
 
-            popupCloseBtn.addEventListener("click", function() {
-                popupModal.querySelector("#popupBox").classList.remove("scale-100", "opacity-100");
-                setTimeout(() => popupModal.classList.add("hidden"), 300);
-            });
+            // ========== ATTACH EVENT HANDLERS ==========
+            function attachDeleteButtons() {
+                document.querySelectorAll(".delete-btn").forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        const id = this.dataset.id;
+                        showConfirmPopup("Confirm Delete", "Are you sure you want to delete this benefit?", function(confirmed) {
+                            if (!confirmed) return;
 
-            // Edit button click
-            document.body.addEventListener("click", function(e) {
-                if (e.target.closest(".edit-btn")) {
-                    const btn = e.target.closest(".edit-btn");
-                    const row = btn.closest("tr");
-                    const id = btn.dataset.id;
-                    const name = row.querySelector("td:first-child").textContent.trim();
+                            fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/benefits/delete_benefit.php`, {
+                                    method: "POST",
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        id: id,
+                                        session_context: "staff",
+                                        staff_user_id: staffUserId
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        showPopup("Success", "Benefit deleted successfully!");
+                                        loadBenefits();
+                                    } else {
+                                        showPopup("Error", data.message || "Failed to delete benefit.");
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error("Delete error:", err);
+                                    showPopup("Error", "Failed to delete benefit.");
+                                });
+                        });
+                    });
+                });
+            }
 
-                    currentEditId = id;
-                    benefitModalTitle.textContent = "Edit Benefit";
-                    benefitModalInput.value = name;
-                    benefitModal.classList.remove("hidden");
-                }
-            });
+            function attachEditButtons() {
+                document.querySelectorAll(".edit-btn").forEach(btn => {
+                    btn.addEventListener("click", function(e) {
+                        e.stopPropagation(); // Prevent event bubbling
 
-            // Cancel button
+                        const row = this.closest("tr");
+                        const id = this.dataset.id;
+                        const name = row.querySelector("td:first-child").textContent.trim();
+
+                        currentEditId = id;
+                        benefitModalTitle.textContent = "Edit Benefit";
+                        benefitModalInput.value = name;
+                        benefitModal.classList.remove("hidden");
+                    });
+                });
+            }
+
+            // ========== MODAL HANDLERS ==========
             benefitModalCancel.addEventListener("click", () => {
                 benefitModal.classList.add("hidden");
                 currentEditId = null;
                 benefitModalInput.value = "";
             });
 
-            // Save button (AJAX update)
             benefitModalSave.addEventListener("click", () => {
                 const newName = benefitModalInput.value.trim();
-                if (!newName) return showPopup("Error", "Benefit name cannot be empty!");
+                if (!newName) {
+                    showPopup("Error", "Benefit name cannot be empty!");
+                    return;
+                }
 
                 fetch("/MSWDPALUAN_SYSTEM-MAIN/php/benefits/update_benefit.php", {
                         method: "POST",
@@ -1139,28 +1115,47 @@ if (empty($profile_photo_url)) {
                         },
                         body: JSON.stringify({
                             id: currentEditId,
-                            benefit_name: newName
+                            benefit_name: newName,
+                            session_context: "staff",
+                            staff_user_id: staffUserId
                         })
                     })
-                    .then(res => res.json()) // ensure JSON parsing
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
                     .then(data => {
-                        if (data && data.success) { // check data exists and success
+                        console.log("Update response:", data);
+
+                        if (data && data.success) {
                             showPopup("Success", data.message || "Benefit updated successfully!");
                             benefitModal.classList.add("hidden");
                             currentEditId = null;
                             benefitModalInput.value = "";
-                            loadBenefits(); // refresh table
+                            loadBenefits(); // Refresh the list
                         } else {
-                            console.error("Update Response:", data); // debug log
-                            showPopup("Error", (data && data.message) || "Failed to update benefit.");
+                            const errorMsg = data && data.error ? data.error : "Failed to update benefit.";
+                            console.error("Update Response Error:", data);
+                            showPopup("Error", errorMsg);
                         }
                     })
                     .catch(err => {
                         console.error("Fetch error:", err);
-                        showPopup("Error", "Failed to update benefit.");
+                        showPopup("Error", "Network error. Please check console.");
                     });
-
             });
+
+            // ========== INITIALIZE ==========
+            popupCloseBtn.addEventListener("click", function() {
+                const popupBox = popupModal.querySelector("#popupBox");
+                popupBox.classList.remove("scale-100", "opacity-100");
+                setTimeout(() => popupModal.classList.add("hidden"), 300);
+            });
+
+            // Initial load
+            loadBenefits();
         });
     </script>
 </body>

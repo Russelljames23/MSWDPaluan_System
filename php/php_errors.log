@@ -3241,3 +3241,1062 @@
 [10-Jan-2026 18:38:24 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
 [10-Jan-2026 18:38:24 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 289, Type: RESTORE_SENIOR, User: 57
 [10-Jan-2026 18:38:24 Europe/Berlin] Activity logged using ActivityLogger
+[10-Jan-2026 18:52:21 Europe/Berlin] === SESSION DEBUG save_benefits.php ===
+[10-Jan-2026 18:52:21 Europe/Berlin] REQUEST_METHOD: POST
+[10-Jan-2026 18:52:21 Europe/Berlin] Session ID: 
+[10-Jan-2026 18:52:21 Europe/Berlin] SESSION contents: Array
+(
+)
+
+[10-Jan-2026 18:52:21 Europe/Berlin] Defaulting to admin context
+[10-Jan-2026 18:52:21 Europe/Berlin] Final user info for benefits: Array
+(
+    [id] => 0
+    [name] => Unknown User
+    [type] => Admin
+    [context] => admin
+    [is_staff] => 
+)
+
+[10-Jan-2026 18:52:21 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 18:52:21 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:52:21 Europe/Berlin] Session data available: YES
+[10-Jan-2026 18:52:21 Europe/Berlin] Session context: admin
+[10-Jan-2026 18:52:21 Europe/Berlin] Session user_id: none
+[10-Jan-2026 18:52:21 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 18:52:21 Europe/Berlin] Found session context: admin
+[10-Jan-2026 18:52:21 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:52:21 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:52:21 Europe/Berlin] Session data available: YES
+[10-Jan-2026 18:52:21 Europe/Berlin] Session context: admin
+[10-Jan-2026 18:52:21 Europe/Berlin] Session user_id: none
+[10-Jan-2026 18:52:21 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 18:52:21 Europe/Berlin] Found session context: admin
+[10-Jan-2026 18:52:21 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:52:21 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 18:52:21 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 290, Type: ADD_BENEFIT_TYPE, User: 57
+[10-Jan-2026 18:52:43 Europe/Berlin] === SESSION DEBUG save_benefits.php ===
+[10-Jan-2026 18:52:43 Europe/Berlin] REQUEST_METHOD: POST
+[10-Jan-2026 18:52:43 Europe/Berlin] Session ID: 
+[10-Jan-2026 18:52:43 Europe/Berlin] SESSION contents: Array
+(
+)
+
+[10-Jan-2026 18:52:43 Europe/Berlin] Detected staff request from referrer: http://localhost/MSWDPALUAN_SYSTEM-MAIN/html/staff/staff_benefits.php?session_context=session_1768049021213_kg159lf9g
+[10-Jan-2026 18:52:43 Europe/Berlin] Inferred staff context from request analysis
+[10-Jan-2026 18:52:43 Europe/Berlin] Final user info for benefits: Array
+(
+    [id] => 0
+    [name] => Unknown User
+    [type] => Staff
+    [context] => staff
+    [is_staff] => 1
+)
+
+[10-Jan-2026 18:52:43 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 18:52:43 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:52:43 Europe/Berlin] Session data available: YES
+[10-Jan-2026 18:52:43 Europe/Berlin] Session context: staff
+[10-Jan-2026 18:52:43 Europe/Berlin] Session user_id: none
+[10-Jan-2026 18:52:43 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 18:52:43 Europe/Berlin] Found session context: staff
+[10-Jan-2026 18:52:43 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:52:43 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:52:43 Europe/Berlin] Session data available: YES
+[10-Jan-2026 18:52:43 Europe/Berlin] Session context: staff
+[10-Jan-2026 18:52:43 Europe/Berlin] Session user_id: none
+[10-Jan-2026 18:52:43 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 18:52:43 Europe/Berlin] Found session context: staff
+[10-Jan-2026 18:52:43 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:52:43 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 18:52:43 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 291, Type: STAFF_ADD_BENEFIT_TYPE, User: 57
+[10-Jan-2026 18:57:22 Europe/Berlin] === SESSION DEBUG save_benefits.php ===
+[10-Jan-2026 18:57:22 Europe/Berlin] REQUEST_METHOD: POST
+[10-Jan-2026 18:57:22 Europe/Berlin] Session ID: 
+[10-Jan-2026 18:57:22 Europe/Berlin] No user_id in session, checking other session variables
+[10-Jan-2026 18:57:22 Europe/Berlin] Overriding context to STAFF based on referrer: http://localhost/MSWDPALUAN_SYSTEM-MAIN/html/staff/staff_benefits.php?session_context=session_1768049021213_kg159lf9g
+[10-Jan-2026 18:57:22 Europe/Berlin] Final user info: Array
+(
+    [id] => 0
+    [name] => Unknown User
+    [type] => Unknown
+    [context] => staff
+    [is_staff] => 1
+)
+
+[10-Jan-2026 18:57:22 Europe/Berlin] Logging activity: STAFF_ADD_BENEFIT_TYPE for user: Unknown User (ID: 0, Type: Unknown)
+[10-Jan-2026 18:57:22 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 18:57:22 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:57:22 Europe/Berlin] Session data available: NO
+[10-Jan-2026 18:57:22 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:57:22 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 18:57:22 Europe/Berlin] Session data available: NO
+[10-Jan-2026 18:57:22 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 18:57:23 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 18:57:23 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 292, Type: STAFF_ADD_BENEFIT_TYPE, User: 57
+[10-Jan-2026 19:01:46 Europe/Berlin] === SESSION DEBUG save_benefits.php ===
+[10-Jan-2026 19:01:46 Europe/Berlin] REQUEST_METHOD: POST
+[10-Jan-2026 19:01:46 Europe/Berlin] Session ID: 
+[10-Jan-2026 19:01:46 Europe/Berlin] Detected staff request from referrer: http://localhost/MSWDPALUAN_SYSTEM-MAIN/html/staff/staff_benefits.php?session_context=session_1768049021213_kg159lf9g
+[10-Jan-2026 19:01:46 Europe/Berlin] Inferred staff context from request analysis
+[10-Jan-2026 19:01:46 Europe/Berlin] Final user info: Array
+(
+    [id] => 0
+    [name] => Unknown User
+    [type] => Staff
+    [context] => staff
+    [is_staff] => 1
+)
+
+[10-Jan-2026 19:01:46 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:01:46 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:01:46 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:01:46 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:01:46 Europe/Berlin] Session user_id: none
+[10-Jan-2026 19:01:46 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:01:46 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:01:46 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:01:46 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:01:46 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:01:46 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:01:46 Europe/Berlin] Session user_id: none
+[10-Jan-2026 19:01:46 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:01:46 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:01:46 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:01:46 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:01:46 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 293, Type: STAFF_ADD_BENEFIT_TYPE, User: 57
+[10-Jan-2026 19:07:46 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:07:46 Europe/Berlin] User Info for Benefits: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:07:46 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:07:46 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:07:46 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:07:46 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:07:46 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:07:46 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:07:46 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:07:46 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:07:46 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:07:46 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:07:46 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:07:46 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:07:46 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:07:46 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 294, Type: STAFF_ADD_BENEFIT_TYPE, User: 67
+[10-Jan-2026 19:08:05 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:08:05 Europe/Berlin] User Info for Benefits: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:08:05 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:08:05 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:08:05 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:08:05 Europe/Berlin] Session context: none
+[10-Jan-2026 19:08:05 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:08:05 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:08:05 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:08:05 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:08:05 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:08:05 Europe/Berlin] Session context: none
+[10-Jan-2026 19:08:05 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:08:05 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:08:05 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:08:05 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:08:05 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 295, Type: ADD_BENEFIT_TYPE, User: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:13:25 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:13:25 Europe/Berlin] User Info for Update Benefit: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:13:25 Europe/Berlin] User Info for Update Benefit: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:13:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:13:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:13:25 Europe/Berlin] Session context: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session context: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:13:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:13:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:13:25 Europe/Berlin] Session context: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:13:25 Europe/Berlin] Session context: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:13:25 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:13:25 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:13:25 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 296, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 297, Type: ERROR, User: 57
+[10-Jan-2026 19:13:25 Europe/Berlin] Error in update_benefit.php: No changes were made. Benefit may not exist or data is unchanged.
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - User: ID=0, Name=Unknown User, Type=Unknown, Context=admin
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - User: ID=0, Name=Unknown User, Type=Unknown, Context=admin
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Input received: {"id":"16","benefit_name":"Staff 2nd Try Edit"}
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Input received: {"id":"16","benefit_name":"Staff 2nd Try Edit"}
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Current: Staff 2nd Try, New: Staff 2nd Try Edit
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Current: Staff 2nd Try, New: Staff 2nd Try Edit
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:19:00 Europe/Berlin] Update Benefit - Affected rows: 0
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:19:00 Europe/Berlin] General error in update_benefit.php: No changes were made. The name may have been updated by another user.
+[10-Jan-2026 19:19:00 Europe/Berlin] Stack trace: #0 {main}
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:19:00 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:19:00 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:19:00 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:19:00 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:19:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:19:00 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:19:00 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:19:00 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:19:00 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:19:00 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:19:00 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:19:00 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 298, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:19:00 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 299, Type: ERROR, User: 57
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - User: ID=0, Name=Unknown User, Type=Unknown, Context=admin
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - User: ID=0, Name=Unknown User, Type=Unknown, Context=admin
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Input received: {"id":"17","benefit_name":"Staff 3rd Try Edit"}
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Input received: {"id":"17","benefit_name":"Staff 3rd Try Edit"}
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Current: Staff 3rd Try, New: Staff 3rd Try Edit
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Current: Staff 3rd Try, New: Staff 3rd Try Edit
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:27:16 Europe/Berlin] Update Benefit - Affected rows: 0
+[10-Jan-2026 19:27:16 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:27:16 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:27:16 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:27:16 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:27:16 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:27:16 Europe/Berlin] Session data available: NO
+[10-Jan-2026 19:27:16 Europe/Berlin] Defaulting to Admin ID: 57
+[10-Jan-2026 19:27:16 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:27:16 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 300, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:42:37 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:42:37 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Input received: {"id":"18","benefit_name":"Staff 4th Try Edit"}
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Input received: {"id":"18","benefit_name":"Staff 4th Try Edit"}
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Current: Staff 4th Try, New: Staff 4th Try Edit
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Current: Staff 4th Try, New: Staff 4th Try Edit
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:42:37 Europe/Berlin] Update Benefit - Affected rows: 0
+[10-Jan-2026 19:42:37 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:42:37 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:42:37 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:42:37 Europe/Berlin] Session context: none
+[10-Jan-2026 19:42:37 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:42:37 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:42:37 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:42:37 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:42:37 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:42:37 Europe/Berlin] Session context: none
+[10-Jan-2026 19:42:37 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:42:37 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:42:37 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:42:37 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:42:37 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 301, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:43:24 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - Input received: {"id":"18","benefit_name":"Staff 4th Try Edit"}
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - Input received: {"id":"18","benefit_name":"Staff 4th Try Edit"}
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - Current: Staff 4th Try Edit, New: Staff 4th Try Edit
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:43:24 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:43:24 Europe/Berlin] Session context: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Update Benefit - Current: Staff 4th Try Edit, New: Staff 4th Try Edit
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:43:24 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:43:24 Europe/Berlin] Session context: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:43:24 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:43:24 Europe/Berlin] Session context: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:43:24 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:43:24 Europe/Berlin] Session context: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:43:24 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:43:24 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:43:24 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 302, Type: ATTEMPT_UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:43:24 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 303, Type: ATTEMPT_UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:48:47 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:48:47 Europe/Berlin] Update Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:48:47 Europe/Berlin] Update Benefit - Input received: {"id":"15","benefit_name":"Staff 1st Try 1st Edit","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:48:47 Europe/Berlin] Update Benefit - Current: Staff 1st Try Edit, New: Staff 1st Try 1st Edit
+[10-Jan-2026 19:48:47 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:48:47 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:48:47 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:48:47 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:48:47 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:48:47 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:48:47 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:48:47 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:48:47 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:48:47 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:48:47 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:48:47 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:48:47 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:48:47 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:48:47 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 304, Type: STAFF_UPDATE_BENEFIT, User: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:49:14 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - Input received: {"id":"15","benefit_name":"Staff 1st Try Edit","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - Current: Staff 1st Try 1st Edit, New: Staff 1st Try Edit
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - Input received: {"id":"15","benefit_name":"Staff 1st Try Edit"}
+[10-Jan-2026 19:49:14 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:49:14 Europe/Berlin] Update Benefit - Current: Staff 1st Try Edit, New: Staff 1st Try Edit
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:49:14 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:14 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:49:14 Europe/Berlin] Session context: none
+[10-Jan-2026 19:49:14 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:49:14 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:49:14 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:14 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:14 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:49:14 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Session context: none
+[10-Jan-2026 19:49:14 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:49:14 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:49:14 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:49:14 Europe/Berlin] Using user_id from session: 57
+[10-Jan-2026 19:49:14 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:49:14 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:49:14 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:49:14 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 305, Type: STAFF_UPDATE_BENEFIT, User: 67
+[10-Jan-2026 19:49:14 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 306, Type: ATTEMPT_UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:49:30 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:49:30 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Input received: {"id":"15","benefit_name":"Staff 1st Try 1st Edit","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Input received: {"id":"15","benefit_name":"Staff 1st Try 1st Edit"}
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Current: Staff 1st Try Edit, New: Staff 1st Try 1st Edit
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Current: Staff 1st Try Edit, New: Staff 1st Try 1st Edit
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:49:30 Europe/Berlin] Update Benefit - Affected rows: 0
+[10-Jan-2026 19:49:30 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:49:30 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:30 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:30 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:49:31 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:49:31 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:49:31 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:49:31 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:49:31 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:49:31 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:49:31 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:49:31 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:49:31 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:49:31 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 307, Type: STAFF_UPDATE_BENEFIT, User: 67
+[10-Jan-2026 19:52:06 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:52:06 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:52:06 Europe/Berlin] Update Benefit - Input received: {"id":"14","benefit_name":"Try Langs 1st edit","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 19:52:06 Europe/Berlin] Update Benefit - Current: Try Langs, New: Try Langs 1st edit
+[10-Jan-2026 19:52:06 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:52:06 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:52:06 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:52:06 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:52:06 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:52:06 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:52:06 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:52:06 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:52:06 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:52:06 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:52:06 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:52:06 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:52:06 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:52:06 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:52:06 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:52:06 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:52:06 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:52:06 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 308, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:55:25 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:55:25 Europe/Berlin] Update Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:55:25 Europe/Berlin] Update Benefit - Input received: {"id":"16","benefit_name":"Staff 2nd Try 2nd Edit","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:55:25 Europe/Berlin] Update Benefit - Current: Staff 2nd Try Edit, New: Staff 2nd Try 2nd Edit
+[10-Jan-2026 19:55:25 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:55:25 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:55:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:55:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:55:25 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:55:25 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:55:25 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:55:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:55:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:55:25 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:55:25 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:55:25 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:55:25 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:55:25 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:55:25 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 309, Type: STAFF_UPDATE_BENEFIT, User: 67
+[10-Jan-2026 19:55:40 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:55:40 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:55:40 Europe/Berlin] Update Benefit - Input received: {"id":"14","benefit_name":"Try Langs 1st edit 2nd","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 19:55:40 Europe/Berlin] Update Benefit - Current: Try Langs 1st edit, New: Try Langs 1st edit 2nd
+[10-Jan-2026 19:55:40 Europe/Berlin] Update Benefit - Affected rows: 1
+[10-Jan-2026 19:55:40 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:55:40 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:55:40 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:55:40 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:55:40 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:55:40 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:55:40 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:55:40 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:55:40 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:55:40 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:55:40 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:55:40 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:55:40 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:55:40 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:55:40 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:55:40 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:55:40 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 310, Type: UPDATE_BENEFIT, User: 57
+[10-Jan-2026 19:59:25 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:25 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:25 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:59:25 Europe/Berlin] Delete Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:59:25 Europe/Berlin] Delete Benefit - Raw input: {"id":"14","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:59:25 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 14
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[10-Jan-2026 19:59:25 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:59:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:25 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:59:25 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:59:25 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:59:25 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:25 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:25 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:59:25 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:59:25 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:59:25 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:59:25 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:59:25 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 311, Type: STAFF_DELETE_BENEFIT, User: 67
+[10-Jan-2026 19:59:44 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:44 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:44 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:59:44 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:59:44 Europe/Berlin] Delete Benefit - Raw input: {"id":"15","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 19:59:44 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 15
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 19:59:44 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:59:44 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:44 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:44 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:59:44 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:59:44 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:59:44 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:59:44 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:59:44 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:44 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:44 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:59:44 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:59:44 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:59:44 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:59:44 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:59:44 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:59:44 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 312, Type: DELETE_BENEFIT, User: 57
+[10-Jan-2026 19:59:53 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:53 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:53 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:59:53 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 19:59:53 Europe/Berlin] Delete Benefit - Raw input: {"id":"19","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 19:59:53 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 19
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 19:59:53 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:59:53 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:53 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:53 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:59:53 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:59:53 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:59:53 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:59:53 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:59:53 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:53 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:53 Europe/Berlin] Session context: admin
+[10-Jan-2026 19:59:53 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 19:59:53 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 19:59:53 Europe/Berlin] Found session context: admin
+[10-Jan-2026 19:59:53 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 19:59:53 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 19:59:53 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 313, Type: DELETE_BENEFIT, User: 57
+[10-Jan-2026 19:59:58 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:58 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 19:59:58 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 19:59:58 Europe/Berlin] Delete Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 19:59:58 Europe/Berlin] Delete Benefit - Raw input: {"id":"19","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 19:59:58 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 19
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[10-Jan-2026 19:59:58 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 19:59:58 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:58 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:58 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:59:58 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:59:58 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:59:58 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 19:59:58 Europe/Berlin] Session data available: YES
+[10-Jan-2026 19:59:58 Europe/Berlin] Session context: staff
+[10-Jan-2026 19:59:58 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] Found session context: staff
+[10-Jan-2026 19:59:58 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 19:59:58 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 19:59:58 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 19:59:58 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 314, Type: STAFF_ERROR, User: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:00 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:00 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:00:00 Europe/Berlin] Delete Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 20:00:00 Europe/Berlin] Delete Benefit - Raw input: {"id":"19","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 20:00:00 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 19
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[10-Jan-2026 20:00:00 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:00:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:00 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:00 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:00:00 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:00:00 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:00:00 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:00 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:00 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:00:00 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:00:00 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:00:00 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:00:00 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 20:00:00 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 315, Type: STAFF_ERROR, User: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:02 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:02 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:00:02 Europe/Berlin] Delete Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 20:00:02 Europe/Berlin] Delete Benefit - Raw input: {"id":"19","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 20:00:02 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 19
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[10-Jan-2026 20:00:02 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:00:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:02 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:02 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:00:02 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:00:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:00:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:02 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:02 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:00:02 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:00:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:00:02 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:00:02 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 20:00:02 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 316, Type: STAFF_ERROR, User: 67
+[10-Jan-2026 20:00:09 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:09 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:09 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:00:09 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 20:00:09 Europe/Berlin] Delete Benefit - Raw input: {"id":"18","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 20:00:09 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 18
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 20:00:09 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:00:09 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:09 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:09 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:09 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:09 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:09 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:09 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:09 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:09 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:09 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:09 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:09 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:09 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:09 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:09 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 20:00:09 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 317, Type: DELETE_BENEFIT, User: 57
+[10-Jan-2026 20:00:11 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:11 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:11 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:00:11 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 20:00:11 Europe/Berlin] Delete Benefit - Raw input: {"id":"17","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 20:00:11 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 17
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 20:00:11 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:00:11 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:11 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:11 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:11 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:11 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:11 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:11 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:11 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:11 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:11 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:11 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:11 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:11 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:11 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:11 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 20:00:11 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 318, Type: DELETE_BENEFIT, User: 57
+[10-Jan-2026 20:00:13 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:13 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[10-Jan-2026 20:00:13 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:00:13 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 20:00:13 Europe/Berlin] Delete Benefit - Raw input: {"id":"16","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 20:00:13 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 16
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 20:00:13 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:00:13 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:13 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:13 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:13 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:13 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:13 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:13 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:13 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:00:13 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:00:13 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:00:13 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:00:13 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:00:13 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:00:13 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:00:13 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 20:00:13 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 319, Type: DELETE_BENEFIT, User: 57
+[10-Jan-2026 20:10:02 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[10-Jan-2026 20:10:02 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[10-Jan-2026 20:10:02 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 114
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 5
+                    [name] => Total # of SC Availed of Birthday Gift
+                    [amount] => 100
+                )
+
+        )
+
+    [date] => 2026-01-10
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[10-Jan-2026 20:10:02 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:10:02 Europe/Berlin] Add Benefits - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[10-Jan-2026 20:10:02 Europe/Berlin] Add Benefits - Raw input: {"applicant_ids":["114"],"benefits":[{"id":"5","name":"Total # of SC Availed of Birthday Gift","amount":100}],"date":"2026-01-10","session_context":"staff","staff_user_id":67}
+[10-Jan-2026 20:10:02 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:10:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:10:02 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:10:02 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:10:02 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:10:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:10:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:10:02 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:10:02 Europe/Berlin] Session context: staff
+[10-Jan-2026 20:10:02 Europe/Berlin] Session user_id: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] Session staff_user_id: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] Found session context: staff
+[10-Jan-2026 20:10:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[10-Jan-2026 20:10:02 Europe/Berlin] User 67 is staff: YES
+[10-Jan-2026 20:10:02 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[10-Jan-2026 20:10:02 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 320, Type: STAFF_ADD_BENEFITS_TO_BENEFICIARIES, User: 67
+[10-Jan-2026 20:10:31 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[10-Jan-2026 20:10:31 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[10-Jan-2026 20:10:31 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 113
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 13
+                    [name] => Total # of SC Availed of Christmas Gift
+                    [amount] => 500
+                )
+
+        )
+
+    [date] => 2026-01-10
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[10-Jan-2026 20:10:31 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[10-Jan-2026 20:10:31 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[10-Jan-2026 20:10:31 Europe/Berlin] Add Benefits - Raw input: {"applicant_ids":["113"],"benefits":[{"id":"13","name":"Total # of SC Availed of Christmas Gift","amount":500}],"date":"2026-01-10","session_context":"admin","admin_user_id":57}
+[10-Jan-2026 20:10:31 Europe/Berlin] === ActivityLogger Started ===
+[10-Jan-2026 20:10:31 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:10:31 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:10:31 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:10:31 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:10:31 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:10:31 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:10:31 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:10:31 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[10-Jan-2026 20:10:31 Europe/Berlin] Session data available: YES
+[10-Jan-2026 20:10:31 Europe/Berlin] Session context: admin
+[10-Jan-2026 20:10:31 Europe/Berlin] Session user_id: 57
+[10-Jan-2026 20:10:31 Europe/Berlin] Session staff_user_id: none
+[10-Jan-2026 20:10:32 Europe/Berlin] Found session context: admin
+[10-Jan-2026 20:10:32 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[10-Jan-2026 20:10:32 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[10-Jan-2026 20:10:32 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 321, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57
+[11-Jan-2026 14:46:44 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\deceasedlist\undo_deceased.php on line 16
+[11-Jan-2026 14:46:44 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\deceasedlist\undo_deceased.php on line 16
+[11-Jan-2026 14:46:44 Europe/Berlin] === START detectUserContext (undo_deceased.php) ===
+[11-Jan-2026 14:46:44 Europe/Berlin] Received data: Array
+(
+    [id] => 102
+    [session_context] => admin
+)
+
+[11-Jan-2026 14:46:44 Europe/Berlin] Session data before detection: Array
+(
+)
+
+[11-Jan-2026 14:46:44 Europe/Berlin] Context from request data: admin
+[11-Jan-2026 14:46:44 Europe/Berlin] Using fallback admin ID: 57
+[11-Jan-2026 14:46:44 Europe/Berlin] Using name from database: Russell James Tadalan
+[11-Jan-2026 14:46:44 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[11-Jan-2026 14:46:44 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+)
+
+[11-Jan-2026 14:46:44 Europe/Berlin] === END detectUserContext ===
+[11-Jan-2026 14:46:44 Europe/Berlin] Using database admin user name: Russell James Tadalan
+[11-Jan-2026 14:46:44 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:46:44 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:46:44 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:46:44 Europe/Berlin] Session context: admin
+[11-Jan-2026 14:46:44 Europe/Berlin] Session user_id: none
+[11-Jan-2026 14:46:44 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:46:44 Europe/Berlin] Found session context: admin
+[11-Jan-2026 14:46:44 Europe/Berlin] Defaulting to Admin ID: 57
+[11-Jan-2026 14:46:44 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:46:44 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:46:44 Europe/Berlin] Session context: admin
+[11-Jan-2026 14:46:44 Europe/Berlin] Session user_id: none
+[11-Jan-2026 14:46:44 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:46:44 Europe/Berlin] Found session context: admin
+[11-Jan-2026 14:46:44 Europe/Berlin] Defaulting to Admin ID: 57
+[11-Jan-2026 14:46:44 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[11-Jan-2026 14:46:44 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 339, Type: UNDO_DECEASED, User: 57
+[11-Jan-2026 14:46:54 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\deceasedlist\undo_deceased.php on line 16
+[11-Jan-2026 14:46:54 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\deceasedlist\undo_deceased.php on line 16
+[11-Jan-2026 14:46:54 Europe/Berlin] === START detectUserContext (undo_deceased.php) ===
+[11-Jan-2026 14:46:54 Europe/Berlin] Received data: Array
+(
+    [id] => 103
+    [session_context] => staff
+    [staff_user_id] => 67
+    [staff_user_name] => Marianne Ygay
+)
+
+[11-Jan-2026 14:46:54 Europe/Berlin] Session data before detection: Array
+(
+)
+
+[11-Jan-2026 14:46:54 Europe/Berlin] Context from request data: staff
+[11-Jan-2026 14:46:54 Europe/Berlin] Stored staff_user_id in session: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] Using staff_user_id from request: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] Using staff_user_name from request: Marianne Ygay
+[11-Jan-2026 14:46:54 Europe/Berlin] Using name from database: Marianne Ygay
+[11-Jan-2026 14:46:54 Europe/Berlin] Final user info: Array
+(
+    [context] => staff
+    [user_id] => 67
+    [user_name] => Marianne Ygay
+)
+
+[11-Jan-2026 14:46:54 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[11-Jan-2026 14:46:54 Europe/Berlin] === END detectUserContext ===
+[11-Jan-2026 14:46:54 Europe/Berlin] Using database staff user name: Marianne Ygay
+[11-Jan-2026 14:46:54 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:46:54 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:46:54 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:46:54 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:46:54 Europe/Berlin] Session user_id: none
+[11-Jan-2026 14:46:54 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:46:54 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:46:54 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:46:54 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:46:54 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:46:54 Europe/Berlin] Session user_id: none
+[11-Jan-2026 14:46:54 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:46:54 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:46:54 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:46:54 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[11-Jan-2026 14:46:54 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 340, Type: STAFF_UNDO_DECEASED, User: 67
+[11-Jan-2026 14:50:48 Europe/Berlin] Defaulting to Admin ID: 57
+[11-Jan-2026 14:50:48 Europe/Berlin] Processing applicant: Natin Try, Birthdate: 1964-12-12
+[11-Jan-2026 14:50:48 Europe/Berlin] Applicant inserted with ID: 121
+[11-Jan-2026 14:50:48 Europe/Berlin] Registration details inserted with ID: 54
+[11-Jan-2026 14:50:48 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:50:48 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:50:48 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:50:48 Europe/Berlin] Session context: session_1768137010526_p0tkb6j3s
+[11-Jan-2026 14:50:48 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:50:48 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:50:48 Europe/Berlin] Found session context: session_1768137010526_p0tkb6j3s
+[11-Jan-2026 14:50:48 Europe/Berlin] Using user_id from session: 67
+[11-Jan-2026 14:50:48 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:50:48 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:50:48 Europe/Berlin] Session context: session_1768137010526_p0tkb6j3s
+[11-Jan-2026 14:50:48 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:50:48 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:50:48 Europe/Berlin] Found session context: session_1768137010526_p0tkb6j3s
+[11-Jan-2026 14:50:48 Europe/Berlin] Using user_id from session: 67
+[11-Jan-2026 14:50:48 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[11-Jan-2026 14:50:48 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 341, Type: REGISTER_SENIOR, User: 67
+[11-Jan-2026 14:57:55 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[11-Jan-2026 14:57:55 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[11-Jan-2026 14:57:55 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[11-Jan-2026 14:57:55 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[11-Jan-2026 14:57:55 Europe/Berlin] Delete Benefit - Raw input: {"id":"13","session_context":"admin","admin_user_id":57}
+[11-Jan-2026 14:57:55 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 13
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[11-Jan-2026 14:57:55 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:57:55 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:57:55 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:57:55 Europe/Berlin] Session context: admin
+[11-Jan-2026 14:57:55 Europe/Berlin] Session user_id: 57
+[11-Jan-2026 14:57:55 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:57:55 Europe/Berlin] Found session context: admin
+[11-Jan-2026 14:57:55 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[11-Jan-2026 14:57:55 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:57:55 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:57:55 Europe/Berlin] Session context: admin
+[11-Jan-2026 14:57:55 Europe/Berlin] Session user_id: 57
+[11-Jan-2026 14:57:55 Europe/Berlin] Session staff_user_id: none
+[11-Jan-2026 14:57:55 Europe/Berlin] Found session context: admin
+[11-Jan-2026 14:57:55 Europe/Berlin] Using admin ID from session[admin_user_id]: 57
+[11-Jan-2026 14:57:55 Europe/Berlin] Resolved User ID: 57, User Name: Russell James Tadalan
+[11-Jan-2026 14:57:55 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 349, Type: ERROR, User: 57
+[11-Jan-2026 14:58:07 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[11-Jan-2026 14:58:07 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\delete_benefit.php on line 16
+[11-Jan-2026 14:58:07 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[11-Jan-2026 14:58:07 Europe/Berlin] Delete Benefit - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[11-Jan-2026 14:58:07 Europe/Berlin] Delete Benefit - Raw input: {"id":"12","session_context":"staff","staff_user_id":67}
+[11-Jan-2026 14:58:07 Europe/Berlin] Delete Benefit - Parsed input: Array
+(
+    [id] => 12
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[11-Jan-2026 14:58:07 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:58:07 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:58:07 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:58:07 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:58:07 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:58:07 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:58:07 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:58:07 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:58:07 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:58:07 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:58:07 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:58:07 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:58:07 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[11-Jan-2026 14:58:07 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 350, Type: STAFF_DELETE_BENEFIT, User: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] PHP Warning:  session_start(): Session ID is too long or contains illegal characters. Only the A-Z, a-z, 0-9, &quot;-&quot;, and &quot;,&quot; characters are allowed in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[11-Jan-2026 14:59:02 Europe/Berlin] PHP Warning:  session_start(): Failed to read session data: files (path: C:\xampp\tmp) in C:\xampp\htdocs\MSWDPALUAN_SYSTEM-MAIN\php\benefits\add_benefits.php on line 16
+[11-Jan-2026 14:59:02 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 121
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [name] => Total # of SC Availed of SP
+                    [amount] => 500
+                )
+
+        )
+
+    [date] => 2026-01-11
+    [session_context] => staff
+    [staff_user_id] => 67
+)
+
+[11-Jan-2026 14:59:02 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[11-Jan-2026 14:59:02 Europe/Berlin] Add Benefits - User Info: ID=67, Name=Unknown User, Type=Staff, Context=staff
+[11-Jan-2026 14:59:02 Europe/Berlin] Add Benefits - Raw input: {"applicant_ids":["121"],"benefits":[{"id":"1","name":"Total # of SC Availed of SP","amount":500}],"date":"2026-01-11","session_context":"staff","staff_user_id":67}
+[11-Jan-2026 14:59:02 Europe/Berlin] === ActivityLogger Started ===
+[11-Jan-2026 14:59:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:59:02 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:59:02 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:59:02 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:59:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:59:02 Europe/Berlin] === ActivityLogger: resolveUserId ===
+[11-Jan-2026 14:59:02 Europe/Berlin] Session data available: YES
+[11-Jan-2026 14:59:02 Europe/Berlin] Session context: staff
+[11-Jan-2026 14:59:02 Europe/Berlin] Session user_id: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] Session staff_user_id: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] Found session context: staff
+[11-Jan-2026 14:59:02 Europe/Berlin] Using staff ID from session[staff_user_id]: 67
+[11-Jan-2026 14:59:02 Europe/Berlin] User 67 is staff: YES
+[11-Jan-2026 14:59:02 Europe/Berlin] Resolved User ID: 67, User Name: Marianne Ygay
+[11-Jan-2026 14:59:02 Europe/Berlin] ActivityLogger: Log inserted successfully! ID: 351, Type: STAFF_ADD_BENEFITS_TO_BENEFICIARIES, User: 67

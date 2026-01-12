@@ -1,5 +1,5 @@
 <?php
-// add_benefits.php - Improved version with activity logging
+// add_benefits.php - Enhanced with proper admin/staff activity logging
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -11,7 +11,7 @@ ini_set('error_log', dirname(__FILE__) . '/../php_errors.log');
 // Start output buffering
 ob_start();
 
-// Start session
+// Start session early
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -20,23 +20,29 @@ if (session_status() === PHP_SESSION_NONE) {
 function sendJsonError($message, $code = 400)
 {
     http_response_code($code);
-    if (ob_get_length()) ob_clean();
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     echo json_encode([
         "success" => false,
         "error" => $message,
         "timestamp" => date('Y-m-d H:i:s')
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 function sendJsonSuccess($message, $data = [])
 {
-    if (ob_get_length()) ob_clean();
-    echo json_encode(array_merge([
+    http_response_code(200);
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    $response = array_merge([
         "success" => true,
         "message" => $message,
         "timestamp" => date('Y-m-d H:i:s')
-    ], $data));
+    ], $data);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -58,15 +64,146 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJsonError("Invalid request method. Only POST is allowed.", 405);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+// =========================================================
+// USER INFO DETECTION (Consistent with other benefit files)
+// =========================================================
+function getCurrentUserInfo($conn)
+{
+    // Check for session context in input data
+    $input = file_get_contents('php://input');
+    $jsonData = json_decode($input, true);
 
-if (!$input) {
-    sendJsonError("Invalid or missing JSON data.");
+    if ($jsonData && json_last_error() === JSON_ERROR_NONE) {
+        error_log("Add Benefits - JSON data received: " . print_r($jsonData, true));
+
+        if (isset($jsonData['session_context']) && $jsonData['session_context'] === 'staff') {
+            $_SESSION['session_context'] = 'staff';
+            if (isset($jsonData['staff_user_id'])) {
+                $_SESSION['staff_user_id'] = $jsonData['staff_user_id'];
+                $_SESSION['user_id'] = $jsonData['staff_user_id'];
+            }
+        } elseif (isset($jsonData['session_context']) && $jsonData['session_context'] === 'admin') {
+            $_SESSION['session_context'] = 'admin';
+            if (isset($jsonData['admin_user_id'])) {
+                $_SESSION['admin_user_id'] = $jsonData['admin_user_id'];
+                $_SESSION['user_id'] = $jsonData['admin_user_id'];
+            }
+        }
+    }
+
+    // Determine context from session
+    $context = $_SESSION['session_context'] ?? 'admin';
+    $userId = 0;
+    $userName = 'Unknown User';
+    $userType = 'Unknown';
+
+    // Get user ID based on context
+    if ($context === 'staff') {
+        // Try to get staff user ID
+        $staffIds = ['staff_user_id', 'user_id', 'id'];
+        foreach ($staffIds as $idKey) {
+            if (isset($_SESSION[$idKey]) && !empty($_SESSION[$idKey])) {
+                $userId = $_SESSION[$idKey];
+                break;
+            }
+        }
+
+        // If no staff ID found but we have admin ID, switch context
+        if ($userId === 0 && isset($_SESSION['admin_user_id'])) {
+            $userId = $_SESSION['admin_user_id'];
+            $context = 'admin';
+        }
+    } else {
+        // Admin context
+        $adminIds = ['admin_user_id', 'user_id', 'id'];
+        foreach ($adminIds as $idKey) {
+            if (isset($_SESSION[$idKey]) && !empty($_SESSION[$idKey])) {
+                $userId = $_SESSION[$idKey];
+                break;
+            }
+        }
+    }
+
+    // If still no ID, use default admin ID
+    if ($userId === 0) {
+        $userId = 57; // Default admin ID
+        $context = 'admin';
+        $_SESSION['admin_user_id'] = 57;
+        $_SESSION['user_id'] = 57;
+    }
+
+    // Get user details from database
+    if ($userId > 0) {
+        try {
+            $stmt = $conn->prepare(
+                "SELECT firstname, lastname, middlename, user_type, role_name 
+                 FROM users 
+                 WHERE id = ? AND status = 'active' 
+                 LIMIT 1"
+            );
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+
+            if ($user) {
+                // Build name WITHOUT (Admin) or (Staff) suffix
+                $firstName = $user['firstname'] ?? '';
+                $lastName = $user['lastname'] ?? '';
+
+                if (!empty($firstName) && !empty($lastName)) {
+                    $userName = $lastName . ', ' . $firstName;
+                } else {
+                    $userName = 'Unknown User';
+                }
+
+                $userType = $user['user_type'] ?? $user['role_name'] ?? 'Unknown';
+
+                // Verify if user_type matches context
+                $dbUserType = strtolower($userType);
+                if ($context === 'staff' && strpos($dbUserType, 'staff') === false) {
+                    // User is staff in context but admin in DB, correct context
+                    $context = 'admin';
+                    $_SESSION['session_context'] = 'admin';
+                } elseif ($context === 'admin' && strpos($dbUserType, 'staff') !== false) {
+                    // User is admin in context but staff in DB, correct context
+                    $context = 'staff';
+                    $_SESSION['session_context'] = 'staff';
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching user details: " . $e->getMessage());
+        }
+    }
+
+    // Get user type from session if not from DB
+    if ($userType === 'Unknown') {
+        if ($context === 'staff') {
+            $userType = $_SESSION['user_type'] ?? $_SESSION['role_name'] ?? 'Staff';
+        } else {
+            $userType = $_SESSION['user_type'] ?? $_SESSION['role_name'] ?? 'Admin';
+        }
+    }
+
+    $userInfo = [
+        'id' => $userId,
+        'name' => $userName,
+        'type' => $userType,
+        'context' => $context,
+        'is_staff' => ($context === 'staff')
+    ];
+
+    error_log("Add Benefits - User Info: ID=" . $userId . ", Name=" . $userName . ", Type=" . $userType . ", Context=" . $context);
+
+    return $userInfo;
 }
 
-if (!isset($input['applicant_ids']) || !isset($input['benefits']) || !isset($input['date'])) {
-    sendJsonError("Missing required fields: applicant_ids, benefits, or date.");
-}
+// Get user info
+$userInfo = getCurrentUserInfo($conn);
+$userId = $userInfo['id'];
+$userName = $userInfo['name'];
+$userType = $userInfo['type'];
+$sessionContext = $userInfo['context'];
 
 // Load ActivityLogger (PDO version - we'll need PDO for logging)
 $logger = null;
@@ -83,31 +220,97 @@ if (file_exists($activityLoggerPath)) {
     }
 }
 
-// Get user info for logging
-$userId = $_SESSION['user_id'] ?? ($_SESSION['id'] ?? 0);
-$userName = 'Unknown';
-if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
-    $userName = $_SESSION['fullname'];
-} elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-    $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
-} elseif (isset($_SESSION['username'])) {
-    $userName = $_SESSION['username'];
+// Initialize logger
+if (class_exists('ActivityLogger')) {
+    try {
+        // Create a PDO connection for ActivityLogger
+        $pdoConn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+        $pdoConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $logger = new ActivityLogger($pdoConn);
+    } catch (PDOException $e) {
+        error_log("PDO connection failed for ActivityLogger: " . $e->getMessage());
+        $logger = null;
+    }
 }
 
-try {
-    // Create a PDO connection for ActivityLogger (if needed)
-    $pdoConn = null;
-    if (class_exists('ActivityLogger')) {
-        try {
-            $pdoConn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $pdoConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $logger = new ActivityLogger($pdoConn);
-        } catch (PDOException $e) {
-            // Continue without PDO logger if it fails
-            error_log("PDO connection failed for logging: " . $e->getMessage());
+// Simple fallback logger if ActivityLogger is not available
+if (!$logger) {
+    class SimpleLogger
+    {
+        private $pdo;
+
+        public function __construct($pdo = null)
+        {
+            $this->pdo = $pdo;
+        }
+
+        public function log($type, $desc, $details = null)
+        {
+            // Log to file for debugging
+            $logMessage = date('Y-m-d H:i:s') . " - Activity: $type - $desc";
+            if ($details) {
+                $logMessage .= " - Details: " . json_encode($details);
+            }
+            error_log($logMessage);
+
+            // Log to database if PDO connection is available
+            if ($this->pdo) {
+                try {
+                    $detailsJson = $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null;
+
+                    // Get user info from details
+                    $logUserId = $details['added_by_id'] ?? 0;
+
+                    $query = "INSERT INTO activity_logs 
+                             (user_id, activity_type, description, activity_details, ip_address, user_agent, created_at) 
+                             VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+                    $stmt = $this->pdo->prepare($query);
+                    $stmt->execute([
+                        $logUserId,
+                        $type,
+                        $desc,
+                        $detailsJson,
+                        $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                        substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', 0, 500)
+                    ]);
+
+                    return $stmt->rowCount() > 0;
+                } catch (Exception $e) {
+                    error_log("Direct DB logging failed: " . $e->getMessage());
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
+    // Try to create PDO connection for SimpleLogger
+    try {
+        $pdoConn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+        $pdoConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $logger = new SimpleLogger($pdoConn);
+    } catch (PDOException $e) {
+        error_log("Failed to create PDO connection for logging: " . $e->getMessage());
+        $logger = new SimpleLogger(null); // Fallback to file-only logging
+    }
+}
+
+// Read JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+
+// Log raw input for debugging
+error_log("Add Benefits - Raw input: " . file_get_contents('php://input'));
+
+if (!$input) {
+    sendJsonError("Invalid or missing JSON data.");
+}
+
+if (!isset($input['applicant_ids']) || !isset($input['benefits']) || !isset($input['date'])) {
+    sendJsonError("Missing required fields: applicant_ids, benefits, or date.");
+}
+
+try {
     // Start transaction
     $conn->begin_transaction();
 
@@ -135,41 +338,60 @@ try {
 
     // Get applicant names for logging
     $applicantNames = [];
-    $applicantIdsStr = implode(',', array_map('intval', $applicantIds));
-    $nameQuery = "SELECT applicant_id, first_name, last_name FROM applicants WHERE applicant_id IN ($applicantIdsStr)";
-    $nameResult = $conn->query($nameQuery);
+    if (!empty($applicantIds)) {
+        $placeholders = implode(',', array_fill(0, count($applicantIds), '?'));
+        $nameQuery = "SELECT applicant_id, first_name, last_name FROM applicants WHERE applicant_id IN ($placeholders)";
+        $nameStmt = $conn->prepare($nameQuery);
 
-    if ($nameResult) {
-        while ($row = $nameResult->fetch_assoc()) {
-            $applicantNames[$row['applicant_id']] = $row['first_name'] . ' ' . $row['last_name'];
+        // Bind parameters
+        $types = str_repeat('i', count($applicantIds));
+        $nameStmt->bind_param($types, ...$applicantIds);
+        $nameStmt->execute();
+        $nameResult = $nameStmt->get_result();
+
+        if ($nameResult) {
+            while ($row = $nameResult->fetch_assoc()) {
+                $applicantNames[$row['applicant_id']] = $row['first_name'] . ' ' . $row['last_name'];
+            }
         }
+        $nameStmt->close();
     }
 
     // Check if any benefits already exist for these applicants on this date
     $existingBenefits = [];
-    $applicantIdsStr = implode(',', array_map('intval', $applicantIds));
-    $benefitIds = array_column($benefits, 'id');
-    $benefitIdsStr = implode(',', array_map('intval', $benefitIds));
+    if (!empty($applicantIds) && !empty($benefits)) {
+        $benefitIds = array_column($benefits, 'id');
 
-    $checkQuery = "SELECT bd.applicant_id, bd.benefit_id, bd.benefit_name, a.first_name, a.last_name 
-                   FROM benefits_distribution bd 
-                   JOIN applicants a ON bd.applicant_id = a.applicant_id 
-                   WHERE bd.applicant_id IN ($applicantIdsStr) 
-                   AND bd.benefit_id IN ($benefitIdsStr) 
-                   AND DATE(bd.distribution_date) = ?";
+        if (!empty($benefitIds)) {
+            $applicantPlaceholders = implode(',', array_fill(0, count($applicantIds), '?'));
+            $benefitPlaceholders = implode(',', array_fill(0, count($benefitIds), '?'));
 
-    $checkStmt = $conn->prepare($checkQuery);
-    $checkStmt->bind_param("s", $date);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
+            $checkQuery = "SELECT bd.applicant_id, bd.benefit_id, bd.benefit_name, a.first_name, a.last_name 
+                           FROM benefits_distribution bd 
+                           JOIN applicants a ON bd.applicant_id = a.applicant_id 
+                           WHERE bd.applicant_id IN ($applicantPlaceholders) 
+                           AND bd.benefit_id IN ($benefitPlaceholders) 
+                           AND DATE(bd.distribution_date) = ?";
 
-    while ($row = $checkResult->fetch_assoc()) {
-        $existingBenefits[] = [
-            'applicant_id' => $row['applicant_id'],
-            'applicant_name' => $row['first_name'] . ' ' . $row['last_name'],
-            'benefit_id' => $row['benefit_id'],
-            'benefit_name' => $row['benefit_name']
-        ];
+            $checkStmt = $conn->prepare($checkQuery);
+
+            // Bind parameters
+            $params = array_merge($applicantIds, $benefitIds, [$date]);
+            $types = str_repeat('i', count($applicantIds)) . str_repeat('i', count($benefitIds)) . 's';
+            $checkStmt->bind_param($types, ...$params);
+            $checkStmt->execute();
+            $checkResult = $checkStmt->get_result();
+
+            while ($row = $checkResult->fetch_assoc()) {
+                $existingBenefits[] = [
+                    'applicant_id' => $row['applicant_id'],
+                    'applicant_name' => $row['first_name'] . ' ' . $row['last_name'],
+                    'benefit_id' => $row['benefit_id'],
+                    'benefit_name' => $row['benefit_name']
+                ];
+            }
+            $checkStmt->close();
+        }
     }
 
     if (!empty($existingBenefits)) {
@@ -190,6 +412,7 @@ try {
     $successCount = 0;
     $benefitDetails = [];
     $totalAmount = 0;
+    $benefitSummary = [];
 
     foreach ($applicantIds as $applicantId) {
         $applicantName = $applicantNames[$applicantId] ?? "Applicant ID: $applicantId";
@@ -212,6 +435,16 @@ try {
                     'benefit_name' => $benefitName,
                     'amount' => $amount
                 ];
+
+                // Track benefit summary
+                if (!isset($benefitSummary[$benefitName])) {
+                    $benefitSummary[$benefitName] = [
+                        'count' => 0,
+                        'total_amount' => 0
+                    ];
+                }
+                $benefitSummary[$benefitName]['count']++;
+                $benefitSummary[$benefitName]['total_amount'] += $amount;
             } else {
                 throw new Exception("Execute failed for applicant $applicantId, benefit $benefitName: " . $stmt->error);
             }
@@ -220,35 +453,51 @@ try {
 
     $conn->commit();
 
-    // Log the activity
+    // Log the activity with proper context
     if ($logger) {
-        $logger->log('ADD_BENEFITS', 'Benefits added to multiple beneficiaries', [
+        // Determine activity type based on user context
+        if ($sessionContext === 'staff') {
+            $activityType = 'STAFF_ADD_BENEFITS_TO_BENEFICIARIES';
+            $description = 'Staff added benefits to multiple beneficiaries';
+        } else {
+            $activityType = 'ADD_BENEFITS_TO_BENEFICIARIES';
+            $description = 'Admin added benefits to multiple beneficiaries';
+        }
+
+        // Create log details
+        $logDetails = [
             'applicant_ids' => $applicantIds,
             'applicant_count' => count($applicantIds),
+            'applicant_names' => array_values($applicantNames),
             'benefits_added' => $benefitDetails,
             'total_benefits_added' => $successCount,
             'total_amount' => $totalAmount,
             'distribution_date' => $date,
             'added_by' => $userName,
             'added_by_id' => $userId,
+            'user_type' => $userType,
+            'user_context' => $sessionContext,
             'added_at' => date('Y-m-d H:i:s'),
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
             'summary' => [
                 'applicants' => count($applicantIds),
                 'benefit_types' => count($benefits),
                 'total_distributions' => $successCount,
-                'total_amount_distributed' => $totalAmount
+                'total_amount_distributed' => $totalAmount,
+                'benefit_breakdown' => $benefitSummary
             ]
-        ]);
+        ];
+
+        $logger->log($activityType, $description, $logDetails);
     }
 
     // Also log to file if logger not available
     if (!$logger) {
-        $logMessage = date('Y-m-d H:i:s') . " - ADD_BENEFITS - Benefits added to " . count($applicantIds) . " beneficiaries by $userName - Total: $" . $totalAmount;
+        $logMessage = date('Y-m-d H:i:s') . " - $activityType - Benefits added to " . count($applicantIds) . " beneficiaries by $userName - Total: $" . $totalAmount;
         error_log($logMessage);
     }
 
-    // Return success response
+    // Return success response with user context
     sendJsonSuccess("Benefits added successfully to " . count($applicantIds) . " beneficiary(ies)", [
         'count' => $successCount,
         'applicant_count' => count($applicantIds),
@@ -256,12 +505,17 @@ try {
         'total_amount' => $totalAmount,
         'distribution_date' => $date,
         'added_by' => $userName,
+        'added_by_id' => $userId,
+        'user_type' => $userType,
+        'user_context' => $sessionContext,
+        'activity_type_logged' => $activityType ?? 'ADD_BENEFITS_TO_BENEFICIARIES',
         'added_at' => date('Y-m-d H:i:s'),
         'summary' => [
             'applicants' => count($applicantIds),
             'benefit_types' => count($benefits),
             'total_distributions' => $successCount,
-            'total_amount' => $totalAmount
+            'total_amount' => $totalAmount,
+            'benefit_breakdown' => $benefitSummary
         ]
     ]);
 } catch (Exception $e) {
@@ -270,15 +524,22 @@ try {
         $conn->rollback();
     }
 
-    // Log error
+    // Log error with proper context
     if ($logger) {
-        $logger->log('ERROR', 'Failed to add benefits', [
+        $activityType = ($sessionContext === 'staff') ? 'STAFF_ERROR' : 'ERROR';
+        $description = ($sessionContext === 'staff')
+            ? 'Staff failed to add benefits to beneficiaries'
+            : 'Admin failed to add benefits to beneficiaries';
+
+        $logger->log($activityType, $description, [
             'applicant_ids' => $applicantIds ?? [],
             'benefits_attempted' => $benefits ?? [],
             'distribution_date_attempted' => $date ?? '',
             'error_message' => $e->getMessage(),
             'added_by' => $userName,
             'added_by_id' => $userId,
+            'user_type' => $userType,
+            'user_context' => $sessionContext,
             'error_type' => 'Benefit Distribution Error',
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
         ]);
@@ -306,6 +567,6 @@ if (isset($pdoConn)) {
 }
 
 // Clean up output buffer
-if (ob_get_length()) {
+if (ob_get_level() > 0) {
     ob_end_flush();
 }
