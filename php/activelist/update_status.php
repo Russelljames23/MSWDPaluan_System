@@ -2,7 +2,7 @@
 // update_status.php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-
+date_default_timezone_set('Asia/Manila');
 // Error handling
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);

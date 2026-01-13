@@ -1,94 +1,7 @@
 <?php
-// Debug session
-error_log("=== PAGE LOADED ===");
-error_log("Page: " . basename(__FILE__));
-error_log("Session ID: " . session_id());
-error_log("Session context: " . ($_SESSION['session_context'] ?? 'none'));
-error_log("User ID: " . ($_SESSION['user_id'] ?? 'none'));
-error_log("Staff user ID: " . ($_SESSION['staff_user_id'] ?? 'none'));
-error_log("Admin user ID: " . ($_SESSION['admin_user_id'] ?? 'none'));
-error_log("Full name: " . ($_SESSION['fullname'] ?? 'none'));
-error_log("Username: " . ($_SESSION['username'] ?? 'none'));
 require_once "../../php/login/staff_header.php";
-require_once '../../php/login/staff_session_sync.php';
-
-// Fix session handling for staff
-if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
-    // Store session context but don't use it for session name
-    $ctx = $_GET['session_context'];
-
-    // Set a default session context if not set
-    if (!isset($_SESSION['session_context'])) {
-        $_SESSION['session_context'] = 'Staff';
-    }
-
-    // Make sure we have a user ID
-    if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
-        $_SESSION['user_id'] = $user_id;
-    }
-
-    // Store fullname in session if available
-    if (!isset($_SESSION['fullname']) && !empty($full_name)) {
-        $_SESSION['fullname'] = $full_name;
-    }
-}
-
 $ctx = urlencode($_GET['session_context'] ?? session_id());
 
-$servername = "localhost";
-$dbname = "u401132124_mswd_seniors";
-$username = "u401132124_mswdopaluan";
-$password = "Mswdo_PaluanSystem23";
-
-$pdo = null;
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    die("Database connection failed. Please try again later.");
-}
-syncStaffSession($pdo);
-// Fetch current user data - ADD THIS
-$user_id = $_SESSION['user_id'] ?? 0;
-$user_data = [];
-
-if ($user_id && $pdo) {
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
-        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error fetching user data: " . $e->getMessage());
-        $user_data = [];
-    }
-}
-
-// Prepare full name - ADD THIS
-$full_name = '';
-if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
-    $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
-    if (!empty($user_data['middlename'])) {
-        $full_name = $user_data['firstname'] . ' ' . $user_data['middlename'] . ' ' . $user_data['lastname'];
-    }
-}
-
-// Get profile photo URL - ADD THIS
-$profile_photo_url = '';
-if (!empty($user_data['profile_photo'])) {
-    $profile_photo_url = '../../' . $user_data['profile_photo'];
-    if (!file_exists($profile_photo_url)) {
-        $profile_photo_url = '';
-    }
-}
-
-// Fallback to avatar if no profile photo - ADD THIS
-if (empty($profile_photo_url)) {
-    $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
-}
-?>
-<?php
 // Database configuration
 $host = "localhost";
 $dbname = "u401132124_mswd_seniors";
@@ -362,168 +275,9 @@ $stmt->close();
 // Get staff's performance stats
 $stats['performance'] = [
     'active_count' => $active_count,
-    'validated_count' => 0,
-    'pending_count' => 0
+    'validated_count' => 0, // You'll need to query this based on validation column
+    'pending_count' => 0    // You'll need to query this based on validation column
 ];
-
-// ========== NEW: BIRTHDAY MONITORING SECTION ==========
-// Get today's birthdays for staff's registered seniors
-$today = date('m-d');
-$query_today = "SELECT 
-    a.applicant_id,
-    CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name,
-    a.birth_date,
-    a.current_age,
-    a.gender,
-    ad.barangay,
-    TIMESTAMPDIFF(YEAR, a.birth_date, CURDATE()) as new_age_today,
-    DATE_FORMAT(a.birth_date, '%M %d, %Y') as formatted_birthdate,
-    a.contact_number
-FROM applicants a
-LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id
-WHERE a.status = 'Active'
-AND DATE_FORMAT(a.birth_date, '%m-%d') = '$today'
-AND a.birth_date IS NOT NULL
-AND a.birth_date != '0000-00-00'";
-if (!empty($staff_registered_ids)) {
-    $ids_str = implode(',', $staff_registered_ids);
-    $query_today .= " AND a.applicant_id IN ($ids_str)";
-}
-$query_today .= " ORDER BY a.last_name, a.first_name";
-
-$result_today = mysqli_query($conn, $query_today);
-$birthdays_today = [];
-while ($row = mysqli_fetch_assoc($result_today)) {
-    $birthdays_today[] = $row;
-}
-
-// Get upcoming birthdays (next 7 days) for staff's registered seniors
-$query_upcoming = "SELECT 
-    a.applicant_id,
-    CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name,
-    a.birth_date,
-    a.current_age,
-    a.gender,
-    ad.barangay,
-    TIMESTAMPDIFF(YEAR, a.birth_date, CURDATE()) + 1 as turning_age,
-    DATEDIFF(
-        DATE_ADD(CURDATE(), INTERVAL 1 YEAR),
-        STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(a.birth_date, '%m-%d')), '%Y-%m-%d')
-    ) % 365 as days_until_birthday,
-    DATE_FORMAT(a.birth_date, '%M %d') as birthday_month_day,
-    a.contact_number
-FROM applicants a
-LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id
-WHERE a.status = 'Active'
-AND a.birth_date IS NOT NULL
-AND a.birth_date != '0000-00-00'";
-if (!empty($staff_registered_ids)) {
-    $ids_str = implode(',', $staff_registered_ids);
-    $query_upcoming .= " AND a.applicant_id IN ($ids_str)";
-}
-$query_upcoming .= " AND (
-    DATE_FORMAT(a.birth_date, '%m-%d') >= '$today'
-    OR DATE_FORMAT(a.birth_date, '%m-%d') < DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 358 DAY), '%m-%d')
-)
-AND DATE_FORMAT(a.birth_date, '%m-%d') != '$today'
-ORDER BY 
-    CASE 
-        WHEN DATE_FORMAT(a.birth_date, '%m-%d') >= '$today' 
-        THEN DATE_FORMAT(a.birth_date, '%m-%d')
-        ELSE DATE_FORMAT(a.birth_date, '%m-%d') + 365
-    END
-LIMIT 10";
-
-$result_upcoming = mysqli_query($conn, $query_upcoming);
-$upcoming_birthdays = [];
-while ($row = mysqli_fetch_assoc($result_upcoming)) {
-    $upcoming_birthdays[] = $row;
-}
-
-// Get birthdays by month for staff's registered seniors
-$query_monthly = "SELECT 
-    MONTH(birth_date) as birth_month,
-    COUNT(*) as count,
-    DATE_FORMAT(birth_date, '%M') as month_name
-FROM applicants 
-WHERE status = 'Active'
-AND birth_date IS NOT NULL
-AND birth_date != '0000-00-00'";
-if (!empty($staff_registered_ids)) {
-    $ids_str = implode(',', $staff_registered_ids);
-    $query_monthly .= " AND applicant_id IN ($ids_str)";
-}
-$query_monthly .= " GROUP BY MONTH(birth_date), DATE_FORMAT(birth_date, '%M')
-ORDER BY MONTH(birth_date)";
-
-$result_monthly = mysqli_query($conn, $query_monthly);
-$birthdays_by_month = [];
-while ($row = mysqli_fetch_assoc($result_monthly)) {
-    $birthdays_by_month[$row['month_name']] = $row['count'];
-}
-
-// Get milestone birthdays for staff's registered seniors
-$query_milestone = "SELECT 
-    CASE 
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 60 THEN 'Turning 60'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 65 THEN 'Turning 65'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 70 THEN 'Turning 70'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 75 THEN 'Turning 75'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 80 THEN 'Turning 80'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 85 THEN 'Turning 85'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 90 THEN 'Turning 90'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 = 95 THEN 'Turning 95'
-        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1 >= 100 THEN '100+ Years'
-        ELSE 'Other'
-    END as milestone,
-    COUNT(*) as count
-FROM applicants 
-WHERE status = 'Active'
-AND birth_date IS NOT NULL
-AND birth_date != '0000-00-00'";
-if (!empty($staff_registered_ids)) {
-    $ids_str = implode(',', $staff_registered_ids);
-    $query_milestone .= " AND applicant_id IN ($ids_str)";
-}
-$query_milestone .= " AND DATE_FORMAT(birth_date, '%m-%d') >= '$today'
-AND DATE_FORMAT(birth_date, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '%m-%d')
-GROUP BY milestone
-ORDER BY 
-    CASE milestone
-        WHEN 'Turning 60' THEN 1
-        WHEN 'Turning 65' THEN 2
-        WHEN 'Turning 70' THEN 3
-        WHEN 'Turning 75' THEN 4
-        WHEN 'Turning 80' THEN 5
-        WHEN 'Turning 85' THEN 6
-        WHEN 'Turning 90' THEN 7
-        WHEN 'Turning 95' THEN 8
-        WHEN '100+ Years' THEN 9
-        ELSE 10
-    END";
-
-$result_milestone = mysqli_query($conn, $query_milestone);
-$milestone_birthdays = [];
-while ($row = mysqli_fetch_assoc($result_milestone)) {
-    $milestone_birthdays[$row['milestone']] = $row['count'];
-}
-
-// Get birthday statistics for staff's registered seniors
-$total_with_birthdates = 0;
-$query_total = "SELECT COUNT(*) as total FROM applicants WHERE status = 'Active' AND birth_date IS NOT NULL AND birth_date != '0000-00-00'";
-if (!empty($staff_registered_ids)) {
-    $ids_str = implode(',', $staff_registered_ids);
-    $query_total = "SELECT COUNT(*) as total FROM applicants WHERE status = 'Active' AND birth_date IS NOT NULL AND birth_date != '0000-00-00' AND applicant_id IN ($ids_str)";
-}
-$result_total = mysqli_query($conn, $query_total);
-if ($row = mysqli_fetch_assoc($result_total)) {
-    $total_with_birthdates = $row['total'];
-}
-
-// Calculate percentages
-$today_birthday_count = count($birthdays_today);
-$upcoming_birthday_count = count($upcoming_birthdays);
-$birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count / $total_with_birthdates) * 100, 1) : 0;
 
 $conn->close();
 ?>
@@ -531,7 +285,6 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -540,14 +293,14 @@ $conn->close();
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
-
+    
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <style>
         .stat-card {
             transition: all 0.3s ease;
@@ -591,7 +344,6 @@ $conn->close();
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -606,162 +358,43 @@ $conn->close();
             0% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.05);
             }
-
             100% {
                 transform: scale(1);
             }
-        }
-
-        /* Birthday specific styles */
-        .birthday-badge {
-            animation: birthday-pulse 1.5s infinite alternate;
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
-        }
-
-        @keyframes birthday-pulse {
-            from {
-                box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
-                transform: scale(1);
-            }
-
-            to {
-                box-shadow: 0 0 20px rgba(255, 193, 7, 0.7);
-                transform: scale(1.05);
-            }
-        }
-
-        .birthday-card {
-            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
-            border-left: 4px solid #ffc107;
-        }
-
-        .dark .birthday-card {
-            background: linear-gradient(135deg, #2d2400 0%, #3d2f00 100%);
-            border-left: 4px solid #ffc107;
-        }
-
-        .upcoming-badge {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        }
-
-        .dark .upcoming-badge {
-            background: linear-gradient(135deg, #0d2840 0%, #13375e 100%);
-        }
-
-        .milestone-badge {
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
-        }
-
-        .dark .milestone-badge {
-            background: linear-gradient(135deg, #3d0b1e 0%, #5a1232 100%);
-        }
-
-        /* Confetti animation */
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #ffc107;
-            top: -10px;
-            z-index: 9999;
-            animation: confetti-fall 3s linear forwards;
-        }
-
-        /* Birthday modal styles */
-        .birthday-modal {
-            animation: modalSlideUp 0.3s ease-out;
-        }
-
-        @keyframes modalSlideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .birthday-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .age-milestone {
-            font-size: 2.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         @media (max-width: 768px) {
             .grid-cols-4 {
                 grid-template-columns: repeat(2, 1fr);
             }
-
+            
             .grid-cols-3 {
                 grid-template-columns: repeat(2, 1fr);
             }
-
+            
             .grid-cols-2 {
                 grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
-
             .grid-cols-4,
             .grid-cols-3 {
                 grid-template-columns: 1fr;
             }
         }
     </style>
-
+    
     <script type="text/javascript">
-        google.charts.load('current', {
-            'packages': ['corechart', 'bar']
-        });
-        google.charts.setOnLoadCallback(initializeAllCharts);
-
-        let charts = {};
-        let isDarkMode = false;
-        let birthdayChartData = null;
-
-        function initializeAllCharts() {
-            isDarkMode = document.documentElement.classList.contains('dark');
-            drawCharts();
-            drawBirthdayCharts();
-        }
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawCharts);
 
         function drawCharts() {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            
             const chartOptions = {
                 backgroundColor: 'transparent',
                 chartArea: {
@@ -943,349 +576,12 @@ $conn->close();
             }
         }
 
-        // NEW: Draw birthday charts for staff
-        function drawBirthdayCharts() {
-            const chartOptions = {
-                backgroundColor: 'transparent',
-                chartArea: {
-                    width: '85%',
-                    height: '75%'
-                },
-                legend: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    position: 'labeled'
-                },
-                tooltip: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    showColorCode: true,
-                    trigger: 'selection'
-                },
-                animation: {
-                    startup: true,
-                    duration: 1000,
-                    easing: 'out'
-                }
-            };
-
-            // Birthday by Month Chart for staff's registered seniors
-            try {
-                var birthdayMonthData = new google.visualization.DataTable();
-                birthdayMonthData.addColumn('string', 'Month');
-                birthdayMonthData.addColumn('number', 'Birthdays');
-
-                <?php
-                $all_months = [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December'
-                ];
-
-                if (!empty($birthdays_by_month)) {
-                    echo "birthdayMonthData.addRows([\n";
-                    foreach ($all_months as $month) {
-                        $count = $birthdays_by_month[$month] ?? 0;
-                        echo "['$month', $count],\n";
-                    }
-                    echo "]);";
-                } else {
-                    echo "birthdayMonthData.addRows([['No Data', 0]]);";
-                }
-                ?>
-
-                var birthdayMonthOptions = {
-                    ...chartOptions,
-                    title: '',
-                    colors: ['#FF9800'],
-                    hAxis: {
-                        title: 'Month',
-                        textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
-                        }
-                    },
-                    vAxis: {
-                        title: 'Number of Birthdays',
-                        minValue: 0,
-                        textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
-                        }
-                    }
-                };
-
-                charts.birthdayMonth = new google.visualization.ColumnChart(document.getElementById('birthday-month-chart'));
-                charts.birthdayMonth.draw(birthdayMonthData, birthdayMonthOptions);
-
-            } catch (error) {
-                console.error('Error drawing birthday month chart:', error);
-            }
-
-            // Milestone Birthdays Chart for staff's registered seniors
-            try {
-                var milestoneData = new google.visualization.DataTable();
-                milestoneData.addColumn('string', 'Milestone');
-                milestoneData.addColumn('number', 'Count');
-
-                <?php
-                if (!empty($milestone_birthdays)) {
-                    echo "milestoneData.addRows([\n";
-                    foreach ($milestone_birthdays as $milestone => $count) {
-                        echo "['$milestone', $count],\n";
-                    }
-                    echo "]);";
-                } else {
-                    echo "milestoneData.addRows([['No Milestones', 0]]);";
-                }
-                ?>
-
-                var milestoneOptions = {
-                    ...chartOptions,
-                    title: '',
-                    pieHole: 0.4,
-                    colors: ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#00BCD4', '#009688'],
-                    pieSliceText: 'value'
-                };
-
-                charts.milestone = new google.visualization.PieChart(document.getElementById('milestone-chart'));
-                charts.milestone.draw(milestoneData, milestoneOptions);
-
-            } catch (error) {
-                console.error('Error drawing milestone chart:', error);
-            }
-        }
-
-        // NEW: Show birthday celebration modal
-        function showBirthdayCelebration(senior) {
-            // Remove any existing modal
-            const existingModal = document.querySelector('.birthday-celebration-modal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            // Create confetti effect
-            createConfetti();
-
-            // Create modal
-            const modal = document.createElement('div');
-            modal.className = 'birthday-celebration-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80';
-            modal.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden birthday-modal">
-                    <div class="relative">
-                        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500"></div>
-                        <div class="p-6 text-center">
-                            <div class="mb-4">
-                                <div class="birthday-avatar mx-auto mb-4">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Happy Birthday!</h3>
-                                <div class="age-milestone mb-4">${senior.new_age_today}</div>
-                                <p class="text-lg font-semibold text-gray-700 dark:text-gray-300">${senior.full_name}</p>
-                                <p class="text-gray-600 dark:text-gray-400">${senior.formatted_birthdate}</p>
-                                <div class="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
-                                    <i class="fas fa-map-marker-alt mr-2"></i>
-                                    ${senior.barangay || 'N/A'}
-                                </div>
-                            </div>
-                            
-                            <div class="mt-6 space-y-3">
-                                <button onclick="sendBirthdayGreeting(${senior.applicant_id}, '${senior.full_name}', '${senior.contact_number || ''}')" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-sms mr-2"></i> Send SMS Greeting
-                                </button>
-                                <button onclick="generateBirthdayCertificate(${senior.applicant_id})" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-certificate mr-2"></i> Generate Certificate
-                                </button>
-                                <button onclick="viewSeniorProfile(${senior.applicant_id})" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-user-circle mr-2"></i> View Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end">
-                        <button onclick="closeModal('birthday-celebration')" 
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500 transition-colors">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-
-            // Add click outside to close
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeModal('birthday-celebration');
-                }
-            });
-
-            // Add escape key to close
-            const handleEsc = function(e) {
-                if (e.key === 'Escape') {
-                    closeModal('birthday-celebration');
-                    document.removeEventListener('keydown', handleEsc);
-                }
-            };
-            document.addEventListener('keydown', handleEsc);
-        }
-
-        // NEW: Create confetti effect
-        function createConfetti() {
-            const colors = ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5'];
-
-            for (let i = 0; i < 30; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
-                confetti.style.animationDelay = Math.random() * 2 + 's';
-                confetti.style.opacity = Math.random() * 0.5 + 0.5;
-
-                document.body.appendChild(confetti);
-
-                // Remove confetti after animation
-                setTimeout(() => {
-                    confetti.remove();
-                }, 3000);
-            }
-        }
-
-        // NEW: Send birthday greeting
-        function sendBirthdayGreeting(applicantId, fullName, phoneNumber) {
-            if (!phoneNumber) {
-                showToast('No phone number available for this senior', 'error');
-                return;
-            }
-
-            showToast(`Sending birthday SMS to ${fullName}...`, 'info');
-
-            // In a real implementation, you would make an AJAX call to send SMS
-            // For now, we'll simulate it
-            setTimeout(() => {
-                showToast(`Birthday SMS sent to ${fullName}`, 'success');
-
-                // Log the action
-                fetch('../../php/log_birthday_greeting.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        applicant_id: applicantId,
-                        full_name: fullName,
-                        phone_number: phoneNumber,
-                        greeting_type: 'sms',
-                        sent_by: <?php echo $staff_id; ?>
-                    })
-                });
-            }, 1000);
-        }
-
-        // NEW: Generate birthday certificate
-        function generateBirthdayCertificate(applicantId) {
-            showToast('Generating birthday certificate...', 'info');
-
-            // Open certificate generation in new window
-            window.open(`./generate_birthday_certificate.php?applicant_id=${applicantId}&session_context=<?php echo $ctx; ?>`, '_blank');
-
-            // Log the action
-            fetch('../../php/log_birthday_greeting.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    applicant_id: applicantId,
-                    greeting_type: 'certificate',
-                    sent_by: <?php echo $staff_id; ?>
-                })
-            });
-        }
-
-        // NEW: View senior profile
-        function viewSeniorProfile(applicantId) {
-            window.location.href = `./staff_view_senior.php?id=${applicantId}&session_context=<?php echo $ctx; ?>`;
-        }
-
-        // NEW: Send birthday reminders
-        function sendBirthdayReminders() {
-            showToast('Sending birthday reminders...', 'info');
-
-            fetch('../../php/send_birthday_reminders.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'send_reminders',
-                        user_id: <?php echo $staff_id; ?>,
-                        staff_only: true
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Sent ${data.sent_count} birthday reminders`, 'success');
-                    } else {
-                        showToast('Failed to send reminders: ' + data.error, 'error');
-                    }
-                })
-                .catch(error => {
-                    showToast('Error sending reminders', 'error');
-                });
-        }
-
-        // NEW: Send birthday greetings to all
-        function sendBirthdayGreetingsToAll() {
-            showToast('Sending birthday greetings to all celebrants...', 'info');
-
-            <?php foreach ($birthdays_today as $senior): ?>
-                setTimeout(() => {
-                    sendBirthdayGreeting(
-                        <?php echo $senior['applicant_id']; ?>,
-                        '<?php echo addslashes($senior['full_name']); ?>',
-                        '<?php echo addslashes($senior['contact_number'] ?? ''); ?>'
-                    );
-                }, <?php echo (array_search($senior, $birthdays_today) * 1000) + 1000; ?>);
-            <?php endforeach; ?>
-
-            setTimeout(() => {
-                showToast('All birthday greetings sent successfully!', 'success');
-            }, <?php echo (count($birthdays_today) * 1000) + 2000; ?>);
-        }
-
-        // Generic close modal function
-        function closeModal(type) {
-            const modal = document.querySelector(`.${type}-modal`);
-            if (modal) {
-                modal.remove();
-            }
-        }
-
         // Redraw charts on window resize
         let resizeTimer;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function() {
                 drawCharts();
-                drawBirthdayCharts();
             }, 250);
         });
 
@@ -1293,9 +589,7 @@ $conn->close();
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
-                    isDarkMode = document.documentElement.classList.contains('dark');
                     drawCharts();
-                    drawBirthdayCharts();
                 }
             });
         });
@@ -1349,21 +643,6 @@ $conn->close();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if there are birthdays today and show celebration
-            <?php if (count($birthdays_today) > 0): ?>
-                setTimeout(() => {
-                    // Show celebration for the first birthday
-                    const firstBirthday = <?php echo json_encode($birthdays_today[0] ?? null); ?>;
-                    if (firstBirthday) {
-                        showBirthdayCelebration(firstBirthday);
-                    }
-                }, 1000);
-            <?php endif; ?>
-
-            // Add birthday countdown timer
-            updateBirthdayCountdown();
-            setInterval(updateBirthdayCountdown, 60000); // Update every minute
-
             // Add keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey && e.key === 'r') {
@@ -1372,28 +651,11 @@ $conn->close();
                 }
             });
         });
-
-        // NEW: Update birthday countdown
-        function updateBirthdayCountdown() {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-
-            const diff = tomorrow - now;
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-            const countdownElement = document.getElementById('birthday-countdown');
-            if (countdownElement) {
-                countdownElement.textContent = `${hours}h ${minutes}m`;
-            }
-        }
     </script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
-    <!-- Navigation -->
+    <!-- Navigation remains the same as your original staffindex.php -->
     <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
         <div class="flex flex-wrap justify-between items-center">
             <div class="flex justify-start items-center">
@@ -1414,12 +676,11 @@ $conn->close();
                     </svg>
                     <span class="sr-only">Toggle sidebar</span>
                 </button>
-                <a href="#" class="flex items-center justify-between mr-4 ">
+                <a href="#" class="flex items-center justify-between mr-4">
                     <img src="../../img/MSWD_LOGO-removebg-preview.png"
-                        class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                        class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                         alt="MSWD LOGO" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                        PALUAN</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
                 </a>
                 <form action="#" method="GET" class="hidden md:block md:pl-2">
                     <label for="topbar-search" class="sr-only">Search</label>
@@ -1454,8 +715,8 @@ $conn->close();
                     class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                     <span class="sr-only">Open user menu</span>
-                    <img class="w-8 h-8 rounded-full object-cover"
-                        src="<?php echo htmlspecialchars($profile_photo_url); ?>"
+                    <img class="w-8 h-8 rounded-full"
+                        src="https://spng.pngfind.com/pngs/s/378-3780189_member-icon-png-transparent-png.png"
                         alt="user photo" />
                 </button>
                 <!-- Dropdown menu -->
@@ -1463,30 +724,10 @@ $conn->close();
                     id="dropdown">
                     <div class="py-3 px-4">
                         <span class="block text-sm font-semibold text-gray-900 dark:text-white">
-                            <?php
-                            // Display fullname with fallback
-                            if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
-                                echo htmlspecialchars($_SESSION['fullname']);
-                            } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                // Construct fullname from first and last name if available
-                                echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-                            } else {
-                                echo 'User';
-                            }
-                            ?>
+                            <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'User'); ?>
                         </span>
                         <span class="block text-sm text-gray-900 truncate dark:text-white">
-                            <?php
-                            // Display user type with proper formatting
-                            if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
-                                echo htmlspecialchars($_SESSION['user_type']);
-                            } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                // Fallback to role_name if available
-                                echo htmlspecialchars($_SESSION['role_name']);
-                            } else {
-                                echo 'User Type';
-                            }
-                            ?>
+                            <?php echo htmlspecialchars($_SESSION['user_type'] ?? 'User Type'); ?>
                         </span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
@@ -1501,8 +742,7 @@ $conn->close();
         </div>
     </nav>
 
-
-    <!-- Sidebar -->
+    <!-- Sidebar - Keep your original sidebar -->
     <aside
         class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidenav" id="drawer-navigation">
@@ -1669,54 +909,15 @@ $conn->close();
                 <p class="text-gray-600 dark:text-gray-400 mt-2">Welcome back, <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'Staff'); ?>! Here's your personal overview.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- <button onclick="sendBirthdayReminders()"
-                    class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center">
-                    <i class="fas fa-bell mr-2"></i> Send Birthday Reminders
-                </button> -->
                 <span class="text-sm text-gray-500 dark:text-gray-400 hidden md:inline">
                     Last updated: <?php echo date('M j, Y H:i'); ?>
                 </span>
-                <button id="refresh-btn" onclick="refreshDashboard()"
-                    class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                <button id="refresh-btn" onclick="refreshDashboard()" 
+                        class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
         </div>
-
-        <!-- Birthday Alert Banner -->
-        <?php if (count($birthdays_today) > 0): ?>
-            <div class="mb-6 birthday-card rounded-xl shadow p-4 fade-in">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 mr-4">
-                            <i class="fas fa-birthday-cake text-2xl text-yellow-600 dark:text-yellow-400"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                                <span class="birthday-badge px-3 py-1 rounded-full bg-yellow-500 text-white text-sm mr-2">
-                                    <?php echo count($birthdays_today); ?>
-                                </span>
-                                Birthday<?php echo count($birthdays_today) > 1 ? 's' : ''; ?> Today! (Your Seniors)
-                            </h3>
-                            <p class="text-gray-600 dark:text-gray-400 mt-1">
-                                <?php foreach ($birthdays_today as $index => $senior): ?>
-                                    <?php if ($index < 3): ?>
-                                        <span class="font-medium"><?php echo htmlspecialchars($senior['full_name']); ?></span> (turning <?php echo $senior['new_age_today']; ?>)<?php echo $index < min(2, count($birthdays_today) - 1) ? ', ' : ''; ?>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                                <?php if (count($birthdays_today) > 3): ?>
-                                    and <?php echo count($birthdays_today) - 3; ?> more...
-                                <?php endif; ?>
-                            </p>
-                        </div>
-                    </div>
-                    <button onclick="sendBirthdayGreetingsToAll()"
-                        class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 flex items-center">
-                        <i class="fas fa-gift mr-2"></i> Send All Greetings
-                    </button>
-                </div>
-            </div>
-        <?php endif; ?>
 
         <!-- Statistics Grid -->
         <div class="mb-8">
@@ -1744,260 +945,99 @@ $conn->close();
                     </div>
                 </div>
 
-                <!-- Today's Birthdays Card -->
-                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in birthday-card"
-                    style="animation-delay: 0.1s; cursor: pointer;"
-                    onclick="window.location.href='./staff_birthdays.php?filter=birthday_today&session_context=<?php echo $ctx; ?>'">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Today's Birthdays</p>
-                            <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2"><?php echo $today_birthday_count; ?></p>
-                            <?php if ($today_birthday_count > 0): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    <?php echo $birthday_percentage; ?>% of your active seniors
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 birthday-badge">
-                            <i class="fas fa-birthday-cake text-yellow-600 dark:text-yellow-400 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">
-                                <i class="fas fa-clock mr-1"></i>
-                                Next update: <span id="birthday-countdown">24h 0m</span>
-                            </span>
-                            <span class="text-yellow-600 dark:text-yellow-400 font-medium">
-                                <i class="fas fa-calendar-day mr-1"></i>Your Seniors
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Upcoming Birthdays Card -->
-                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in upcoming-badge"
-                    style="animation-delay: 0.2s; cursor: pointer;"
-                    onclick="window.location.href='./staff_birthdays.php?filter=upcoming_birthdays&session_context=<?php echo $ctx; ?>'">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Upcoming (7 days)</p>
-                            <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2"><?php echo $upcoming_birthday_count; ?></p>
-                            <?php if (!empty($upcoming_birthdays)): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Next: <?php echo htmlspecialchars($upcoming_birthdays[0]['full_name'] ?? ''); ?>
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
-                            <i class="fas fa-calendar-alt text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">Next 7 days</span>
-                            <span class="text-blue-600 dark:text-blue-400 font-medium">
-                                <i class="fas fa-arrow-right mr-1"></i>View
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Milestone Birthdays Card -->
-                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in milestone-badge"
-                    style="animation-delay: 0.3s; cursor: pointer;"
-                    onclick="window.location.href='./staff_birthdays.php?filter=milestone_birthdays&session_context=<?php echo $ctx; ?>'">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Milestone Birthdays</p>
-                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2"><?php echo array_sum($milestone_birthdays); ?></p>
-                            <?php if (!empty($milestone_birthdays)): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    <?php echo array_keys($milestone_birthdays)[0] ?? 'No milestones'; ?>
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
-                            <i class="fas fa-medal text-purple-600 dark:text-purple-300 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">60, 65, 70, 75, 80+</span>
-                            <span class="text-purple-600 dark:text-purple-400 font-medium">
-                                <i class="fas fa-star mr-1"></i>Special
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Birthday Monitoring Section -->
-        <div class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Birthday Monitoring (Your Seniors)</h2>
-                <div class="flex space-x-2">
-                    <a href="./staff_birthdays.php?filter=birthdays&session_context=<?php echo $ctx; ?>"
-                        class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all duration-200 flex items-center">
-                        <i class="fas fa-calendar-week mr-2"></i> View All Birthdays
-                    </a>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Today's Birthdays List -->
-                <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Today's Celebrants</h3>
-                        <span class="px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
-                            <?php echo date('F j'); ?>
+                <!-- Recent Registrations Card -->
+                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in"
+                    style="animation-delay: 0.1s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your Recent Registrations</p>
+                        <span class="text-xs text-green-600 dark:text-green-400 pulse">
+                            <i class="fas fa-circle"></i> 30 days
                         </span>
                     </div>
-                    <div class="space-y-3 max-h-80 overflow-y-auto">
-                        <?php if (count($birthdays_today) > 0): ?>
-                            <?php foreach ($birthdays_today as $senior): ?>
-                                <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition-colors cursor-pointer"
-                                    onclick="showBirthdayCelebration(<?php echo htmlspecialchars(json_encode($senior)); ?>)">
-                                    <div class="flex items-center">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold mr-3">
-                                            <?php echo strtoupper(substr($senior['full_name'], 0, 1)); ?>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-900 dark:text-white"><?php echo htmlspecialchars($senior['full_name']); ?></p>
-                                            <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="mr-3">
-                                                    <i class="fas fa-cake-candles mr-1"></i>Turning <?php echo $senior['new_age_today']; ?>
-                                                </span>
-                                                <?php if ($senior['barangay']): ?>
-                                                    <span><i class="fas fa-map-marker-alt mr-1"></i><?php echo htmlspecialchars($senior['barangay']); ?></span>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300">
-                                        <i class="fas fa-gift"></i>
-                                    </button>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="text-center py-8">
-                                <i class="fas fa-birthday-cake text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
-                                <p class="text-gray-500 dark:text-gray-400">No birthdays today</p>
-                                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Check upcoming birthdays</p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <?php if (count($birthdays_today) > 0): ?>
-                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <button onclick="sendBirthdayGreetingsToAll()"
-                                class="w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center">
-                                <i class="fas fa-paper-plane mr-2"></i> Send Greetings to All
-                            </button>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-3xl font-bold text-gray-900 dark:text-white"><?php echo $stats['recent_registrations']; ?></p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">New seniors</p>
                         </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Upcoming Birthdays -->
-                <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Birthdays</h3>
-                        <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                            Next 7 days
-                        </span>
+                        <div class="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                            <i class="fas fa-user-plus text-green-600 dark:text-green-300 text-xl"></i>
+                        </div>
                     </div>
-                    <div class="space-y-3 max-h-80 overflow-y-auto">
-                        <?php if (count($upcoming_birthdays) > 0): ?>
-                            <?php foreach ($upcoming_birthdays as $senior): ?>
-                                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
-                                    <div class="flex items-center">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold mr-3">
-                                            <?php echo strtoupper(substr($senior['full_name'], 0, 1)); ?>
-                                        </div>
-                                        <div>
-                                            <p class="font-medium text-gray-900 dark:text-white"><?php echo htmlspecialchars($senior['full_name']); ?></p>
-                                            <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="mr-3">
-                                                    <i class="fas fa-calendar-alt mr-1"></i><?php echo htmlspecialchars($senior['birthday_month_day']); ?>
-                                                </span>
-                                                <span>
-                                                    <i class="fas fa-cake-candles mr-1"></i>Turning <?php echo $senior['turning_age']; ?>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                            in <?php echo $senior['days_until_birthday']; ?> day<?php echo $senior['days_until_birthday'] != 1 ? 's' : ''; ?>
-                                        </div>
-                                        <?php if ($senior['barangay']): ?>
-                                            <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                <?php echo htmlspecialchars($senior['barangay']); ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="text-center py-8">
-                                <i class="fas fa-calendar-alt text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
-                                <p class="text-gray-500 dark:text-gray-400">No upcoming birthdays</p>
-                                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Next 7 days</p>
-                            </div>
-                        <?php endif; ?>
+                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-calendar-alt mr-1"></i>Your last month activity
+                        </div>
                     </div>
                 </div>
 
-                <!-- Birthday Charts -->
-                <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Birthday Analytics</h3>
+                <!-- Gender Distribution Card -->
+                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in"
+                    style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Gender Distribution (Yours)</p>
                         <div class="flex space-x-2">
-                            <button onclick="drawBirthdayCharts()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900 dark:text-blue-300">
+                                <i class="fas fa-male mr-1"></i><?php echo $male_percentage; ?>%
+                            </span>
+                            <span class="px-2 py-1 text-xs font-medium bg-pink-100 text-pink-800 rounded dark:bg-pink-900 dark:text-pink-300">
+                                <i class="fas fa-female mr-1"></i><?php echo $female_percentage; ?>%
+                            </span>
                         </div>
                     </div>
-                    <div class="space-y-6">
-                        <!-- Birthday by Month Chart -->
+                    <div class="space-y-3">
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Birthdays by Month</h4>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    Total: <?php echo array_sum($birthdays_by_month); ?>
-                                </span>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600 dark:text-gray-400">Male</span>
+                                <span class="font-medium text-gray-900 dark:text-white"><?php echo $male_count; ?></span>
                             </div>
-                            <div id="birthday-month-chart" style="height: 150px;"></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: <?php echo $male_percentage; ?>%"></div>
+                            </div>
                         </div>
-
-                        <!-- Milestone Birthdays Chart -->
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Milestone Birthdays</h4>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    Next 30 days
-                                </span>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600 dark:text-gray-400">Female</span>
+                                <span class="font-medium text-gray-900 dark:text-white"><?php echo $female_count; ?></span>
                             </div>
-                            <div id="milestone-chart" style="height: 150px;"></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                                <div class="bg-pink-600 h-2 rounded-full" style="width: <?php echo $female_percentage; ?>%"></div>
+                            </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Quick Stats -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div class="text-lg font-bold text-gray-900 dark:text-white"><?php echo $total_with_birthdates; ?></div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">With Birthdates</div>
+                <!-- Status Overview Card -->
+                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in"
+                    style="animation-delay: 0.3s;">
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Status Overview (Your Seniors)</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Active</span>
                             </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div class="text-lg font-bold text-green-600 dark:text-green-400"><?php echo $birthday_percentage; ?>%</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">Birthday Rate</div>
+                            <span class="font-bold text-gray-900 dark:text-white"><?php echo $active_count; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Inactive</span>
                             </div>
+                            <span class="font-bold text-gray-900 dark:text-white"><?php echo $inactive_count; ?></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/30 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Deceased</span>
+                            </div>
+                            <span class="font-bold text-gray-900 dark:text-white"><?php echo $deceased_count; ?></span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Original Charts Section -->
+        <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Gender Distribution Chart -->
             <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800 chart-container">
@@ -2171,7 +1211,7 @@ $conn->close();
                         <?php foreach ($stats['recent_activities'] as $activity): ?>
                             <div class="flex items-center">
                                 <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900 mr-3">
-                                    <?php
+                                    <?php 
                                     $icon = 'fa-user';
                                     $color = 'blue';
                                     if (strpos($activity['activity_type'], 'REGISTER') !== false) {
@@ -2251,7 +1291,7 @@ $conn->close();
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-gray-600 dark:text-gray-400">Success Rate</span>
                             <span class="font-medium text-gray-900 dark:text-white">
-                                <?php
+                                <?php 
                                 $success_rate = $stats['staff_total'] > 0 ? round(($active_count / $stats['staff_total']) * 100) : 0;
                                 echo $success_rate; ?>%
                             </span>
@@ -2283,8 +1323,8 @@ $conn->close();
                     <div class="text-sm text-gray-500 dark:text-gray-400">Your Registered</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"><?php echo $today_birthday_count; ?></div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Birthdays Today</div>
+                    <div class="text-2xl font-bold text-green-600 dark:text-green-400"><?php echo $active_count; ?></div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Your Active Seniors</div>
                 </div>
                 <div class="text-center">
                     <div class="text-2xl font-bold text-blue-600 dark:text-blue-400"><?php echo count($stats['barangays']); ?></div>
@@ -2359,5 +1399,4 @@ $conn->close();
         })();
     </script>
 </body>
-
 </html>

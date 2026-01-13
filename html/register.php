@@ -1384,7 +1384,7 @@ if (empty($profile_photo_url)) {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
 
             try {
-                const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php', {
+                const response = await fetch('../php/register/applicant.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

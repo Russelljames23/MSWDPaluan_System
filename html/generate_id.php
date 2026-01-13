@@ -1,4 +1,5 @@
 <?php
+require_once "../php/login/admin_header.php";
 // Start session immediately
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();
@@ -21,7 +22,7 @@ error_log("User Type: " . ($_SESSION['user_type'] ?? 'none'));
 error_log("================================================");
 
 // Now include other files
-require_once "../php/login/admin_header.php";
+
 require_once "../php/db.php";
 require_once "../php/context_manager.php"; // Include context manager
 require_once "../php/id_generation_functions.php";

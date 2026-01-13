@@ -1,5 +1,5 @@
 <?php
-// applicant.php - IMPROVED WITH ROBUST SESSION HANDLING
+// applicant.php - IMPROVED WITH CONTACT NUMBER SUPPORT
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
@@ -8,10 +8,15 @@ header("Content-Type: application/json; charset=UTF-8");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
+// -----------------------------
+// DATABASE CONNECTION
+// -----------------------------
+include '../db.php';
 
-// -----------------------------
-// ENHANCED ERROR LOGGING
-// -----------------------------
+if (!$conn) {
+    sendJsonError("Database connection failed", 500);
+}
+// Error handling
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -21,41 +26,27 @@ ini_set('error_log', dirname(__FILE__) . '/../php_errors.log');
 ob_start();
 
 // -----------------------------
-// DATABASE CONNECTION
-// -----------------------------
-include '../db.php';
-
-if (!$conn) {
-    sendJsonError("Database connection failed", 500);
-}
-
-// -----------------------------
-// ENHANCED SESSION HANDLING
+// SESSION INITIALIZATION
 // -----------------------------
 function initializeSessionForApplicant()
 {
-    // Don't change session name, let PHP handle it
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        // Simply start the session - DO NOT change session name
+        @session_start();
 
-        // Log session info for debugging
-        error_log("Session started - ID: " . session_id());
-        error_log("Session context: " . ($_SESSION['session_context'] ?? 'not set'));
-        error_log("User ID: " . ($_SESSION['user_id'] ?? 'not set'));
-    }
-
-    // Ensure we have a session context
-    if (!isset($_SESSION['session_context'])) {
-        // Try to determine context from request
-        $raw = file_get_contents("php://input");
-        $data = json_decode($raw, true);
-
-        if ($data && isset($data['request_source'])) {
-            $_SESSION['session_context'] = strpos($data['request_source'], 'staff') !== false ? 'staff' : 'admin';
-        } else {
-            $_SESSION['session_context'] = 'admin'; // Default
+        // Set default session context if not set
+        if (!isset($_SESSION['session_context'])) {
+            $_SESSION['session_context'] = 'admin';
         }
-        error_log("Session context set to: " . $_SESSION['session_context']);
+
+        // Ensure basic session structure
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['user_id'] = 0;
+        }
+
+        if (!isset($_SESSION['session_initialized'])) {
+            $_SESSION['session_initialized'] = true;
+        }
     }
 
     return true;
@@ -63,6 +54,8 @@ function initializeSessionForApplicant()
 
 // Initialize session
 initializeSessionForApplicant();
+
+
 
 // -----------------------------
 // HELPER FUNCTIONS
@@ -90,78 +83,77 @@ function sendJsonSuccess($message, $data = [])
     exit;
 }
 
-// Get current user ID with improved context detection
+// Get current user ID
 function getCurrentUserId($conn)
 {
-    // First, check if user ID is directly provided in session
-    if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+    // Method 1: Direct session lookup
+    if (isset($_SESSION['session_context'])) {
+        $context = $_SESSION['session_context'];
 
-        // Verify the user exists and is active
-        try {
-            $stmt = $conn->prepare(
-                "SELECT id, user_type, status FROM users WHERE id = ?"
-            );
-            $stmt->execute([$userId]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user && $user['status'] === 'active') {
-                error_log("Using session user ID: " . $userId);
-                return $userId;
-            }
-        } catch (Exception $e) {
-            error_log("Error verifying user: " . $e->getMessage());
-        }
-    }
-
-    // Check context-specific IDs
-    $context = $_SESSION['session_context'] ?? 'admin';
-
-    if ($context === 'staff') {
-        $staffId = $_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? null;
-        if ($staffId) {
-            // Verify it's a staff user
-            try {
-                $stmt = $conn->prepare(
-                    "SELECT user_type FROM users WHERE id = ? AND status = 'active'"
-                );
-                $stmt->execute([$staffId]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($user) {
-                    $userType = strtolower($user['user_type']);
-                    if (
-                        strpos($userType, 'staff') !== false ||
-                        strpos($userType, 'data entry') !== false ||
-                        strpos($userType, 'viewer') !== false
-                    ) {
-                        error_log("Using staff user ID: " . $staffId);
-                        $_SESSION['staff_user_id'] = $staffId;
-                        $_SESSION['user_id'] = $staffId;
-                        return $staffId;
+        if ($context === 'staff') {
+            $staffIds = ['staff_user_id', 'user_id', 'id'];
+            foreach ($staffIds as $idKey) {
+                if (isset($_SESSION[$idKey]) && !empty($_SESSION[$idKey])) {
+                    $userId = $_SESSION[$idKey];
+                    if (verifyUserIsStaff($conn, $userId)) {
+                        $_SESSION['staff_user_id'] = $userId;
+                        return $userId;
                     }
                 }
-            } catch (Exception $e) {
-                error_log("Error verifying staff user: " . $e->getMessage());
             }
-        }
-    } elseif ($context === 'admin') {
-        $adminId = $_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? null;
-        if ($adminId) {
-            // For admin, we can be less strict
-            error_log("Using admin user ID: " . $adminId);
-            $_SESSION['admin_user_id'] = $adminId;
-            $_SESSION['user_id'] = $adminId;
-            return $adminId;
+        } else if ($context === 'admin') {
+            $adminIds = ['admin_user_id', 'user_id', 'id'];
+            foreach ($adminIds as $idKey) {
+                if (isset($_SESSION[$idKey]) && !empty($_SESSION[$idKey])) {
+                    $userId = $_SESSION[$idKey];
+                    $_SESSION['admin_user_id'] = $userId;
+                    return $userId;
+                }
+            }
         }
     }
 
-    // Default fallback - log this as it might indicate a problem
-    error_log("No valid user ID found, using default admin ID: 57");
+    // Method 2: Default to Admin
+    error_log("Defaulting to Admin ID: 57");
     $_SESSION['session_context'] = 'admin';
     $_SESSION['admin_user_id'] = 57;
     $_SESSION['user_id'] = 57;
     return 57;
+}
+
+function verifyUserIsStaff($conn, $userId)
+{
+    try {
+        $stmt = $conn->prepare(
+            "SELECT user_type FROM users WHERE id = ? AND status = 'active'"
+        );
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $userType = strtolower($user['user_type']);
+            return (strpos($userType, 'staff') !== false ||
+                strpos($userType, 'data entry') !== false ||
+                strpos($userType, 'viewer') !== false);
+        }
+    } catch (Exception $e) {
+        error_log("Error verifying staff user: " . $e->getMessage());
+    }
+
+    return false;
+}
+
+// Get current user ID
+$userId = getCurrentUserId($conn);
+
+// Get user name
+$userName = 'Unknown';
+if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+    $userName = $_SESSION['fullname'];
+} elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+    $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+} elseif (isset($_SESSION['username'])) {
+    $userName = $_SESSION['username'];
 }
 
 // -----------------------------
@@ -170,49 +162,27 @@ function getCurrentUserId($conn)
 $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);
 
-error_log("Received data: " . print_r($data, true));
-
 if (!$data) {
     sendJsonError("Invalid or missing JSON data.");
 }
 
-// Update session with request data if provided
+// Update session with request data
 if (isset($data['staff_user_id']) && !empty($data['staff_user_id'])) {
     $_SESSION['staff_user_id'] = $data['staff_user_id'];
     $_SESSION['user_id'] = $data['staff_user_id'];
     $_SESSION['session_context'] = 'staff';
-    error_log("Updated session for staff user: " . $data['staff_user_id']);
 } elseif (isset($data['admin_user_id']) && !empty($data['admin_user_id'])) {
     $_SESSION['admin_user_id'] = $data['admin_user_id'];
     $_SESSION['user_id'] = $data['admin_user_id'];
     $_SESSION['session_context'] = 'admin';
-    error_log("Updated session for admin user: " . $data['admin_user_id']);
 }
 
 if (isset($data['session_context']) && !empty($data['session_context'])) {
     $_SESSION['session_context'] = $data['session_context'];
-    error_log("Session context set to: " . $data['session_context']);
 }
-
-// Get current user ID
-$userId = getCurrentUserId($conn);
-
-// Get user name with fallbacks
-$userName = 'Unknown';
-if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
-    $userName = $_SESSION['fullname'];
-} elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-    $userName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
-} elseif (isset($_SESSION['username'])) {
-    $userName = $_SESSION['username'];
-} elseif (isset($data['admin_user_name'])) {
-    $userName = $data['admin_user_name'];
-}
-
-error_log("Using user ID: " . $userId . ", Name: " . $userName);
 
 // -----------------------------
-// VALIDATION FUNCTIONS (keep existing)
+// VALIDATION FUNCTIONS
 // -----------------------------
 function calculateCurrentAge($birth_date)
 {
@@ -339,7 +309,7 @@ try {
     $applicantName = trim($data['fname'] ?? '') . ' ' . trim($data['lname'] ?? '');
     $birthDate = $data['b_date'] ?? '';
 
-    error_log("Processing applicant: $applicantName, Birthdate: $birthDate, User ID: $userId");
+    error_log("Processing applicant: $applicantName, Birthdate: $birthDate");
 
     // STEP 0: Validate required fields
     $requiredFields = [
@@ -521,7 +491,7 @@ try {
 
     // STEP 10: Insert into economic_status
     $support_in_kind = isset($data['support_in_kind']) ? trim($data['support_in_kind']) : (isset($data['support_type']) && strpos(strtolower($data['support_type']), 'kind') !== false ?
-        trim($data['support_type']) : null);
+            trim($data['support_type']) : null);
 
     $stmt = $conn->prepare("
         INSERT INTO economic_status (
@@ -609,29 +579,18 @@ try {
         "applicant_name" => trim($data['lname'] ?? '') . ', ' . trim($data['fname'] ?? ''),
         "barangay" => $data['brgy'] ?? '',
         "registered_by" => $userName,
-        "registered_by_id" => $userId,
         "timestamp" => date('Y-m-d H:i:s')
     ]);
 } catch (PDOException $e) {
-    error_log("PDOException in applicant.php: " . $e->getMessage());
-    error_log("PDOException trace: " . $e->getTraceAsString());
+    error_log("PDOException: " . $e->getMessage());
 
     if ($conn && $conn->inTransaction()) {
         $conn->rollBack();
     }
 
-    // Return more specific error message
-    $errorMsg = "Registration failed due to a database error.";
-    if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-        $errorMsg = "Duplicate entry detected. Please check if the data already exists.";
-    } elseif (strpos($e->getMessage(), 'foreign key constraint') !== false) {
-        $errorMsg = "Data integrity error. Please check related records.";
-    }
-
-    sendJsonError($errorMsg . " Technical details: " . $e->getMessage());
+    sendJsonError("Registration failed due to a database error. Please try again.");
 } catch (Exception $e) {
-    error_log("Exception in applicant.php: " . $e->getMessage());
-    error_log("Exception trace: " . $e->getTraceAsString());
+    error_log("Exception: " . $e->getMessage());
 
     if ($conn && $conn->inTransaction()) {
         $conn->rollBack();

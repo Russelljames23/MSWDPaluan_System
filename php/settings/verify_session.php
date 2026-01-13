@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Manila');
 header('Content-Type: application/json');
 
 $response = [

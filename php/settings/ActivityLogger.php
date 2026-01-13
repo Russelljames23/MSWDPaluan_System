@@ -1,5 +1,6 @@
 <?php
-// ActivityLogger.php - Enhanced version
+// ActivityLogger.php - Enhanced version with timezone fixes
+
 class ActivityLogger
 {
     private $conn;
@@ -8,6 +9,26 @@ class ActivityLogger
     public function __construct($conn)
     {
         $this->conn = $conn;
+        // Ensure consistent timezone
+        $this->ensureTimezone();
+    }
+
+    /**
+     * Ensure consistent timezone across the application
+     */
+    private function ensureTimezone()
+    {
+        // Set timezone if not already set
+        if (date_default_timezone_get() != 'Asia/Manila') {
+            date_default_timezone_set('Asia/Manila');
+        }
+        
+        // Also set MySQL session timezone if possible
+        try {
+            $this->conn->exec("SET time_zone = '+08:00'");
+        } catch (Exception $e) {
+            // Silently ignore if not supported
+        }
     }
 
     /**
@@ -17,6 +38,8 @@ class ActivityLogger
     {
         try {
             error_log("=== ActivityLogger Started ===");
+            error_log("Logger Timezone: " . date_default_timezone_get());
+            error_log("Logger Current Time: " . date('Y-m-d H:i:s'));
 
             // Get user ID using multiple fallback methods
             $userId = $this->resolveUserId();
@@ -31,15 +54,29 @@ class ActivityLogger
             $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
             $userAgent = str_replace("\0", '', $userAgent);
 
-            // Prepare the query
+            // Prepare the query - Using MySQL's NOW() for consistent database timestamp
             $query = "INSERT INTO activity_logs 
                      (user_id, activity_type, description, activity_details, ip_address, user_agent, created_at) 
                      VALUES (:user_id, :activity_type, :description, :activity_details, :ip_address, :user_agent, NOW())";
 
             $stmt = $this->conn->prepare($query);
 
-            // Prepare details as JSON
-            $detailsJson = $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null;
+            // Prepare details as JSON with timezone info
+            if ($details) {
+                // Add timezone info to details if not already present
+                if (!isset($details['log_timezone'])) {
+                    $details['log_timezone'] = date_default_timezone_get();
+                }
+                if (!isset($details['log_time_server'])) {
+                    $details['log_time_server'] = date('Y-m-d H:i:s');
+                }
+                $detailsJson = json_encode($details, JSON_UNESCAPED_UNICODE);
+            } else {
+                $detailsJson = json_encode([
+                    'log_timezone' => date_default_timezone_get(),
+                    'log_time_server' => date('Y-m-d H:i:s')
+                ], JSON_UNESCAPED_UNICODE);
+            }
 
             $result = $stmt->execute([
                 ':user_id' => $userId,
@@ -51,11 +88,13 @@ class ActivityLogger
             ]);
 
             $lastId = $this->conn->lastInsertId();
-            error_log("ActivityLogger: Log inserted successfully! ID: {$lastId}, Type: {$activityType}, User: {$userId}");
+            $currentTime = date('Y-m-d H:i:s');
+            error_log("ActivityLogger: Log inserted successfully! ID: {$lastId}, Type: {$activityType}, User: {$userId}, Time: {$currentTime}");
 
             return $lastId > 0;
         } catch (Exception $e) {
-            error_log("ActivityLogger Error: " . $e->getMessage());
+            $errorTime = date('Y-m-d H:i:s');
+            error_log("[$errorTime] ActivityLogger Error: " . $e->getMessage());
             error_log("ActivityLogger Trace: " . $e->getTraceAsString());
 
             // Try a simpler insert as fallback
@@ -175,44 +214,6 @@ class ActivityLogger
     }
 
     /**
-     * Find user ID by username
-     */
-    private function findUserIdByUsername($username)
-    {
-        try {
-            $stmt = $this->conn->prepare(
-                "SELECT id, user_type FROM users WHERE username = ? AND status = 'active' LIMIT 1"
-            );
-            $stmt->execute([$username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $user ? $user['id'] : null;
-        } catch (Exception $e) {
-            error_log("Error finding user ID by username: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Find staff ID by username
-     */
-    private function findStaffIdByUsername($username)
-    {
-        try {
-            $stmt = $this->conn->prepare(
-                "SELECT id FROM users WHERE username = ? AND user_type LIKE '%Staff%' AND status = 'active' LIMIT 1"
-            );
-            $stmt->execute([$username]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $user ? $user['id'] : null;
-        } catch (Exception $e) {
-            error_log("Error finding staff ID by username: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
      * Find any active staff user
      */
     private function findAnyStaffUser()
@@ -232,23 +233,6 @@ class ActivityLogger
         } catch (Exception $e) {
             error_log("Error finding any staff user: " . $e->getMessage());
             return null;
-        }
-    }
-
-    /**
-     * Verify user exists and is active
-     */
-    private function verifyUserExists($userId)
-    {
-        try {
-            $stmt = $this->conn->prepare(
-                "SELECT id FROM users WHERE id = ? AND status = 'active' LIMIT 1"
-            );
-            $stmt->execute([$userId]);
-            return (bool) $stmt->fetch();
-        } catch (Exception $e) {
-            error_log("Error verifying user exists: " . $e->getMessage());
-            return false;
         }
     }
 

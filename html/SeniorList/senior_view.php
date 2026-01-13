@@ -1458,6 +1458,7 @@ if ($applicant_id && $pdo) {
                         setField('input[name="gender"]', applicant.gender);
                         setField('input[name="civil_status"]', applicant.civil_status);
                         setField('input[name="birth_date"]', applicant.birth_date);
+                        setField('input[name="birth_place"]', applicant.birth_place);
                         setField('input[name="houseno"]', address.house_no);
                         setField('input[name="street"]', address.street);
                         setField('input[name="barangay"]', address.barangay);

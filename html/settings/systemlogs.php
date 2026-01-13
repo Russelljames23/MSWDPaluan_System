@@ -68,34 +68,39 @@ if (empty($profile_photo_url)) {
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter: 
-                brightness(1.3)      /* Make brighter */
-                contrast(1.2)        /* Increase contrast */
-                saturate(1.5)        /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-            
+
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-            
+
             /* Inner glow effect */
-            box-shadow: 
+            box-shadow:
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-            
+
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-        
+
         @keyframes pulse-glow {
             from {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
+
             to {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -127,7 +132,7 @@ if (empty($profile_photo_url)) {
             width: 78px;
             background: #fff;
             transition: all 0.4s ease;
-            z-index: 40;
+            z-index: 10;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -525,169 +530,169 @@ if (empty($profile_photo_url)) {
 <body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
-        <div class="flex flex-wrap justify-between items-center">
-            <div class="flex justify-start items-center">
-                <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
-                    aria-controls="drawer-navigation"
-                    class="p-2 mr-2 text-gray-600 rounded-lg cursor-pointer md:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <svg aria-hidden="true" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Toggle sidebar</span>
-                </button>
-                <a href="#" class="flex items-center justify-between mr-4">
-                    <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
-                        class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
-                        alt="MSWD LOGO" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
-                </a>
-            </div>
-            <div class="flex items-center lg:order-2">
-                <button type="button"
-                    class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                    id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
-                    <span class="sr-only">Open user menu</span>
-                    <img class="w-8 h-8 rounded-full object-cover"
-                        src="<?php echo htmlspecialchars($profile_photo_url); ?>"
-                        alt="user photo" />
-                </button>
-                <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
-                    id="dropdown">
-                    <div class="py-3 px-4">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">
-                            <?php
-                            if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
-                                echo htmlspecialchars($_SESSION['fullname']);
-                            } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-                            } else {
-                                echo 'User';
-                            }
-                            ?>
-                        </span>
-                        <span class="block text-sm text-gray-900 truncate dark:text-white">
-                            <?php
-                            if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
-                                echo htmlspecialchars($_SESSION['user_type']);
-                            } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                echo htmlspecialchars($_SESSION['role_name']);
-                            } else {
-                                echo 'User Type';
-                            }
-                            ?>
-                        </span>
+            <div class="flex flex-wrap justify-between items-center">
+                <div class="flex justify-start items-center">
+                    <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
+                        aria-controls="drawer-navigation"
+                        class="p-2 mr-2 text-gray-600 rounded-lg cursor-pointer md:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <svg aria-hidden="true" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Toggle sidebar</span>
+                    </button>
+                    <a href="#" class="flex items-center justify-between mr-4">
+                        <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
+                            alt="MSWD LOGO" />
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
+                    </a>
+                </div>
+                <div class="flex items-center lg:order-2">
+                    <button type="button"
+                        class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="w-8 h-8 rounded-full object-cover"
+                            src="<?php echo htmlspecialchars($profile_photo_url); ?>"
+                            alt="user photo" />
+                    </button>
+                    <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                        id="dropdown">
+                        <div class="py-3 px-4">
+                            <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                                <?php
+                                if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                                    echo htmlspecialchars($_SESSION['fullname']);
+                                } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                    echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                                } else {
+                                    echo 'User';
+                                }
+                                ?>
+                            </span>
+                            <span class="block text-sm text-gray-900 truncate dark:text-white">
+                                <?php
+                                if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                                    echo htmlspecialchars($_SESSION['user_type']);
+                                } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                                    echo htmlspecialchars($_SESSION['role_name']);
+                                } else {
+                                    echo 'User Type';
+                                }
+                                ?>
+                            </span>
+                        </div>
+                        <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
+                            <li>
+                                <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                        <li>
-                            <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                <i class="fas fa-sign-out-alt mr-2"></i>Sign out
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Sidebar -->
-    <aside
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-        aria-label="Sidenav" id="drawer-navigation">
-        <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
-            <ul class="space-y-2">
-                <li>
-                    <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../register.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Register</span>
-                    </a>
-                </li>
-                <li>
-                    <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                        class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <ul id="dropdown-pages" class="hidden py-2 space-y-2">
-                        <li>
-                            <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Benefits</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Generate ID</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Report</span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
-                <li>
-                    <a href="../archived.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Archived</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
-                        <i class="fas fa-cog w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
-                        <span class="ml-3">Settings</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </aside>
+        <!-- Sidebar -->
+        <aside
+            class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+            aria-label="Sidenav" id="drawer-navigation">
+            <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="../admin_dashboard.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../register.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Register</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <ul id="dropdown-pages" class="hidden py-2 space-y-2">
+                            <li>
+                                <a href="../SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../SeniorList/inactivelist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../SeniorList/deceasedlist.php?session_context=<?php echo $ctx; ?>"
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../benefits.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Benefits</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../generate_id.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Generate ID</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../reports/report.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Report</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
+                    <li>
+                        <a href="../archived.php?session_context=<?php echo $ctx; ?>"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Archived</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
+                            <i class="fas fa-cog w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
+                            <span class="ml-3">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
 
         <!-- Main content -->
         <main class="p-2 md:ml-64  pt-20">
@@ -1638,10 +1643,109 @@ if (empty($profile_photo_url)) {
                     filter: this.config.currentFilter,
                     log_type: this.config.currentLogType,
                     date_range: this.config.currentDateRange,
+                    sort: this.config.currentSort.field,
+                    order: this.config.currentSort.direction,
+                    page: this.config.currentPage,
+                    limit: this.config.itemsPerPage,
                     export: 'csv'
                 });
 
-                window.open(`${this.config.apiUrl}?${params}`, '_blank');
+                // Show loading state on the export button
+                const exportBtn = document.getElementById('exportLogs');
+                if (exportBtn) {
+                    const originalHTML = exportBtn.innerHTML;
+                    exportBtn.innerHTML = `
+            <svg class="animate-spin h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Exporting...
+        `;
+                    exportBtn.disabled = true;
+
+                    // Create hidden iframe for download
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = `${this.config.apiUrl}?${params}`;
+                    document.body.appendChild(iframe);
+
+                    // Set timeout to restore button even if iframe doesn't load
+                    const restoreButton = () => {
+                        exportBtn.innerHTML = originalHTML;
+                        exportBtn.disabled = false;
+                        if (iframe.parentNode) {
+                            document.body.removeChild(iframe);
+                        }
+                    };
+
+                    // Restore button after download starts (or timeout)
+                    setTimeout(restoreButton, 3000);
+
+                    // Also restore on iframe load
+                    iframe.onload = restoreButton;
+                    iframe.onerror = restoreButton;
+
+                } else {
+                    // Fallback: Open in new tab
+                    window.open(`${this.config.apiUrl}?${params}`, '_blank');
+                }
+            },
+
+            // Add these helper methods to LogManager object:
+            showExportSuccess() {
+                // Create a toast notification
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-4 right-4 z-50';
+                toast.innerHTML = `
+                    <div class="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-4 shadow-lg animate-slide-up">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-green-800 dark:text-green-200 font-medium">Export successful!</span>
+                            <button class="ml-4 text-green-600 hover:text-green-800 dark:text-green-300 dark:hover:text-green-100" onclick="this.parentElement.parentElement.remove()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+
+                // Remove toast after 5 seconds
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
+                }, 5000);
+            },
+
+            showExportError() {
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-4 right-4 z-50';
+                toast.innerHTML = `
+        <div class="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-4 shadow-lg animate-slide-up">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-300 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-red-800 dark:text-red-200 font-medium">Export failed. Please try again.</span>
+                <button class="ml-4 text-red-600 hover:text-red-800 dark:text-red-300 dark:hover:text-red-100" onclick="this.parentElement.parentElement.remove()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
+                }, 5000);
             },
 
             showLoading() {

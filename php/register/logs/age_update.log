@@ -1,0 +1,28 @@
+[2026-01-13 09:34:07] === Age Update Job Started ===
+[2026-01-13 09:34:07] Checking for birthdays today...
+[2026-01-13 09:34:07] Found 0 applicants with birthdays today
+[2026-01-13 09:34:07] Updating ages for all active applicants...
+[2026-01-13 09:34:07] Updated current_age for 76 applicants
+[2026-01-13 09:34:07] Sample of updated applicants:
+[2026-01-13 09:34:07]   - Albanio, Clare (ID: 84) - Birth: 1965-04-08, Age: 59
+[2026-01-13 09:34:07]   - Albanio, Clares (ID: 85) - Birth: 1965-04-09, Age: 59
+[2026-01-13 09:34:07]   - Albanioss, sdweds (ID: 88) - Birth: 1961-03-23, Age: 63
+[2026-01-13 09:34:07]   - Albaniosssss, Mariannes (ID: 91) - Birth: 1957-02-22, Age: 67
+[2026-01-13 09:34:07]   - Balanza, Dexter (ID: 3) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 4) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 9) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 10) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 11) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 12) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balanza, Dexter (ID: 13) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balaza, Dexter (ID: 5) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balaza, Dexter (ID: 6) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balaza, Dexter (ID: 7) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - Balaza, Dexter (ID: 8) - Birth: 2025-10-15, Age: -1
+[2026-01-13 09:34:08]   - created_at, created_at (ID: 123) - Birth: 1958-12-12, Age: 67
+[2026-01-13 09:34:08]   - Delos Santoss, Rosies (ID: 78) - Birth: 1939-08-02, Age: 85
+[2026-01-13 09:34:08]   - Fixing, Redirect (ID: 109) - Birth: 1958-02-21, Age: 66
+[2026-01-13 09:34:08]   - Galgo, Dexter (ID: 39) - Birth: 2025-10-09, Age: -1
+[2026-01-13 09:34:08]   - Galgo, Lenard (ID: 28) - Birth: 2025-10-09, Age: -1
+[2026-01-13 09:34:08] Synced 'age' column for 62 applicants
+[2026-01-13 09:34:08] === Age Update Job Completed Successfully ===

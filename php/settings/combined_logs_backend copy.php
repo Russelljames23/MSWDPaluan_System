@@ -3,6 +3,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json; charset=UTF-8");
 date_default_timezone_set('Asia/Manila');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -41,8 +42,7 @@ if (!$conn) {
 }
 
 // Function to calculate duration
-function calculateDuration($start_time, $end_time)
-{
+function calculateDuration($start_time, $end_time) {
     if (!$end_time || $end_time === '0000-00-00 00:00:00' || strtotime($end_time) === false) {
         return "Ongoing";
     }
@@ -67,8 +67,7 @@ function calculateDuration($start_time, $end_time)
 }
 
 // Function to format time ago
-function timeAgo($datetime)
-{
+function timeAgo($datetime) {
     if (!$datetime || $datetime === '0000-00-00 00:00:00' || strtotime($datetime) === false) {
         return "N/A";
     }
@@ -87,8 +86,7 @@ function timeAgo($datetime)
 }
 
 // Function to get activity icon
-function getActivityIcon($activity_type)
-{
+function getActivityIcon($activity_type) {
     $icons = [
         'login' => '🔑',
         'logout' => '🚪',
@@ -116,9 +114,6 @@ function getActivityIcon($activity_type)
     return '📋';
 }
 
-// Check for export request
-$export = isset($_GET['export']) ? $_GET['export'] : '';
-
 try {
     // Get parameters with default values
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -136,9 +131,9 @@ try {
 
     if ($action === 'detail') {
         $logId = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $type = isset($_GET['type']) ? $_GET['type'] : 'session';
+        $logType = isset($_GET['type']) ? $_GET['type'] : 'session';
 
-        if ($type === 'session') {
+        if ($logType === 'session') {
             $query = "SELECT us.*, u.firstname, u.lastname, u.user_type 
                      FROM user_sessions us 
                      JOIN users u ON us.user_id = u.id 
@@ -170,247 +165,6 @@ try {
         }
         exit;
     }
-
-    // Handle CSV export
-    if ($export === 'csv') {
-        // Set headers for CSV download
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=system_logs_' . date('Y-m-d_H-i-s') . '.csv');
-
-        // Create output stream
-        $output = fopen('php://output', 'w');
-
-        // Add BOM for UTF-8 support in Excel
-        fwrite($output, "\xEF\xBB\xBF");
-
-        // CSV headers
-        $headers = [
-            'Log Type',
-            'Log ID',
-            'User ID',
-            'User Name',
-            'User Type',
-            'Timestamp',
-            'Time Ago',
-            'Activity Type',
-            'Description',
-            'IP Address',
-            'Duration',
-            'Status',
-            'Login Type',
-            'Details',
-            'Date',
-            'Time',
-            'Browser/Device'
-        ];
-
-        fputcsv($output, $headers);
-
-        // Remove export parameter for query building
-        unset($_GET['export']);
-
-        // Build base queries with parameter placeholders
-        $sessionQuery = "
-            SELECT 
-                'session' as log_type,
-                us.id as log_id,
-                us.user_id,
-                CONCAT(u.lastname, ', ', u.firstname) as user_name,
-                u.user_type,
-                us.login_time as timestamp,
-                'Session' as activity_type,
-                CONCAT('Logged in from ', COALESCE(us.ip_address, 'Unknown')) as description,
-                us.ip_address,
-                us.logout_time,
-                TIMESTAMPDIFF(SECOND, us.login_time, us.logout_time) as duration_seconds,
-                us.login_type,
-                us.user_agent as details
-            FROM user_sessions us
-            JOIN users u ON us.user_id = u.id
-            WHERE 1=1
-        ";
-
-        $activityQuery = "
-            SELECT 
-                'activity' as log_type,
-                al.id as log_id,
-                al.user_id,
-                CONCAT(u.lastname, ', ', u.firstname) as user_name,
-                u.user_type,
-                al.created_at as timestamp,
-                al.activity_type,
-                al.description,
-                al.ip_address,
-                NULL as logout_time,
-                NULL as duration_seconds,
-                NULL as login_type,
-                al.user_agent as details
-            FROM activity_logs al
-            JOIN users u ON al.user_id = u.id
-            WHERE 1=1
-        ";
-
-        // Build conditions and parameters
-        $sessionConditions = [];
-        $activityConditions = [];
-        $sessionParams = [];
-        $activityParams = [];
-
-        // Apply search filter
-        if (!empty($search)) {
-            $searchTerm = "%{$search}%";
-            $sessionConditions[] = "(u.firstname LIKE ? OR u.lastname LIKE ? OR u.user_type LIKE ? OR us.ip_address LIKE ?)";
-            $activityConditions[] = "(u.firstname LIKE ? OR u.lastname LIKE ? OR u.user_type LIKE ? OR al.ip_address LIKE ? OR al.activity_type LIKE ? OR al.description LIKE ?)";
-
-            $sessionParams = array_merge($sessionParams, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
-            $activityParams = array_merge($activityParams, [$searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm]);
-        }
-
-        // Apply user type filter
-        if ($filter === 'admin') {
-            $sessionConditions[] = "u.user_type = 'Admin'";
-            $activityConditions[] = "u.user_type = 'Admin'";
-        } elseif ($filter === 'staff') {
-            $sessionConditions[] = "u.user_type = 'Staff'";
-            $activityConditions[] = "u.user_type = 'Staff'";
-        }
-
-        // Apply date range filter
-        if ($dateRange !== 'all') {
-            switch ($dateRange) {
-                case 'today':
-                    $sessionConditions[] = "DATE(us.login_time) = CURDATE()";
-                    $activityConditions[] = "DATE(al.created_at) = CURDATE()";
-                    break;
-                case 'week':
-                    $sessionConditions[] = "us.login_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-                    $activityConditions[] = "al.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-                    break;
-                case 'month':
-                    $sessionConditions[] = "us.login_time >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
-                    $activityConditions[] = "al.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
-                    break;
-                case 'year':
-                    $sessionConditions[] = "us.login_time >= DATE_SUB(NOW(), INTERVAL 365 DAY)";
-                    $activityConditions[] = "al.created_at >= DATE_SUB(NOW(), INTERVAL 365 DAY)";
-                    break;
-            }
-        }
-
-        // Build WHERE clauses
-        $sessionWhere = '';
-        if (!empty($sessionConditions)) {
-            $sessionWhere = ' AND ' . implode(' AND ', $sessionConditions);
-        }
-
-        $activityWhere = '';
-        if (!empty($activityConditions)) {
-            $activityWhere = ' AND ' . implode(' AND ', $activityConditions);
-        }
-
-        // Build queries array
-        $queries = [];
-        $params = [];
-
-        if ($logType === 'both' || $logType === 'session') {
-            $queries[] = $sessionQuery . $sessionWhere;
-            $params = array_merge($params, $sessionParams);
-        }
-
-        if ($logType === 'both' || $logType === 'activity') {
-            $queries[] = $activityQuery . $activityWhere;
-            $params = array_merge($params, $activityParams);
-        }
-
-        if (empty($queries)) {
-            $queries[] = $sessionQuery;
-        }
-
-        // Build combined query for export (no pagination)
-        $exportQuery = "(" . implode(") UNION ALL (", $queries) . ") ORDER BY timestamp DESC";
-
-        $stmt = $conn->prepare($exportQuery);
-        if (!empty($params)) {
-            $stmt->execute($params);
-        } else {
-            $stmt->execute();
-        }
-
-        // Write data to CSV
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Format timestamp
-            $timestamp = !empty($row['timestamp']) && $row['timestamp'] !== '0000-00-00 00:00:00'
-                ? date('M j, Y g:i A', strtotime($row['timestamp']))
-                : 'N/A';
-
-            $timeAgo = timeAgo($row['timestamp']);
-
-            // Format duration for sessions
-            $duration = $row['log_type'] === 'session'
-                ? calculateDuration($row['timestamp'], $row['logout_time'])
-                : 'N/A';
-
-            // Determine status
-            $status = $row['log_type'] === 'session'
-                ? (!empty($row['logout_time']) && $row['logout_time'] !== '0000-00-00 00:00:00' ? 'Completed' : 'Active')
-                : 'Completed';
-
-            // Parse user agent
-            $userAgent = $row['details'] ?? '';
-            $browserInfo = 'Unknown';
-            if (!empty($userAgent)) {
-                // Simple browser detection
-                if (strpos($userAgent, 'Chrome') !== false) {
-                    $browserInfo = 'Chrome';
-                } elseif (strpos($userAgent, 'Firefox') !== false) {
-                    $browserInfo = 'Firefox';
-                } elseif (strpos($userAgent, 'Safari') !== false) {
-                    $browserInfo = 'Safari';
-                } elseif (strpos($userAgent, 'Edge') !== false) {
-                    $browserInfo = 'Edge';
-                } elseif (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) {
-                    $browserInfo = 'Internet Explorer';
-                } else {
-                    $browserInfo = 'Other';
-                }
-
-                // Add mobile detection
-                if (strpos($userAgent, 'Mobile') !== false || strpos($userAgent, 'Android') !== false) {
-                    $browserInfo .= ' (Mobile)';
-                }
-            }
-
-            // Prepare CSV row
-            $csvRow = [
-                $row['log_type'] === 'session' ? 'Session' : 'Activity',
-                $row['log_id'],
-                $row['user_id'],
-                $row['user_name'] ?? 'Unknown',
-                $row['user_type'] ?? 'N/A',
-                $timestamp,
-                $timeAgo,
-                $row['activity_type'] ?? 'N/A',
-                $row['description'] ?? '',
-                $row['ip_address'] ?? 'N/A',
-                $duration,
-                $status,
-                $row['login_type'] ?? 'N/A',
-                $userAgent,
-                date('Y-m-d', strtotime($row['timestamp'])),
-                date('H:i:s', strtotime($row['timestamp'])),
-                $browserInfo
-            ];
-
-            fputcsv($output, $csvRow);
-        }
-
-        fclose($output);
-        exit;
-    }
-
-    // Normal JSON response (rest of your existing code...)
-    // Set JSON header
-    header("Content-Type: application/json; charset=UTF-8");
 
     // Validate sort field
     $allowedSortFields = ['timestamp', 'user_name', 'user_type', 'activity_type', 'log_type', 'duration_seconds'];
@@ -469,7 +223,7 @@ try {
         $searchTerm = "%{$search}%";
         $sessionConditions[] = "(u.firstname LIKE ? OR u.lastname LIKE ? OR u.user_type LIKE ? OR us.ip_address LIKE ?)";
         $activityConditions[] = "(u.firstname LIKE ? OR u.lastname LIKE ? OR u.user_type LIKE ? OR al.ip_address LIKE ? OR al.activity_type LIKE ? OR al.description LIKE ?)";
-
+        
         $sessionParams = array_merge($sessionParams, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
         $activityParams = array_merge($activityParams, [$searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm, $searchTerm]);
     }
@@ -510,7 +264,7 @@ try {
     if (!empty($sessionConditions)) {
         $sessionWhere = ' AND ' . implode(' AND ', $sessionConditions);
     }
-
+    
     $activityWhere = '';
     if (!empty($activityConditions)) {
         $activityWhere = ' AND ' . implode(' AND ', $activityConditions);
@@ -540,33 +294,33 @@ try {
 
     // Count total items
     $countQuery = "SELECT COUNT(*) as total FROM ({$combinedQuery}) as combined";
-
+    
     $stmtCount = $conn->prepare($countQuery);
     if (!empty($params)) {
         $stmtCount->execute($params);
     } else {
         $stmtCount->execute();
     }
-
+    
     $totalResult = $stmtCount->fetch(PDO::FETCH_ASSOC);
     $totalItems = $totalResult['total'] ?? 0;
 
     // Main query with pagination - FIX: Use direct integers for LIMIT/OFFSET
     $mainQuery = "{$combinedQuery} ORDER BY {$sort} {$order} LIMIT :limit OFFSET :offset";
-
+    
     $stmt = $conn->prepare($mainQuery);
-
+    
     // Bind parameters for search/filter
     $paramIndex = 1;
     foreach ($params as $param) {
         $stmt->bindValue($paramIndex, $param, PDO::PARAM_STR);
         $paramIndex++;
     }
-
+    
     // IMPORTANT: Bind LIMIT and OFFSET as integers
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-
+    
     $stmt->execute();
 
     $logs = [];
@@ -625,6 +379,7 @@ try {
             'date_range' => $dateRange
         ]
     ]);
+
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([

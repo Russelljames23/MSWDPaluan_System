@@ -1,6 +1,6 @@
 <?php
 // session_helper.php
-
+date_default_timezone_set('Asia/Manila');
 class SessionHelper {
     
     /**
