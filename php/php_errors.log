@@ -4640,3 +4640,2037 @@
 [13-Jan-2026 23:07:24 Asia/Manila] Using user_id from session: 57
 [13-Jan-2026 23:07:24 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
 [13-Jan-2026 23:07:24 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 419, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-13 23:07:24
+[20-Jan-2026 19:46:55 Asia/Manila] === ActivityLogger Started ===
+[20-Jan-2026 19:46:55 Asia/Manila] Logger Timezone: Asia/Manila
+[20-Jan-2026 19:46:55 Asia/Manila] Logger Current Time: 2026-01-20 19:46:55
+[20-Jan-2026 19:46:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 19:46:55 Asia/Manila] Session data available: NO
+[20-Jan-2026 19:46:55 Asia/Manila] Defaulting to Admin ID: 57
+[20-Jan-2026 19:46:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 19:46:55 Asia/Manila] Session data available: NO
+[20-Jan-2026 19:46:55 Asia/Manila] Defaulting to Admin ID: 57
+[20-Jan-2026 19:46:55 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[20-Jan-2026 19:46:55 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 257, Type: VALIDATE_SENIOR, User: 57, Time: 2026-01-20 19:46:55
+[20-Jan-2026 13:55:01 Europe/Berlin] Session started - ID: 5hj35ef69ufjraq2nc5fdf6kks
+[20-Jan-2026 13:55:01 Europe/Berlin] Session context: not set
+[20-Jan-2026 13:55:01 Europe/Berlin] User ID: not set
+[20-Jan-2026 13:55:01 Europe/Berlin] Session context set to: admin
+[20-Jan-2026 13:55:01 Europe/Berlin] Received data: Array
+(
+    [lname] => Input
+    [fname] => Natin
+    [mname] => Muna
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1958-01-20
+    [age] => 68
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Elementary Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => VIII - Marikit
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living with relatives
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-20
+    [id_number] => 122232
+    [local_control_number] => 12d21
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1768907941822_zjay6f7hp
+    [request_source] => admin_register
+)
+
+[20-Jan-2026 13:55:01 Europe/Berlin] Updated session for admin user: 57
+[20-Jan-2026 13:55:01 Europe/Berlin] Session context set to: session_1768907941822_zjay6f7hp
+[20-Jan-2026 13:55:01 Europe/Berlin] Using session user ID: 57
+[20-Jan-2026 13:55:01 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[20-Jan-2026 13:55:01 Europe/Berlin] Processing applicant: Natin Input, Birthdate: 1958-01-20, User ID: 57
+[20-Jan-2026 13:55:01 Europe/Berlin] Applicant inserted with ID: 99
+[20-Jan-2026 13:55:01 Europe/Berlin] Registration details inserted with ID: 35
+[20-Jan-2026 20:55:01 Asia/Manila] === ActivityLogger Started ===
+[20-Jan-2026 20:55:01 Asia/Manila] Logger Timezone: Asia/Manila
+[20-Jan-2026 20:55:01 Asia/Manila] Logger Current Time: 2026-01-20 20:55:01
+[20-Jan-2026 20:55:01 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 20:55:01 Asia/Manila] Session data available: YES
+[20-Jan-2026 20:55:01 Asia/Manila] Session context: session_1768907941822_zjay6f7hp
+[20-Jan-2026 20:55:01 Asia/Manila] Session user_id: 57
+[20-Jan-2026 20:55:02 Asia/Manila] Session staff_user_id: none
+[20-Jan-2026 20:55:02 Asia/Manila] Found session context: session_1768907941822_zjay6f7hp
+[20-Jan-2026 20:55:02 Asia/Manila] Using user_id from session: 57
+[20-Jan-2026 20:55:02 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 20:55:02 Asia/Manila] Session data available: YES
+[20-Jan-2026 20:55:02 Asia/Manila] Session context: session_1768907941822_zjay6f7hp
+[20-Jan-2026 20:55:02 Asia/Manila] Session user_id: 57
+[20-Jan-2026 20:55:02 Asia/Manila] Session staff_user_id: none
+[20-Jan-2026 20:55:02 Asia/Manila] Found session context: session_1768907941822_zjay6f7hp
+[20-Jan-2026 20:55:02 Asia/Manila] Using user_id from session: 57
+[20-Jan-2026 20:55:02 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[20-Jan-2026 20:55:02 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 258, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-20 20:55:02
+[20-Jan-2026 15:39:46 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 97
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 12
+                    [name] => Total # of SC Availed of Christmas Gift
+                    [amount] => 200
+                )
+
+        )
+
+    [date] => 2025-12-25
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[20-Jan-2026 15:39:46 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[20-Jan-2026 15:39:46 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[20-Jan-2026 22:39:46 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["97"],"benefits":[{"id":"12","name":"Total # of SC Availed of Christmas Gift","amount":200}],"date":"2025-12-25","session_context":"admin","admin_user_id":57}
+[20-Jan-2026 22:39:47 Asia/Manila] === ActivityLogger Started ===
+[20-Jan-2026 22:39:47 Asia/Manila] Logger Timezone: Asia/Manila
+[20-Jan-2026 22:39:47 Asia/Manila] Logger Current Time: 2026-01-20 22:39:47
+[20-Jan-2026 22:39:47 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 22:39:47 Asia/Manila] Session data available: YES
+[20-Jan-2026 22:39:47 Asia/Manila] Session context: admin
+[20-Jan-2026 22:39:47 Asia/Manila] Session user_id: 57
+[20-Jan-2026 22:39:47 Asia/Manila] Session staff_user_id: none
+[20-Jan-2026 22:39:47 Asia/Manila] Found session context: admin
+[20-Jan-2026 22:39:47 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[20-Jan-2026 22:39:47 Asia/Manila] === ActivityLogger: resolveUserId ===
+[20-Jan-2026 22:39:47 Asia/Manila] Session data available: YES
+[20-Jan-2026 22:39:47 Asia/Manila] Session context: admin
+[20-Jan-2026 22:39:47 Asia/Manila] Session user_id: 57
+[20-Jan-2026 22:39:47 Asia/Manila] Session staff_user_id: none
+[20-Jan-2026 22:39:47 Asia/Manila] Found session context: admin
+[20-Jan-2026 22:39:47 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[20-Jan-2026 22:39:47 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[20-Jan-2026 22:39:47 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 259, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-20 22:39:47
+[22-Jan-2026 01:19:58 Asia/Manila] === ActivityLogger Started ===
+[22-Jan-2026 01:19:58 Asia/Manila] Logger Timezone: Asia/Manila
+[22-Jan-2026 01:19:58 Asia/Manila] Logger Current Time: 2026-01-22 01:19:58
+[22-Jan-2026 01:19:58 Asia/Manila] === ActivityLogger: resolveUserId ===
+[22-Jan-2026 01:19:58 Asia/Manila] Session data available: YES
+[22-Jan-2026 01:19:58 Asia/Manila] Session context: admin
+[22-Jan-2026 01:19:58 Asia/Manila] Session user_id: 57
+[22-Jan-2026 01:19:58 Asia/Manila] Session staff_user_id: 67
+[22-Jan-2026 01:19:58 Asia/Manila] Found session context: admin
+[22-Jan-2026 01:19:58 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[22-Jan-2026 01:19:58 Asia/Manila] === ActivityLogger: resolveUserId ===
+[22-Jan-2026 01:19:58 Asia/Manila] Session data available: YES
+[22-Jan-2026 01:19:58 Asia/Manila] Session context: admin
+[22-Jan-2026 01:19:58 Asia/Manila] Session user_id: 57
+[22-Jan-2026 01:19:58 Asia/Manila] Session staff_user_id: 67
+[22-Jan-2026 01:19:58 Asia/Manila] Found session context: admin
+[22-Jan-2026 01:19:58 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[22-Jan-2026 01:19:58 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[22-Jan-2026 01:19:58 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 282, Type: VALIDATE_SENIOR, User: 57, Time: 2026-01-22 01:19:58
+[30-Jan-2026 01:46:14 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 01:46:14 Europe/Berlin] Session context: not set
+[30-Jan-2026 01:46:14 Europe/Berlin] User ID: not set
+[30-Jan-2026 01:46:14 Europe/Berlin] Session context set to: admin
+[30-Jan-2026 01:46:14 Europe/Berlin] Received data: Array
+(
+    [lname] => Galgo
+    [fname] => Lenardo
+    [mname] => Belen
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Level
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 0012351
+    [local_control_number] => Auto-generated
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+)
+
+[30-Jan-2026 01:46:14 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 01:46:14 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 01:46:14 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 01:46:14 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 01:46:14 Europe/Berlin] Processing applicant: Lenardo Galgo, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 01:46:15 Europe/Berlin] Applicant inserted with ID: 100
+[30-Jan-2026 01:46:15 Europe/Berlin] Registration details inserted with ID: 37
+[30-Jan-2026 08:46:15 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 08:46:15 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 08:46:15 Asia/Manila] Logger Current Time: 2026-01-30 08:46:15
+[30-Jan-2026 08:46:15 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 08:46:15 Asia/Manila] Session data available: YES
+[30-Jan-2026 08:46:15 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 08:46:15 Asia/Manila] Session user_id: 57
+[30-Jan-2026 08:46:15 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 08:46:15 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 08:46:15 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 08:46:15 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 08:46:15 Asia/Manila] Session data available: YES
+[30-Jan-2026 08:46:15 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 08:46:15 Asia/Manila] Session user_id: 57
+[30-Jan-2026 08:46:15 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 08:46:15 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 08:46:15 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 08:46:15 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 08:46:15 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 290, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 08:46:15
+[30-Jan-2026 01:49:47 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 01:49:47 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 01:49:47 Europe/Berlin] User ID: 57
+[30-Jan-2026 01:49:47 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardo
+    [fname] => Da Vinci
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Married
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Elementary Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 1222321
+    [local_control_number] => Auto-generated
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+)
+
+[30-Jan-2026 01:49:47 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 01:49:47 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 01:49:47 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 01:49:47 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 01:49:48 Europe/Berlin] Processing applicant: Da Vinci Lenardo, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 03:46:35 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 03:46:35 Europe/Berlin] Session context: admin
+[30-Jan-2026 03:46:35 Europe/Berlin] User ID: 57
+[30-Jan-2026 03:46:35 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Married
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => High School Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living alone
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 1222321
+    [local_control_number] => Auto-generated
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 03:46:35 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 03:46:35 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 03:46:35 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 03:46:35 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 03:46:35 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 03:55:45 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 03:55:45 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 03:55:45 Europe/Berlin] User ID: 57
+[30-Jan-2026 03:55:45 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => High School Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 123123232
+    [local_control_number] => Auto-generated
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 03:55:45 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 03:55:45 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 03:55:45 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 03:55:45 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 03:55:45 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 03:55:52 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 03:55:52 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 03:55:52 Europe/Berlin] User ID: 57
+[30-Jan-2026 03:55:52 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => High School Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 123123232
+    [local_control_number] => Auto-generated
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 03:55:52 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 03:55:52 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 03:55:52 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 03:55:52 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 03:55:52 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:33:55 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:33:55 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:33:55 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:33:55 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12223
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:33:55 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:33:55 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:33:55 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:33:55 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:33:55 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:33:58 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:33:58 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:33:58 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:33:58 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12223
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:33:58 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:33:58 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:33:58 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:33:58 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:33:58 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:35:14 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:35:14 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:35:14 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:35:14 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12223
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:35:14 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:35:14 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:35:14 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:35:14 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:35:14 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:37:01 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:37:01 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:37:01 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:37:01 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12223
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:37:01 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:37:01 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:37:01 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:37:01 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:37:01 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:37:04 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:37:04 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:37:04 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:37:04 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12223
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:37:04 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:37:04 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:37:04 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:37:04 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:37:04 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:44:43 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 04:44:43 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:44:43 Europe/Berlin] User ID: 57
+[30-Jan-2026 04:44:43 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardos
+    [fname] => Da Vincis
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-12-12
+    [age] => 66
+    [civil_status] => Widowed
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Graduate
+    [contact_number] => +639272873751
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 001232
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 04:44:43 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 04:44:43 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 04:44:43 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 04:44:43 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 04:44:43 Europe/Berlin] Processing applicant: Da Vincis Lenardos, Birthdate: 1959-12-12, User ID: 57
+[30-Jan-2026 04:44:43 Europe/Berlin] Applicant inserted with ID: 101
+[30-Jan-2026 04:44:43 Europe/Berlin] Registration details inserted with ID: 38
+[30-Jan-2026 11:44:43 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 11:44:43 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 11:44:43 Asia/Manila] Logger Current Time: 2026-01-30 11:44:43
+[30-Jan-2026 11:44:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 11:44:43 Asia/Manila] Session data available: YES
+[30-Jan-2026 11:44:43 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 11:44:43 Asia/Manila] Session user_id: 57
+[30-Jan-2026 11:44:43 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 11:44:43 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 11:44:43 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 11:44:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 11:44:43 Asia/Manila] Session data available: YES
+[30-Jan-2026 11:44:43 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 11:44:43 Asia/Manila] Session user_id: 57
+[30-Jan-2026 11:44:43 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 11:44:43 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 11:44:43 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 11:44:43 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 11:44:43 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 292, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 11:44:43
+[30-Jan-2026 05:04:54 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 05:04:55 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 05:04:55 Europe/Berlin] User ID: 57
+[30-Jan-2026 05:04:55 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardoss
+    [fname] => Da Vinciss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1960-12-12
+    [age] => 65
+    [civil_status] => Widowed
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Elementary Level
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XII - Mananao
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 444121
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 05:04:55 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 05:04:55 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 05:04:55 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 05:04:55 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 05:04:55 Europe/Berlin] Processing applicant: Da Vinciss Lenardoss, Birthdate: 1960-12-12, User ID: 57
+[30-Jan-2026 05:04:55 Europe/Berlin] Applicant inserted with ID: 102
+[30-Jan-2026 05:04:55 Europe/Berlin] Registration details inserted with ID: 39
+[30-Jan-2026 12:04:55 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:04:55 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:04:55 Asia/Manila] Logger Current Time: 2026-01-30 12:04:55
+[30-Jan-2026 12:04:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:04:55 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:04:55 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:04:55 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:04:55 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:04:55 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:04:55 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 12:04:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:04:55 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:04:55 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:04:55 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:04:55 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:04:55 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:04:55 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 12:04:55 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:04:55 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 293, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 12:04:55
+[30-Jan-2026 05:11:20 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[30-Jan-2026 05:11:20 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[30-Jan-2026 12:11:20 Asia/Manila] Update Benefit - Input received: {"id":"2","benefit_name":"SC Availed of LSP (SSS\/GSIS)","session_context":"admin","admin_user_id":57}
+[30-Jan-2026 12:11:20 Asia/Manila] Update Benefit - Current: Total # of SC Availed of LSP (SSS/GSIS), New: SC Availed of LSP (SSS/GSIS)
+[30-Jan-2026 12:11:20 Asia/Manila] Update Benefit - Affected rows: 1
+[30-Jan-2026 12:11:20 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:11:20 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:11:20 Asia/Manila] Logger Current Time: 2026-01-30 12:11:20
+[30-Jan-2026 12:11:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:11:20 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:11:20 Asia/Manila] Session context: admin
+[30-Jan-2026 12:11:20 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:11:20 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:11:20 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:11:20 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:11:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:11:20 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:11:20 Asia/Manila] Session context: admin
+[30-Jan-2026 12:11:20 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:11:20 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:11:20 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:11:20 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:11:20 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:11:20 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 295, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-30 12:11:20
+[30-Jan-2026 05:14:43 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 99
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 5
+                    [name] => Total # of SC Availed of Birthday Gift
+                    [amount] => 200
+                )
+
+        )
+
+    [date] => 2026-01-30
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[30-Jan-2026 05:14:43 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[30-Jan-2026 05:14:43 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[30-Jan-2026 12:14:43 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["99"],"benefits":[{"id":"5","name":"Total # of SC Availed of Birthday Gift","amount":200}],"date":"2026-01-30","session_context":"admin","admin_user_id":57}
+[30-Jan-2026 12:14:43 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:14:43 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:14:43 Asia/Manila] Logger Current Time: 2026-01-30 12:14:43
+[30-Jan-2026 12:14:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:14:43 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:14:43 Asia/Manila] Session context: admin
+[30-Jan-2026 12:14:43 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:14:43 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:14:43 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:14:43 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:14:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:14:43 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:14:43 Asia/Manila] Session context: admin
+[30-Jan-2026 12:14:43 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:14:43 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:14:43 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:14:43 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:14:43 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:14:43 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 296, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-30 12:14:43
+[30-Jan-2026 05:15:35 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 98
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [name] => Total # of SC Availed of SP
+                    [amount] => 100
+                )
+
+            [1] => Array
+                (
+                    [id] => 2
+                    [name] => SC Availed of LSP (SSS/GSIS)
+                    [amount] => 100
+                )
+
+        )
+
+    [date] => 2026-01-30
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[30-Jan-2026 05:15:35 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[30-Jan-2026 05:15:35 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[30-Jan-2026 12:15:35 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["98"],"benefits":[{"id":"1","name":"Total # of SC Availed of SP","amount":100},{"id":"2","name":"SC Availed of LSP (SSS/GSIS)","amount":100}],"date":"2026-01-30","session_context":"admin","admin_user_id":57}
+[30-Jan-2026 12:15:35 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:15:35 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:15:35 Asia/Manila] Logger Current Time: 2026-01-30 12:15:35
+[30-Jan-2026 12:15:35 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:15:35 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:15:35 Asia/Manila] Session context: admin
+[30-Jan-2026 12:15:35 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:15:35 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:15:35 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:15:35 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:15:35 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:15:35 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:15:35 Asia/Manila] Session context: admin
+[30-Jan-2026 12:15:35 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:15:35 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:15:35 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:15:35 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:15:35 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:15:35 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 297, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-30 12:15:35
+[30-Jan-2026 05:19:19 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 98
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => LSP Non Pensioners
+                    [amount] => 200
+                )
+
+        )
+
+    [date] => 2026-01-30
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[30-Jan-2026 05:19:19 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[30-Jan-2026 05:19:19 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[30-Jan-2026 12:19:19 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["98"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":200}],"date":"2026-01-30","session_context":"admin","admin_user_id":57}
+[30-Jan-2026 12:19:19 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:19:19 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:19:19 Asia/Manila] Logger Current Time: 2026-01-30 12:19:19
+[30-Jan-2026 12:19:19 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:19:19 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:19:19 Asia/Manila] Session context: admin
+[30-Jan-2026 12:19:19 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:19:19 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:19:19 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:19:19 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:19:19 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:19:19 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:19:19 Asia/Manila] Session context: admin
+[30-Jan-2026 12:19:19 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:19:19 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:19:19 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:19:19 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:19:19 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:19:19 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 298, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-30 12:19:19
+[30-Jan-2026 05:27:48 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 05:27:48 Europe/Berlin] Session context: admin
+[30-Jan-2026 05:27:48 Europe/Berlin] User ID: 57
+[30-Jan-2026 05:27:48 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardosss
+    [fname] => Da Vincisss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1961-12-12
+    [age] => 64
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Level
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12312323q
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 05:27:48 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 05:27:48 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 05:27:48 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 05:27:48 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 05:27:48 Europe/Berlin] Processing applicant: Da Vincisss Lenardosss, Birthdate: 1961-12-12, User ID: 57
+[30-Jan-2026 05:27:48 Europe/Berlin] Applicant inserted with ID: 103
+[30-Jan-2026 05:27:48 Europe/Berlin] Registration details inserted with ID: 40
+[30-Jan-2026 12:27:48 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:27:48 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:27:48 Asia/Manila] Logger Current Time: 2026-01-30 12:27:48
+[30-Jan-2026 12:27:48 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:27:48 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:27:48 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:27:48 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:27:48 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:27:48 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:27:48 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 12:27:48 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:27:48 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:27:48 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:27:48 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:27:48 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:27:48 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 12:27:48 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 12:27:48 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:27:48 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 299, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 12:27:48
+[30-Jan-2026 12:28:04 Asia/Manila] === START detectUserContext ===
+[30-Jan-2026 12:28:04 Asia/Manila] Server Timezone: Asia/Manila
+[30-Jan-2026 12:28:04 Asia/Manila] Current Time: 2026-01-30 12:28:04
+[30-Jan-2026 12:28:04 Asia/Manila] Context from request data: admin
+[30-Jan-2026 12:28:04 Asia/Manila] Using admin_user_id from request: 57
+[30-Jan-2026 12:28:04 Asia/Manila] Using admin_user_name from request: Russell James Tadalan
+[30-Jan-2026 12:28:04 Asia/Manila] Using name from database: Russell James Tadalan
+[30-Jan-2026 12:28:04 Asia/Manila] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 12:28:04 Asia/Manila] === END detectUserContext ===
+[30-Jan-2026 12:28:04 Asia/Manila] Logging as ADMIN activity: MARK_INACTIVE - Admin marked 1 senior(s) as inactive
+[30-Jan-2026 12:28:04 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:28:04 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:28:04 Asia/Manila] Logger Current Time: 2026-01-30 12:28:04
+[30-Jan-2026 12:28:04 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:28:04 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:28:04 Asia/Manila] Session context: admin
+[30-Jan-2026 12:28:04 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:28:04 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:28:04 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:28:04 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:28:04 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:28:04 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:28:04 Asia/Manila] Session context: admin
+[30-Jan-2026 12:28:04 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:28:04 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:28:04 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:28:04 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:28:04 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:28:04 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 300, Type: MARK_INACTIVE, User: 57, Time: 2026-01-30 12:28:04
+[30-Jan-2026 12:28:04 Asia/Manila] Activity logged successfully: MARK_INACTIVE at 2026-01-30 12:28:04 (Asia/Manila)
+[30-Jan-2026 12:28:51 Asia/Manila] === START detectUserContext ===
+[30-Jan-2026 12:28:51 Asia/Manila] Server Timezone: Asia/Manila
+[30-Jan-2026 12:28:51 Asia/Manila] Current Time: 2026-01-30 12:28:51
+[30-Jan-2026 12:28:51 Asia/Manila] Context from request data: admin
+[30-Jan-2026 12:28:51 Asia/Manila] Using admin_user_id from request: 57
+[30-Jan-2026 12:28:51 Asia/Manila] Using admin_user_name from request: Russell James Tadalan
+[30-Jan-2026 12:28:51 Asia/Manila] Using name from database: Russell James Tadalan
+[30-Jan-2026 12:28:51 Asia/Manila] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 12:28:51 Asia/Manila] === END detectUserContext ===
+[30-Jan-2026 12:28:51 Asia/Manila] Logging as ADMIN activity: MARK_INACTIVE - Admin marked 1 senior(s) as inactive
+[30-Jan-2026 12:28:51 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:28:51 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:28:51 Asia/Manila] Logger Current Time: 2026-01-30 12:28:51
+[30-Jan-2026 12:28:51 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:28:51 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:28:51 Asia/Manila] Session context: admin
+[30-Jan-2026 12:28:51 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:28:51 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:28:51 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:28:51 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:28:51 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:28:51 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:28:51 Asia/Manila] Session context: admin
+[30-Jan-2026 12:28:51 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:28:51 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:28:51 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:28:51 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:28:51 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:28:51 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 301, Type: MARK_INACTIVE, User: 57, Time: 2026-01-30 12:28:51
+[30-Jan-2026 12:28:51 Asia/Manila] Activity logged successfully: MARK_INACTIVE at 2026-01-30 12:28:51 (Asia/Manila)
+[30-Jan-2026 12:29:13 Asia/Manila] === START detectUserContext ===
+[30-Jan-2026 12:29:13 Asia/Manila] Server Timezone: Asia/Manila
+[30-Jan-2026 12:29:13 Asia/Manila] Current Time: 2026-01-30 12:29:13
+[30-Jan-2026 12:29:13 Asia/Manila] Context from request data: admin
+[30-Jan-2026 12:29:13 Asia/Manila] Using admin_user_id from request: 57
+[30-Jan-2026 12:29:13 Asia/Manila] Using admin_user_name from request: Russell James Tadalan
+[30-Jan-2026 12:29:13 Asia/Manila] Using name from database: Russell James Tadalan
+[30-Jan-2026 12:29:13 Asia/Manila] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 12:29:13 Asia/Manila] === END detectUserContext ===
+[30-Jan-2026 12:29:13 Asia/Manila] Logging as ADMIN activity: MARK_INACTIVE - Admin marked 1 senior(s) as inactive
+[30-Jan-2026 12:29:13 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:29:13 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:29:13 Asia/Manila] Logger Current Time: 2026-01-30 12:29:13
+[30-Jan-2026 12:29:13 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:29:13 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:29:13 Asia/Manila] Session context: admin
+[30-Jan-2026 12:29:13 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:29:13 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:29:13 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:29:13 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:29:13 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:29:13 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:29:13 Asia/Manila] Session context: admin
+[30-Jan-2026 12:29:13 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:29:13 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:29:13 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:29:13 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:29:13 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:29:13 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 302, Type: MARK_INACTIVE, User: 57, Time: 2026-01-30 12:29:13
+[30-Jan-2026 12:29:13 Asia/Manila] Activity logged successfully: MARK_INACTIVE at 2026-01-30 12:29:13 (Asia/Manila)
+[30-Jan-2026 12:29:20 Asia/Manila] === START detectUserContext ===
+[30-Jan-2026 12:29:20 Asia/Manila] Received data: Array
+(
+    [applicant_id] => 103
+    [date_of_death] => 2026-01-30
+    [session_context] => admin
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 12:29:20 Asia/Manila] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 12:29:20 Asia/Manila] Context from request data: admin
+[30-Jan-2026 12:29:20 Asia/Manila] Stored admin_user_id in session: 57
+[30-Jan-2026 12:29:20 Asia/Manila] Using admin_user_id from request: 57
+[30-Jan-2026 12:29:20 Asia/Manila] Using admin_user_name from request: Russell James Tadalan
+[30-Jan-2026 12:29:20 Asia/Manila] Using name from database: Russell James Tadalan
+[30-Jan-2026 12:29:20 Asia/Manila] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 12:29:20 Asia/Manila] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 12:29:20 Asia/Manila] === END detectUserContext ===
+[30-Jan-2026 12:29:20 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:29:20 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:29:20 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:29:20 Asia/Manila] Logger Current Time: 2026-01-30 12:29:20
+[30-Jan-2026 12:29:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:29:20 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:29:20 Asia/Manila] Session context: admin
+[30-Jan-2026 12:29:20 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:29:20 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:29:20 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:29:20 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:29:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:29:20 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:29:20 Asia/Manila] Session context: admin
+[30-Jan-2026 12:29:20 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:29:20 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:29:20 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:29:20 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:29:20 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:29:20 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 303, Type: MARK_DECEASED, User: 57, Time: 2026-01-30 12:29:20
+[30-Jan-2026 05:30:44 Europe/Berlin] === START detectUserContext (undo_inactive.php) ===
+[30-Jan-2026 05:30:44 Europe/Berlin] Received data: Array
+(
+    [id] => 90
+)
+
+[30-Jan-2026 05:30:44 Europe/Berlin] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:30:44 Europe/Berlin] Context from session: admin
+[30-Jan-2026 05:30:44 Europe/Berlin] Using admin_user_id from session: 57
+[30-Jan-2026 05:30:44 Europe/Berlin] Using name from database: Russell James Tadalan
+[30-Jan-2026 05:30:44 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 05:30:44 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:30:44 Europe/Berlin] === END detectUserContext ===
+[30-Jan-2026 12:30:44 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:30:44 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:30:44 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:30:44 Asia/Manila] Logger Current Time: 2026-01-30 12:30:44
+[30-Jan-2026 12:30:44 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:30:44 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:30:44 Asia/Manila] Session context: admin
+[30-Jan-2026 12:30:44 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:30:44 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:30:44 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:30:44 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:30:44 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:30:44 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:30:44 Asia/Manila] Session context: admin
+[30-Jan-2026 12:30:44 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:30:44 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:30:44 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:30:44 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:30:44 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:30:44 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 304, Type: UNDO_INACTIVE, User: 57, Time: 2026-01-30 12:30:44
+[30-Jan-2026 05:31:35 Europe/Berlin] === START detectUserContext (undo_inactive.php) ===
+[30-Jan-2026 05:31:35 Europe/Berlin] Received data: Array
+(
+    [id] => 102
+)
+
+[30-Jan-2026 05:31:35 Europe/Berlin] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:35 Europe/Berlin] Context from session: admin
+[30-Jan-2026 05:31:35 Europe/Berlin] Using admin_user_id from session: 57
+[30-Jan-2026 05:31:35 Europe/Berlin] Using name from database: Russell James Tadalan
+[30-Jan-2026 05:31:35 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 05:31:35 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:35 Europe/Berlin] === END detectUserContext ===
+[30-Jan-2026 12:31:35 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:31:35 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:31:35 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:31:35 Asia/Manila] Logger Current Time: 2026-01-30 12:31:35
+[30-Jan-2026 12:31:35 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:35 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:35 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:35 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:35 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:35 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:35 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:35 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:35 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:35 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:35 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:35 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:35 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:35 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:35 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:31:35 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 305, Type: UNDO_INACTIVE, User: 57, Time: 2026-01-30 12:31:35
+[30-Jan-2026 05:31:40 Europe/Berlin] === START detectUserContext (undo_inactive.php) ===
+[30-Jan-2026 05:31:40 Europe/Berlin] Received data: Array
+(
+    [id] => 80
+)
+
+[30-Jan-2026 05:31:40 Europe/Berlin] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:40 Europe/Berlin] Context from session: admin
+[30-Jan-2026 05:31:40 Europe/Berlin] Using admin_user_id from session: 57
+[30-Jan-2026 05:31:40 Europe/Berlin] Using name from database: Russell James Tadalan
+[30-Jan-2026 05:31:40 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 05:31:40 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:40 Europe/Berlin] === END detectUserContext ===
+[30-Jan-2026 12:31:40 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:31:40 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:31:40 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:31:40 Asia/Manila] Logger Current Time: 2026-01-30 12:31:40
+[30-Jan-2026 12:31:40 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:40 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:40 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:40 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:40 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:40 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:40 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:40 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:40 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:40 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:40 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:40 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:40 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:40 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:40 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:31:40 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 306, Type: UNDO_INACTIVE, User: 57, Time: 2026-01-30 12:31:40
+[30-Jan-2026 05:31:52 Europe/Berlin] === START detectUserContext (undo_inactive.php) ===
+[30-Jan-2026 05:31:52 Europe/Berlin] Received data: Array
+(
+    [id] => 79
+)
+
+[30-Jan-2026 05:31:52 Europe/Berlin] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:52 Europe/Berlin] Context from session: admin
+[30-Jan-2026 05:31:52 Europe/Berlin] Using admin_user_id from session: 57
+[30-Jan-2026 05:31:52 Europe/Berlin] Using name from database: Russell James Tadalan
+[30-Jan-2026 05:31:52 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 05:31:52 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:31:52 Europe/Berlin] === END detectUserContext ===
+[30-Jan-2026 12:31:52 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:31:52 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:31:52 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:31:52 Asia/Manila] Logger Current Time: 2026-01-30 12:31:52
+[30-Jan-2026 12:31:52 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:52 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:52 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:52 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:52 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:52 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:52 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:52 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:31:52 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:31:52 Asia/Manila] Session context: admin
+[30-Jan-2026 12:31:52 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:31:52 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:31:52 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:31:52 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:31:52 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:31:52 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 307, Type: UNDO_INACTIVE, User: 57, Time: 2026-01-30 12:31:52
+[30-Jan-2026 05:32:16 Europe/Berlin] === START detectUserContext (undo_deceased.php) ===
+[30-Jan-2026 05:32:16 Europe/Berlin] Received data: Array
+(
+    [id] => 94
+    [session_context] => admin
+)
+
+[30-Jan-2026 05:32:16 Europe/Berlin] Session data before detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:32:16 Europe/Berlin] Context from request data: admin
+[30-Jan-2026 05:32:16 Europe/Berlin] Using admin_user_id from session: 57
+[30-Jan-2026 05:32:16 Europe/Berlin] Using name from database: Russell James Tadalan
+[30-Jan-2026 05:32:16 Europe/Berlin] Final user info: Array
+(
+    [context] => admin
+    [user_id] => 57
+    [user_name] => Russell James Tadalan
+)
+
+[30-Jan-2026 05:32:16 Europe/Berlin] Session data after detection: Array
+(
+    [session_context] => admin
+    [admin_user_id] => 57
+    [user_id] => 57
+    [redirect_url] => /MSWDPALUAN_SYSTEM-MAIN/html/register.php?session_context=session_1769733861165_lnm73vba6
+)
+
+[30-Jan-2026 05:32:16 Europe/Berlin] === END detectUserContext ===
+[30-Jan-2026 12:32:16 Asia/Manila] Using database admin user name: Russell James Tadalan
+[30-Jan-2026 12:32:16 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 12:32:16 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 12:32:16 Asia/Manila] Logger Current Time: 2026-01-30 12:32:16
+[30-Jan-2026 12:32:16 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:32:16 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:32:16 Asia/Manila] Session context: admin
+[30-Jan-2026 12:32:16 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:32:16 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:32:16 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:32:16 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:32:16 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 12:32:16 Asia/Manila] Session data available: YES
+[30-Jan-2026 12:32:16 Asia/Manila] Session context: admin
+[30-Jan-2026 12:32:16 Asia/Manila] Session user_id: 57
+[30-Jan-2026 12:32:16 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 12:32:16 Asia/Manila] Found session context: admin
+[30-Jan-2026 12:32:16 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[30-Jan-2026 12:32:16 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 12:32:16 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 308, Type: UNDO_DECEASED, User: 57, Time: 2026-01-30 12:32:16
+[30-Jan-2026 07:42:31 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 07:42:31 Europe/Berlin] Session context: admin
+[30-Jan-2026 07:42:31 Europe/Berlin] User ID: 57
+[30-Jan-2026 07:42:31 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardossss
+    [fname] => Da Vincisssss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1960-03-01
+    [age] => 65
+    [civil_status] => Divorced
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living alone
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 123d
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 07:42:31 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 07:42:31 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 07:42:31 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 07:42:31 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 07:42:31 Europe/Berlin] Processing applicant: Da Vincisssss Lenardossss, Birthdate: 1960-03-01, User ID: 57
+[30-Jan-2026 07:42:31 Europe/Berlin] Applicant inserted with ID: 104
+[30-Jan-2026 07:42:31 Europe/Berlin] Registration details inserted with ID: 41
+[30-Jan-2026 14:42:31 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 14:42:31 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 14:42:31 Asia/Manila] Logger Current Time: 2026-01-30 14:42:31
+[30-Jan-2026 14:42:31 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 14:42:31 Asia/Manila] Session data available: YES
+[30-Jan-2026 14:42:31 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:42:31 Asia/Manila] Session user_id: 57
+[30-Jan-2026 14:42:31 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 14:42:31 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:42:31 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 14:42:31 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 14:42:31 Asia/Manila] Session data available: YES
+[30-Jan-2026 14:42:31 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:42:31 Asia/Manila] Session user_id: 57
+[30-Jan-2026 14:42:31 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 14:42:31 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:42:31 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 14:42:31 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 14:42:31 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 309, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 14:42:31
+[30-Jan-2026 07:43:24 Europe/Berlin] Session started - ID: aopth2f9e3ghm19ch33ekeecdq
+[30-Jan-2026 07:43:24 Europe/Berlin] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 07:43:24 Europe/Berlin] User ID: 57
+[30-Jan-2026 07:43:24 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardas
+    [fname] => Da Vincisssss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1960-01-30
+    [age] => 66
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 23d3
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769733861165_lnm73vba6
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 07:43:24 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 07:43:24 Europe/Berlin] Session context set to: session_1769733861165_lnm73vba6
+[30-Jan-2026 07:43:24 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 07:43:24 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 07:43:24 Europe/Berlin] Processing applicant: Da Vincisssss Lenardas, Birthdate: 1960-01-30, User ID: 57
+[30-Jan-2026 07:43:24 Europe/Berlin] Applicant inserted with ID: 105
+[30-Jan-2026 07:43:24 Europe/Berlin] Registration details inserted with ID: 42
+[30-Jan-2026 14:43:24 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 14:43:24 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 14:43:24 Asia/Manila] Logger Current Time: 2026-01-30 14:43:24
+[30-Jan-2026 14:43:24 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 14:43:24 Asia/Manila] Session data available: YES
+[30-Jan-2026 14:43:24 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:43:24 Asia/Manila] Session user_id: 57
+[30-Jan-2026 14:43:24 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 14:43:24 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:43:24 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 14:43:24 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 14:43:24 Asia/Manila] Session data available: YES
+[30-Jan-2026 14:43:24 Asia/Manila] Session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:43:24 Asia/Manila] Session user_id: 57
+[30-Jan-2026 14:43:24 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 14:43:24 Asia/Manila] Found session context: session_1769733861165_lnm73vba6
+[30-Jan-2026 14:43:24 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 14:43:24 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 14:43:24 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 310, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 14:43:24
+[30-Jan-2026 13:39:42 Europe/Berlin] Session started - ID: ne7kj7n4a97qts1ld0qi5eto9p
+[30-Jan-2026 13:39:42 Europe/Berlin] Session context: not set
+[30-Jan-2026 13:39:42 Europe/Berlin] User ID: not set
+[30-Jan-2026 13:39:42 Europe/Berlin] Session context set to: admin
+[30-Jan-2026 13:39:42 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardossss
+    [fname] => Da Vincisssss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1961-12-12
+    [age] => 64
+    [civil_status] => Widowed
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 4441wd
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769776452729_1c5g55uha
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 13:39:42 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 13:39:42 Europe/Berlin] Session context set to: session_1769776452729_1c5g55uha
+[30-Jan-2026 13:39:42 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 13:39:42 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 13:39:42 Europe/Berlin] Processing applicant: Da Vincisssss Lenardossss, Birthdate: 1961-12-12, User ID: 57
+[30-Jan-2026 13:39:42 Europe/Berlin] Applicant inserted with ID: 106
+[30-Jan-2026 13:39:42 Europe/Berlin] Registration details inserted with ID: 43
+[30-Jan-2026 20:39:42 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 20:39:42 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 20:39:42 Asia/Manila] Logger Current Time: 2026-01-30 20:39:42
+[30-Jan-2026 20:39:42 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 20:39:42 Asia/Manila] Session data available: YES
+[30-Jan-2026 20:39:42 Asia/Manila] Session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:39:42 Asia/Manila] Session user_id: 57
+[30-Jan-2026 20:39:42 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 20:39:42 Asia/Manila] Found session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:39:42 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 20:39:42 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 20:39:42 Asia/Manila] Session data available: YES
+[30-Jan-2026 20:39:42 Asia/Manila] Session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:39:42 Asia/Manila] Session user_id: 57
+[30-Jan-2026 20:39:42 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 20:39:42 Asia/Manila] Found session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:39:42 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 20:39:42 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 20:39:42 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 314, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 20:39:42
+[30-Jan-2026 13:41:39 Europe/Berlin] Session started - ID: ne7kj7n4a97qts1ld0qi5eto9p
+[30-Jan-2026 13:41:39 Europe/Berlin] Session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 13:41:39 Europe/Berlin] User ID: 57
+[30-Jan-2026 13:41:39 Europe/Berlin] Received data: Array
+(
+    [lname] => Lenardossssds
+    [fname] => Da Vincisssss
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1961-01-30
+    [age] => 65
+    [civil_status] => Married
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Vocational
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => IX - Tubili
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living with relatives
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 0012322s
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769776452729_1c5g55uha
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 13:41:39 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 13:41:39 Europe/Berlin] Session context set to: session_1769776452729_1c5g55uha
+[30-Jan-2026 13:41:39 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 13:41:39 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 13:41:39 Europe/Berlin] Processing applicant: Da Vincisssss Lenardossssds, Birthdate: 1961-01-30, User ID: 57
+[30-Jan-2026 13:41:39 Europe/Berlin] Applicant inserted with ID: 107
+[30-Jan-2026 13:41:39 Europe/Berlin] Registration details inserted with ID: 44
+[30-Jan-2026 20:41:39 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 20:41:39 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 20:41:39 Asia/Manila] Logger Current Time: 2026-01-30 20:41:39
+[30-Jan-2026 20:41:39 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 20:41:39 Asia/Manila] Session data available: YES
+[30-Jan-2026 20:41:39 Asia/Manila] Session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:41:39 Asia/Manila] Session user_id: 57
+[30-Jan-2026 20:41:39 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 20:41:39 Asia/Manila] Found session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:41:39 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 20:41:39 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 20:41:39 Asia/Manila] Session data available: YES
+[30-Jan-2026 20:41:39 Asia/Manila] Session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:41:39 Asia/Manila] Session user_id: 57
+[30-Jan-2026 20:41:39 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 20:41:39 Asia/Manila] Found session context: session_1769776452729_1c5g55uha
+[30-Jan-2026 20:41:39 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 20:41:39 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 20:41:39 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 315, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 20:41:39
+[30-Jan-2026 15:55:36 Europe/Berlin] Session started - ID: kv1k1ps4o01d9d2n8s33g66p02
+[30-Jan-2026 15:55:36 Europe/Berlin] Session context: not set
+[30-Jan-2026 15:55:36 Europe/Berlin] User ID: not set
+[30-Jan-2026 15:55:36 Europe/Berlin] Session context set to: admin
+[30-Jan-2026 15:55:36 Europe/Berlin] Received data: Array
+(
+    [lname] => Maderazosw
+    [fname] => Yhonna Reinsw
+    [mname] => 
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1959-01-30
+    [age] => 67
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living with relatives
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 001231d
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769777260683_lx8rojjam
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 15:55:36 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 15:55:36 Europe/Berlin] Session context set to: session_1769777260683_lx8rojjam
+[30-Jan-2026 15:55:36 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 15:55:36 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 15:55:36 Europe/Berlin] Processing applicant: Yhonna Reinsw Maderazosw, Birthdate: 1959-01-30, User ID: 57
+[30-Jan-2026 15:55:36 Europe/Berlin] Applicant inserted with ID: 108
+[30-Jan-2026 15:55:36 Europe/Berlin] Registration details inserted with ID: 45
+[30-Jan-2026 22:55:36 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 22:55:36 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 22:55:36 Asia/Manila] Logger Current Time: 2026-01-30 22:55:36
+[30-Jan-2026 22:55:36 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 22:55:36 Asia/Manila] Session data available: YES
+[30-Jan-2026 22:55:36 Asia/Manila] Session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 22:55:36 Asia/Manila] Session user_id: 57
+[30-Jan-2026 22:55:36 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 22:55:36 Asia/Manila] Found session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 22:55:36 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 22:55:36 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 22:55:36 Asia/Manila] Session data available: YES
+[30-Jan-2026 22:55:36 Asia/Manila] Session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 22:55:36 Asia/Manila] Session user_id: 57
+[30-Jan-2026 22:55:36 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 22:55:36 Asia/Manila] Found session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 22:55:36 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 22:55:36 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 22:55:36 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 318, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 22:55:36
+[30-Jan-2026 16:35:08 Europe/Berlin] Session started - ID: kv1k1ps4o01d9d2n8s33g66p02
+[30-Jan-2026 16:35:08 Europe/Berlin] Session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 16:35:08 Europe/Berlin] User ID: 57
+[30-Jan-2026 16:35:08 Europe/Berlin] Received data: Array
+(
+    [lname] => Maderazosw
+    [fname] => Yhonna Reinsw
+    [mname] => 
+    [suffix] => 
+    [gender] => Female
+    [b_date] => 1954-01-30
+    [age] => 72
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => Post Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XII - Mananao
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Living with relatives
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-30
+    [id_number] => 12312323
+    [local_control_number] => 
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [admin_user_id] => 57
+    [admin_user_name] => Russell James Tadalan
+    [session_context] => session_1769777260683_lx8rojjam
+    [request_source] => admin_register
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[30-Jan-2026 16:35:08 Europe/Berlin] Updated session for admin user: 57
+[30-Jan-2026 16:35:08 Europe/Berlin] Session context set to: session_1769777260683_lx8rojjam
+[30-Jan-2026 16:35:08 Europe/Berlin] Using session user ID: 57
+[30-Jan-2026 16:35:08 Europe/Berlin] Using user ID: 57, Name: Russell James Tadalan
+[30-Jan-2026 16:35:08 Europe/Berlin] Processing applicant: Yhonna Reinsw Maderazosw, Birthdate: 1954-01-30, User ID: 57
+[30-Jan-2026 16:35:08 Europe/Berlin] Applicant inserted with ID: 109
+[30-Jan-2026 16:35:08 Europe/Berlin] Registration details inserted with ID: 46
+[30-Jan-2026 23:35:09 Asia/Manila] === ActivityLogger Started ===
+[30-Jan-2026 23:35:09 Asia/Manila] Logger Timezone: Asia/Manila
+[30-Jan-2026 23:35:09 Asia/Manila] Logger Current Time: 2026-01-30 23:35:09
+[30-Jan-2026 23:35:09 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 23:35:09 Asia/Manila] Session data available: YES
+[30-Jan-2026 23:35:09 Asia/Manila] Session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 23:35:09 Asia/Manila] Session user_id: 57
+[30-Jan-2026 23:35:09 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 23:35:09 Asia/Manila] Found session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 23:35:09 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 23:35:09 Asia/Manila] === ActivityLogger: resolveUserId ===
+[30-Jan-2026 23:35:09 Asia/Manila] Session data available: YES
+[30-Jan-2026 23:35:09 Asia/Manila] Session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 23:35:09 Asia/Manila] Session user_id: 57
+[30-Jan-2026 23:35:09 Asia/Manila] Session staff_user_id: none
+[30-Jan-2026 23:35:09 Asia/Manila] Found session context: session_1769777260683_lx8rojjam
+[30-Jan-2026 23:35:09 Asia/Manila] Using user_id from session: 57
+[30-Jan-2026 23:35:09 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[30-Jan-2026 23:35:09 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 319, Type: REGISTER_SENIOR, User: 57, Time: 2026-01-30 23:35:09
+[31-Jan-2026 04:07:20 Europe/Berlin] Session started - ID: kv1k1ps4o01d9d2n8s33g66p02
+[31-Jan-2026 04:07:20 Europe/Berlin] Session context: session_1769777260683_lx8rojjam
+[31-Jan-2026 04:07:20 Europe/Berlin] User ID: 57
+[31-Jan-2026 04:07:20 Europe/Berlin] Received data: Array
+(
+    [lname] => Tadalans
+    [fname] => Russell Jamesscxf
+    [mname] => Pobletes
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1955-01-31
+    [age] => 71
+    [civil_status] => Single
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan
+    [educational_attainment] => College Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => X - Alipaoy
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-31
+    [id_number] => f3e45fd
+    [local_control_number] => 
+    [staff_user_id] => 67
+    [staff_user_name] => Marianne Panganiban Ygay
+    [request_source] => staff_register
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [session_context] => session_1769823566982_1rqjxa381
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[31-Jan-2026 04:07:20 Europe/Berlin] Updated session for staff user: 67
+[31-Jan-2026 04:07:20 Europe/Berlin] Session context set to: session_1769823566982_1rqjxa381
+[31-Jan-2026 04:07:20 Europe/Berlin] Using session user ID: 67
+[31-Jan-2026 04:07:20 Europe/Berlin] Using user ID: 67, Name: Unknown
+[31-Jan-2026 04:07:20 Europe/Berlin] Processing applicant: Russell Jamesscxf Tadalans, Birthdate: 1955-01-31, User ID: 67
+[31-Jan-2026 04:07:20 Europe/Berlin] Applicant inserted with ID: 110
+[31-Jan-2026 04:07:20 Europe/Berlin] Registration details inserted with ID: 47
+[31-Jan-2026 11:07:20 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 11:07:20 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 11:07:20 Asia/Manila] Logger Current Time: 2026-01-31 11:07:20
+[31-Jan-2026 11:07:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 11:07:20 Asia/Manila] Session data available: YES
+[31-Jan-2026 11:07:20 Asia/Manila] Session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:07:20 Asia/Manila] Session user_id: 67
+[31-Jan-2026 11:07:20 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 11:07:20 Asia/Manila] Found session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:07:20 Asia/Manila] Using user_id from session: 67
+[31-Jan-2026 11:07:20 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 11:07:20 Asia/Manila] Session data available: YES
+[31-Jan-2026 11:07:20 Asia/Manila] Session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:07:20 Asia/Manila] Session user_id: 67
+[31-Jan-2026 11:07:20 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 11:07:20 Asia/Manila] Found session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:07:20 Asia/Manila] Using user_id from session: 67
+[31-Jan-2026 11:07:20 Asia/Manila] Resolved User ID: 67, User Name: Marianne Ygay
+[31-Jan-2026 11:07:20 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 322, Type: REGISTER_SENIOR, User: 67, Time: 2026-01-31 11:07:20
+[31-Jan-2026 04:41:59 Europe/Berlin] Session started - ID: kv1k1ps4o01d9d2n8s33g66p02
+[31-Jan-2026 04:41:59 Europe/Berlin] Session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 04:41:59 Europe/Berlin] User ID: 67
+[31-Jan-2026 04:41:59 Europe/Berlin] Received data: Array
+(
+    [lname] => Tadalansada
+    [fname] => Russell Jamesssas
+    [mname] => Pobletes
+    [suffix] => 
+    [gender] => Male
+    [b_date] => 1955-01-31
+    [age] => 71
+    [civil_status] => Widowed
+    [citizenship] => Filipino
+    [religion] => Born Again Christian
+    [birth_place] => Paluan, Occidental Mindoro
+    [educational_attainment] => College Graduate
+    [contact_number] => 
+    [ip_group] => 
+    [house_no] => 
+    [street] => 
+    [brgy] => XI - Harison
+    [municipality] => Paluan
+    [province] => Occidental Mindoro
+    [living_arrangement] => Owned
+    [is_pensioner] => 0
+    [has_permanent_income] => 0
+    [has_family_support] => 0
+    [has_existing_illness] => 0
+    [hospitalized_last6mos] => 0
+    [date_of_registration] => 2026-01-31
+    [id_number] => SC-STF-2026-5921
+    [local_control_number] => 
+    [staff_user_id] => 67
+    [staff_user_name] => Marianne Panganiban Ygay
+    [request_source] => staff_register
+    [pension_amount] => 
+    [pension_source] => 
+    [income_source] => 
+    [support_type] => 
+    [support_cash] => 
+    [illness_details] => 
+    [session_context] => session_1769823566982_1rqjxa381
+    [base_url] => /MSWDPALUAN_SYSTEM-MAIN/
+)
+
+[31-Jan-2026 04:41:59 Europe/Berlin] Updated session for staff user: 67
+[31-Jan-2026 04:41:59 Europe/Berlin] Session context set to: session_1769823566982_1rqjxa381
+[31-Jan-2026 04:41:59 Europe/Berlin] Using session user ID: 67
+[31-Jan-2026 04:41:59 Europe/Berlin] Using user ID: 67, Name: Unknown
+[31-Jan-2026 04:41:59 Europe/Berlin] Processing applicant: Russell Jamesssas Tadalansada, Birthdate: 1955-01-31, User ID: 67
+[31-Jan-2026 04:41:59 Europe/Berlin] Applicant inserted with ID: 111
+[31-Jan-2026 04:41:59 Europe/Berlin] Registration details inserted with ID: 48
+[31-Jan-2026 11:41:59 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 11:41:59 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 11:41:59 Asia/Manila] Logger Current Time: 2026-01-31 11:41:59
+[31-Jan-2026 11:41:59 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 11:41:59 Asia/Manila] Session data available: YES
+[31-Jan-2026 11:41:59 Asia/Manila] Session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:41:59 Asia/Manila] Session user_id: 67
+[31-Jan-2026 11:41:59 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 11:41:59 Asia/Manila] Found session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:41:59 Asia/Manila] Using user_id from session: 67
+[31-Jan-2026 11:41:59 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 11:41:59 Asia/Manila] Session data available: YES
+[31-Jan-2026 11:41:59 Asia/Manila] Session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:41:59 Asia/Manila] Session user_id: 67
+[31-Jan-2026 11:41:59 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 11:41:59 Asia/Manila] Found session context: session_1769823566982_1rqjxa381
+[31-Jan-2026 11:41:59 Asia/Manila] Using user_id from session: 67
+[31-Jan-2026 11:41:59 Asia/Manila] Resolved User ID: 67, User Name: Marianne Ygay
+[31-Jan-2026 11:41:59 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 323, Type: REGISTER_SENIOR, User: 67, Time: 2026-01-31 11:41:59

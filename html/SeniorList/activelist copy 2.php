@@ -27,24 +27,19 @@ $validation_status = $_GET['validation_status'] ?? '';
 $age_group = $_GET['age_group'] ?? '';
 $min_age = $_GET['min_age'] ?? 0;
 $max_age = $_GET['max_age'] ?? 0;
-$gender_filter = $_GET['gender'] ?? '';
-$recent_days = $_GET['days'] ?? 30;
-$milestone_age = $_GET['milestone'] ?? null;
 
 // Initialize filter variables
 $filter_where = "WHERE a.status = 'Active'";
 $filter_title_suffix = "";
-$filter_params = [];
 
 // Apply validation filter
 if ($filter_type === 'validation' && !empty($validation_status)) {
     $validation_status = urldecode($validation_status);
     $filter_where .= " AND a.validation = :validation_status";
     $filter_title_suffix = " - " . htmlspecialchars($validation_status) . " Only";
-    $filter_params[':validation_status'] = $validation_status;
 
-    // Also update the page title to show the filter
-    echo "<script>document.title = 'Active List" . addslashes($filter_title_suffix) . " - MSWD Paluan';</script>";
+    // Set the status filter dropdown to match
+    $selected_validation_status = $validation_status;
 }
 
 // Apply age filter
@@ -53,41 +48,20 @@ if ($filter_type === 'age' && !empty($age_group)) {
 
     if ($age_group === '90+') {
         $filter_where .= " AND a.current_age >= :min_age";
-        $filter_params[':min_age'] = $min_age;
     } else if ($age_group === 'Under 60') {
         $filter_where .= " AND a.current_age < :min_age";
-        $filter_params[':min_age'] = $min_age;
-    } else if ($min_age > 0 && $max_age > 0) {
+    } else {
         $filter_where .= " AND a.current_age BETWEEN :min_age AND :max_age";
-        $filter_params[':min_age'] = $min_age;
-        $filter_params[':max_age'] = $max_age;
     }
 
     $filter_title_suffix = " - Age " . htmlspecialchars($age_group);
 }
 
-// Apply gender filter
-if ($filter_type === 'gender' && !empty($gender_filter)) {
-    $gender_filter = urldecode($gender_filter);
-    $filter_where .= " AND a.gender = :gender";
-    $filter_title_suffix = " - " . htmlspecialchars($gender_filter) . " Only";
-    $filter_params[':gender'] = $gender_filter;
-}
-
-// Apply recent registrations filter
-if ($filter_type === 'recent' && !empty($recent_days)) {
-    $recent_days = intval($recent_days);
-    $filter_where .= " AND a.date_created >= DATE_SUB(CURDATE(), INTERVAL :recent_days DAY)";
-    $filter_title_suffix = " - Last " . htmlspecialchars($recent_days) . " Days";
-    $filter_params[':recent_days'] = $recent_days;
-}
-
 // Apply milestone filter
-if ($filter_type === 'milestone' && !empty($milestone_age)) {
-    $milestone_age = intval($milestone_age);
+if ($filter_type === 'milestone' && !empty($_GET['milestone'])) {
+    $milestone_age = intval($_GET['milestone']);
     $filter_where .= " AND YEAR(CURDATE()) - YEAR(a.birth_date) + 1 = :milestone_age";
     $filter_title_suffix = " - Turning " . htmlspecialchars($milestone_age);
-    $filter_params[':milestone_age'] = $milestone_age;
 }
 
 // Store filter for JavaScript
@@ -97,8 +71,6 @@ $js_filter_data = [
     'age_group' => $age_group,
     'min_age' => $min_age,
     'max_age' => $max_age,
-    'gender' => $gender_filter,
-    'recent_days' => $recent_days,
     'milestone_age' => $_GET['milestone'] ?? null
 ];
 // Fetch current user data - ADD THIS
@@ -145,7 +117,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior - Active List<?php echo htmlspecialchars($filter_title_suffix); ?></title>
+    <title>Senior - Active List</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
@@ -758,18 +730,7 @@ if (empty($profile_photo_url)) {
             let lastSearch = "";
             let selectedBarangays = [];
             let selectedStatus = "all";
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterType = urlParams.get('filter');
-            const validationStatus = urlParams.get('validation_status');
 
-            if (filterType === 'validation' && validationStatus && statusFilter) {
-                // Set the dropdown to match the validation status
-                statusFilter.value = validationStatus;
-                selectedStatus = validationStatus;
-
-                // Show filter badge
-                showFilterBadge(`Validation: ${validationStatus}`);
-            }
             // ---------------- POPUP MODAL ----------------
             window.showPopup = function(message, type = "info", redirect = false) {
                 const modal = document.getElementById("popupModal");
@@ -1179,76 +1140,8 @@ if (empty($profile_photo_url)) {
                     page: currentPage,
                     search: lastSearch,
                     barangays: selectedBarangays.join(','),
-                    status: selectedStatus,
-                    debug: 'true' // Add debug flag
+                    status: selectedStatus
                 });
-                // Update the fetchSeniors function parameter handling
-                const urlParams = new URLSearchParams(window.location.search);
-                const filterType = urlParams.get('filter');
-                const validationStatus = urlParams.get('validation_status');
-                const ageGroup = urlParams.get('age_group');
-                const minAge = urlParams.get('min_age');
-                const maxAge = urlParams.get('max_age');
-                const gender_filter = urlParams.get('gender');
-                const recent_days = urlParams.get('days');
-                const milestoneAge = urlParams.get('milestone');
-
-                // ... in the fetchSeniors function params section ...
-                if (filterType === 'validation' && validationStatus) {
-                    params.append('filter_type', 'validation');
-                    params.append('validation_status', validationStatus);
-                    // Also set the status filter dropdown
-                    if (statusFilter && validationStatus) {
-                        statusFilter.value = validationStatus;
-                        selectedStatus = validationStatus;
-                    }
-                } else if (filterType === 'age' && ageGroup) {
-                    params.append('filter_type', 'age');
-                    params.append('age_group', ageGroup);
-                    if (minAge) params.append('min_age', minAge);
-                    if (maxAge) params.append('max_age', maxAge);
-                } else if (filterType === 'gender' && gender_filter) {
-                    params.append('filter_type', 'gender');
-                    params.append('gender', gender_filter);
-                } else if (filterType === 'recent' && recent_days) {
-                    params.append('filter_type', 'recent');
-                    params.append('recent_days', recent_days);
-                } else if (filterType === 'milestone' && milestoneAge) {
-                    params.append('filter_type', 'milestone');
-                    params.append('milestone_age', milestoneAge);
-                }
-
-                // Update the filter badge display
-                if (filterType === 'validation' && validationStatus) {
-                    showFilterBadge(`Validation: ${validationStatus}`);
-                } else if (filterType === 'age' && ageGroup) {
-                    showFilterBadge(`Age Group: ${ageGroup}`);
-                } else if (filterType === 'gender' && gender_filter) {
-                    showFilterBadge(`Gender: ${gender_filter}`);
-                } else if (filterType === 'recent' && recent_days) {
-                    showFilterBadge(`Recent: Last ${recent_days} days`);
-                } else if (filterType === 'milestone' && milestoneAge) {
-                    showFilterBadge(`Milestone: Turning ${milestoneAge}`);
-                }
-
-                // Add toast notification for new filters
-                if (filterType === 'gender' && gender_filter) {
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast(`Showing ${gender_filter} seniors`, 'info');
-                        } else if (typeof showPopup === 'function') {
-                            showPopup(`Filter applied: Showing ${gender_filter} seniors`, 'info');
-                        }
-                    }, 1000);
-                } else if (filterType === 'recent' && recent_days) {
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast(`Showing seniors registered in last ${recent_days} days`, 'info');
-                        } else if (typeof showPopup === 'function') {
-                            showPopup(`Filter applied: Showing recent registrations (${recent_days} days)`, 'info');
-                        }
-                    }, 1000);
-                }
 
                 // Use relative path instead of absolute path
                 fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
@@ -1259,20 +1152,10 @@ if (empty($profile_photo_url)) {
                         return res.json();
                     })
                     .then(data => {
-                        console.log("Fetched data:", data);
                         tableBody.innerHTML = "";
 
-                        if (!data) {
-                            throw new Error("Empty response from server");
-                        }
-
-                        if (data.error) {
-                            console.error("Server error:", data.error);
-                            throw new Error(data.error);
-                        }
-
-                        if (!data.success && data.message) {
-                            console.error("Server message:", data.message);
+                        if (!data || data.error) {
+                            throw new Error(data?.error || "Invalid response from server");
                         }
 
                         totalRecords = data.total_records || 0;
@@ -2273,74 +2156,6 @@ if (empty($profile_photo_url)) {
             // Initialize modal functionality
             initializeDeceasedModal(deceasedModal, applicantId, fullName);
         };
-        // Add this function to show filter badges
-        function showFilterBadge(text) {
-            // Remove any existing filter badge
-            const existingBadge = document.getElementById('filter-badge');
-            if (existingBadge) {
-                existingBadge.remove();
-            }
-
-            // Create filter badge
-            const badge = document.createElement('div');
-            badge.id = 'filter-badge';
-            badge.className = 'mb-4 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700';
-            badge.innerHTML = `
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <i class="fas fa-filter text-blue-600 dark:text-blue-400 mr-2"></i>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Active Filter:</span>
-                <span class="ml-2 text-sm text-blue-600 dark:text-blue-400">${text}</span>
-            </div>
-            <button onclick="clearFilter()" 
-                    class="ml-4 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer">
-                <i class="fas fa-times"></i> Clear Filter
-            </button>
-        </div>
-    `;
-
-            // Insert after the title
-            const titleSection = document.querySelector('.mobile-header');
-            if (titleSection) {
-                titleSection.parentNode.insertBefore(badge, titleSection.nextSibling);
-            }
-        }
-
-        // Function to clear filters
-        function clearFilter() {
-            window.location.href = './activelist.php?session_context=<?php echo $ctx; ?>';
-        }
-
-        // Check for filters on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterType = urlParams.get('filter');
-            const validationStatus = urlParams.get('validation_status');
-            const ageGroup = urlParams.get('age_group');
-
-            if (filterType === 'validation' && validationStatus) {
-                showFilterBadge(`Validation: ${validationStatus}`);
-            } else if (filterType === 'age' && ageGroup) {
-                showFilterBadge(`Age Group: ${ageGroup}`);
-            } else if (filterType === 'milestone' && urlParams.get('milestone')) {
-                showFilterBadge(`Milestone: Turning ${urlParams.get('milestone')}`);
-            }
-        });
-        // Show toast notification when page loads with filters
-        const urlParams = new URLSearchParams(window.location.search);
-        const filterType = urlParams.get('filter');
-        const validationStatus = urlParams.get('validation_status');
-
-        if (filterType === 'validation' && validationStatus) {
-            // Show a toast notification
-            setTimeout(() => {
-                if (typeof showToast === 'function') {
-                    showToast(`Showing ${validationStatus} seniors`, 'info');
-                } else if (typeof showPopup === 'function') {
-                    showPopup(`Filter applied: Showing ${validationStatus} seniors`, 'info');
-                }
-            }, 1000);
-        }
 
         function initializeDeceasedModal(modal, applicantId, fullName) {
             const form = modal.querySelector('#deceasedForm');

@@ -532,10 +532,10 @@ if (empty($profile_photo_url)) {
                                     <span class="text-gray-600 dark:text-gray-300 mr-2">Selected Period:</span>
                                     <span class="font-semibold text-blue-600 dark:text-blue-400" id="selectedPeriod">All Time</span>
                                 </div>
-                                <div class="flex items-center">
+                                <!-- <div class="flex items-center">
                                     <span class="text-gray-600 dark:text-gray-300 mr-2">Data Updated:</span>
                                     <span class="font-semibold text-blue-600 dark:text-blue-400" id="dataUpdated">Just now</span>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 

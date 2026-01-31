@@ -345,7 +345,7 @@ try {
     $requiredFields = [
         'lname' => 'Last Name',
         'fname' => 'First Name',
-        // 'mname' => 'Middle Name',
+        'mname' => 'Middle Name',
         'gender' => 'Gender',
         'b_date' => 'Birthdate',
         'civil_status' => 'Civil Status',
@@ -356,8 +356,8 @@ try {
         'living_arrangement' => 'Living Arrangement',
         'brgy' => 'Barangay',
         'municipality' => 'Municipality',
-        'province' => 'Province'
-        // 'id_number' => 'ID Number'
+        'province' => 'Province',
+        'id_number' => 'ID Number'
     ];
 
     $missingFields = [];

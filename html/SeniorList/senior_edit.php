@@ -136,6 +136,7 @@ try {
             'status' => $_POST['status'] ?? 'Active',
             'validation' => $_POST['validation'] ?? 'For Validation',
             'living_arrangement' => $_POST['living_arrangement'] ?? '',
+            'control_number' => trim($_POST['control_number'] ?? ''),
             'contact_number' => trim($_POST['contact_number'] ?? ''),
             'date_of_death' => !empty($_POST['date_of_death']) ? $_POST['date_of_death'] : null,
             'inactive_reason' => trim($_POST['inactive_reason'] ?? ''),
@@ -161,7 +162,7 @@ try {
                         specialization_skills = ?, community_involvement = ?,
                         problems_needs = ?, remarks = ?, status = ?, validation = ?,
                         living_arrangement = ?, contact_number = ?, date_of_death = ?, 
-                        inactive_reason = ?, date_of_inactive = ?, date_modified = NOW()
+                        inactive_reason = ?, date_of_inactive = ?, control_number = ?, date_modified = NOW()
                     WHERE applicant_id = ?
                 ");
 
@@ -188,6 +189,7 @@ try {
                     $applicant_data['date_of_death'],
                     $applicant_data['inactive_reason'],
                     $applicant_data['date_of_inactive'],
+                    $applicant_data['control_number'],
                     $applicant_id
                 ]);
 
@@ -1279,6 +1281,13 @@ try {
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Registration Details</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
+                                    <label for="control_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Control Number</label>
+                                    <input type="text" id="control_number" name="control_number"
+                                        value="<?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'control_number')); ?>"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="e.g., SC-2024-001">
+                                </div>
+                                <div>
                                     <label for="id_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">OSCA ID Number</label>
                                     <input type="text" id="id_number" name="id_number"
                                         value="<?php echo htmlspecialchars(getArrayValue($senior_data['registration'], 'id_number')); ?>"
@@ -1812,6 +1821,10 @@ try {
                                         <p class="text-sm text-gray-500">Validation</p>
                                         <p id="review-validation" class="font-medium"></p>
                                     </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Control Number</p>
+                                        <p id="review-controlnumber" class="font-medium"></p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -2086,6 +2099,7 @@ try {
             document.getElementById('review-contact').textContent = contactNumber || 'Not specified';
             document.getElementById('review-status').textContent = document.getElementById('status').value;
             document.getElementById('review-validation').textContent = document.getElementById('validation').value;
+            document.getElementById('review-controlnumber').textContent = document.getElementById('control_number').value || 'Not specified';
 
             // Address Information
             const houseNo = document.getElementById('house_no').value;

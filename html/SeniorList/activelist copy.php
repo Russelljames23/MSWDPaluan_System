@@ -20,87 +20,7 @@ try {
     error_log("Database connection failed: " . $e->getMessage());
     die("Database connection failed. Please try again later.");
 }
-// ========== HANDLE FILTER PARAMETERS FROM DASHBOARD ==========
-// Get filter parameters from URL
-$filter_type = $_GET['filter'] ?? '';
-$validation_status = $_GET['validation_status'] ?? '';
-$age_group = $_GET['age_group'] ?? '';
-$min_age = $_GET['min_age'] ?? 0;
-$max_age = $_GET['max_age'] ?? 0;
-$gender_filter = $_GET['gender'] ?? '';
-$recent_days = $_GET['days'] ?? 30;
-$milestone_age = $_GET['milestone'] ?? null;
 
-// Initialize filter variables
-$filter_where = "WHERE a.status = 'Active'";
-$filter_title_suffix = "";
-$filter_params = [];
-
-// Apply validation filter
-if ($filter_type === 'validation' && !empty($validation_status)) {
-    $validation_status = urldecode($validation_status);
-    $filter_where .= " AND a.validation = :validation_status";
-    $filter_title_suffix = " - " . htmlspecialchars($validation_status) . " Only";
-    $filter_params[':validation_status'] = $validation_status;
-
-    // Also update the page title to show the filter
-    echo "<script>document.title = 'Active List" . addslashes($filter_title_suffix) . " - MSWD Paluan';</script>";
-}
-
-// Apply age filter
-if ($filter_type === 'age' && !empty($age_group)) {
-    $age_group = urldecode($age_group);
-
-    if ($age_group === '90+') {
-        $filter_where .= " AND a.current_age >= :min_age";
-        $filter_params[':min_age'] = $min_age;
-    } else if ($age_group === 'Under 60') {
-        $filter_where .= " AND a.current_age < :min_age";
-        $filter_params[':min_age'] = $min_age;
-    } else if ($min_age > 0 && $max_age > 0) {
-        $filter_where .= " AND a.current_age BETWEEN :min_age AND :max_age";
-        $filter_params[':min_age'] = $min_age;
-        $filter_params[':max_age'] = $max_age;
-    }
-
-    $filter_title_suffix = " - Age " . htmlspecialchars($age_group);
-}
-
-// Apply gender filter
-if ($filter_type === 'gender' && !empty($gender_filter)) {
-    $gender_filter = urldecode($gender_filter);
-    $filter_where .= " AND a.gender = :gender";
-    $filter_title_suffix = " - " . htmlspecialchars($gender_filter) . " Only";
-    $filter_params[':gender'] = $gender_filter;
-}
-
-// Apply recent registrations filter
-if ($filter_type === 'recent' && !empty($recent_days)) {
-    $recent_days = intval($recent_days);
-    $filter_where .= " AND a.date_created >= DATE_SUB(CURDATE(), INTERVAL :recent_days DAY)";
-    $filter_title_suffix = " - Last " . htmlspecialchars($recent_days) . " Days";
-    $filter_params[':recent_days'] = $recent_days;
-}
-
-// Apply milestone filter
-if ($filter_type === 'milestone' && !empty($milestone_age)) {
-    $milestone_age = intval($milestone_age);
-    $filter_where .= " AND YEAR(CURDATE()) - YEAR(a.birth_date) + 1 = :milestone_age";
-    $filter_title_suffix = " - Turning " . htmlspecialchars($milestone_age);
-    $filter_params[':milestone_age'] = $milestone_age;
-}
-
-// Store filter for JavaScript
-$js_filter_data = [
-    'filter_type' => $filter_type,
-    'validation_status' => $validation_status,
-    'age_group' => $age_group,
-    'min_age' => $min_age,
-    'max_age' => $max_age,
-    'gender' => $gender_filter,
-    'recent_days' => $recent_days,
-    'milestone_age' => $_GET['milestone'] ?? null
-];
 // Fetch current user data - ADD THIS
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
@@ -145,7 +65,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior - Active List<?php echo htmlspecialchars($filter_title_suffix); ?></title>
+    <title>Senior - Active List</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
@@ -153,39 +73,34 @@ if (empty($profile_photo_url)) {
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter:
-                brightness(1.3)
-                /* Make brighter */
-                contrast(1.2)
-                /* Increase contrast */
-                saturate(1.5)
-                /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)
-                /* Blue glow */
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-
+            
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-
+            
             /* Inner glow effect */
-            box-shadow:
+            box-shadow: 
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-
+            
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-
+        
         @keyframes pulse-glow {
             from {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
-
             to {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -369,34 +284,17 @@ if (empty($profile_photo_url)) {
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-5xl">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
-                        <div class="flex flex-col space-y-3 md:space-y-0 md:space-y-4 p-3 md:p-4">
-                            <!-- Title and Main Buttons -->
-                            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mobile-header">
-                                <div class="flex-1">
-                                    <h4 class="text-lg md:text-xl font-medium dark:text-white">Active List</h4>
-                                </div>
-                                <div class="flex flex-row gap-2 md:gap-5 items-center action-buttons">
-                                    <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
-                                        class="flex items-center justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
-                                        type="button">
-                                        <i class="fas fa-table mr-2"></i>
-                                        <span class="hidden md:inline">Master List</span>
-                                        <span class="md:hidden">Master</span>
-                                    </button>
-                                    <!-- PRINT BUTTON -->
-                                    <button onclick="window.open('print_validation_list.php?session_context=<?php echo $ctx; ?>', '_blank')"
-                                        class="flex items-center justify-center px-3 py-2 text-xs md:text-sm font-medium text-white cursor-pointer bg-purple-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-purple-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
-                                        type="button" title="Print For Validation List">
-                                        <i class="fas fa-print mr-2"></i>
-                                        <span class="hidden md:inline">Print Validation List</span>
-                                        <span class="md:hidden">Print</span>
-                                    </button>
-                                </div>
+                        <div class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
+                            <div class="flex flex-row justify-between items-center">
+                                <h4 class="text-xl font-medium dark:text-white">Active List</h4>
+                                <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
+                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    <i class="fas fa-table mr-2"></i>Master List
+                                </button>
                             </div>
-
-                            <!-- Search and Filter Section -->
-                            <div class="flex flex-col md:flex-row justify-between items-center w-full gap-3 filter-section mobile-header">
-                                <div class="w-full mobile-search">
+                            <div class="flex flex-row justify-between">
+                                <div class="w-full md:w-1/2">
                                     <form class="flex items-center">
                                         <label for="simple-search" class="sr-only">Search</label>
                                         <div class="relative w-full">
@@ -412,33 +310,33 @@ if (empty($profile_photo_url)) {
                                             </div>
                                             <input type="text" id="simple-search"
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search" required>
+                                                placeholder="Search" required="">
                                         </div>
                                     </form>
                                 </div>
-                                <div class="flex w-full flex-row gap-2  md:gap-5 items-center justify-end">
+                                <div class="flex flex-row gap-5">
                                     <!-- Update Pension Status Button (Initially Hidden) -->
-                                    <div id="openModalbtn" class="md:w-auto flex flex-row gap-2 hidden ">
+                                    <div id="openModalbtn" class="flex flex-row gap-2 hidden">
                                         <button id="bulkPensionBtn"
-                                            class="px-3 py-2 cursor-pointer text-xs md:text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 touch-target">
-                                            <span class="hidden md:inline">Update Pension Status</span>
-                                            <span class="md:hidden">Update Status</span>
+                                            class="px-3 py-2 cursor-pointer text-xs  font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                                            Update Pension Status
                                         </button>
                                     </div>
+
                                     <!-- Status Filter -->
-                                    <div class="  md:w-auto">
+                                    <div class="relative w-full md:w-auto">
                                         <select id="statusFilter"
-                                            class="flex items-center justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer appearance-none pr-8 touch-target">
+                                            class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer appearance-none pr-8">
                                             <option value="all">All Status</option>
                                             <option value="For Validation">For Validation</option>
                                             <option value="Validated">Validated</option>
                                         </select>
                                     </div>
                                     <!-- Filter -->
-                                    <div class="  md:w-auto">
+                                    <div class="relative w-full md:w-auto">
                                         <!-- Filter Button -->
                                         <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                            class="flex items-center cursor-pointer justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
+                                            class="flex items-center cursor-pointer justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                             type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                                 class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -446,8 +344,7 @@ if (empty($profile_photo_url)) {
                                                     d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <span class="hidden md:inline">Address</span>
-                                            <span class="md:hidden">Filter</span>
+                                            Address
                                             <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path clip-rule="evenodd" fill-rule="evenodd"
@@ -457,11 +354,11 @@ if (empty($profile_photo_url)) {
 
                                         <!-- Dynamic Dropdown -->
                                         <div id="filterDropdown"
-                                            class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700 dropdown-mobile">
+                                            class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                             <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
                                                 Barangay
                                             </h6>
-                                            <ul id="barangayList" class="space-y-2 text-sm max-h-60 overflow-y-auto"
+                                            <ul id="barangayList" class="space-y-2 text-sm"
                                                 aria-labelledby="dropdownDefault">
                                                 <li class="text-gray-400 text-sm text-center">Loading...</li>
                                             </ul>
@@ -470,7 +367,7 @@ if (empty($profile_photo_url)) {
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
+                        <div class="">
                             <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -758,18 +655,7 @@ if (empty($profile_photo_url)) {
             let lastSearch = "";
             let selectedBarangays = [];
             let selectedStatus = "all";
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterType = urlParams.get('filter');
-            const validationStatus = urlParams.get('validation_status');
 
-            if (filterType === 'validation' && validationStatus && statusFilter) {
-                // Set the dropdown to match the validation status
-                statusFilter.value = validationStatus;
-                selectedStatus = validationStatus;
-
-                // Show filter badge
-                showFilterBadge(`Validation: ${validationStatus}`);
-            }
             // ---------------- POPUP MODAL ----------------
             window.showPopup = function(message, type = "info", redirect = false) {
                 const modal = document.getElementById("popupModal");
@@ -784,7 +670,7 @@ if (empty($profile_photo_url)) {
                 }
 
                 msg.textContent = message;
-                title.className = "text-lg font-semibold mb-2 dark:text-green-400";
+                title.className = "text-lg font-semibold mb-2";
 
                 switch (type) {
                     case "success":
@@ -953,7 +839,7 @@ if (empty($profile_photo_url)) {
                     // Determine context based on current page
                     const isStaffPage = window.location.pathname.includes('staff_');
                     const sessionContext = isStaffPage ? 'staff' : 'admin';
-
+                    
                     // Get user ID based on context
                     let userId, userField;
                     if (isStaffPage) {
@@ -977,7 +863,7 @@ if (empty($profile_photo_url)) {
                             [userField]: userId
                         }),
                     });
-
+                    
                     const data = await res.json();
 
                     if (data.success) {
@@ -1179,76 +1065,8 @@ if (empty($profile_photo_url)) {
                     page: currentPage,
                     search: lastSearch,
                     barangays: selectedBarangays.join(','),
-                    status: selectedStatus,
-                    debug: 'true' // Add debug flag
+                    status: selectedStatus
                 });
-                // Update the fetchSeniors function parameter handling
-                const urlParams = new URLSearchParams(window.location.search);
-                const filterType = urlParams.get('filter');
-                const validationStatus = urlParams.get('validation_status');
-                const ageGroup = urlParams.get('age_group');
-                const minAge = urlParams.get('min_age');
-                const maxAge = urlParams.get('max_age');
-                const gender_filter = urlParams.get('gender');
-                const recent_days = urlParams.get('days');
-                const milestoneAge = urlParams.get('milestone');
-
-                // ... in the fetchSeniors function params section ...
-                if (filterType === 'validation' && validationStatus) {
-                    params.append('filter_type', 'validation');
-                    params.append('validation_status', validationStatus);
-                    // Also set the status filter dropdown
-                    if (statusFilter && validationStatus) {
-                        statusFilter.value = validationStatus;
-                        selectedStatus = validationStatus;
-                    }
-                } else if (filterType === 'age' && ageGroup) {
-                    params.append('filter_type', 'age');
-                    params.append('age_group', ageGroup);
-                    if (minAge) params.append('min_age', minAge);
-                    if (maxAge) params.append('max_age', maxAge);
-                } else if (filterType === 'gender' && gender_filter) {
-                    params.append('filter_type', 'gender');
-                    params.append('gender', gender_filter);
-                } else if (filterType === 'recent' && recent_days) {
-                    params.append('filter_type', 'recent');
-                    params.append('recent_days', recent_days);
-                } else if (filterType === 'milestone' && milestoneAge) {
-                    params.append('filter_type', 'milestone');
-                    params.append('milestone_age', milestoneAge);
-                }
-
-                // Update the filter badge display
-                if (filterType === 'validation' && validationStatus) {
-                    showFilterBadge(`Validation: ${validationStatus}`);
-                } else if (filterType === 'age' && ageGroup) {
-                    showFilterBadge(`Age Group: ${ageGroup}`);
-                } else if (filterType === 'gender' && gender_filter) {
-                    showFilterBadge(`Gender: ${gender_filter}`);
-                } else if (filterType === 'recent' && recent_days) {
-                    showFilterBadge(`Recent: Last ${recent_days} days`);
-                } else if (filterType === 'milestone' && milestoneAge) {
-                    showFilterBadge(`Milestone: Turning ${milestoneAge}`);
-                }
-
-                // Add toast notification for new filters
-                if (filterType === 'gender' && gender_filter) {
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast(`Showing ${gender_filter} seniors`, 'info');
-                        } else if (typeof showPopup === 'function') {
-                            showPopup(`Filter applied: Showing ${gender_filter} seniors`, 'info');
-                        }
-                    }, 1000);
-                } else if (filterType === 'recent' && recent_days) {
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast(`Showing seniors registered in last ${recent_days} days`, 'info');
-                        } else if (typeof showPopup === 'function') {
-                            showPopup(`Filter applied: Showing recent registrations (${recent_days} days)`, 'info');
-                        }
-                    }, 1000);
-                }
 
                 // Use relative path instead of absolute path
                 fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/fetch_seniors.php?${params}`)
@@ -1259,20 +1077,10 @@ if (empty($profile_photo_url)) {
                         return res.json();
                     })
                     .then(data => {
-                        console.log("Fetched data:", data);
                         tableBody.innerHTML = "";
 
-                        if (!data) {
-                            throw new Error("Empty response from server");
-                        }
-
-                        if (data.error) {
-                            console.error("Server error:", data.error);
-                            throw new Error(data.error);
-                        }
-
-                        if (!data.success && data.message) {
-                            console.error("Server message:", data.message);
+                        if (!data || data.error) {
+                            throw new Error(data?.error || "Invalid response from server");
                         }
 
                         totalRecords = data.total_records || 0;
@@ -1439,138 +1247,72 @@ if (empty($profile_photo_url)) {
                 }
 
                 let html = `
-        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-            Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
-            <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
-            <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
-        </span>
-        <ul class="inline-flex items-stretch -space-x-px">
-    `;
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
+                    <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
+                    <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
+                </span>
+                <ul class="inline-flex items-stretch -space-x-px">
+            `;
 
                 // Previous Button with Tooltip
                 html += `
-        <li>
-            <div class="relative group inline-flex items-center justify-center">
-                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
-                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
-                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
-                        01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
-                        011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                    text-xs text-black text-center font-medium w-[95px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Previous page
-                </span>
-            </div>
-        </li>
-    `;
+                <li>
+                    <div class="relative group inline-flex items-center justify-center">
+                        <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
+                            class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
+                            hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
+                                01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
+                                011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                            text-xs text-black text-center font-medium w-[95px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                            Previous page
+                        </span>
+                    </div>
+                </li>
+            `;
 
-                // Always show page 1
-                html += `
-        <li>
-            <button data-page="1"
-                class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                ${1 === currentPage
-            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                1
-            </button>
-        </li>
-    `;
-
-                // Determine which pages to show
-                let startPage = Math.max(2, currentPage - 1);
-                let endPage = Math.min(totalPages - 1, currentPage + 1);
-
-                // Adjust if we're near the beginning
-                if (currentPage <= 3) {
-                    startPage = 2;
-                    endPage = Math.min(4, totalPages - 1);
-                }
-
-                // Adjust if we're near the end
-                if (currentPage >= totalPages - 2) {
-                    startPage = Math.max(2, totalPages - 3);
-                    endPage = totalPages - 1;
-                }
-
-                // Show ellipsis after page 1 if needed
-                if (startPage > 2) {
+                // Page Numbers
+                for (let i = 1; i <= totalPages; i++) {
                     html += `
-            <li>
-                <span class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
-                    ...
-                </span>
-            </li>
-        `;
-                }
-
-                // Show middle pages (pages 2-4)
-                for (let i = startPage; i <= endPage; i++) {
-                    html += `
-            <li>
-                <button data-page="${i}"
-                    class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                    ${i === currentPage
-                ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                    ${i}
-                </button>
-            </li>
-        `;
-                }
-
-                // Show ellipsis before last page if needed
-                if (endPage < totalPages - 1) {
-                    html += `
-            <li>
-                <span class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
-                    ...
-                </span>
-            </li>
-        `;
-                }
-
-                // Show last page if there is one (and it's not page 1)
-                if (totalPages > 1) {
-                    html += `
-            <li>
-                <button data-page="${totalPages}"
-                    class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                    ${totalPages === currentPage
-                ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                    ${totalPages}
-                </button>
-            </li>
-        `;
+                    <li>
+                        <button data-page="${i}"
+                            class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                            ${i === currentPage
+                        ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                        : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                            ${i}
+                        </button>
+                    </li>
+                `;
                 }
 
                 // Next Button with Tooltip
                 html += `
-        <li>
-            <div class="relative group inline-flex items-center justify-center">
-                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
-                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
-                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
-                        011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
-                        01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                    text-xs text-black text-center font-medium w-[74px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                    Next page
-                </span>
-            </div>
-        </li>
-    </ul>`;
+                <li>
+                    <div class="relative group inline-flex items-center justify-center">
+                        <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
+                            class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
+                            hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
+                                011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
+                                01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                            text-xs text-black text-center font-medium w-[74px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                            Next page
+                        </span>
+                    </div>
+                </li>
+            </ul>`;
 
                 paginationNav.innerHTML = html;
 
@@ -1945,29 +1687,29 @@ if (empty($profile_photo_url)) {
 
         // ---------------- SEND TO INACTIVE FUNCTIONALITY ----------------
         // ---------------- SEND TO INACTIVE FUNCTIONALITY ----------------
-        window.markInactive = async (id) => {
-            const applicantId = id;
-            console.log('🔄 markInactive called with ID:', applicantId);
+window.markInactive = async (id) => {
+    const applicantId = id;
+    console.log('🔄 markInactive called with ID:', applicantId);
 
-            // Remove any existing modal first
-            const existingModal = document.getElementById('inactiveModal');
-            if (existingModal) {
-                document.body.removeChild(existingModal);
-            }
+    // Remove any existing modal first
+    const existingModal = document.getElementById('inactiveModal');
+    if (existingModal) {
+        document.body.removeChild(existingModal);
+    }
 
-            // Get the senior's name from the table for the modal
-            const row = document.querySelector(`tr:has(input[value="${applicantId}"])`);
-            const fullName = row ? row.querySelector('td:nth-child(3)').textContent.trim() : 'Unknown';
+    // Get the senior's name from the table for the modal
+    const row = document.querySelector(`tr:has(input[value="${applicantId}"])`);
+    const fullName = row ? row.querySelector('td:nth-child(3)').textContent.trim() : 'Unknown';
 
-            // Create and show modal directly
-            showInactiveModal(applicantId, fullName);
-        };
+    // Create and show modal directly
+    showInactiveModal(applicantId, fullName);
+};
 
-        function showInactiveModal(applicantId, fullName) {
-            const inactiveModal = document.createElement('div');
-            inactiveModal.id = 'inactiveModal';
-            inactiveModal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
-            inactiveModal.innerHTML = `
+function showInactiveModal(applicantId, fullName) {
+    const inactiveModal = document.createElement('div');
+    inactiveModal.id = 'inactiveModal';
+    inactiveModal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
+    inactiveModal.innerHTML = `
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 scale-95 opacity-0 transition-all duration-200">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
@@ -2023,191 +1765,191 @@ if (empty($profile_photo_url)) {
         </div>
     `;
 
-            document.body.appendChild(inactiveModal);
-            document.body.style.overflow = 'hidden';
+    document.body.appendChild(inactiveModal);
+    document.body.style.overflow = 'hidden';
 
-            // Show modal with animation
-            setTimeout(() => {
-                const modalDiv = inactiveModal.querySelector('div');
-                modalDiv.classList.remove('scale-95', 'opacity-0');
-                modalDiv.classList.add('scale-100', 'opacity-100');
-            }, 10);
+    // Show modal with animation
+    setTimeout(() => {
+        const modalDiv = inactiveModal.querySelector('div');
+        modalDiv.classList.remove('scale-95', 'opacity-0');
+        modalDiv.classList.add('scale-100', 'opacity-100');
+    }, 10);
 
-            // Initialize modal functionality
-            initializeInactiveModal(inactiveModal, applicantId);
+    // Initialize modal functionality
+    initializeInactiveModal(inactiveModal, applicantId);
+}
+
+function initializeInactiveModal(modal, applicantId) {
+    const form = modal.querySelector('#inactiveForm');
+    const submitBtn = modal.querySelector('#submitInactive');
+    const cancelBtn = modal.querySelector('#cancelInactive');
+    const closeBtn = modal.querySelector('#closeInactiveModal');
+
+    // Form submission handler
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const applicantId = modal.querySelector('#inactiveApplicantId').value;
+        const date_of_inactive = modal.querySelector('#inactiveDate').value;
+        const reason = modal.querySelector('#inactiveReason').value.trim();
+
+        // Validate
+        if (!reason) {
+            if (typeof showPopup === 'function') {
+                showPopup('Please enter a reason for inactivity.', 'error');
+            } else {
+                alert('Please enter a reason for inactivity.');
+            }
+            return;
         }
 
-        function initializeInactiveModal(modal, applicantId) {
-            const form = modal.querySelector('#inactiveForm');
-            const submitBtn = modal.querySelector('#submitInactive');
-            const cancelBtn = modal.querySelector('#cancelInactive');
-            const closeBtn = modal.querySelector('#closeInactiveModal');
+        if (!date_of_inactive) {
+            if (typeof showPopup === 'function') {
+                showPopup('Please select a date of inactivity.', 'error');
+            } else {
+                alert('Please select a date of inactivity.');
+            }
+            return;
+        }
 
-            // Form submission handler
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-
-                const applicantId = modal.querySelector('#inactiveApplicantId').value;
-                const date_of_inactive = modal.querySelector('#inactiveDate').value;
-                const reason = modal.querySelector('#inactiveReason').value.trim();
-
-                // Validate
-                if (!reason) {
-                    if (typeof showPopup === 'function') {
-                        showPopup('Please enter a reason for inactivity.', 'error');
-                    } else {
-                        alert('Please enter a reason for inactivity.');
-                    }
-                    return;
-                }
-
-                if (!date_of_inactive) {
-                    if (typeof showPopup === 'function') {
-                        showPopup('Please select a date of inactivity.', 'error');
-                    } else {
-                        alert('Please select a date of inactivity.');
-                    }
-                    return;
-                }
-
-                try {
-                    console.log('📤 Sending mark inactive request for admin...');
-
-                    // For ADMIN context - get admin user data from PHP
-                    const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
-                    const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin User'); ?>;
-
-                    const data = {
-                        applicant_id: applicantId,
-                        date_of_inactive: date_of_inactive,
-                        reason: reason,
-                        session_context: 'admin',
-                        admin_user_id: adminUserId,
-                        admin_user_name: adminUserName
-                    };
-
-                    console.log('Admin data being sent:', data);
-
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    });
-
-                    const result = await response.json();
-                    console.log('📥 Response received:', result);
-
-                    if (!response.ok || result.error) {
-                        throw new Error(result.error || 'Failed to mark as inactive');
-                    }
-
-                    // SUCCESS - Close modal and show popup
-                    closeModal();
-
-                    if (typeof showPopup === 'function') {
-                        showPopup('Senior successfully marked as inactive!', 'success');
-                    } else {
-                        alert('Senior successfully marked as inactive!');
-                    }
-
-                    // Remove row from table immediately with animation
-                    removeRowFromTable(applicantId);
-
-                    // Refresh table data after a short delay
-                    setTimeout(() => {
-                        if (typeof window.fetchSeniors === 'function') {
-                            window.fetchSeniors();
-                        }
-                    }, 1000);
-
-                } catch (error) {
-                    console.error('❌ Error:', error);
-                    if (typeof showPopup === 'function') {
-                        showPopup('Error: ' + error.message, 'error');
-                    } else {
-                        alert('Error: ' + error.message);
-                    }
-                }
+        try {
+            console.log('📤 Sending mark inactive request for admin...');
+            
+            // For ADMIN context - get admin user data from PHP
+            const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
+            const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin User'); ?>;
+            
+            const data = {
+                applicant_id: applicantId,
+                date_of_inactive: date_of_inactive,
+                reason: reason,
+                session_context: 'admin',
+                admin_user_id: adminUserId,
+                admin_user_name: adminUserName
             };
+            
+            console.log('Admin data being sent:', data);
 
-            // Cancel/close handlers
-            const handleCancel = () => {
-                closeModal();
-            };
+            const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
 
-            const handleClose = () => {
-                closeModal();
-            };
+            const result = await response.json();
+            console.log('📥 Response received:', result);
 
-            // Close modal when clicking outside
-            const handleOutsideClick = (e) => {
-                if (e.target === modal) closeModal();
-            };
+            if (!response.ok || result.error) {
+                throw new Error(result.error || 'Failed to mark as inactive');
+            }
 
-            // Close modal with Escape key
-            const handleEscape = (e) => {
-                if (e.key === 'Escape') closeModal();
-            };
+            // SUCCESS - Close modal and show popup
+            closeModal();
 
-            // Add event listeners
-            form.addEventListener('submit', handleSubmit);
-            cancelBtn.addEventListener('click', handleCancel);
-            closeBtn.addEventListener('click', handleClose);
-            modal.addEventListener('click', handleOutsideClick);
-            document.addEventListener('keydown', handleEscape);
+            if (typeof showPopup === 'function') {
+                showPopup('Senior successfully marked as inactive!', 'success');
+            } else {
+                alert('Senior successfully marked as inactive!');
+            }
 
-            // Focus on reason input
+            // Remove row from table immediately with animation
+            removeRowFromTable(applicantId);
+
+            // Refresh table data after a short delay
             setTimeout(() => {
-                const reasonInput = modal.querySelector('#inactiveReason');
-                if (reasonInput) reasonInput.focus();
-            }, 100);
-
-            function closeModal() {
-                const modalDiv = modal.querySelector('div');
-                modalDiv.classList.add('scale-95', 'opacity-0');
-
-                // Clean up
-                setTimeout(() => {
-                    if (document.body.contains(modal)) {
-                        document.body.removeChild(modal);
-                    }
-                    document.body.style.overflow = ''; // Restore scrolling
-
-                    // Remove event listeners
-                    document.removeEventListener('keydown', handleEscape);
-                }, 200);
-            }
-
-            function removeRowFromTable(applicantId) {
-                const row = document.querySelector(`tr:has(input[value="${applicantId}"])`);
-                if (row) {
-                    row.style.transition = 'all 0.3s ease-out';
-                    row.style.opacity = '0';
-                    row.style.transform = 'translateX(-100%)';
-                    row.style.maxHeight = '0';
-                    row.style.overflow = 'hidden';
-
-                    setTimeout(() => {
-                        if (row.parentNode) {
-                            row.parentNode.removeChild(row);
-                            updateRowNumbers();
-                        }
-                    }, 300);
+                if (typeof window.fetchSeniors === 'function') {
+                    window.fetchSeniors();
                 }
-            }
+            }, 1000);
 
-            function updateRowNumbers() {
-                const rows = document.querySelectorAll('tbody tr');
-                rows.forEach((row, index) => {
-                    const numberCell = row.querySelector('td:nth-child(2)');
-                    if (numberCell) {
-                        numberCell.textContent = index + 1;
-                    }
-                });
+        } catch (error) {
+            console.error('❌ Error:', error);
+            if (typeof showPopup === 'function') {
+                showPopup('Error: ' + error.message, 'error');
+            } else {
+                alert('Error: ' + error.message);
             }
         }
+    };
+
+    // Cancel/close handlers
+    const handleCancel = () => {
+        closeModal();
+    };
+
+    const handleClose = () => {
+        closeModal();
+    };
+
+    // Close modal when clicking outside
+    const handleOutsideClick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+
+    // Close modal with Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') closeModal();
+    };
+
+    // Add event listeners
+    form.addEventListener('submit', handleSubmit);
+    cancelBtn.addEventListener('click', handleCancel);
+    closeBtn.addEventListener('click', handleClose);
+    modal.addEventListener('click', handleOutsideClick);
+    document.addEventListener('keydown', handleEscape);
+
+    // Focus on reason input
+    setTimeout(() => {
+        const reasonInput = modal.querySelector('#inactiveReason');
+        if (reasonInput) reasonInput.focus();
+    }, 100);
+
+    function closeModal() {
+        const modalDiv = modal.querySelector('div');
+        modalDiv.classList.add('scale-95', 'opacity-0');
+
+        // Clean up
+        setTimeout(() => {
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+            document.body.style.overflow = ''; // Restore scrolling
+
+            // Remove event listeners
+            document.removeEventListener('keydown', handleEscape);
+        }, 200);
+    }
+
+    function removeRowFromTable(applicantId) {
+        const row = document.querySelector(`tr:has(input[value="${applicantId}"])`);
+        if (row) {
+            row.style.transition = 'all 0.3s ease-out';
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-100%)';
+            row.style.maxHeight = '0';
+            row.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                if (row.parentNode) {
+                    row.parentNode.removeChild(row);
+                    updateRowNumbers();
+                }
+            }, 300);
+        }
+    }
+
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            const numberCell = row.querySelector('td:nth-child(2)');
+            if (numberCell) {
+                numberCell.textContent = index + 1;
+            }
+        });
+    }
+}
 
         // ---------------- SEND TO DECEASED FUNCTIONALITY ----------------
         window.markDeceased = (id, fullName) => {
@@ -2273,74 +2015,6 @@ if (empty($profile_photo_url)) {
             // Initialize modal functionality
             initializeDeceasedModal(deceasedModal, applicantId, fullName);
         };
-        // Add this function to show filter badges
-        function showFilterBadge(text) {
-            // Remove any existing filter badge
-            const existingBadge = document.getElementById('filter-badge');
-            if (existingBadge) {
-                existingBadge.remove();
-            }
-
-            // Create filter badge
-            const badge = document.createElement('div');
-            badge.id = 'filter-badge';
-            badge.className = 'mb-4 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700';
-            badge.innerHTML = `
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <i class="fas fa-filter text-blue-600 dark:text-blue-400 mr-2"></i>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Active Filter:</span>
-                <span class="ml-2 text-sm text-blue-600 dark:text-blue-400">${text}</span>
-            </div>
-            <button onclick="clearFilter()" 
-                    class="ml-4 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer">
-                <i class="fas fa-times"></i> Clear Filter
-            </button>
-        </div>
-    `;
-
-            // Insert after the title
-            const titleSection = document.querySelector('.mobile-header');
-            if (titleSection) {
-                titleSection.parentNode.insertBefore(badge, titleSection.nextSibling);
-            }
-        }
-
-        // Function to clear filters
-        function clearFilter() {
-            window.location.href = './activelist.php?session_context=<?php echo $ctx; ?>';
-        }
-
-        // Check for filters on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterType = urlParams.get('filter');
-            const validationStatus = urlParams.get('validation_status');
-            const ageGroup = urlParams.get('age_group');
-
-            if (filterType === 'validation' && validationStatus) {
-                showFilterBadge(`Validation: ${validationStatus}`);
-            } else if (filterType === 'age' && ageGroup) {
-                showFilterBadge(`Age Group: ${ageGroup}`);
-            } else if (filterType === 'milestone' && urlParams.get('milestone')) {
-                showFilterBadge(`Milestone: Turning ${urlParams.get('milestone')}`);
-            }
-        });
-        // Show toast notification when page loads with filters
-        const urlParams = new URLSearchParams(window.location.search);
-        const filterType = urlParams.get('filter');
-        const validationStatus = urlParams.get('validation_status');
-
-        if (filterType === 'validation' && validationStatus) {
-            // Show a toast notification
-            setTimeout(() => {
-                if (typeof showToast === 'function') {
-                    showToast(`Showing ${validationStatus} seniors`, 'info');
-                } else if (typeof showPopup === 'function') {
-                    showPopup(`Filter applied: Showing ${validationStatus} seniors`, 'info');
-                }
-            }, 1000);
-        }
 
         function initializeDeceasedModal(modal, applicantId, fullName) {
             const form = modal.querySelector('#deceasedForm');
@@ -2370,94 +2044,94 @@ if (empty($profile_photo_url)) {
 
                 try {
                     console.log('📤 Sending mark deceased request:', data);
-
+                    
                     // DETERMINE CONTEXT BASED ON CURRENT PAGE
                     // Check URL path and other indicators
-                    const isStaffPage = window.location.pathname.includes('staff_') ||
-                        window.location.pathname.includes('/staff/') ||
-                        window.location.pathname.includes('staff_activelist') ||
-                        document.title.toLowerCase().includes('staff') ||
-                        document.body.classList.contains('staff-page');
-
+                    const isStaffPage = window.location.pathname.includes('staff_') || 
+                                        window.location.pathname.includes('/staff/') ||
+                                        window.location.pathname.includes('staff_activelist') ||
+                                        document.title.toLowerCase().includes('staff') ||
+                                        document.body.classList.contains('staff-page');
+                    
                     console.log('📱 Page analysis:');
                     console.log('- Current URL:', window.location.pathname);
                     console.log('- Current page title:', document.title);
                     console.log('- Is staff page?', isStaffPage);
-
+                    
                     // Add context-specific data
                     if (isStaffPage) {
                         // STAFF CONTEXT
-                        const staffUserId = <?php
-                                            // Get staff user ID from PHP
-                                            if (isset($_SESSION['staff_user_id'])) {
-                                                echo json_encode($_SESSION['staff_user_id']);
-                                            } elseif (isset($_SESSION['user_id'])) {
-                                                echo json_encode($_SESSION['user_id']);
-                                            } else {
-                                                echo '0';
-                                            }
-                                            ?>;
-
-                        const staffUserName = <?php
-                                                // Get staff name from PHP
-                                                if (isset($_SESSION['fullname'])) {
-                                                    echo json_encode($_SESSION['fullname']);
-                                                } elseif (isset($_SESSION['username'])) {
-                                                    echo json_encode($_SESSION['username']);
-                                                } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                                    echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-                                                } else {
-                                                    echo json_encode('Staff User');
-                                                }
-                                                ?>;
-
+                        const staffUserId = <?php 
+                            // Get staff user ID from PHP
+                            if (isset($_SESSION['staff_user_id'])) {
+                                echo json_encode($_SESSION['staff_user_id']);
+                            } elseif (isset($_SESSION['user_id'])) {
+                                echo json_encode($_SESSION['user_id']);
+                            } else {
+                                echo '0';
+                            }
+                        ?>;
+                        
+                        const staffUserName = <?php 
+                            // Get staff name from PHP
+                            if (isset($_SESSION['fullname'])) {
+                                echo json_encode($_SESSION['fullname']);
+                            } elseif (isset($_SESSION['username'])) {
+                                echo json_encode($_SESSION['username']);
+                            } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                            } else {
+                                echo json_encode('Staff User');
+                            }
+                        ?>;
+                        
                         console.log('👨‍💼 Adding staff context:');
                         console.log('- staff_user_id:', staffUserId);
                         console.log('- staff_user_name:', staffUserName);
-
+                        
                         // Add to request data
                         data.session_context = 'staff';
                         data.staff_user_id = staffUserId;
                         data.staff_user_name = staffUserName;
-
+                        
                     } else {
                         // ADMIN CONTEXT
-                        const adminUserId = <?php
-                                            // Get admin user ID from PHP
-                                            if (isset($_SESSION['admin_user_id'])) {
-                                                echo json_encode($_SESSION['admin_user_id']);
-                                            } elseif (isset($_SESSION['user_id'])) {
-                                                echo json_encode($_SESSION['user_id']);
-                                            } else {
-                                                echo '57';
-                                            }
-                                            ?>;
-
-                        const adminUserName = <?php
-                                                // Get admin name from PHP
-                                                if (isset($_SESSION['fullname'])) {
-                                                    echo json_encode($_SESSION['fullname']);
-                                                } elseif (isset($_SESSION['username'])) {
-                                                    echo json_encode($_SESSION['username']);
-                                                } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                                    echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
-                                                } else {
-                                                    echo json_encode('Admin User');
-                                                }
-                                                ?>;
-
+                        const adminUserId = <?php 
+                            // Get admin user ID from PHP
+                            if (isset($_SESSION['admin_user_id'])) {
+                                echo json_encode($_SESSION['admin_user_id']);
+                            } elseif (isset($_SESSION['user_id'])) {
+                                echo json_encode($_SESSION['user_id']);
+                            } else {
+                                echo '57';
+                            }
+                        ?>;
+                        
+                        const adminUserName = <?php 
+                            // Get admin name from PHP
+                            if (isset($_SESSION['fullname'])) {
+                                echo json_encode($_SESSION['fullname']);
+                            } elseif (isset($_SESSION['username'])) {
+                                echo json_encode($_SESSION['username']);
+                            } elseif (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                                echo json_encode($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                            } else {
+                                echo json_encode('Admin User');
+                            }
+                        ?>;
+                        
                         console.log('👨‍💼 Adding admin context:');
                         console.log('- admin_user_id:', adminUserId);
                         console.log('- admin_user_name:', adminUserName);
-
+                        
                         // Add to request data
                         data.session_context = 'admin';
                         data.admin_user_id = adminUserId;
                         data.admin_user_name = adminUserName;
                     }
-
+                    
                     console.log('📦 Final data being sent:', data);
-
+                    
                     const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_deceased.php', {
                         method: 'POST',
                         headers: {

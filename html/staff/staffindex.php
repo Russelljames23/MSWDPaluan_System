@@ -9,25 +9,22 @@ error_log("Staff user ID: " . ($_SESSION['staff_user_id'] ?? 'none'));
 error_log("Admin user ID: " . ($_SESSION['admin_user_id'] ?? 'none'));
 error_log("Full name: " . ($_SESSION['fullname'] ?? 'none'));
 error_log("Username: " . ($_SESSION['username'] ?? 'none'));
+
 require_once "../../php/login/staff_header.php";
 require_once '../../php/login/staff_session_sync.php';
 
 // Fix session handling for staff
 if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
-    // Store session context but don't use it for session name
     $ctx = $_GET['session_context'];
 
-    // Set a default session context if not set
     if (!isset($_SESSION['session_context'])) {
         $_SESSION['session_context'] = 'Staff';
     }
 
-    // Make sure we have a user ID
     if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
         $_SESSION['user_id'] = $user_id;
     }
 
-    // Store fullname in session if available
     if (!isset($_SESSION['fullname']) && !empty($full_name)) {
         $_SESSION['fullname'] = $full_name;
     }
@@ -50,7 +47,8 @@ try {
     die("Database connection failed. Please try again later.");
 }
 syncStaffSession($pdo);
-// Fetch current user data - ADD THIS
+
+// Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -65,7 +63,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name - ADD THIS
+// Prepare full name
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -74,7 +72,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL - ADD THIS
+// Get profile photo URL
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../../' . $user_data['profile_photo'];
@@ -83,7 +81,7 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo - ADD THIS
+// Fallback to avatar if no profile photo
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
@@ -107,14 +105,14 @@ if ($conn->connect_error) {
 $staff_id = $_SESSION['user_id'] ?? 0;
 $staff_name = $_SESSION['fullname'] ?? 'Staff';
 
-// Get statistics - FIRST get total seniors for everyone (as originally)
+// Get statistics - FIRST get total seniors for everyone
 $stats = [];
 
-// Total seniors - For staff, show all (like original)
+// Total seniors - For staff, show all
 $query = "SELECT COUNT(*) as total FROM applicants WHERE status != 'Deceased'";
 $result = mysqli_query($conn, $query);
 $stats['total'] = mysqli_fetch_assoc($result)['total'] ?? 0;
-$stats['total_registered'] = $stats['total']; // Add this line to fix the issue
+$stats['total_registered'] = $stats['total'];
 
 // Get seniors registered by this staff (from activity logs)
 $query = "SELECT DISTINCT JSON_EXTRACT(activity_details, '$.applicant_id') as applicant_id 
@@ -287,6 +285,31 @@ while ($row = $result->fetch_assoc()) {
     $stats['barangays'][$row['barangay']] = $row['count'];
 }
 
+// Ensure all 12 barangays are included, even with 0 count (STAFF SPECIFIC)
+$all_barangays_staff = [
+    'I - Mapalad' => 0,
+    'II - Handang Tumulong' => 0,
+    'III - Silahis ng Pag-asa' => 0,
+    'IV - Pag-asa ng Bayan' => 0,
+    'V - Bagong Silang' => 0,
+    'VI - San Jose' => 0,
+    'VII - Lumang Bayan' => 0,
+    'VIII - Marikit' => 0,
+    'IX - Tubili' => 0,
+    'X - Alipaoy' => 0,
+    'XI - Harison' => 0,
+    'XII - Mananao' => 0
+];
+
+// Merge with actual data for staff
+foreach ($all_barangays_staff as $barangay => $count) {
+    if (isset($stats['barangays'][$barangay])) {
+        $all_barangays_staff[$barangay] = $stats['barangays'][$barangay];
+    }
+}
+
+$stats['barangays'] = $all_barangays_staff;
+
 // Get top 5 barangays
 $top_barangays = [];
 if (!empty($stats['barangays'])) {
@@ -366,7 +389,7 @@ $stats['performance'] = [
     'pending_count' => 0
 ];
 
-// ========== NEW: BIRTHDAY MONITORING SECTION ==========
+// ========== BIRTHDAY MONITORING SECTION ==========
 // Get today's birthdays for staff's registered seniors
 $today = date('m-d');
 $query_today = "SELECT 
@@ -525,6 +548,20 @@ $today_birthday_count = count($birthdays_today);
 $upcoming_birthday_count = count($upcoming_birthdays);
 $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count / $total_with_birthdates) * 100, 1) : 0;
 
+// ========== BIRTHDAY MODAL LOGIC ==========
+// Check if we should show birthday modal today
+$today_date = date('Y-m-d');
+$show_birthday_modal = false;
+$all_birthdays_today_for_modal = [];
+
+if (count($birthdays_today) > 0) {
+    if (!isset($_SESSION['staff_birthday_modal_shown']) || $_SESSION['staff_birthday_modal_shown'] !== $today_date) {
+        $show_birthday_modal = true;
+        $_SESSION['staff_birthday_modal_shown'] = $today_date;
+        $all_birthdays_today_for_modal = $birthdays_today;
+    }
+}
+
 $conn->close();
 ?>
 
@@ -549,6 +586,46 @@ $conn->close();
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        /* Enhanced logo styling for page display */
+        .highlighted-logo {
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
+                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+
+            /* Optional border */
+            border: 3px solid rgba(59, 130, 246, 0.4);
+            border-radius: 12px;
+
+            /* Inner glow effect */
+            box-shadow:
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.5);
+
+            /* Animation for extra attention */
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                box-shadow:
+                    inset 0 0 10px rgba(255, 255, 255, 0.6),
+                    0 0 15px rgba(59, 130, 246, 0.5);
+            }
+
+            to {
+                box-shadow:
+                    inset 0 0 15px rgba(255, 255, 255, 0.8),
+                    0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+
         .stat-card {
             transition: all 0.3s ease;
             position: relative;
@@ -663,63 +740,102 @@ $conn->close();
         /* Confetti animation */
         @keyframes confetti-fall {
             0% {
-                transform: translateY(-100vh) rotate(0deg);
+                transform: translateY(-100px) rotate(0deg);
                 opacity: 1;
             }
 
             100% {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
 
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #ffc107;
-            top: -10px;
-            z-index: 9999;
+            z-index: 9998;
             animation: confetti-fall 3s linear forwards;
+            pointer-events: none;
         }
 
         /* Birthday modal styles */
         .birthday-modal {
-            animation: modalSlideUp 0.3s ease-out;
+            animation: modalSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @keyframes modalSlideUp {
+        @keyframes modalSlideIn {
             from {
-                transform: translateY(50px);
+                transform: translateY(-50px) scale(0.9);
                 opacity: 0;
             }
 
             to {
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
                 opacity: 1;
             }
         }
 
         .birthday-avatar {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
+            background: linear-gradient(135deg, #FFC107, #FF9800);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 32px;
             color: white;
-            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            position: relative;
         }
 
         .age-milestone {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
+            background: linear-gradient(135deg, #FFC107, #FF5722);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        /* Chart error styles */
+        .chart-error {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 1px solid #fecaca;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .dark .chart-error {
+            background: linear-gradient(135deg, #2c1a1a 0%, #3c1a1a 100%);
+            border: 1px solid #7f1d1d;
+        }
+
+        .chart-error-icon {
+            font-size: 3rem;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+
+        .dark .chart-error-icon {
+            color: #f87171;
+        }
+
+        .retry-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
@@ -743,22 +859,202 @@ $conn->close();
                 grid-template-columns: 1fr;
             }
         }
+
+        /* New styles for birthday carousel */
+        .birthday-carousel {
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+        }
+        
+        .birthday-slide {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .birthday-slide.active {
+            display: block;
+        }
+        
+        .birthday-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .birthday-nav:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .birthday-nav.prev {
+            left: 10px;
+        }
+        
+        .birthday-nav.next {
+            right: 10px;
+        }
+        
+        .birthday-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            z-index: 10;
+        }
+        
+        .dark .birthday-nav {
+            background: rgba(55, 65, 81, 0.8);
+            color: white;
+        }
+        
+        .dark .birthday-nav:hover {
+            background: rgba(55, 65, 81, 1);
+        }
     </style>
 
     <script type="text/javascript">
-        google.charts.load('current', {
-            'packages': ['corechart', 'bar']
-        });
-        google.charts.setOnLoadCallback(initializeAllCharts);
-
+        // Enhanced Google Charts loading with better error handling
         let charts = {};
         let isDarkMode = false;
+        let originalBarangayData = null;
+        let originalBarangayOptions = null;
+        let ageChartData = null;
         let birthdayChartData = null;
+        let barangayChartFiltered = false;
+        let googleChartsLoaded = false;
+        let chartsLoading = false;
+        let chartsLoadAttempts = 0;
+        const MAX_CHART_LOAD_ATTEMPTS = 3;
+
+        // Main initialization function
+        function initDashboard() {
+            console.log('Dashboard initialization started');
+            
+            // Load Google Charts first
+            loadGoogleCharts();
+            
+            // Initialize other components
+            initTheme();
+            updateBirthdayCountdown();
+            
+            // Set up periodic countdown updates
+            setInterval(updateBirthdayCountdown, 60000);
+            
+            // Show birthday modal if needed
+            <?php if ($show_birthday_modal && !empty($all_birthdays_today_for_modal)): ?>
+                setTimeout(() => {
+                    const allBirthdays = <?php echo json_encode($all_birthdays_today_for_modal); ?>;
+                    if (allBirthdays && allBirthdays.length > 0) {
+                        showBirthdayCelebration(allBirthdays);
+                    }
+                }, 2000);
+            <?php endif; ?>
+        }
+
+        // Improved Google Charts loading function
+        function loadGoogleCharts() {
+            if (chartsLoading) return;
+            
+            chartsLoading = true;
+            chartsLoadAttempts++;
+            
+            console.log('Loading Google Charts, attempt:', chartsLoadAttempts);
+            
+            // Check if Google Charts is already loaded
+            if (typeof google !== 'undefined' && typeof google.charts !== 'undefined' && typeof google.visualization !== 'undefined') {
+                console.log('Google Charts already loaded');
+                initializeAllCharts();
+                return;
+            }
+            
+            // Set a timeout to detect if charts fail to load
+            const loadTimeout = setTimeout(() => {
+                if (!googleChartsLoaded) {
+                    console.warn('Google Charts load timeout');
+                    handleChartsLoadFailure();
+                }
+            }, 10000); // 10 second timeout
+            
+            // Load Google Charts with error handling
+            window.googleChartsLoadCallback = function() {
+                clearTimeout(loadTimeout);
+                console.log('Google Charts loaded successfully');
+                googleChartsLoaded = true;
+                chartsLoading = false;
+                initializeAllCharts();
+            };
+            
+            // Load with error handling
+            try {
+                google.charts.load('current', {
+                    'packages': ['corechart', 'bar'],
+                    'callback': window.googleChartsLoadCallback
+                });
+            } catch (error) {
+                console.error('Error loading Google Charts:', error);
+                handleChartsLoadFailure();
+            }
+        }
+
+        function handleChartsLoadFailure() {
+            chartsLoading = false;
+            
+            if (chartsLoadAttempts < MAX_CHART_LOAD_ATTEMPTS) {
+                console.log('Retrying Google Charts load...');
+                setTimeout(loadGoogleCharts, 2000);
+            } else {
+                console.error('Failed to load Google Charts after', MAX_CHART_LOAD_ATTEMPTS, 'attempts');
+                showToast('Charts failed to load. Please refresh the page.', 'error');
+                
+                // Show fallback for barangay chart
+                showBarangayChartFallback();
+            }
+        }
 
         function initializeAllCharts() {
-            isDarkMode = document.documentElement.classList.contains('dark');
-            drawCharts();
-            drawBirthdayCharts();
+            try {
+                console.log('Initializing all charts');
+                
+                // Check if Google Charts is properly loaded
+                if (typeof google === 'undefined' || typeof google.visualization === 'undefined') {
+                    console.error('Google Charts not loaded in initializeAllCharts');
+                    handleChartsLoadFailure();
+                    return;
+                }
+                
+                isDarkMode = document.documentElement.classList.contains('dark');
+                drawCharts();
+                drawBirthdayCharts();
+                
+                console.log('All charts initialized successfully');
+                
+                // Hide loading indicators
+                const loadingIndicator = document.getElementById('barangay-chart-loading');
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error initializing charts:', error);
+                showToast('Error loading charts. Please refresh the page.', 'error');
+                handleChartsLoadFailure();
+            }
         }
 
         function drawCharts() {
@@ -779,7 +1075,9 @@ $conn->close();
                     textStyle: {
                         color: isDarkMode ? '#fff' : '#374151',
                         fontSize: 12
-                    }
+                    },
+                    showColorCode: true,
+                    trigger: 'selection'
                 },
                 animation: {
                     startup: true,
@@ -808,6 +1106,7 @@ $conn->close();
                 genderChart.draw(genderData, genderOptions);
             } catch (error) {
                 console.error('Error drawing gender chart:', error);
+                showChartError('gender-chart', error);
             }
 
             // Status Distribution Pie Chart
@@ -831,6 +1130,7 @@ $conn->close();
                 statusChart.draw(statusData, statusOptions);
             } catch (error) {
                 console.error('Error drawing status chart:', error);
+                showChartError('status-chart', error);
             }
 
             // Age Distribution Column Chart
@@ -890,20 +1190,47 @@ $conn->close();
                 ageChart.draw(ageData, ageOptions);
             } catch (error) {
                 console.error('Error drawing age chart:', error);
+                showChartError('age-chart', error);
             }
 
             // Barangay Distribution Bar Chart
             try {
+                const barangayChartContainer = document.getElementById('barangay-chart');
+                if (!barangayChartContainer) {
+                    console.error('Barangay chart container not found');
+                    return;
+                }
+
+                // Check if the chart already has error display
+                if (barangayChartContainer.querySelector('.chart-error-fallback')) {
+                    return;
+                }
+
                 var barangayData = new google.visualization.DataTable();
                 barangayData.addColumn('string', 'Barangay');
                 barangayData.addColumn('number', 'Count');
 
                 <?php
+                $barangayColors = [
+                    '#3B82F6',
+                    '#8B5CF6',
+                    '#EC4899',
+                    '#10B981',
+                    '#F59E0B',
+                    '#EF4444',
+                    '#6B7280',
+                    '#84CC16',
+                    '#F97316',
+                    '#A855F7',
+                    '#06B6D4',
+                    '#71717A'
+                ];
+
                 if (!empty($stats['barangays'])) {
                     echo "barangayData.addRows([\n";
                     foreach ($stats['barangays'] as $barangay => $count) {
-                        $shortName = preg_replace('/^[IVXLCDM]+ - /', '', $barangay);
-                        echo "['$shortName', $count],\n";
+                        $formattedBarangay = preg_replace('/^[IVXLCDM]+ - /', '', $barangay);
+                        echo "['$formattedBarangay', $count],\n";
                     }
                     echo "]);";
                 } else {
@@ -918,223 +1245,564 @@ $conn->close();
                         title: '',
                         textStyle: {
                             fontSize: 11,
-                            color: isDarkMode ? '#fff' : '#4B5563'
+                            color: isDarkMode ? '#fff' : '#4B5563',
+                            bold: false
                         },
                         slantedText: true,
-                        slantedTextAngle: 45
+                        slantedTextAngle: 45,
+                        showTextEvery: 1
                     },
                     vAxis: {
                         title: 'Number of Seniors',
                         titleTextStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
+                            color: isDarkMode ? '#fff' : '#4B5563',
+                            fontSize: 12,
+                            bold: true
                         },
-                        minValue: 0
+                        minValue: 0,
+                        textStyle: {
+                            color: isDarkMode ? '#fff' : '#4B5563',
+                            fontSize: 11
+                        },
+                        gridlines: {
+                            color: isDarkMode ? '#4B5563' : '#E5E7EB',
+                            count: 6
+                        }
                     },
                     legend: {
                         position: 'none'
                     },
-                    colors: ['#10B981']
+                    bar: {
+                        groupWidth: '70%'
+                    },
+                    colors: <?php echo json_encode($barangayColors); ?>,
+                    focusTarget: 'category'
                 };
 
-                var barangayChart = new google.visualization.ColumnChart(document.getElementById('barangay-chart'));
-                barangayChart.draw(barangayData, barangayOptions);
+                charts.barangay = new google.visualization.ColumnChart(barangayChartContainer);
+                charts.barangay.draw(barangayData, barangayOptions);
+
+                originalBarangayData = barangayData;
+                originalBarangayOptions = barangayOptions;
+
+                google.visualization.events.addListener(charts.barangay, 'select', function() {
+                    const selection = charts.barangay.getSelection();
+                    if (selection.length > 0) {
+                        const item = selection[0];
+                        const barangays = <?php echo json_encode(array_keys($all_barangays_staff)); ?>;
+                        const barangay = barangays[item.row];
+
+                        const filterSelect = document.getElementById('barangay-filter');
+                        if (filterSelect) {
+                            filterSelect.value = barangay;
+                        }
+
+                        filterBarangayChart(barangay);
+                    }
+                });
+
             } catch (error) {
                 console.error('Error drawing barangay chart:', error);
+                showBarangayChartFallback();
             }
         }
 
-        // NEW: Draw birthday charts for staff
+        function showBarangayChartFallback() {
+            const barangayChartContainer = document.getElementById('barangay-chart');
+            if (!barangayChartContainer) return;
+            
+            // Hide loading indicator
+            const loadingIndicator = document.getElementById('barangay-chart-loading');
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+            
+            // Create fallback display
+            barangayChartContainer.innerHTML = `
+                <div class="chart-error-fallback flex flex-col items-center justify-center h-full p-8 text-center">
+                    <i class="fas fa-chart-bar text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400 mb-2">Chart could not be loaded</p>
+                    <button onclick="retryBarangayChart()" class="retry-btn mt-4">
+                        <i class="fas fa-redo mr-2"></i>Retry Loading Chart
+                    </button>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-left">
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Barangay Distribution (Your Seniors)</h4>
+                        <div class="space-y-2 max-h-40 overflow-y-auto">
+                            <?php foreach ($all_barangays_staff as $barangay => $count): ?>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600 dark:text-gray-300"><?php echo htmlspecialchars(preg_replace('/^[IVXLCDM]+ - /', '', $barangay)); ?></span>
+                                <span class="font-medium text-gray-900 dark:text-white"><?php echo $count; ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryBarangayChart() {
+            const barangayChartContainer = document.getElementById('barangay-chart');
+            if (!barangayChartContainer) return;
+            
+            // Remove fallback
+            const fallback = barangayChartContainer.querySelector('.chart-error-fallback');
+            if (fallback) {
+                fallback.remove();
+            }
+            
+            // Show loading
+            const loadingIndicator = document.getElementById('barangay-chart-loading');
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'flex';
+            }
+            
+            // Clear previous chart
+            barangayChartContainer.innerHTML = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'barangay-chart-loading';
+            loadingDiv.className = 'absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg';
+            loadingDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading chart...</p>
+                </div>
+            `;
+            barangayChartContainer.appendChild(loadingDiv);
+            
+            // Reload Google Charts
+            chartsLoadAttempts = 0;
+            googleChartsLoaded = false;
+            loadGoogleCharts();
+        }
+
+        function showChartError(chartId, error) {
+            const chartContainer = document.getElementById(chartId);
+            if (chartContainer) {
+                chartContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full p-4 text-center">
+                        <i class="fas fa-exclamation-triangle text-3xl text-yellow-500 mb-2"></i>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Chart temporarily unavailable</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Birthday charts
         function drawBirthdayCharts() {
-            const chartOptions = {
-                backgroundColor: 'transparent',
-                chartArea: {
-                    width: '85%',
-                    height: '75%'
-                },
-                legend: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    position: 'labeled'
-                },
-                tooltip: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    showColorCode: true,
-                    trigger: 'selection'
-                },
-                animation: {
-                    startup: true,
-                    duration: 1000,
-                    easing: 'out'
+            try {
+                if (typeof google === 'undefined' || typeof google.visualization === 'undefined') {
+                    console.warn('Google Charts not available for birthday charts');
+                    return;
                 }
+
+                const chartOptions = {
+                    backgroundColor: 'transparent',
+                    chartArea: {
+                        width: '85%',
+                        height: '75%'
+                    },
+                    legend: {
+                        textStyle: {
+                            color: isDarkMode ? '#374151' : '#374151',
+                            fontSize: 12
+                        },
+                        position: 'labeled'
+                    },
+                    tooltip: {
+                        textStyle: {
+                            color: isDarkMode ? '#374151' : '#374151',
+                            fontSize: 12
+                        },
+                        showColorCode: true,
+                        trigger: 'selection'
+                    },
+                    animation: {
+                        startup: true,
+                        duration: 1000,
+                        easing: 'out'
+                    }
+                };
+
+                // Birthday by Month Chart
+                try {
+                    var birthdayMonthData = new google.visualization.DataTable();
+                    birthdayMonthData.addColumn('string', 'Month');
+                    birthdayMonthData.addColumn('number', 'Birthdays');
+
+                    <?php
+                    $all_months = [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December'
+                    ];
+
+                    if (!empty($birthdays_by_month)) {
+                        echo "birthdayMonthData.addRows([\n";
+                        foreach ($all_months as $month) {
+                            $count = $birthdays_by_month[$month] ?? 0;
+                            echo "['$month', $count],\n";
+                        }
+                        echo "]);";
+                    } else {
+                        echo "birthdayMonthData.addRows([['No Data', 0]]);";
+                    }
+                    ?>
+
+                    var birthdayMonthOptions = {
+                        ...chartOptions,
+                        title: '',
+                        colors: ['#FF9800'],
+                        hAxis: {
+                            title: 'Month',
+                            textStyle: {
+                                color: isDarkMode ? '#fff' : '#4B5563'
+                            }
+                        },
+                        vAxis: {
+                            title: 'Number of Birthdays',
+                            minValue: 0,
+                            textStyle: {
+                                color: isDarkMode ? '#fff' : '#4B5563'
+                            }
+                        }
+                    };
+
+                    charts.birthdayMonth = new google.visualization.ColumnChart(document.getElementById('birthday-month-chart'));
+                    charts.birthdayMonth.draw(birthdayMonthData, birthdayMonthOptions);
+
+                } catch (error) {
+                    console.error('Error drawing birthday month chart:', error);
+                }
+
+                // Milestone Birthdays Chart
+                try {
+                    var milestoneData = new google.visualization.DataTable();
+                    milestoneData.addColumn('string', 'Milestone');
+                    milestoneData.addColumn('number', 'Count');
+
+                    <?php
+                    if (!empty($milestone_birthdays)) {
+                        echo "milestoneData.addRows([\n";
+                        foreach ($milestone_birthdays as $milestone => $count) {
+                            echo "['$milestone', $count],\n";
+                        }
+                        echo "]);";
+                    } else {
+                        echo "milestoneData.addRows([['No Milestones', 0]]);";
+                    }
+                    ?>
+
+                    var milestoneOptions = {
+                        ...chartOptions,
+                        title: '',
+                        pieHole: 0.4,
+                        colors: ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#00BCD4', '#009688'],
+                        pieSliceText: 'value'
+                    };
+
+                    charts.milestone = new google.visualization.PieChart(document.getElementById('milestone-chart'));
+                    charts.milestone.draw(milestoneData, milestoneOptions);
+
+                } catch (error) {
+                    console.error('Error drawing milestone chart:', error);
+                }
+            } catch (error) {
+                console.error('Error in drawBirthdayCharts:', error);
+            }
+        }
+
+        function getFullBarangayName(shortName) {
+            const barangayMap = {
+                'Mapalad': 'I - Mapalad',
+                'Handang Tumulong': 'II - Handang Tumulong',
+                'Silahis ng Pag-asa': 'III - Silahis ng Pag-asa',
+                'Pag-asa ng Bayan': 'IV - Pag-asa ng Bayan',
+                'Bagong Silang': 'V - Bagong Silang',
+                'San Jose': 'VI - San Jose',
+                'Lumang Bayan': 'VII - Lumang Bayan',
+                'Marikit': 'VIII - Marikit',
+                'Tubili': 'IX - Tubili',
+                'Alipaoy': 'X - Alipaoy',
+                'Harison': 'XI - Harison',
+                'Mananao': 'XII - Mananao'
             };
 
-            // Birthday by Month Chart for staff's registered seniors
+            return barangayMap[shortName] || shortName;
+        }
+
+        function filterBarangayChart(barangay) {
+            if (!charts.barangay || !originalBarangayData || !originalBarangayOptions) {
+                showToast('Chart data not available', 'error');
+                return;
+            }
+
             try {
-                var birthdayMonthData = new google.visualization.DataTable();
-                birthdayMonthData.addColumn('string', 'Month');
-                birthdayMonthData.addColumn('number', 'Birthdays');
+                const chartContainer = document.getElementById('barangay-chart');
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.innerHTML = '<div class="flex flex-col items-center"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div><div class="text-sm text-gray-600 dark:text-gray-300">Filtering...</div></div>';
+                chartContainer.parentElement.style.position = 'relative';
+                chartContainer.parentElement.appendChild(loadingOverlay);
 
-                <?php
-                $all_months = [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December'
-                ];
+                const filteredData = new google.visualization.DataTable();
+                filteredData.addColumn('string', 'Barangay');
+                filteredData.addColumn('number', 'Count');
 
-                if (!empty($birthdays_by_month)) {
-                    echo "birthdayMonthData.addRows([\n";
-                    foreach ($all_months as $month) {
-                        $count = $birthdays_by_month[$month] ?? 0;
-                        echo "['$month', $count],\n";
+                const rows = originalBarangayData.getNumberOfRows();
+                let found = false;
+
+                for (let i = 0; i < rows; i++) {
+                    const rowBarangay = originalBarangayData.getValue(i, 0);
+                    const fullBarangayName = getFullBarangayName(rowBarangay);
+
+                    if (fullBarangayName === barangay || rowBarangay === barangay) {
+                        const count = originalBarangayData.getValue(i, 1);
+                        filteredData.addRow([rowBarangay, count]);
+                        found = true;
+                        break;
                     }
-                    echo "]);";
-                } else {
-                    echo "birthdayMonthData.addRows([['No Data', 0]]);";
                 }
-                ?>
 
-                var birthdayMonthOptions = {
-                    ...chartOptions,
-                    title: '',
-                    colors: ['#FF9800'],
+                if (!found) {
+                    showToast('No data found for selected barangay', 'warning');
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+
+                    const filterSelect = document.getElementById('barangay-filter');
+                    if (filterSelect) {
+                        filterSelect.value = 'all';
+                    }
+                    loadingOverlay.remove();
+                    return;
+                }
+
+                const filteredOptions = {
+                    ...originalBarangayOptions,
                     hAxis: {
-                        title: 'Month',
+                        ...originalBarangayOptions.hAxis,
                         textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
+                            ...originalBarangayOptions.hAxis.textStyle,
+                            fontSize: 14
                         }
                     },
                     vAxis: {
-                        title: 'Number of Birthdays',
+                        ...originalBarangayOptions.vAxis,
+                        title: `Number of Seniors (${barangay})`,
                         minValue: 0,
-                        textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
-                        }
-                    }
+                        maxValue: filteredData.getValue(0, 1) * 1.2
+                    },
+                    bar: {
+                        groupWidth: '60%'
+                    },
+                    colors: ['#3B82F6']
                 };
 
-                charts.birthdayMonth = new google.visualization.ColumnChart(document.getElementById('birthday-month-chart'));
-                charts.birthdayMonth.draw(birthdayMonthData, birthdayMonthOptions);
+                charts.barangay.draw(filteredData, filteredOptions);
+                barangayChartFiltered = true;
+                showToast(`Showing data for ${barangay}`, 'success');
+
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 500);
 
             } catch (error) {
-                console.error('Error drawing birthday month chart:', error);
-            }
+                console.error('Error filtering barangay chart:', error);
+                showToast('Error filtering chart: ' + error.message, 'error');
 
-            // Milestone Birthdays Chart for staff's registered seniors
-            try {
-                var milestoneData = new google.visualization.DataTable();
-                milestoneData.addColumn('string', 'Milestone');
-                milestoneData.addColumn('number', 'Count');
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                if (loadingOverlay) loadingOverlay.remove();
 
-                <?php
-                if (!empty($milestone_birthdays)) {
-                    echo "milestoneData.addRows([\n";
-                    foreach ($milestone_birthdays as $milestone => $count) {
-                        echo "['$milestone', $count],\n";
+                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+                    const filterSelect = document.getElementById('barangay-filter');
+                    if (filterSelect) {
+                        filterSelect.value = 'all';
                     }
-                    echo "]);";
-                } else {
-                    echo "milestoneData.addRows([['No Milestones', 0]]);";
                 }
-                ?>
-
-                var milestoneOptions = {
-                    ...chartOptions,
-                    title: '',
-                    pieHole: 0.4,
-                    colors: ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#00BCD4', '#009688'],
-                    pieSliceText: 'value'
-                };
-
-                charts.milestone = new google.visualization.PieChart(document.getElementById('milestone-chart'));
-                charts.milestone.draw(milestoneData, milestoneOptions);
-
-            } catch (error) {
-                console.error('Error drawing milestone chart:', error);
             }
         }
 
-        // NEW: Show birthday celebration modal
-        function showBirthdayCelebration(senior) {
-            // Remove any existing modal
+        function filterByBarangay(barangay) {
+            if (!googleChartsLoaded) {
+                showToast('Charts are still loading. Please wait.', 'warning');
+                return;
+            }
+
+            if (barangay === 'all') {
+                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
+                    const chartContainer = document.getElementById('barangay-chart');
+                    const loadingOverlay = document.createElement('div');
+                    loadingOverlay.className = 'loading-overlay';
+                    loadingOverlay.innerHTML = '<div class="flex flex-col items-center"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div><div class="text-sm text-gray-600 dark:text-gray-300">Loading...</div></div>';
+                    chartContainer.parentElement.style.position = 'relative';
+                    chartContainer.parentElement.appendChild(loadingOverlay);
+
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+                    showToast('Showing all barangays', 'info');
+
+                    setTimeout(() => {
+                        loadingOverlay.remove();
+                    }, 500);
+                }
+            } else {
+                filterBarangayChart(barangay);
+            }
+        }
+
+        // Birthday celebration modal
+        function showBirthdayCelebration(allBirthdays) {
             const existingModal = document.querySelector('.birthday-celebration-modal');
             if (existingModal) {
                 existingModal.remove();
             }
-
-            // Create confetti effect
+            
+            if (!allBirthdays || !Array.isArray(allBirthdays) || allBirthdays.length === 0) {
+                console.error('Invalid birthday data');
+                showToast('No birthday data available', 'error');
+                return;
+            }
+            
             createConfetti();
-
-            // Create modal
+            
             const modal = document.createElement('div');
             modal.className = 'birthday-celebration-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80';
+            modal.style.cssText = 'z-index: 9999; backdrop-filter: blur(4px); transition: opacity 0.3s ease;';
+            
             modal.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden birthday-modal">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden birthday-modal">
                     <div class="relative">
                         <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500"></div>
-                        <div class="p-6 text-center">
-                            <div class="mb-4">
-                                <div class="birthday-avatar mx-auto mb-4">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Happy Birthday!</h3>
-                                <div class="age-milestone mb-4">${senior.new_age_today}</div>
-                                <p class="text-lg font-semibold text-gray-700 dark:text-gray-300">${senior.full_name}</p>
-                                <p class="text-gray-600 dark:text-gray-400">${senior.formatted_birthdate}</p>
-                                <div class="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
-                                    <i class="fas fa-map-marker-alt mr-2"></i>
-                                    ${senior.barangay || 'N/A'}
-                                </div>
-                            </div>
+                        
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div class="absolute top-0 left-1/4 w-4 h-4 bg-yellow-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="absolute top-4 right-1/3 w-3 h-3 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.5s"></div>
+                            <div class="absolute bottom-8 left-1/3 w-3 h-3 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.8s"></div>
+                        </div>
+                        
+                        <div class="birthday-carousel p-6 pt-8">
+                            <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
+                                🎉 ${allBirthdays.length} Birthday${allBirthdays.length > 1 ? 's' : ''} Today! (Your Seniors) 🎉
+                            </h3>
                             
-                            <div class="mt-6 space-y-3">
-                                <button onclick="sendBirthdayGreeting(${senior.applicant_id}, '${senior.full_name}', '${senior.contact_number || ''}')" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-sms mr-2"></i> Send SMS Greeting
-                                </button>
-                                <button onclick="generateBirthdayCertificate(${senior.applicant_id})" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-certificate mr-2"></i> Generate Certificate
-                                </button>
-                                <button onclick="viewSeniorProfile(${senior.applicant_id})" 
-                                        class="w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-200 flex items-center justify-center">
-                                    <i class="fas fa-user-circle mr-2"></i> View Profile
-                                </button>
+                            ${allBirthdays.map((senior, index) => {
+                                const age = senior.new_age_today || senior.turning_age || '🎉';
+                                const formattedBirthdate = senior.formatted_birthdate || 
+                                    (senior.birth_date ? new Date(senior.birth_date).toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    }) : 'N/A');
+                                
+                                return `
+                                <div class="birthday-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                                    <div class="text-center">
+                                        <div class="mb-4">
+                                            <div class="birthday-avatar mx-auto mb-4 relative">
+                                                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold">
+                                                    ${senior.full_name ? senior.full_name.charAt(0).toUpperCase() : 'S'}
+                                                </div>
+                                                <div class="absolute -top-2 -right-2 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                                    <span class="text-white text-sm font-bold">${age}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                                Happy Birthday!
+                                            </h4>
+                                            
+                                            <div class="age-milestone mb-4 text-3xl">${age} Years Old!</div>
+                                            
+                                            <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                                ${senior.full_name || 'Unknown Senior'}
+                                            </p>
+                                            
+                                            <p class="text-gray-600 dark:text-gray-400 mb-3">
+                                                <i class="fas fa-calendar-day mr-2"></i>${formattedBirthdate}
+                                            </p>
+                                            
+                                            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                                                ${senior.barangay ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700">
+                                                    <i class="fas fa-map-marker-alt mr-2 text-xs"></i>
+                                                    ${senior.barangay}
+                                                </div>
+                                                ` : ''}
+                                                
+                                                ${senior.gender ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
+                                                    <i class="fas ${senior.gender === 'Male' ? 'fa-male' : 'fa-female'} mr-2 text-xs"></i>
+                                                    ${senior.gender}
+                                                </div>
+                                                ` : ''}
+                                                
+                                                ${senior.contact_number ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-700">
+                                                    <i class="fas fa-phone mr-2 text-xs"></i>
+                                                    ${senior.contact_number}
+                                                </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                            }).join('')}
+                            
+                            ${allBirthdays.length > 1 ? `
+                            <button class="birthday-nav prev" onclick="changeBirthdaySlide(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="birthday-nav next" onclick="changeBirthdaySlide(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            
+                            <div class="birthday-counter">
+                                <span id="current-slide">1</span> / ${allBirthdays.length}
                             </div>
+                            ` : ''}
                         </div>
                     </div>
-                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end">
+                    
+                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
                         <button onclick="closeModal('birthday-celebration')" 
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500 transition-colors">
-                            Close
+                                class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-white bg-gradient-to-r  rounded-lg hover:from-gray-700 hover:to-gray-800 transition-colors flex items-center">
+                            <i class="fas fa-times mr-2"></i> Close
                         </button>
                     </div>
                 </div>
             `;
-
+            
             document.body.appendChild(modal);
-
-            // Add click outside to close
+            
+            window.currentBirthdayIndex = 0;
+            window.allBirthdaysData = allBirthdays;
+            window.currentBirthday = allBirthdays[0];
+            
+            const scrollY = window.scrollY;
+            
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeModal('birthday-celebration');
                 }
             });
-
-            // Add escape key to close
+            
             const handleEsc = function(e) {
                 if (e.key === 'Escape') {
                     closeModal('birthday-celebration');
@@ -1142,168 +1810,129 @@ $conn->close();
                 }
             };
             document.addEventListener('keydown', handleEsc);
+            
+            if (allBirthdays.length > 1) {
+                window.birthdaySlideInterval = setInterval(() => {
+                    changeBirthdaySlide(1);
+                }, 10000);
+            }
+            
+            setTimeout(() => {
+                if (document.querySelector('.birthday-celebration-modal')) {
+                    closeModal('birthday-celebration');
+                }
+            }, 60000);
+            
+            modal.restoreScroll = function() {
+                const scrollY = document.body.style.top;
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            };
+        }
+        
+        function changeBirthdaySlide(direction) {
+            const slides = document.querySelectorAll('.birthday-slide');
+            const totalSlides = slides.length;
+            
+            if (totalSlides <= 1) return;
+            
+            if (window.birthdaySlideInterval) {
+                clearInterval(window.birthdaySlideInterval);
+            }
+            
+            let newIndex = window.currentBirthdayIndex + direction;
+            
+            if (newIndex < 0) {
+                newIndex = totalSlides - 1;
+            } else if (newIndex >= totalSlides) {
+                newIndex = 0;
+            }
+            
+            slides[window.currentBirthdayIndex].classList.remove('active');
+            slides[newIndex].classList.add('active');
+            
+            window.currentBirthdayIndex = newIndex;
+            window.currentBirthday = window.allBirthdaysData[newIndex];
+            
+            const counterElement = document.getElementById('current-slide');
+            if (counterElement) {
+                counterElement.textContent = newIndex + 1;
+            }
+            
+            if (totalSlides > 1) {
+                window.birthdaySlideInterval = setInterval(() => {
+                    changeBirthdaySlide(1);
+                }, 10000);
+            }
+        }
+        
+        function restoreScrollPosition() {
+            const scrollY = document.body.style.top;
+            if (scrollY) {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            } else {
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+            }
         }
 
-        // NEW: Create confetti effect
-        function createConfetti() {
-            const colors = ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5'];
+        function closeModal(type) {
+            const modal = document.querySelector(`.${type}-modal`);
+            if (modal) {
+                modal.style.opacity = '0';
+                modal.style.transform = 'translateY(-50px) scale(0.9)';
 
-            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    modal.remove();
+                    restoreScrollPosition();
+                    
+                    const confettiElements = document.querySelectorAll('.confetti');
+                    confettiElements.forEach(el => el.remove());
+                    
+                    if (window.birthdaySlideInterval) {
+                        clearInterval(window.birthdaySlideInterval);
+                        window.birthdaySlideInterval = null;
+                    }
+                }, 300);
+            } else {
+                restoreScrollPosition();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#4CAF50'];
+
+            for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.width = Math.random() * 12 + 8 + 'px';
+                confetti.style.height = Math.random() * 12 + 8 + 'px';
                 confetti.style.animationDelay = Math.random() * 2 + 's';
-                confetti.style.opacity = Math.random() * 0.5 + 0.5;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
 
                 document.body.appendChild(confetti);
 
-                // Remove confetti after animation
                 setTimeout(() => {
-                    confetti.remove();
+                    if (confetti.parentNode) {
+                        confetti.remove();
+                    }
                 }, 3000);
             }
         }
 
-        // NEW: Send birthday greeting
-        function sendBirthdayGreeting(applicantId, fullName, phoneNumber) {
-            if (!phoneNumber) {
-                showToast('No phone number available for this senior', 'error');
-                return;
-            }
-
-            showToast(`Sending birthday SMS to ${fullName}...`, 'info');
-
-            // In a real implementation, you would make an AJAX call to send SMS
-            // For now, we'll simulate it
-            setTimeout(() => {
-                showToast(`Birthday SMS sent to ${fullName}`, 'success');
-
-                // Log the action
-                fetch('../../php/log_birthday_greeting.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        applicant_id: applicantId,
-                        full_name: fullName,
-                        phone_number: phoneNumber,
-                        greeting_type: 'sms',
-                        sent_by: <?php echo $staff_id; ?>
-                    })
-                });
-            }, 1000);
-        }
-
-        // NEW: Generate birthday certificate
-        function generateBirthdayCertificate(applicantId) {
-            showToast('Generating birthday certificate...', 'info');
-
-            // Open certificate generation in new window
-            window.open(`./generate_birthday_certificate.php?applicant_id=${applicantId}&session_context=<?php echo $ctx; ?>`, '_blank');
-
-            // Log the action
-            fetch('../../php/log_birthday_greeting.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    applicant_id: applicantId,
-                    greeting_type: 'certificate',
-                    sent_by: <?php echo $staff_id; ?>
-                })
-            });
-        }
-
-        // NEW: View senior profile
-        function viewSeniorProfile(applicantId) {
-            window.location.href = `./staff_view_senior.php?id=${applicantId}&session_context=<?php echo $ctx; ?>`;
-        }
-
-        // NEW: Send birthday reminders
-        function sendBirthdayReminders() {
-            showToast('Sending birthday reminders...', 'info');
-
-            fetch('../../php/send_birthday_reminders.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'send_reminders',
-                        user_id: <?php echo $staff_id; ?>,
-                        staff_only: true
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Sent ${data.sent_count} birthday reminders`, 'success');
-                    } else {
-                        showToast('Failed to send reminders: ' + data.error, 'error');
-                    }
-                })
-                .catch(error => {
-                    showToast('Error sending reminders', 'error');
-                });
-        }
-
-        // NEW: Send birthday greetings to all
-        function sendBirthdayGreetingsToAll() {
-            showToast('Sending birthday greetings to all celebrants...', 'info');
-
-            <?php foreach ($birthdays_today as $senior): ?>
-                setTimeout(() => {
-                    sendBirthdayGreeting(
-                        <?php echo $senior['applicant_id']; ?>,
-                        '<?php echo addslashes($senior['full_name']); ?>',
-                        '<?php echo addslashes($senior['contact_number'] ?? ''); ?>'
-                    );
-                }, <?php echo (array_search($senior, $birthdays_today) * 1000) + 1000; ?>);
-            <?php endforeach; ?>
-
-            setTimeout(() => {
-                showToast('All birthday greetings sent successfully!', 'success');
-            }, <?php echo (count($birthdays_today) * 1000) + 2000; ?>);
-        }
-
-        // Generic close modal function
-        function closeModal(type) {
-            const modal = document.querySelector(`.${type}-modal`);
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        // Redraw charts on window resize
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                drawCharts();
-                drawBirthdayCharts();
-            }, 250);
-        });
-
-        // Theme change detection
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'class') {
-                    isDarkMode = document.documentElement.classList.contains('dark');
-                    drawCharts();
-                    drawBirthdayCharts();
-                }
-            });
-        });
-        observer.observe(document.documentElement, {
-            attributes: true
-        });
-
-        // Show toast notification
         function showToast(message, type = 'info') {
             const existingToasts = document.querySelectorAll('.custom-toast');
             existingToasts.forEach(toast => toast.remove());
@@ -1333,7 +1962,6 @@ $conn->close();
             }, 3000);
         }
 
-        // Refresh dashboard data
         function refreshDashboard() {
             const refreshBtn = document.getElementById('refresh-btn');
             const originalHtml = refreshBtn.innerHTML;
@@ -1344,36 +1972,47 @@ $conn->close();
             showToast('Refreshing dashboard...', 'info');
 
             setTimeout(() => {
-                location.reload();
+                if (googleChartsLoaded) {
+                    drawCharts();
+                    drawBirthdayCharts();
+                    showToast('Dashboard updated!', 'success');
+                } else {
+                    loadGoogleCharts();
+                    showToast('Reloading charts...', 'info');
+                }
+                refreshBtn.innerHTML = originalHtml;
+                refreshBtn.disabled = false;
             }, 1000);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if there are birthdays today and show celebration
-            <?php if (count($birthdays_today) > 0): ?>
-                setTimeout(() => {
-                    // Show celebration for the first birthday
-                    const firstBirthday = <?php echo json_encode($birthdays_today[0] ?? null); ?>;
-                    if (firstBirthday) {
-                        showBirthdayCelebration(firstBirthday);
+        // Redraw charts on window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (googleChartsLoaded) {
+                    drawCharts();
+                    drawBirthdayCharts();
+                }
+            }, 250);
+        });
+
+        // Theme change detection
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    isDarkMode = document.documentElement.classList.contains('dark');
+                    if (googleChartsLoaded) {
+                        drawCharts();
+                        drawBirthdayCharts();
                     }
-                }, 1000);
-            <?php endif; ?>
-
-            // Add birthday countdown timer
-            updateBirthdayCountdown();
-            setInterval(updateBirthdayCountdown, 60000); // Update every minute
-
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.key === 'r') {
-                    e.preventDefault();
-                    refreshDashboard();
                 }
             });
         });
+        observer.observe(document.documentElement, {
+            attributes: true
+        });
 
-        // NEW: Update birthday countdown
         function updateBirthdayCountdown() {
             const now = new Date();
             const tomorrow = new Date(now);
@@ -1388,6 +2027,69 @@ $conn->close();
             if (countdownElement) {
                 countdownElement.textContent = `${hours}h ${minutes}m`;
             }
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dashboard');
+            initDashboard();
+        });
+
+        // Fallback for failed charts
+        function retryFailedCharts() {
+            console.log('Retrying failed charts');
+            chartsLoadAttempts = 0;
+            googleChartsLoaded = false;
+            loadGoogleCharts();
+        }
+
+        // NEW: Send birthday greetings to all
+        function sendBirthdayGreetingsToAll() {
+            showToast('Sending birthday greetings to all celebrants...', 'info');
+
+            <?php foreach ($birthdays_today as $senior): ?>
+                setTimeout(() => {
+                    sendBirthdayGreeting(
+                        <?php echo $senior['applicant_id']; ?>,
+                        '<?php echo addslashes($senior['full_name']); ?>',
+                        '<?php echo addslashes($senior['contact_number'] ?? ''); ?>'
+                    );
+                }, <?php echo (array_search($senior, $birthdays_today) * 1000) + 1000; ?>);
+            <?php endforeach; ?>
+
+            setTimeout(() => {
+                showToast('All birthday greetings sent successfully!', 'success');
+            }, <?php echo (count($birthdays_today) * 1000) + 2000; ?>);
+        }
+
+        // NEW: Send birthday greeting
+        function sendBirthdayGreeting(applicantId, fullName, phoneNumber) {
+            if (!phoneNumber) {
+                showToast('No phone number available for this senior', 'error');
+                return;
+            }
+
+            showToast(`Sending birthday SMS to ${fullName}...`, 'info');
+
+            // In a real implementation, you would make an AJAX call to send SMS
+            setTimeout(() => {
+                showToast(`Birthday SMS sent to ${fullName}`, 'success');
+
+                // Log the action
+                fetch('../../php/log_birthday_greeting.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        applicant_id: applicantId,
+                        full_name: fullName,
+                        phone_number: phoneNumber,
+                        greeting_type: 'sms',
+                        sent_by: <?php echo $staff_id; ?>
+                    })
+                });
+            }, 1000);
         }
     </script>
 </head>
@@ -1440,16 +2142,6 @@ $conn->close();
             </div>
             <!-- UserProfile -->
             <div class="flex items-center lg:order-2">
-                <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                    class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                    <span class="sr-only">Toggle search</span>
-                    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path clip-rule="evenodd" fill-rule="evenodd"
-                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                        </path>
-                    </svg>
-                </button>
                 <button type="button"
                     class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -1464,11 +2156,9 @@ $conn->close();
                     <div class="py-3 px-4">
                         <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                             <?php
-                            // Display fullname with fallback
                             if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                 echo htmlspecialchars($_SESSION['fullname']);
                             } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                // Construct fullname from first and last name if available
                                 echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                             } else {
                                 echo 'User';
@@ -1477,11 +2167,9 @@ $conn->close();
                         </span>
                         <span class="block text-sm text-gray-900 truncate dark:text-white">
                             <?php
-                            // Display user type with proper formatting
                             if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                 echo htmlspecialchars($_SESSION['user_type']);
                             } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                // Fallback to role_name if available
                                 echo htmlspecialchars($_SESSION['role_name']);
                             } else {
                                 echo 'User Type';
@@ -1492,8 +2180,9 @@ $conn->close();
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
                             <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                out</a>
+                                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -1528,116 +2217,63 @@ $conn->close();
                 <li>
                     <a href="#"
                         class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-6 h-6 text-blue-700 transition duration-75 dark:text-gray-400  dark:group-hover:text-white">
-                            <!-- Top-left (taller) -->
-                            <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                            <!-- Top-right (smaller) -->
-                            <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                            <!-- Bottom-left (smaller) -->
-                            <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                            <!-- Bottom-right (taller) -->
-                            <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
-                        </svg>
-
+                        <i class="fas fa-tachometer-alt w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
                         <span class="ml-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="./staff_register.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <g transform="translate(24,0) scale(-1,1)">
-                                <path fill-rule="evenodd"
-                                    d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                    clip-rule="evenodd" />
-                            </g>
-                        </svg>
+                        <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Register</span>
                     </a>
                 </li>
                 <li>
                     <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                        class="flex items-center p-2 cursor-pointer w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true"
-                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                        </svg>
+                        class="flex items-center p-2 cursor-pointer w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                        <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                            class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
+                        <i class="fas fa-chevron-down"></i>
                     </button>
                     <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                         <li>
                             <a href="./staff_activelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
+                            </a>
                         </li>
                         <li>
                             <a href="./staff_inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                            </a>
                         </li>
                         <li>
                             <a href="./staff_deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                List</a>
+                                class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                            </a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="./staff_benefits.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                clip-rule="evenodd" />
-                            <path fill-rule="evenodd"
-                                d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Benefits</span>
                     </a>
                 </li>
                 <li>
                     <a href="./staff_generate_id.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Generate ID</span>
                     </a>
                 </li>
                 <li>
                     <a href="./staff_report.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                        </svg>
-
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Report</span>
                     </a>
                 </li>
@@ -1645,14 +2281,8 @@ $conn->close();
             <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                 <li>
                     <a href="./staff_profile.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                        <svg aria-hidden="true"
-                            class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd"></path>
-                        </svg>
+                        class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                        <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Settings</span>
                     </a>
                 </li>
@@ -1669,23 +2299,20 @@ $conn->close();
                 <p class="text-gray-600 dark:text-gray-400 mt-2">Welcome back, <?php echo htmlspecialchars($_SESSION['fullname'] ?? 'Staff'); ?>! Here's your personal overview.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- <button onclick="sendBirthdayReminders()"
-                    class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center">
-                    <i class="fas fa-bell mr-2"></i> Send Birthday Reminders
-                </button> -->
                 <span class="text-sm text-gray-500 dark:text-gray-400 hidden md:inline">
-                    Last updated: <?php echo date('M j, Y H:i'); ?>
+                    Today: <?php echo date('F j, Y'); ?>
                 </span>
                 <button id="refresh-btn" onclick="refreshDashboard()"
-                    class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                    <i class="fas fa-sync-alt"></i>
+                    class="px-4 py-2 text-sm font-medium text-gray-500 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center">
+                    <i class="fas fa-sync-alt mr-2"></i> Refresh
                 </button>
             </div>
         </div>
 
         <!-- Birthday Alert Banner -->
         <?php if (count($birthdays_today) > 0): ?>
-            <div class="mb-6 birthday-card rounded-xl shadow p-4 fade-in">
+            <div class="mb-6 birthday-card rounded-xl shadow p-4 fade-in cursor-pointer hover:shadow-lg transition-shadow duration-300"
+                onclick="showBirthdayCelebration(<?php echo htmlspecialchars(json_encode($birthdays_today)); ?>)">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 mr-4">
@@ -1710,10 +2337,7 @@ $conn->close();
                             </p>
                         </div>
                     </div>
-                    <button onclick="sendBirthdayGreetingsToAll()"
-                        class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 flex items-center">
-                        <i class="fas fa-gift mr-2"></i> Send All Greetings
-                    </button>
+                    
                 </div>
             </div>
         <?php endif; ?>
@@ -1858,7 +2482,7 @@ $conn->close();
                         <?php if (count($birthdays_today) > 0): ?>
                             <?php foreach ($birthdays_today as $senior): ?>
                                 <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition-colors cursor-pointer"
-                                    onclick="showBirthdayCelebration(<?php echo htmlspecialchars(json_encode($senior)); ?>)">
+                                    onclick="showBirthdayCelebration([<?php echo htmlspecialchars(json_encode($senior)); ?>])">
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold mr-3">
                                             <?php echo strtoupper(substr($senior['full_name'], 0, 1)); ?>
@@ -2076,7 +2700,7 @@ $conn->close();
                 </div>
             </div>
 
-            <!-- Barangay Distribution Chart -->
+            <!-- Barangay Distribution Chart - FIXED -->
             <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800 chart-container">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -2084,12 +2708,31 @@ $conn->close();
                         <p class="text-sm text-gray-500 dark:text-gray-400">Senior citizens per barangay in your registrations</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-300">
-                            <?php echo count($stats['barangays']); ?> barangays
-                        </span>
+                        <div class="relative">
+                            <select id="barangay-filter" onchange="filterByBarangay(this.value)"
+                                class="appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="all">All Barangays</option>
+                                <?php foreach ($all_barangays_staff as $barangay => $count): ?>
+                                    <option value="<?php echo htmlspecialchars($barangay); ?>">
+                                        <?php echo htmlspecialchars(preg_replace('/^[IVXLCDM]+ - /', '', $barangay)); ?> (<?php echo $count; ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-500 pointer-events-none"></i>
+                        </div>
                     </div>
                 </div>
-                <div id="barangay-chart" style="height: 300px;"></div>
+
+                <!-- Chart container with fallback -->
+                <div id="barangay-chart" style="height: 300px; min-height: 300px; position: relative;">
+                    <!-- Loading indicator -->
+                    <div id="barangay-chart-loading" class="absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Loading chart...</p>
+                        </div>
+                    </div>
+                </div>
                 <?php if (!empty($top_barangays)): ?>
                     <div class="mt-4">
                         <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Top Barangays (Your Seniors):</div>

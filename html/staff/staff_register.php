@@ -9,25 +9,22 @@ error_log("Staff user ID: " . ($_SESSION['staff_user_id'] ?? 'none'));
 error_log("Admin user ID: " . ($_SESSION['admin_user_id'] ?? 'none'));
 error_log("Full name: " . ($_SESSION['fullname'] ?? 'none'));
 error_log("Username: " . ($_SESSION['username'] ?? 'none'));
+
 require_once "../../php/login/staff_header.php";
 require_once '../../php/login/staff_session_sync.php';
 
 // Fix session handling for staff
 if (isset($_GET['session_context']) && !empty($_GET['session_context'])) {
-    // Store session context but don't use it for session name
     $ctx = $_GET['session_context'];
 
-    // Set a default session context if not set
     if (!isset($_SESSION['session_context'])) {
         $_SESSION['session_context'] = 'Staff';
     }
 
-    // Make sure we have a user ID
     if (!isset($_SESSION['user_id']) && isset($user_id) && $user_id > 0) {
         $_SESSION['user_id'] = $user_id;
     }
 
-    // Store fullname in session if available
     if (!isset($_SESSION['fullname']) && !empty($full_name)) {
         $_SESSION['fullname'] = $full_name;
     }
@@ -49,8 +46,8 @@ try {
     error_log("Database connection failed: " . $e->getMessage());
     die("Database connection failed. Please try again later.");
 }
-syncStaffSession($pdo);
-// Fetch current user data - ADD THIS
+
+// Fetch current user data
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -65,7 +62,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name - ADD THIS
+// Prepare full name
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -74,7 +71,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL - ADD THIS
+// Get profile photo URL
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../../' . $user_data['profile_photo'];
@@ -83,46 +80,54 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo - ADD THIS
+// Fallback to avatar if no profile photo
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
+
+// Calculate minimum birthdate for 60 years old
+$currentDate = new DateTime();
+$minBirthDate = new DateTime();
+$minBirthDate->modify('-60 years');
+$minBirthDateFormatted = $minBirthDate->format('Y-m-d');
+$maxBirthDateFormatted = $currentDate->format('Y-m-d');
+
+// Generate unique ID number for staff
+function generateStaffID()
+{
+    $prefix = "SC-STF";
+    $year = date('Y');
+    $random = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+    return $prefix . "-" . $year . "-" . $random;
+}
+
+$generated_id = generateStaffID();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Senior Citizen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Register Senior Citizen - Staff Panel</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
-        /* Enhanced logo styling for page display */
+        /* Enhanced logo styling */
         .highlighted-logo {
             filter:
-                brightness(1.3)
-                /* Make brighter */
-                contrast(1.2)
-                /* Increase contrast */
-                saturate(1.5)
-                /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)
-                /* Blue glow */
-                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-
-            /* Optional border */
+                brightness(1.3) contrast(1.2) saturate(1.5) drop-shadow(0 0 8px #3b82f6) drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-
-            /* Inner glow effect */
             box-shadow:
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-
-            /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
 
@@ -139,12 +144,170 @@ if (empty($profile_photo_url)) {
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
         }
+
+        /* Age validation styling */
+        .age-error {
+            border-color: #ef4444 !important;
+        }
+
+        .age-warning {
+            border-color: #f59e0b !important;
+        }
+
+        .age-valid {
+            border-color: #10b981 !important;
+        }
+
+        /* Character validation styling */
+        .char-error {
+            border-color: #ef4444 !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .mobile-padding {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .step-label {
+                font-size: 12px;
+            }
+
+            .step-circle {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+
+            .step-line {
+                margin: 0 5px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .step-label {
+                display: none;
+            }
+        }
+
+        /* Prevent zoom on focus for mobile devices */
+        @media (max-width: 768px) {
+
+            input,
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Touch-friendly buttons */
+        @media (max-width: 768px) {
+
+            button,
+            input[type="button"],
+            input[type="submit"],
+            .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        .auto-save-indicator.saving {
+            background: #f59e0b;
+        }
+
+        .auto-save-indicator.saved {
+            background: #10b981;
+        }
+
+        .auto-save-indicator.error {
+            background: #ef4444;
+        }
+
+        /* Continue session banner */
+        #continueSessionBanner {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .continue-session-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .continue-session-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+        }
+
+        .restore-status {
+            display: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .restore-status.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .restore-status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
     </style>
+
     <link rel="stylesheet" href="../css/popup.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         .iti {
             width: 100%;
@@ -163,7 +326,6 @@ if (empty($profile_photo_url)) {
 
         .error-border {
             border-color: #ef4444 !important;
-            background-color: #fef2f2 !important;
         }
 
         .success-border {
@@ -176,12 +338,32 @@ if (empty($profile_photo_url)) {
 
         .form-step.active {
             display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .step-indicator {
             display: flex;
             align-items: center;
             margin-bottom: 2rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .step-indicator::-webkit-scrollbar {
+            display: none;
         }
 
         .step-circle {
@@ -194,6 +376,7 @@ if (empty($profile_photo_url)) {
             font-weight: 600;
             margin-right: 10px;
             border: 2px solid #d1d5db;
+            flex-shrink: 0;
         }
 
         .step-circle.active {
@@ -213,12 +396,14 @@ if (empty($profile_photo_url)) {
             height: 2px;
             background-color: #d1d5db;
             margin: 0 10px;
+            min-width: 20px;
         }
 
         .step-label {
             font-size: 14px;
             font-weight: 500;
             color: #6b7280;
+            white-space: nowrap;
         }
 
         .step-label.active {
@@ -228,12 +413,122 @@ if (empty($profile_photo_url)) {
         .step-label.completed {
             color: #10b981;
         }
+
+        /* Age validation message */
+        .age-validation-message {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .age-validation-message.show {
+            display: block;
+        }
+
+        .age-validation-message.error {
+            color: #ef4444;
+        }
+
+        .age-validation-message.warning {
+            color: #f59e0b;
+        }
+
+        .age-validation-message.success {
+            color: #10b981;
+        }
+
+        /* Character validation message */
+        .char-validation-message {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .char-validation-message.show {
+            display: block;
+        }
+
+        .char-validation-message.error {
+            color: #ef4444;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .container-padding {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* Date input improvements for mobile */
+        @media (max-width: 768px) {
+            .date-input-mobile {
+                font-size: 16px !important;
+                min-height: 44px;
+            }
+
+            .date-format-example {
+                display: block !important;
+                background: #eff6ff;
+                border-left: 4px solid #3b82f6;
+                padding: 6px 10px;
+                margin-top: 4px;
+                border-radius: 4px;
+            }
+
+            .dark .date-format-example {
+                background: #1e293b;
+                border-left-color: #60a5fa;
+            }
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-        <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+        <!-- Auto-save Indicator -->
+        <div id="autoSaveIndicator" class="auto-save-indicator">
+            <i class="fas fa-spinner fa-spin mr-1"></i>
+            <span>Saving...</span>
+        </div>
+
+        <!-- Mobile Header -->
+        <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
+                        aria-controls="drawer-navigation"
+                        class="p-2 text-gray-600 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Toggle sidebar</span>
+                    </button>
+                    <a href="#" class="flex items-center justify-between mr-4">
+                        <img src="../../img/MSWD_LOGO-removebg-preview.png"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
+                            alt="MSWD LOGO" />
+                        <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">MSWD PALUAN</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <button type="button"
+                        class="flex cursor-pointer w-8 h-8 text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        id="mobile-user-menu-button" aria-expanded="false" data-dropdown-toggle="mobile-dropdown">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="w-full h-full rounded-full object-cover"
+                            src="<?php echo htmlspecialchars($profile_photo_url); ?>"
+                            alt="user photo" />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
                 <div class="flex justify-start items-center">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
@@ -245,69 +540,32 @@ if (empty($profile_photo_url)) {
                                 d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        <svg aria-hidden="true" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="#" class="flex items-center justify-between mr-4 ">
+                    <a href="#" class="flex items-center justify-between mr-4">
                         <img src="../../img/MSWD_LOGO-removebg-preview.png"
-                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50"
+                            class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD
-                            PALUAN</span>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">MSWD PALUAN</span>
                     </a>
-                    <form action="#" method="GET" class="hidden md:block md:pl-2">
-                        <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
-                            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <input type="text" name="email" id="topbar-search"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                placeholder="Search" />
-                        </div>
-                    </form>
                 </div>
-                <!-- UserProfile -->
                 <div class="flex items-center lg:order-2">
-                    <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">Toggle search</span>
-                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </button>
                     <button type="button"
-                        class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        class="flex mx-3 w-8 h-8 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-8 h-8 rounded-full object-cover"
+                        <img class="w-full h-full rounded-full object-cover"
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
-                    <!-- Dropdown menu -->
                     <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                                 <?php
-                                // Display fullname with fallback
                                 if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
                                     echo htmlspecialchars($_SESSION['fullname']);
                                 } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
-                                    // Construct fullname from first and last name if available
                                     echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
                                 } else {
                                     echo 'User';
@@ -316,14 +574,12 @@ if (empty($profile_photo_url)) {
                             </span>
                             <span class="block text-sm text-gray-900 truncate dark:text-white">
                                 <?php
-                                // Display user type with proper formatting
                                 if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
                                     echo htmlspecialchars($_SESSION['user_type']);
                                 } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
-                                    // Fallback to role_name if available
                                     echo htmlspecialchars($_SESSION['role_name']);
                                 } else {
-                                    echo 'User Type';
+                                    echo 'Staff User';
                                 }
                                 ?>
                             </span>
@@ -331,8 +587,9 @@ if (empty($profile_photo_url)) {
                         <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                             <li>
                                 <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
-                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                    out</a>
+                                    class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -340,143 +597,110 @@ if (empty($profile_photo_url)) {
             </div>
         </nav>
 
+        <!-- Mobile Dropdown -->
+        <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl fixed top-16 right-4"
+            id="mobile-dropdown">
+            <div class="py-3 px-4">
+                <span class="block text-sm font-semibold text-gray-900 dark:text-white">
+                    <?php
+                    if (isset($_SESSION['fullname']) && !empty($_SESSION['fullname'])) {
+                        echo htmlspecialchars($_SESSION['fullname']);
+                    } else if (isset($_SESSION['firstname']) && isset($_SESSION['lastname'])) {
+                        echo htmlspecialchars($_SESSION['firstname'] . ' ' . $_SESSION['lastname']);
+                    } else {
+                        echo 'User';
+                    }
+                    ?>
+                </span>
+                <span class="block text-sm text-gray-900 truncate dark:text-white">
+                    <?php
+                    if (isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+                        echo htmlspecialchars($_SESSION['user_type']);
+                    } else if (isset($_SESSION['role_name']) && !empty($_SESSION['role_name'])) {
+                        echo htmlspecialchars($_SESSION['role_name']);
+                    } else {
+                        echo 'Staff User';
+                    }
+                    ?>
+                </span>
+            </div>
+            <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="mobile-dropdown">
+                <li>
+                    <a href="/MSWDPALUAN_SYSTEM-MAIN/php/login/logout.php"
+                        class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         <!-- Sidebar -->
         <aside
             class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
             aria-label="Sidenav" id="drawer-navigation">
             <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-                <form action="#" method="GET" class="md:hidden mb-2">
-                    <label for="sidebar-search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="text" name="search" id="sidebar-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Search" />
-                    </div>
-                </form>
-                <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">User Panel</p>
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-5">Staff Panel</p>
                 <ul class="space-y-2">
                     <li>
                         <a href="staffindex.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="currentColor"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-
-                                <!-- Top-left (taller) -->
-                                <rect x="3" y="3" width="8" height="10" rx="1.5" />
-
-                                <!-- Top-right (smaller) -->
-                                <rect x="13" y="3" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-left (smaller) -->
-                                <rect x="3" y="15" width="8" height="6" rx="1.5" />
-
-                                <!-- Bottom-right (taller) -->
-                                <rect x="13" y="11" width="8" height="10" rx="1.5" />
-
-                            </svg>
-
+                            <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="#"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-blue-700 transition duration-75 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <g transform="translate(24,0) scale(-1,1)">
-                                    <path fill-rule="evenodd"
-                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm2-2a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm0 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2h-3Zm-6 4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-6Zm8 1v1h-2v-1h2Zm0 3h-2v1h2v-1Zm-4-3v1H9v-1h2Zm0 3H9v1h2v-1Z"
-                                        clip-rule="evenodd" />
-                                </g>
-                            </svg>
+                            <i class="fas fa-user-plus w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
                             <span class="ml-3">Register</span>
                         </a>
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
-                            class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">
-                            <svg aria-hidden="true"
-                                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                    d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5" />
-                            </svg>
+                            class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
-                            <svg aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages" aria-hidden="true"
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            <i class="fas fa-chevron-down"></i>
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                             <li>
                                 <a href="staff_activelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Active
-                                    List</a>
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-check-circle mr-2 text-sm"></i>Active List
+                                </a>
                             </li>
                             <li>
                                 <a href="staff_inactivelist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Inactive
-                                    List</a>
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-times-circle mr-2 text-sm"></i>Inactive List
+                                </a>
                             </li>
                             <li>
                                 <a href="staff_deceasedlist.php?session_context=<?php echo $ctx; ?>"
-                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-blue-100 dark:text-white dark:hover:bg-gray-700">Deceased
-                                    List</a>
+                                    class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-cross mr-2 text-sm"></i>Deceased List
+                                </a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="staff_benefits.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
-                                    clip-rule="evenodd" />
-                                <path fill-rule="evenodd"
-                                    d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Benefits</span>
                         </a>
                     </li>
                     <li>
                         <a href="staff_generate_id.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Generate ID</span>
                         </a>
                     </li>
                     <li>
                         <a href="staff_report.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
-                            </svg>
-
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Report</span>
                         </a>
                     </li>
@@ -484,14 +708,8 @@ if (empty($profile_photo_url)) {
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                     <li>
                         <a href="staff_profile.php?session_context=<?php echo $ctx; ?>"
-                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-white group">
-                            <svg aria-hidden="true"
-                                class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                            <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                             <span class="ml-3">Settings</span>
                         </a>
                     </li>
@@ -500,49 +718,68 @@ if (empty($profile_photo_url)) {
         </aside>
 
         <!-- Main Content -->
-        <main class="p-4 md:ml-64 h-auto pt-20">
-            <div class="max-w-6xl mx-auto">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Senior Citizen Registration</h1>
-                            <p class="text-gray-600 dark:text-gray-300 mt-1">Fill out the application form below</p>
+        <main class="p-4 md:ml-64 h-auto pt-14 md:pt-20">
+            <div class="max-w-6xl mx-auto container-padding">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 md:p-6 mb-6">
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+                        <div class="mb-4 md:mb-0">
+                            <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Senior Citizen Registration</h1>
+                            <p class="text-sm md:text-base text-gray-600 dark:text-gray-300 mt-1">Fill out the application form below</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
                                 Staff Panel
                             </span>
+                            <button id="clearSessionBtn" class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                                Clear Draft
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Continue Session Banner -->
+                    <div id="continueSessionBanner" class="hidden mb-4 p-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-history text-blue-600 dark:text-blue-300 mr-2"></i>
+                                <span class="text-sm text-blue-800 dark:text-blue-200">You have unsaved data from a previous session.</span>
+                            </div>
+                            <button onclick="useRestoredData()" class="continue-session-btn text-xs">
+                                Continue
+                            </button>
                         </div>
                     </div>
 
                     <!-- Step Indicators -->
-                    <div class="step-indicator mb-8">
-                        <div class="step-circle active">1</div>
-                        <div class="step-label active">Basic Information</div>
+                    <div class="step-indicator mb-6 md:mb-8">
+                        <div class="step-circle active dark:text-white">1</div>
+                        <div class="step-label active hidden md:block">Basic Information</div>
                         <div class="step-line"></div>
-                        <div class="step-circle">2</div>
-                        <div class="step-label">Contact & Address</div>
+                        <div class="step-circle dark:text-white">2</div>
+                        <div class="step-label dark:text-white hidden md:block">Contact & Address</div>
                         <div class="step-line"></div>
-                        <div class="step-circle">3</div>
-                        <div class="step-label">Economic Status</div>
+                        <div class="step-circle dark:text-white">3</div>
+                        <div class="step-label dark:text-white hidden md:block">Economic Status</div>
                         <div class="step-line"></div>
-                        <div class="step-circle">4</div>
-                        <div class="step-label">Health & Submit</div>
+                        <div class="step-circle dark:text-white">4</div>
+                        <div class="step-label dark:text-white hidden md:block">Health & Submit</div>
                     </div>
 
-                    <form id="applicantForm" class="space-y-8">
+                    <form id="applicantForm" class="space-y-6 md:space-y-8">
                         <!-- Step 1: Basic Information -->
                         <div id="step1" class="form-step active">
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Personal Information</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                                     <div>
                                         <label for="lname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Last Name <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" id="lname" name="lname" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Enter last name">
+                                            placeholder="Enter last name"
+                                            oninput="validateNameInput(this, 'lname')">
+                                        <div id="lname_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, hyphens, apostrophes, ñ, and Ñ are allowed</p>
                                     </div>
                                     <div>
                                         <label for="fname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -550,15 +787,21 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="text" id="fname" name="fname" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Enter first name">
+                                            placeholder="Enter first name"
+                                            oninput="validateNameInput(this, 'fname')">
+                                        <div id="fname_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, hyphens, apostrophes, dots, ñ, and Ñ are allowed</p>
                                     </div>
                                     <div>
                                         <label for="mname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                            Middle Name <span class="text-red-500">*</span>
+                                            Middle Name
                                         </label>
-                                        <input type="text" id="mname" name="mname" required
+                                        <input type="text" id="mname" name="mname"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Enter middle name">
+                                            placeholder="Enter middle name"
+                                            oninput="validateNameInput(this, 'mname')">
+                                        <div id="mname_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, hyphens, apostrophes, dots, ñ, and Ñ are allowed</p>
                                     </div>
                                     <div>
                                         <label for="suffix" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -566,13 +809,16 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="text" id="suffix" name="suffix"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Jr., Sr., III, etc.">
+                                            placeholder="Jr., Sr., III, etc."
+                                            oninput="validateSuffixInput(this)">
+                                        <div id="suffix_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Roman numerals, Jr., Sr., II, III, etc.</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mb-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                                     <div>
                                         <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Gender <span class="text-red-500">*</span>
@@ -588,9 +834,24 @@ if (empty($profile_photo_url)) {
                                         <label for="b_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Birthdate <span class="text-red-500">*</span>
                                         </label>
-                                        <input type="date" id="b_date" name="b_date" required
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            max="<?php echo date('Y-m-d'); ?>">
+                                        <input type="date"
+                                            id="b_date"
+                                            name="b_date"
+                                            required
+                                            class="date-input-mobile bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="YYYY-MM-DD (e.g., 1950-05-15)"
+                                            pattern="\d{4}-\d{2}-\d{2}"
+                                            title="Enter date in format: YYYY-MM-DD"
+                                            oninput="handleDateInput(this, 'birthdate')"
+                                            onblur="validateDateFormat(this, 'birthdate')"
+                                            maxlength="10">
+                                        <div id="birthdate_validation" class="age-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                            Minimum age: 60 years old
+                                        </p>
+                                        <p class="date-format-example mt-1 text-xs text-blue-600 dark:text-blue-400 hidden">
+                                            Example: 1950-05-15 (Year-Month-Day)
+                                        </p>
                                     </div>
                                     <div>
                                         <label for="age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -598,6 +859,8 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="number" id="age" name="age" required readonly
                                             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <div id="age_validation" class="age-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Calculated automatically</p>
                                     </div>
                                     <div>
                                         <label for="civil_status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -617,14 +880,17 @@ if (empty($profile_photo_url)) {
                             </div>
 
                             <div class="mb-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                     <div>
                                         <label for="citizenship" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Citizenship <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" id="citizenship" name="citizenship" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g., Filipino">
+                                            placeholder="e.g., Filipino"
+                                            oninput="validateCitizenshipInput(this)">
+                                        <div id="citizenship_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters and spaces only</p>
                                     </div>
                                     <div>
                                         <label for="religion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -632,20 +898,26 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="text" id="religion" name="religion" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g., Roman Catholic">
+                                            placeholder="e.g., Roman Catholic"
+                                            oninput="validateReligionInput(this)">
+                                        <div id="religion_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, and hyphens only</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mb-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                     <div>
                                         <label for="birth_place" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Birthplace <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" id="birth_place" name="birth_place" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="City, Province">
+                                            placeholder="City, Province"
+                                            oninput="validatePlaceInput(this, 'birthplace')">
+                                        <div id="birthplace_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, commas, and hyphens only</p>
                                     </div>
                                     <div>
                                         <label for="educational_attainment" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -668,9 +940,9 @@ if (empty($profile_photo_url)) {
                                 </div>
                             </div>
 
-                            <div class="flex justify-end">
-                                <button type="button" onclick="nextStep(2)"
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            <div class="flex justify-end pt-2">
+                                <button type="button" onclick="validateStep1AndNext()"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                                     Next: Contact & Address
                                 </button>
                             </div>
@@ -680,15 +952,15 @@ if (empty($profile_photo_url)) {
                         <div id="step2" class="form-step">
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Contact Information</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <div>
                                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                            Contact Number <span class="text-red-500">*</span>
+                                            Contact Number
                                         </label>
-                                        <input type="tel" id="contact_number" name="contact_number" required
+                                        <input type="tel" id="contact_number" name="contact_number"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Enter phone number">
-                                        <p class="mt-1 text-xs text-gray-500">Format: +639XXXXXXXXX or 09XXXXXXXXX</p>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: +639XXXXXXXXX or 09XXXXXXXXX</p>
                                         <div id="contact_number_error" class="mt-1 text-xs text-red-600 hidden"></div>
                                     </div>
                                     <div>
@@ -697,21 +969,27 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="text" id="ip_group" name="ip_group"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Indigenous People Group (if applicable)">
+                                            placeholder="Indigenous People Group (if applicable)"
+                                            oninput="validateIPGroupInput(this)">
+                                        <div id="ipgroup_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters and spaces only</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Address Information</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
                                     <div>
                                         <label for="house_no" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             House Number
                                         </label>
                                         <input type="text" id="house_no" name="house_no"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g., 123">
+                                            placeholder="e.g., 123"
+                                            oninput="validateHouseNoInput(this)">
+                                        <div id="houseno_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Numbers, letters, and hyphens only</p>
                                     </div>
                                     <div>
                                         <label for="street" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -719,11 +997,14 @@ if (empty($profile_photo_url)) {
                                         </label>
                                         <input type="text" id="street" name="street"
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g., Main Street">
+                                            placeholder="e.g., Main Street"
+                                            oninput="validateStreetInput(this)">
+                                        <div id="street_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, numbers, spaces, and hyphens only</p>
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                                     <div>
                                         <label for="brgy" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Barangay <span class="text-red-500">*</span>
@@ -778,13 +1059,13 @@ if (empty($profile_photo_url)) {
                                 </select>
                             </div>
 
-                            <div class="flex justify-between">
+                            <div class="flex flex-col-reverse md:flex-row justify-between gap-3 pt-2">
                                 <button type="button" onclick="prevStep(1)"
-                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                     Previous
                                 </button>
                                 <button type="button" onclick="nextStep(3)"
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                                     Next: Economic Status
                                 </button>
                             </div>
@@ -872,7 +1153,10 @@ if (empty($profile_photo_url)) {
                                             </label>
                                             <input type="text" id="income_source" name="income_source" disabled
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="e.g., Business, Farming, etc.">
+                                                placeholder="e.g., Business, Farming, etc."
+                                                oninput="validateIncomeSourceInput(this)">
+                                            <div id="incomesource_validation" class="char-validation-message"></div>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, and commas only</p>
                                         </div>
                                     </div>
                                 </div>
@@ -906,7 +1190,10 @@ if (empty($profile_photo_url)) {
                                             </label>
                                             <input type="text" id="support_type" name="support_type" disabled
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="e.g., Cash, In-kind">
+                                                placeholder="e.g., Cash, In-kind"
+                                                oninput="validateSupportTypeInput(this)">
+                                            <div id="supporttype_validation" class="char-validation-message"></div>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, and commas only</p>
                                         </div>
                                         <div>
                                             <label for="support_cash" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -914,19 +1201,22 @@ if (empty($profile_photo_url)) {
                                             </label>
                                             <input type="text" id="support_cash" name="support_cash" disabled
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="e.g., ₱5,000/month">
+                                                placeholder="e.g., ₱5,000/month"
+                                                oninput="validateSupportCashInput(this)">
+                                            <div id="supportcash_validation" class="char-validation-message"></div>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Numbers, currency symbols, letters, and slashes only</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="flex justify-between">
+                            <div class="flex flex-col-reverse md:flex-row justify-between gap-3 pt-2">
                                 <button type="button" onclick="prevStep(2)"
-                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                     Previous
                                 </button>
                                 <button type="button" onclick="nextStep(4)"
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                                     Next: Health & Submit
                                 </button>
                             </div>
@@ -937,7 +1227,7 @@ if (empty($profile_photo_url)) {
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Health Condition</h3>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                                         <div class="mb-4">
                                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -962,7 +1252,10 @@ if (empty($profile_photo_url)) {
                                             </label>
                                             <input type="text" id="illness_details" name="illness_details" disabled
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="Specify illness if any">
+                                                placeholder="Specify illness if any"
+                                                oninput="validateIllnessDetailsInput(this)">
+                                            <div id="illnessdetails_validation" class="char-validation-message"></div>
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, spaces, commas, and hyphens only</p>
                                         </div>
                                     </div>
 
@@ -991,30 +1284,45 @@ if (empty($profile_photo_url)) {
                             <!-- Registration Details -->
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Registration Details</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                                     <div>
                                         <label for="date_of_registration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Date of Registration <span class="text-red-500">*</span>
                                         </label>
-                                        <input type="date" id="date_of_registration" required
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            value="<?php echo date('Y-m-d'); ?>">
+                                        <input type="date"
+                                            id="date_of_registration"
+                                            name="date_of_registration"
+                                            required
+                                            class="date-input-mobile bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="YYYY-MM-DD (e.g., <?php echo date('Y-m-d'); ?>)"
+                                            pattern="\d{4}-\d{2}-\d{2}"
+                                            title="Enter date in format: YYYY-MM-DD"
+                                            value="<?php echo date('Y-m-d'); ?>"
+                                            oninput="handleDateInput(this, 'registration')"
+                                            onblur="validateDateFormat(this, 'registration')"
+                                            maxlength="10">
+                                        <p class="date-format-example mt-1 text-xs text-blue-600 dark:text-blue-400 hidden">
+                                            Example: <?php echo date('Y-m-d'); ?> (Year-Month-Day)
+                                        </p>
                                     </div>
                                     <div>
                                         <label for="id_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             ID Number <span class="text-red-500">*</span>
                                         </label>
-                                        <input type="text" id="id_number" required
+                                        <input type="text" id="id_number" name="id_number" required
                                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g., SC-2024-001">
-                                        <p class="mt-1 text-xs text-gray-500">Unique identifier for the senior</p>
+                                            placeholder="e.g., <?php echo $generated_id; ?>"
+                                            value="<?php echo $generated_id; ?>"
+                                            oninput="validateIDNumberInput(this)">
+                                        <div id="idnumber_validation" class="char-validation-message"></div>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Letters, numbers, and hyphens only</p>
                                     </div>
                                     <div>
                                         <label for="local_control_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                             Local Control Number
                                         </label>
                                         <div class="flex">
-                                            <input type="text" id="local_control_number" readonly
+                                            <input type="text" id="local_control_number" name="local_control_number" readonly
                                                 class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                                 value="Auto-generated">
                                             <button type="button" onclick="generateCustomLocalControlNumber()"
@@ -1022,18 +1330,23 @@ if (empty($profile_photo_url)) {
                                                 Custom
                                             </button>
                                         </div>
-                                        <p class="mt-1 text-xs text-gray-500">Internal reference number</p>
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Internal reference number</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="flex justify-between">
+                            <!-- Hidden fields for staff tracking -->
+                            <input type="hidden" id="staff_user_id" name="staff_user_id" value="<?php echo $_SESSION['staff_user_id'] ?? $_SESSION['user_id']; ?>">
+                            <input type="hidden" id="staff_user_name" name="staff_user_name" value="<?php echo htmlspecialchars($full_name); ?>">
+                            <input type="hidden" id="request_source" name="request_source" value="staff_register">
+
+                            <div class="flex flex-col-reverse md:flex-row justify-between gap-3 pt-2">
                                 <button type="button" onclick="prevStep(3)"
-                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+                                    class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                                     Previous
                                 </button>
-                                <button type="button" onclick="submitForm()"
-                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                                <button type="button" onclick="validateAndSubmitForm()"
+                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:w-auto dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
                                     Submit Application
                                 </button>
                             </div>
@@ -1045,91 +1358,351 @@ if (empty($profile_photo_url)) {
     </div>
 
     <!-- Popup Modal -->
-    <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
+    <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-4 md:p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
             id="popupBox">
-            <h2 id="popupTitle" class="text-xl font-semibold mb-3 text-gray-800"></h2>
-            <p id="popupMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+            <h2 id="popupTitle" class="text-lg md:text-xl font-semibold mb-3 text-gray-800"></h2>
+            <p id="popupMessage" class="text-sm md:text-base text-gray-600 mb-4 md:mb-6 leading-relaxed"></p>
             <button id="popupCloseBtn"
-                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">
+                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 min-h-[44px] min-w-[44px]">
                 OK
             </button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="../../js/staff_tailwind.config.js"></script>
     <script src="../../js/staff_theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script>
-        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
-        // Initialize theme from localStorage or system preference
+        // ========== DATA PERSISTENCE SYSTEM ==========
+        const getSessionId = () => {
+            let sessionId = localStorage.getItem('staff_register_session_id');
+            if (!sessionId) {
+                sessionId = 'staff_reg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('staff_register_session_id', sessionId);
+            }
+            return sessionId;
+        };
 
-        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
-        (function() {
-            // Use the same StaffTheme namespace
-            const StaffTheme = {
-                init: function() {
-                    const savedTheme = localStorage.getItem('staff_theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const hasMeaningfulData = (formData) => {
+            if (!formData || typeof formData !== 'object') return false;
 
-                    let theme = 'light';
-                    if (savedTheme) {
-                        theme = savedTheme;
-                    } else if (systemPrefersDark) {
-                        theme = 'dark';
-                    }
+            const excludedFields = [
+                'municipality', 'province', 'date_of_registration',
+                'is_pensioner', 'has_permanent_income', 'has_family_support',
+                'has_existing_illness', 'hospitalized_last6mos',
+                'staff_user_id', 'staff_user_name', 'request_source'
+            ];
 
-                    this.set(theme);
-                    return theme;
-                },
+            const meaningfulFields = Object.keys(formData).filter(key => {
+                if (excludedFields.includes(key)) return false;
+                const value = formData[key];
+                return value &&
+                    value.toString().trim() !== '' &&
+                    value !== null &&
+                    value !== undefined;
+            });
 
-                set: function(theme) {
-                    const root = document.documentElement;
-                    const wasDark = root.classList.contains('dark');
-                    const isDark = theme === 'dark';
+            return meaningfulFields.length >= 3;
+        };
 
-                    if (isDark && !wasDark) {
-                        root.classList.add('dark');
-                        localStorage.setItem('staff_theme', 'dark');
-                    } else if (!isDark && wasDark) {
-                        root.classList.remove('dark');
-                        localStorage.setItem('staff_theme', 'light');
-                    }
+        const collectFormDataForSave = () => {
+            const form = document.getElementById('applicantForm');
+            const formData = new FormData(form);
+            const data = {};
 
-                    // Dispatch event for staff components
-                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
+            formData.forEach((value, key) => {
+                if (value && value.toString().trim() !== '') {
+                    data[key] = value.toString().trim();
                 }
+            });
+
+            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
+            radioGroups.forEach(group => {
+                const selected = form.querySelector(`input[name="${group}"]:checked`);
+                if (selected) {
+                    data[group] = selected.value;
+                }
+            });
+
+            if (phoneInput) {
+                const phoneNumber = phoneInput.getNumber();
+                if (phoneNumber && phoneNumber.trim() !== '') {
+                    data.contact_number = phoneNumber;
+                }
+            }
+
+            console.log('Collected form data:', data);
+            return data;
+        };
+
+        const saveFormData = () => {
+            const sessionId = getSessionId();
+            const formData = collectFormDataForSave();
+
+            console.log('Saving form data:', formData);
+
+            const saveData = {
+                data: formData,
+                currentStep: getCurrentStep(),
+                timestamp: Date.now(),
+                url: window.location.href
             };
 
-            // Initialize theme
-            StaffTheme.init();
+            localStorage.setItem(`staff_register_draft_${sessionId}`, JSON.stringify(saveData));
+            console.log('Data saved successfully');
+            return true;
+        };
 
-            // Listen for storage events
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'staff_theme') {
-                    const theme = e.newValue;
-                    const currentIsDark = document.documentElement.classList.contains('dark');
-                    const newIsDark = theme === 'dark';
+        const loadSavedData = () => {
+            const sessionId = getSessionId();
+            const savedData = localStorage.getItem(`staff_register_draft_${sessionId}`);
 
-                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
-                        StaffTheme.set(theme);
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    console.log('Loaded saved data:', parsedData);
+                    return parsedData;
+                } catch (e) {
+                    console.error('Error parsing saved data:', e);
+                    return null;
+                }
+            }
+            return null;
+        };
+
+        const clearSavedData = () => {
+            const sessionId = getSessionId();
+            localStorage.removeItem(`staff_register_draft_${sessionId}`);
+            localStorage.removeItem('staff_register_session_id');
+            console.log('Cleared all saved data');
+            document.getElementById('continueSessionBanner').classList.add('hidden');
+        };
+
+        const restoreFormData = (savedData) => {
+            if (!savedData || !savedData.data) {
+                console.log('No saved data to restore');
+                return false;
+            }
+
+            console.log('Restoring form data:', savedData.data);
+
+            const form = document.getElementById('applicantForm');
+            let restoredFields = 0;
+
+            try {
+                Object.entries(savedData.data).forEach(([key, value]) => {
+                    console.log(`Restoring ${key}:`, value);
+
+                    if (key === 'contact_number' && phoneInput) {
+                        phoneInput.setNumber(value || '');
+                        restoredFields++;
+                        console.log(`Phone restored: ${value}`);
+                    } else if (key === 'is_pensioner' || key === 'has_permanent_income' ||
+                        key === 'has_family_support' || key === 'has_existing_illness' ||
+                        key === 'hospitalized_last6mos') {
+                        const radio = form.querySelector(`input[name="${key}"][value="${value}"]`);
+                        if (radio) {
+                            radio.checked = true;
+                            const event = new Event('change', {
+                                bubbles: true
+                            });
+                            radio.dispatchEvent(event);
+                            restoredFields++;
+                            console.log(`Radio ${key} restored: ${value}`);
+                        }
+                    } else {
+                        const element = form.querySelector(`[name="${key}"]`);
+                        if (element) {
+                            element.value = value;
+                            restoredFields++;
+                            console.log(`Field ${key} restored: ${value}`);
+
+                            if (element.tagName === 'SELECT') {
+                                const event = new Event('change', {
+                                    bubbles: true
+                                });
+                                element.dispatchEvent(event);
+                            } else {
+                                const event = new Event('input', {
+                                    bubbles: true
+                                });
+                                element.dispatchEvent(event);
+                            }
+
+                            if (key === 'b_date') {
+                                setTimeout(() => {
+                                    calculateAgeWithValidation();
+                                }, 100);
+                            }
+                        }
                     }
+                });
+
+                if (savedData.currentStep && savedData.currentStep > 1) {
+                    setTimeout(() => {
+                        showStep(savedData.currentStep);
+                        updateStepIndicators(savedData.currentStep);
+                    }, 500);
                 }
+
+                console.log(`Restored ${restoredFields} fields`);
+                return restoredFields > 0;
+
+            } catch (error) {
+                console.error('Error during form restoration:', error);
+                return false;
+            }
+        };
+
+        const checkForSavedData = () => {
+            const savedData = loadSavedData();
+            const hasData = savedData && savedData.data && Object.keys(savedData.data).length > 0;
+
+            console.log('Check for saved data:', {
+                savedDataExists: !!savedData,
+                hasData: hasData,
+                dataKeys: savedData?.data ? Object.keys(savedData.data) : []
             });
 
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('staff_theme')) {
-                    StaffTheme.set(e.matches ? 'dark' : 'light');
+            if (hasData) {
+                document.getElementById('continueSessionBanner').classList.remove('hidden');
+                return true;
+            } else {
+                document.getElementById('continueSessionBanner').classList.add('hidden');
+                return false;
+            }
+        };
+
+        const useRestoredData = () => {
+            const savedData = loadSavedData();
+            if (!savedData) {
+                showPopup('No saved data found.', 'error');
+                return;
+            }
+
+            console.log('Attempting to restore data:', savedData);
+
+            document.getElementById('continueSessionBanner').classList.add('hidden');
+
+            const restoreStatus = document.createElement('div');
+            restoreStatus.className = 'restore-status';
+            restoreStatus.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Restoring data...';
+            document.querySelector('.step-indicator').after(restoreStatus);
+
+            setTimeout(() => {
+                const restored = restoreFormData(savedData);
+
+                if (restored) {
+                    restoreStatus.className = 'restore-status success';
+                    restoreStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Data restored successfully!';
+                    showPopup('Previous session data restored successfully!', 'success', false);
+                } else {
+                    restoreStatus.className = 'restore-status error';
+                    restoreStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to restore data';
+                    showPopup('Failed to restore previous session data.', 'error');
+                    document.getElementById('continueSessionBanner').classList.remove('hidden');
                 }
+
+                setTimeout(() => {
+                    restoreStatus.remove();
+                }, 3000);
+
+            }, 100);
+        };
+
+        const autoRestoreData = () => {
+            const savedData = loadSavedData();
+            if (savedData && savedData.data && Object.keys(savedData.data).length > 0) {
+                console.log('Auto-restoring saved data on page load...');
+
+                const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+                if (savedData.timestamp && savedData.timestamp > oneDayAgo) {
+                    const restored = restoreFormData(savedData);
+                    if (restored) {
+                        console.log('Auto-restore completed successfully');
+
+                        const autoRestoreMsg = document.createElement('div');
+                        autoRestoreMsg.className = 'restore-status success';
+                        autoRestoreMsg.innerHTML = '<i class="fas fa-history mr-2"></i> Previous session data has been restored';
+                        document.querySelector('.step-indicator').after(autoRestoreMsg);
+
+                        setTimeout(() => {
+                            autoRestoreMsg.remove();
+                        }, 3000);
+
+                        document.getElementById('continueSessionBanner').classList.add('hidden');
+                    }
+                } else {
+                    console.log('Saved data is too old, clearing...');
+                    clearSavedData();
+                }
+            }
+        };
+
+        const showAutoSaveIndicator = (status = 'saving') => {
+            const indicator = document.getElementById('autoSaveIndicator');
+            if (!indicator) return;
+
+            const icon = indicator.querySelector('i');
+            const text = indicator.querySelector('span');
+
+            indicator.className = 'auto-save-indicator show ' + status;
+
+            switch (status) {
+                case 'saving':
+                    icon.className = 'fas fa-spinner fa-spin mr-1';
+                    text.textContent = 'Saving...';
+                    break;
+                case 'saved':
+                    icon.className = 'fas fa-check mr-1';
+                    text.textContent = 'Saved';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 2000);
+                    break;
+                case 'cleared':
+                    icon.className = 'fas fa-trash mr-1';
+                    text.textContent = 'Draft cleared';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 2000);
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-triangle mr-1';
+                    text.textContent = 'Save failed';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 3000);
+                    break;
+            }
+        };
+
+        const getCurrentStep = () => {
+            const activeStep = document.querySelector('.form-step.active');
+            if (activeStep) {
+                return parseInt(activeStep.id.replace('step', ''));
+            }
+            return 1;
+        };
+
+        const showStep = (step) => {
+            document.querySelectorAll('.form-step').forEach(stepElement => {
+                stepElement.classList.remove('active');
             });
-        })();
-    </script>
-    <script>
-        // Phone number input with intl-tel-input
+            const stepElement = document.getElementById(`step${step}`);
+            if (stepElement) {
+                stepElement.classList.add('active');
+            }
+        };
+
+        // ========== INITIALIZATION ==========
+
         let phoneInput;
         document.addEventListener("DOMContentLoaded", function() {
+            console.log('DOM loaded, initializing form...');
+
             // Initialize phone input
             const phoneInputElement = document.querySelector("#contact_number");
             if (phoneInputElement) {
@@ -1139,7 +1712,6 @@ if (empty($profile_photo_url)) {
                     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
                 });
 
-                // Add validation
                 phoneInputElement.addEventListener('blur', validatePhoneNumber);
                 phoneInputElement.addEventListener('input', function() {
                     this.classList.remove('error-border', 'success-border');
@@ -1150,41 +1722,145 @@ if (empty($profile_photo_url)) {
             // Age calculation
             const birthDateInput = document.querySelector('#b_date');
             const ageInput = document.querySelector('#age');
-
             if (birthDateInput && ageInput) {
-                birthDateInput.addEventListener('change', calculateAge);
-                calculateAge(); // Calculate on load if date is already set
+                birthDateInput.addEventListener('change', calculateAgeWithValidation);
             }
 
-            // Conditional field toggling
+            // Setup conditional fields
             setupConditionalFields();
+
+            // Mobile dropdown handling
+            const mobileUserButton = document.getElementById('mobile-user-menu-button');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            if (mobileUserButton && mobileDropdown) {
+                mobileUserButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileDropdown.classList.toggle('hidden');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!mobileDropdown.contains(e.target) && !mobileUserButton.contains(e.target)) {
+                        mobileDropdown.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Set registration date to today
+            const today = new Date().toISOString().split('T')[0];
+            const regDateInput = document.querySelector('#date_of_registration');
+            if (regDateInput) {
+                regDateInput.value = today;
+                validateRegistrationDate();
+            }
+
+            // Clear session button
+            document.getElementById('clearSessionBtn').addEventListener('click', function() {
+                if (confirm('Clear all unsaved form data?')) {
+                    clearSavedData();
+                    document.getElementById('applicantForm').reset();
+
+                    // Reset ID number to generated value
+                    document.getElementById('id_number').value = '<?php echo $generated_id; ?>';
+
+                    showStep(1);
+                    updateStepIndicators(1);
+                    if (phoneInput) phoneInput.setNumber("");
+                    setupConditionalFields();
+                    calculateAgeWithValidation();
+                    showPopup('Form cleared successfully!', 'success', true);
+                }
+            });
+
+            // Setup auto-save
+            setupAutoSave();
+
+            // Check for saved data and auto-restore
+            setTimeout(() => {
+                console.log('Checking for saved data...');
+                const hasSavedData = checkForSavedData();
+
+                if (hasSavedData) {
+                    autoRestoreData();
+                }
+            }, 500);
+
+            // Save data before page unload
+            window.addEventListener('beforeunload', function(e) {
+                const formData = collectFormDataForSave();
+                if (Object.keys(formData).length > 0) {
+                    saveFormData();
+                    console.log('Saved data before page unload');
+                }
+            });
         });
 
-        function calculateAge() {
-            const birthDateInput = document.querySelector('#b_date');
-            const ageInput = document.querySelector('#age');
+        // ========== AUTO-SAVE CONFIGURATION ==========
 
-            if (!birthDateInput.value) {
-                ageInput.value = '';
-                return;
+        let autoSaveTimeout;
+        const setupAutoSave = () => {
+            const form = document.getElementById('applicantForm');
+            const debouncedSave = debounce(() => {
+                saveFormData();
+                showAutoSaveIndicator('saved');
+            }, 1000);
+
+            form.querySelectorAll('input, select, textarea').forEach(element => {
+                element.addEventListener('input', debouncedSave);
+                element.addEventListener('change', debouncedSave);
+            });
+
+            const phoneElement = document.querySelector("#contact_number");
+            if (phoneElement) {
+                phoneElement.addEventListener('input', debouncedSave);
+            }
+        };
+
+        const debounce = (func, wait) => {
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(autoSaveTimeout);
+                    func(...args);
+                };
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(later, wait);
+            };
+        };
+
+        // ========== VALIDATION FUNCTIONS ==========
+        // All validation functions from the admin side should be included here
+        // I'm including the most important ones, but you should copy all validation
+        // functions from the admin script
+
+        function validateNameInput(input, fieldName) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById(fieldName + '_validation');
+
+            const validPattern = /^[A-Za-z\u00D1\u00F1\s\-'.]+$/;
+
+            if (fieldName === 'mname' && value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
             }
 
-            const birthDate = new Date(birthDateInput.value);
-            const today = new Date();
-
-            if (isNaN(birthDate.getTime())) {
-                ageInput.value = '';
-                return;
+            if ((fieldName === 'fname' || fieldName === 'lname') && value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = 'This field is required';
+                validationElement.className = 'char-validation-message error show';
+                return false;
             }
 
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Allowed: letters, spaces, hyphens (-), apostrophes (\'), dots (.), ñ, and Ñ';
+                validationElement.className = 'char-validation-message error show';
+                return false;
             }
 
-            ageInput.value = age >= 0 ? age : '';
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
         }
 
         function validatePhoneNumber() {
@@ -1196,13 +1872,11 @@ if (empty($profile_photo_url)) {
             const phoneNumber = phoneElement.value.trim();
 
             if (!phoneNumber) {
-                phoneElement.classList.add('error-border');
-                errorElement.textContent = "Contact number is required";
-                errorElement.classList.remove('hidden');
-                return false;
+                phoneElement.classList.remove('error-border', 'success-border');
+                errorElement.classList.add('hidden');
+                return true;
             }
 
-            // Basic validation for Philippine numbers
             const phPattern = /^(09|\+639)\d{9}$/;
             const cleanedNumber = phoneNumber.replace(/\D/g, '');
 
@@ -1225,6 +1899,1253 @@ if (empty($profile_photo_url)) {
                 return false;
             }
         }
+
+        function validateAge() {
+            const ageInput = document.querySelector('#age');
+            const birthDateInput = document.querySelector('#b_date');
+            const birthdateValidation = document.getElementById('birthdate_validation');
+            const ageValidation = document.getElementById('age_validation');
+
+            if (!birthDateInput.value) {
+                return {
+                    isValid: false,
+                    message: 'Birthdate is required'
+                };
+            }
+
+            const dateValue = birthDateInput.value;
+            const ageValue = ageInput.value;
+
+            if (!dateValue) {
+                return {
+                    isValid: false,
+                    message: 'Please enter birthdate in YYYY-MM-DD format'
+                };
+            }
+
+            const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+            if (!datePattern.test(dateValue)) {
+                return {
+                    isValid: false,
+                    message: 'Invalid date format. Please use YYYY-MM-DD'
+                };
+            }
+
+            const [, year, month, day] = dateValue.match(datePattern);
+            const birthDate = new Date(year, month - 1, day);
+            const today = new Date();
+
+            if (birthDate.getFullYear() != year ||
+                birthDate.getMonth() != month - 1 ||
+                birthDate.getDate() != day) {
+                return {
+                    isValid: false,
+                    message: 'Invalid date entered'
+                };
+            }
+
+            if (birthDate > today) {
+                return {
+                    isValid: false,
+                    message: 'Birthdate cannot be in the future'
+                };
+            }
+
+            const age = parseInt(ageValue);
+
+            if (isNaN(age)) {
+                return {
+                    isValid: false,
+                    message: 'Invalid age calculation. Please check the date'
+                };
+            }
+
+            if (age < 60) {
+                return {
+                    isValid: false,
+                    message: `Applicant must be 60 years or older (currently ${age} years old)`
+                };
+            }
+
+            return {
+                isValid: true,
+                message: `Age requirement satisfied (${age} years old)`
+            };
+        }
+
+        function calculateAgeWithValidation() {
+            console.log("Calculating age with validation...");
+
+            const birthDateInput = document.querySelector('#b_date');
+            const ageInput = document.querySelector('#age');
+            const birthdateValidation = document.getElementById('birthdate_validation');
+            const ageValidation = document.getElementById('age_validation');
+
+            const dateValue = birthDateInput.value;
+
+            if (!dateValue) {
+                ageInput.value = '';
+                birthdateValidation.textContent = '';
+                birthdateValidation.className = 'age-validation-message';
+                ageValidation.textContent = '';
+                ageValidation.className = 'age-validation-message';
+                birthDateInput.classList.remove('age-error', 'age-warning', 'age-valid', 'error-border', 'success-border');
+                ageInput.classList.remove('age-error', 'age-warning', 'age-valid');
+                console.log("No birthdate entered - clearing validation");
+                return;
+            }
+
+            const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+            if (!datePattern.test(dateValue)) {
+                ageInput.value = '';
+                birthdateValidation.textContent = 'Invalid date format. Use YYYY-MM-DD';
+                birthdateValidation.className = 'age-validation-message error show';
+                ageValidation.textContent = 'Invalid date format';
+                ageValidation.className = 'age-validation-message error show';
+                birthDateInput.classList.add('age-error', 'error-border');
+                birthDateInput.classList.remove('age-warning', 'age-valid', 'success-border');
+                ageInput.classList.add('age-error');
+                ageInput.classList.remove('age-warning', 'age-valid');
+                console.log("Invalid date format");
+                return;
+            }
+
+            const [, year, month, day] = dateValue.match(datePattern);
+            const birthDate = new Date(year, month - 1, day);
+            const today = new Date();
+
+            if (birthDate.getFullYear() != year ||
+                birthDate.getMonth() != month - 1 ||
+                birthDate.getDate() != day) {
+                ageInput.value = '';
+                birthdateValidation.textContent = 'Invalid date';
+                birthdateValidation.className = 'age-validation-message error show';
+                ageValidation.textContent = 'Invalid date entered';
+                ageValidation.className = 'age-validation-message error show';
+                birthDateInput.classList.add('age-error', 'error-border');
+                birthDateInput.classList.remove('age-warning', 'age-valid', 'success-border');
+                ageInput.classList.add('age-error');
+                ageInput.classList.remove('age-warning', 'age-valid');
+                console.log("Invalid date components");
+                return;
+            }
+
+            if (birthDate > today) {
+                ageInput.value = '';
+                birthdateValidation.textContent = 'Birthdate cannot be in the future';
+                birthdateValidation.className = 'age-validation-message error show';
+                ageValidation.textContent = 'Invalid future date';
+                ageValidation.className = 'age-validation-message error show';
+                birthDateInput.classList.add('age-error', 'error-border');
+                birthDateInput.classList.remove('age-warning', 'age-valid', 'success-border');
+                ageInput.classList.add('age-error');
+                ageInput.classList.remove('age-warning', 'age-valid');
+                console.log("Birthdate is in the future");
+                return;
+            }
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            ageInput.value = age >= 0 ? age : '';
+
+            const sixtyYearsAgo = new Date();
+            sixtyYearsAgo.setFullYear(sixtyYearsAgo.getFullYear() - 60);
+
+            if (birthDate > sixtyYearsAgo) {
+                const sixtyYearsAgoFormatted = sixtyYearsAgo.toISOString().split('T')[0];
+                birthdateValidation.textContent = `Minimum age is 60 years (born before ${sixtyYearsAgoFormatted})`;
+                birthdateValidation.className = 'age-validation-message error show';
+                ageValidation.textContent = `Age must be 60 or above (currently ${age})`;
+                ageValidation.className = 'age-validation-message error show';
+                birthDateInput.classList.add('age-error', 'error-border');
+                birthDateInput.classList.remove('age-warning', 'age-valid', 'success-border');
+                ageInput.classList.add('age-error');
+                ageInput.classList.remove('age-warning', 'age-valid');
+                console.log(`Age ${age} is too young`);
+            } else if (age >= 60) {
+                birthdateValidation.textContent = `✓ Valid senior citizen age (${age} years old)`;
+                birthdateValidation.className = 'age-validation-message success show';
+                ageValidation.textContent = '✓ Age qualifies for senior citizen benefits';
+                ageValidation.className = 'age-validation-message success show';
+                birthDateInput.classList.remove('age-error', 'age-warning', 'error-border');
+                birthDateInput.classList.add('age-valid', 'success-border');
+                ageInput.classList.remove('age-error', 'age-warning');
+                ageInput.classList.add('age-valid');
+                console.log(`Age ${age} is valid`);
+            }
+        }
+
+        // Add all other validation functions from the admin script here...
+        // (validateStep1AndNext, validateStep3, nextStep, prevStep, etc.)
+
+        // ========== FORM SUBMISSION ==========
+
+        async function submitForm() {
+            const submitBtn = document.querySelector('button[onclick="validateAndSubmitForm()"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+
+            try {
+                const formData = collectFormData();
+                if (phoneInput) {
+                    formData.contact_number = phoneInput.getNumber();
+                }
+
+                const response = await fetch('../../php/register/applicant.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    clearSavedData();
+                    showPopup(`Application submitted successfully! ID: ${result.id_number || ''}`, 'success', true);
+                } else {
+                    showPopup(result.error || 'Submission failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                showPopup('Network error. Please check your connection and try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
+        function collectFormData() {
+            const form = document.getElementById("applicantForm");
+            const formData = new FormData(form);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                if (value.trim() === '' && (key === 'mname' || key === 'suffix' || key === 'ip_group' ||
+                        key === 'house_no' || key === 'street')) {
+                    data[key] = null;
+                } else if (value.trim() === '' && key === 'local_control_number') {
+                    data[key] = null;
+                } else {
+                    data[key] = value.trim();
+                }
+            });
+
+            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
+            radioGroups.forEach(group => {
+                const selected = form.querySelector(`input[name="${group}"]:checked`);
+                if (selected) {
+                    data[group] = selected.value;
+                } else {
+                    data[group] = '0';
+                }
+            });
+
+            data.date_of_registration = document.getElementById('date_of_registration').value;
+            data.id_number = document.getElementById('id_number').value;
+
+            const lcn = document.getElementById('local_control_number').value;
+            if (!lcn || lcn === 'Auto-generated' || lcn.trim() === '') {
+                data.local_control_number = null;
+            } else {
+                data.local_control_number = lcn.trim();
+            }
+
+            const conditionalFields = ['pension_amount', 'pension_source', 'income_source', 'support_type', 'support_cash', 'illness_details'];
+            conditionalFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (input && input.disabled && (!input.value || input.value.trim() === '')) {
+                    data[field] = null;
+                }
+            });
+
+            // Staff-specific fields
+            data.staff_user_id = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
+            data.staff_user_name = <?php echo json_encode($full_name); ?>;
+            data.session_context = <?php echo json_encode($ctx ?? ''); ?>;
+            data.request_source = 'staff_register';
+
+            data.base_url = '/MSWDPALUAN_SYSTEM-MAIN/';
+
+            return data;
+        }
+
+        // ========== POPUP FUNCTION ==========
+
+        function showPopup(message, type = "info", resetForm = false) {
+            const modal = document.getElementById("popupModal");
+            const box = document.getElementById("popupBox");
+            const title = document.getElementById("popupTitle");
+            const msg = document.getElementById("popupMessage");
+            const closeBtn = document.getElementById("popupCloseBtn");
+
+            msg.textContent = message;
+
+            if (type === "success") {
+                title.textContent = "✅ Success";
+                title.className = "text-lg md:text-xl font-semibold mb-3 text-green-600 dark:text-green-400";
+                closeBtn.className = "px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400 min-h-[44px] min-w-[44px]";
+            } else if (type === "error") {
+                title.textContent = "⚠️ Error";
+                title.className = "text-lg md:text-xl font-semibold mb-3 text-red-600";
+                closeBtn.className = "px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-400 min-h-[44px] min-w-[44px]";
+            } else if (type === "warning") {
+                title.textContent = "⚠️ Warning";
+                title.className = "text-lg md:text-xl font-semibold mb-3 text-yellow-600";
+                closeBtn.className = "px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400 min-h-[44px] min-w-[44px]";
+            } else {
+                title.textContent = "ℹ️ Information";
+                title.className = "text-lg md:text-xl font-semibold mb-3 text-blue-600";
+                closeBtn.className = "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 min-h-[44px] min-w-[44px]";
+            }
+
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                box.classList.remove("scale-95", "opacity-0");
+                box.classList.add("scale-100", "opacity-100");
+            }, 10);
+
+            closeBtn.onclick = () => {
+                box.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+
+                    if (type === "success" && resetForm) {
+                        document.getElementById("applicantForm").reset();
+
+                        // Reset ID number to generated value
+                        document.getElementById('id_number').value = '<?php echo $generated_id; ?>';
+
+                        document.querySelectorAll('.form-step').forEach(step => {
+                            step.classList.remove('active');
+                        });
+                        document.getElementById('step1').classList.add('active');
+                        updateStepIndicators(1);
+
+                        if (phoneInput) {
+                            phoneInput.setNumber("");
+                        }
+
+                        setupConditionalFields();
+                        calculateAgeWithValidation();
+
+                        const birthDateInput = document.querySelector('#b_date');
+                        const ageInput = document.querySelector('#age');
+                        birthDateInput.classList.remove('age-error', 'age-warning', 'age-valid');
+                        ageInput.classList.remove('age-error', 'age-warning', 'age-valid');
+
+                        const birthdateValidation = document.getElementById('birthdate_validation');
+                        const ageValidation = document.getElementById('age_validation');
+                        birthdateValidation.textContent = '';
+                        birthdateValidation.className = 'age-validation-message';
+                        ageValidation.textContent = '';
+                        ageValidation.className = 'age-validation-message';
+                    }
+                }, 200);
+            };
+        }
+
+        // ========== ADDITIONAL VALIDATION FUNCTIONS ==========
+
+        function validateSuffixInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('suffix_validation');
+
+            // Allow Roman numerals, Jr., Sr., II, III, etc.
+            const validPattern = /^[I|V|X|L|C|D|M]+$|^Jr\.?$|^Sr\.?$|^I+$/i;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Valid suffixes: Jr, Sr, I, II, III, IV, V, etc.';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateCitizenshipInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('citizenship_validation');
+
+            // Allow letters and spaces only
+            const validPattern = /^[A-Za-z\s]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = 'This field is required';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters and spaces are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateReligionInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('religion_validation');
+
+            // Allow letters, spaces, and hyphens
+            const validPattern = /^[A-Za-z\s\-]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = 'This field is required';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, spaces, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validatePlaceInput(input, fieldName) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById(fieldName + '_validation');
+
+            // Allow letters, spaces, commas, and hyphens for places
+            const validPattern = /^[A-Za-z\s\-,]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = 'This field is required';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, spaces, commas, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateIPGroupInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('ipgroup_validation');
+
+            // Allow letters and spaces only
+            const validPattern = /^[A-Za-z\s]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters and spaces are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateHouseNoInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('houseno_validation');
+
+            // Allow numbers, letters, and hyphens
+            const validPattern = /^[A-Za-z0-9\-]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, numbers, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateStreetInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('street_validation');
+
+            // Allow letters, numbers, spaces, and hyphens
+            const validPattern = /^[A-Za-z0-9\s\-]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, numbers, spaces, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateIncomeSourceInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('incomesource_validation');
+
+            // Allow letters, spaces, and commas
+            const validPattern = /^[A-Za-z\s,]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, spaces, and commas are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateSupportTypeInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('supporttype_validation');
+
+            // Allow letters, spaces, and commas
+            const validPattern = /^[A-Za-z\s,]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, spaces, and commas are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateSupportCashInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('supportcash_validation');
+
+            // Allow numbers, currency symbols, letters, slashes
+            const validPattern = /^[₱$\d\s\/A-Za-z,.-]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only numbers, currency symbols, letters, spaces, commas, periods, and slashes are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateIllnessDetailsInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('illnessdetails_validation');
+
+            // Allow letters, spaces, commas, and hyphens
+            const validPattern = /^[A-Za-z\s\-,]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = '';
+                validationElement.className = 'char-validation-message';
+                return true;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, spaces, commas, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        function validateIDNumberInput(input) {
+            const value = input.value.trim();
+            const validationElement = document.getElementById('idnumber_validation');
+
+            // Allow letters, numbers, and hyphens
+            const validPattern = /^[A-Za-z0-9\-]+$/;
+
+            if (value === '') {
+                input.classList.remove('char-error');
+                validationElement.textContent = 'This field is required';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            if (!validPattern.test(value)) {
+                input.classList.add('char-error');
+                validationElement.textContent = 'Only letters, numbers, and hyphens are allowed';
+                validationElement.className = 'char-validation-message error show';
+                return false;
+            }
+
+            input.classList.remove('char-error');
+            validationElement.textContent = '';
+            validationElement.className = 'char-validation-message';
+            return true;
+        }
+
+        // ========== STEP NAVIGATION FUNCTIONS ==========
+
+        function validateStep1AndNext() {
+            console.log("Validating Step 1...");
+
+            const nameFields = [{
+                    id: 'lname',
+                    name: 'Last Name',
+                    required: true,
+                    func: (input) => validateNameInput(input, 'lname')
+                },
+                {
+                    id: 'fname',
+                    name: 'First Name',
+                    required: true,
+                    func: (input) => validateNameInput(input, 'fname')
+                },
+                {
+                    id: 'mname',
+                    name: 'Middle Name',
+                    required: false,
+                    func: (input) => validateNameInput(input, 'mname')
+                },
+                {
+                    id: 'suffix',
+                    name: 'Suffix',
+                    required: false,
+                    func: validateSuffixInput
+                },
+                {
+                    id: 'citizenship',
+                    name: 'Citizenship',
+                    required: true,
+                    func: validateCitizenshipInput
+                },
+                {
+                    id: 'religion',
+                    name: 'Religion',
+                    required: true,
+                    func: validateReligionInput
+                },
+                {
+                    id: 'birth_place',
+                    name: 'Birthplace',
+                    required: true,
+                    func: (input) => validatePlaceInput(input, 'birthplace')
+                }
+            ];
+
+            let allValid = true;
+            let errorMessages = [];
+            let firstInvalidField = null;
+
+            // Step 1: Check REQUIRED fields only
+            const step1Required = ['lname', 'fname', 'gender', 'b_date', 'age', 'civil_status', 'citizenship', 'religion', 'birth_place', 'educational_attainment'];
+
+            step1Required.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element && element.required && !element.disabled) {
+                    const value = element.value.trim();
+
+                    if (fieldId === 'age') return;
+
+                    if (value === '') {
+                        allValid = false;
+                        const fieldName = element.previousElementSibling?.textContent?.replace('*', '').trim() ||
+                            element.name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        errorMessages.push(`${fieldName} is required`);
+
+                        if (!firstInvalidField) {
+                            firstInvalidField = element;
+                        }
+
+                        element.classList.add('error-border');
+                    } else {
+                        element.classList.remove('error-border');
+                    }
+                }
+            });
+
+            // Special validation for birthdate
+            const birthDateInput = document.querySelector('#b_date');
+            const birthDateValue = birthDateInput ? birthDateInput.value.trim() : '';
+
+            if (birthDateValue) {
+                const ageValidation = validateAge();
+                if (!ageValidation.isValid) {
+                    allValid = false;
+                    errorMessages.push(ageValidation.message);
+
+                    if (!firstInvalidField && birthDateInput) {
+                        firstInvalidField = birthDateInput;
+                    }
+
+                    birthDateInput.classList.add('age-error', 'error-border');
+                } else {
+                    birthDateInput.classList.remove('age-error', 'error-border');
+                }
+            } else if (birthDateInput) {
+                allValid = false;
+                errorMessages.push('Birthdate is required');
+                if (!firstInvalidField) firstInvalidField = birthDateInput;
+                birthDateInput.classList.add('error-border');
+            }
+
+            // Validate character inputs
+            nameFields.forEach(field => {
+                const input = document.getElementById(field.id);
+                if (input && !input.disabled) {
+                    const value = input.value.trim();
+
+                    if (field.required) {
+                        const isValid = field.func(input);
+                        if (!isValid) {
+                            allValid = false;
+
+                            const validationElement = document.getElementById(field.id + '_validation');
+                            const errorText = validationElement?.textContent || `Invalid ${field.name}`;
+
+                            if (!errorMessages.some(msg => msg.includes(field.name))) {
+                                errorMessages.push(`${field.name}: ${errorText}`);
+                            }
+
+                            if (!firstInvalidField) {
+                                firstInvalidField = input;
+                            }
+                        } else {
+                            input.classList.remove('char-error', 'error-border');
+                        }
+                    } else if (value !== '') {
+                        const isValid = field.func(input);
+                        if (!isValid) {
+                            allValid = false;
+
+                            const validationElement = document.getElementById(field.id + '_validation');
+                            const errorText = validationElement?.textContent || `Invalid ${field.name}`;
+
+                            if (!errorMessages.some(msg => msg.includes(field.name))) {
+                                errorMessages.push(`${field.name}: ${errorText}`);
+                            }
+
+                            if (!firstInvalidField) {
+                                firstInvalidField = input;
+                            }
+                        } else {
+                            input.classList.remove('char-error', 'error-border');
+                        }
+                    } else {
+                        input.classList.remove('char-error', 'error-border');
+                        const validationElement = document.getElementById(field.id + '_validation');
+                        if (validationElement) {
+                            validationElement.textContent = '';
+                            validationElement.className = 'char-validation-message';
+                        }
+                    }
+                }
+            });
+
+            // Validate other Step 1 specific fields
+            const gender = document.getElementById('gender');
+            const civilStatus = document.getElementById('civil_status');
+            const educationalAttainment = document.getElementById('educational_attainment');
+
+            if (gender && gender.value === '') {
+                allValid = false;
+                errorMessages.push('Gender is required');
+                if (!firstInvalidField) firstInvalidField = gender;
+                gender.classList.add('error-border');
+            } else if (gender) {
+                gender.classList.remove('error-border');
+            }
+
+            if (civilStatus && civilStatus.value === '') {
+                allValid = false;
+                errorMessages.push('Civil Status is required');
+                if (!firstInvalidField) firstInvalidField = civilStatus;
+                civilStatus.classList.add('error-border');
+            } else if (civilStatus) {
+                civilStatus.classList.remove('error-border');
+            }
+
+            if (educationalAttainment && educationalAttainment.value === '') {
+                allValid = false;
+                errorMessages.push('Educational Attainment is required');
+                if (!firstInvalidField) firstInvalidField = educationalAttainment;
+                educationalAttainment.classList.add('error-border');
+            } else if (educationalAttainment) {
+                educationalAttainment.classList.remove('error-border');
+            }
+
+            // Show error message if validation failed
+            if (!allValid) {
+                const uniqueErrors = [...new Set(errorMessages)];
+
+                const errorMessage = uniqueErrors.length <= 3 ?
+                    uniqueErrors.join('\n') :
+                    uniqueErrors.slice(0, 3).join('\n') + '\n...and ' + (uniqueErrors.length - 3) + ' more';
+
+                showPopup(errorMessage, 'error');
+
+                if (firstInvalidField) {
+                    firstInvalidField.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    firstInvalidField.focus();
+                }
+
+                console.log("Step 1 validation failed:", uniqueErrors);
+                return false;
+            }
+
+            console.log("Step 1 validation passed!");
+
+            // If all validations pass, proceed to next step
+            nextStep(2);
+            return true;
+        }
+
+        function nextStep(step) {
+            console.log(`Moving to step ${step}`);
+
+            // Validate current step before proceeding
+            const currentStep = step - 1;
+
+            // Check if we're going from step 2 to 3
+            if (currentStep === 2) {
+                console.log("Validating Step 2 before moving to Step 3");
+
+                // Step 2 validation
+                const step2 = document.getElementById('step2');
+                const requiredStep2 = step2.querySelectorAll('[required]:not([disabled])');
+                let step2Valid = true;
+                let step2Errors = [];
+
+                requiredStep2.forEach(input => {
+                    if (input.value.trim() === '') {
+                        step2Valid = false;
+                        const label = input.previousElementSibling?.textContent?.replace('*', '').trim() || input.name;
+                        step2Errors.push(label);
+                        input.classList.add('error-border');
+                    } else {
+                        input.classList.remove('error-border');
+                    }
+                });
+
+                // Validate phone number for Step 2 ONLY IF PROVIDED
+                const contactInput = document.querySelector('#contact_number');
+                const contactValue = contactInput ? contactInput.value.trim() : '';
+
+                if (contactValue && !validatePhoneNumber()) {
+                    step2Valid = false;
+                    step2Errors.push('Contact Number');
+                }
+
+                if (!step2Valid) {
+                    showPopup(`Please complete: ${[...new Set(step2Errors)].join(', ')}`, 'error');
+
+                    // Scroll to first error
+                    const firstError = step2.querySelector('.error-border');
+                    if (firstError) {
+                        firstError.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                        firstError.focus();
+                    }
+
+                    console.log("Step 2 validation failed");
+                    return;
+                }
+
+                console.log("Step 2 validation passed, proceeding to Step 3");
+            }
+
+            // Check if we're going from step 3 to 4
+            if (currentStep === 3) {
+                console.log("Validating Step 3 before moving to Step 4");
+                if (!validateStep3()) {
+                    console.log("Step 3 validation failed, not proceeding");
+                    return;
+                }
+                console.log("Step 3 validation passed, proceeding to Step 4");
+            }
+
+            // Hide current step
+            document.querySelectorAll('.form-step').forEach(stepElement => {
+                stepElement.classList.remove('active');
+            });
+
+            // Show next step
+            const nextStepElement = document.getElementById(`step${step}`);
+            if (nextStepElement) {
+                nextStepElement.classList.add('active');
+
+                // Update step indicators
+                updateStepIndicators(step);
+
+                // Scroll to top on mobile
+                if (window.innerWidth < 768) {
+                    window.scrollTo({
+                        top: document.querySelector('.step-indicator').offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+
+                console.log(`Successfully moved to step ${step}`);
+            } else {
+                console.error(`Step ${step} element not found`);
+            }
+        }
+
+        function validateStep3() {
+            console.log("Validating Step 3...");
+
+            // Step 3 has no required fields that need character validation
+            // Only check if radio groups have selections
+            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
+            let missingGroups = [];
+
+            // Check if any radio group doesn't have a selection
+            for (const group of radioGroups) {
+                const selected = document.querySelectorAll(`input[name="${group}"]:checked`);
+                console.log(`Group ${group}: selected count = ${selected.length}`);
+
+                if (selected.length === 0) {
+                    missingGroups.push(group.replace('_', ' '));
+                }
+            }
+
+            // Check conditional fields only if their parent radio is "Yes"
+            const conditionalFields = [{
+                    id: 'pension_amount',
+                    dependsOn: 'is_pensioner',
+                    dependsOnValue: '1'
+                },
+                {
+                    id: 'pension_source',
+                    dependsOn: 'is_pensioner',
+                    dependsOnValue: '1'
+                },
+                {
+                    id: 'income_source',
+                    dependsOn: 'has_permanent_income',
+                    dependsOnValue: '1'
+                },
+                {
+                    id: 'support_type',
+                    dependsOn: 'has_family_support',
+                    dependsOnValue: '1'
+                },
+                {
+                    id: 'support_cash',
+                    dependsOn: 'has_family_support',
+                    dependsOnValue: '1'
+                },
+                {
+                    id: 'illness_details',
+                    dependsOn: 'has_existing_illness',
+                    dependsOnValue: '1'
+                }
+            ];
+
+            let missingConditionalFields = [];
+
+            for (const field of conditionalFields) {
+                const input = document.getElementById(field.id);
+                const dependentRadio = document.querySelector(`input[name="${field.dependsOn}"]:checked`);
+
+                // If radio is selected as "Yes" but the field is empty
+                if (dependentRadio && dependentRadio.value === field.dependsOnValue &&
+                    input && !input.disabled && input.value.trim() === '') {
+                    missingConditionalFields.push(field.id.replace('_', ' '));
+
+                    // Highlight the field
+                    input.classList.add('error-border');
+                } else if (input) {
+                    // Remove error highlighting if not applicable
+                    input.classList.remove('error-border');
+                }
+            }
+
+            // If there are issues, show error and stop
+            if (missingGroups.length > 0 || missingConditionalFields.length > 0) {
+                let errorMessages = [];
+
+                if (missingGroups.length > 0) {
+                    errorMessages.push(`Please select: ${missingGroups.join(', ')}`);
+                }
+
+                if (missingConditionalFields.length > 0) {
+                    errorMessages.push(`Please fill: ${missingConditionalFields.join(', ')} when "Yes" is selected`);
+                }
+
+                // Show the error
+                showPopup(errorMessages.join('\n'), 'error');
+
+                // Scroll to the first issue
+                const firstRadioGroup = document.querySelector(`input[name="${missingGroups[0] || radioGroups[0]}"]`);
+                if (firstRadioGroup) {
+                    firstRadioGroup.closest('.p-4')?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+
+                console.log("Step 3 validation failed:", errorMessages);
+                return false;
+            }
+
+            console.log("Step 3 validation passed");
+            return true;
+        }
+
+        function prevStep(step) {
+            // Hide current step
+            document.querySelectorAll('.form-step').forEach(stepElement => {
+                stepElement.classList.remove('active');
+            });
+
+            // Show previous step
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update step indicators
+            updateStepIndicators(step);
+
+            // Scroll to top on mobile
+            if (window.innerWidth < 768) {
+                window.scrollTo({
+                    top: document.querySelector('.step-indicator').offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function updateStepIndicators(currentStep) {
+            const steps = document.querySelectorAll('.step-circle');
+            const labels = document.querySelectorAll('.step-label');
+
+            steps.forEach((circle, index) => {
+                const stepNumber = index + 1;
+                if (stepNumber < currentStep) {
+                    circle.classList.remove('active');
+                    circle.classList.add('completed');
+                    if (labels[index]) {
+                        labels[index].classList.remove('active');
+                        labels[index].classList.add('completed');
+                    }
+                } else if (stepNumber === currentStep) {
+                    circle.classList.add('active');
+                    circle.classList.remove('completed');
+                    if (labels[index]) {
+                        labels[index].classList.add('active');
+                        labels[index].classList.remove('completed');
+                    }
+                } else {
+                    circle.classList.remove('active', 'completed');
+                    if (labels[index]) {
+                        labels[index].classList.remove('active', 'completed');
+                    }
+                }
+            });
+        }
+
+        function validateStep(stepNumber) {
+            // Don't validate Step 3 with the generic validator
+            if (stepNumber === 3) {
+                return validateStep3();
+            }
+
+            const step = document.getElementById(`step${stepNumber}`);
+            let isValid = true;
+            let firstError = null;
+            let errorMessages = [];
+
+            // Get all required inputs in this step
+            const requiredInputs = step.querySelectorAll('[required]');
+
+            requiredInputs.forEach(input => {
+                // Skip disabled inputs
+                if (input.disabled) return;
+
+                const value = input.value.trim();
+                const isEmpty = value === '';
+
+                // Special validation for birthdate and age in step 1
+                if (stepNumber === 1) {
+                    if (input.id === 'b_date') {
+                        const dateValue = input.value;
+                        if (!dateValue) {
+                            isValid = false;
+                            if (!firstError) firstError = input;
+                            errorMessages.push('Birthdate is required');
+                            input.classList.add('error-border');
+                            return;
+                        }
+
+                        // Validate age
+                        const ageValidation = validateAge();
+                        if (!ageValidation.isValid) {
+                            isValid = false;
+                            if (!firstError) firstError = input;
+                            errorMessages.push(ageValidation.message);
+                            input.classList.add('age-error');
+                            return;
+                        }
+                    } else if (input.id === 'age') {
+                        // Age is calculated automatically, just skip
+                        return;
+                    }
+                }
+
+                // Special validation for contact number in step 2
+                if (stepNumber === 2 && input.id === 'contact_number') {
+                    if (!validatePhoneNumber()) {
+                        isValid = false;
+                        if (!firstError) firstError = input;
+                        errorMessages.push('Please enter a valid contact number');
+                        input.classList.add('error-border');
+                        return;
+                    } else {
+                        input.classList.remove('error-border');
+                    }
+                } else if (isEmpty) {
+                    isValid = false;
+                    if (!firstError) firstError = input;
+
+                    // Get the field label for better error message
+                    const label = input.previousElementSibling?.textContent?.replace('*', '').trim() || input.name;
+                    errorMessages.push(`${label} is required`);
+
+                    input.classList.add('error-border');
+                } else {
+                    input.classList.remove('error-border');
+                }
+            });
+
+            // Scroll to first error if any
+            if (!isValid && firstError) {
+                firstError.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                firstError.focus();
+
+                // Show combined error message
+                const uniqueErrors = [...new Set(errorMessages)];
+                showPopup(uniqueErrors.join('\n'), 'error');
+            }
+
+            return isValid;
+        }
+
+        function generateCustomLocalControlNumber() {
+            const customNumber = prompt("Enter custom local control number:", "");
+            const lcnInput = document.getElementById('local_control_number');
+
+            if (customNumber && customNumber.trim() !== "") {
+                lcnInput.value = customNumber.trim();
+                lcnInput.readOnly = false;
+                lcnInput.classList.remove('bg-gray-100');
+                lcnInput.classList.add('bg-yellow-50', 'border-yellow-300');
+            }
+        }
+
+        // ========== CONDITIONAL FIELD SETUP ==========
 
         function setupConditionalFields() {
             // Pensioner fields
@@ -1294,206 +3215,139 @@ if (empty($profile_photo_url)) {
             });
         }
 
-        function nextStep(step) {
-            // Validate current step
-            if (!validateStep(step - 1)) {
+        // ========== DATE HANDLING FUNCTIONS ==========
+
+        function handleDateInput(input, type) {
+            let value = input.value.replace(/[^\d-]/g, ''); // Only allow digits and hyphens
+
+            // Auto-insert hyphens
+            if (value.length >= 4 && value[4] !== '-') {
+                value = value.substring(0, 4) + '-' + value.substring(4);
+            }
+            if (value.length >= 7 && value[7] !== '-') {
+                value = value.substring(0, 7) + '-' + value.substring(7);
+            }
+
+            // Limit length
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+
+            input.value = value;
+
+            // Validate if complete date is entered
+            if (value.length === 10) {
+                validateDateFormat(input, type);
+            }
+        }
+
+        function validateDateFormat(input, type) {
+            const value = input.value.trim();
+
+            if (!value) {
+                input.classList.remove('success-border', 'error-border');
                 return;
             }
 
-            // Hide current step
-            document.querySelectorAll('.form-step').forEach(step => {
-                step.classList.remove('active');
-            });
-
-            // Show next step
-            document.getElementById(`step${step}`).classList.add('active');
-
-            // Update step indicators
-            updateStepIndicators(step);
-        }
-
-        function prevStep(step) {
-            // Hide current step
-            document.querySelectorAll('.form-step').forEach(step => {
-                step.classList.remove('active');
-            });
-
-            // Show previous step
-            document.getElementById(`step${step}`).classList.add('active');
-
-            // Update step indicators
-            updateStepIndicators(step);
-        }
-
-        function updateStepIndicators(currentStep) {
-            const steps = document.querySelectorAll('.step-circle');
-            const labels = document.querySelectorAll('.step-label');
-
-            steps.forEach((circle, index) => {
-                const stepNumber = index + 1;
-                if (stepNumber < currentStep) {
-                    circle.classList.remove('active');
-                    circle.classList.add('completed');
-                    labels[index].classList.remove('active');
-                    labels[index].classList.add('completed');
-                } else if (stepNumber === currentStep) {
-                    circle.classList.add('active');
-                    circle.classList.remove('completed');
-                    labels[index].classList.add('active');
-                    labels[index].classList.remove('completed');
-                } else {
-                    circle.classList.remove('active', 'completed');
-                    labels[index].classList.remove('active', 'completed');
-                }
-            });
-        }
-
-        function validateStep(stepNumber) {
-            const step = document.getElementById(`step${stepNumber}`);
-            let isValid = true;
-            let firstError = null;
-
-            // Get all required inputs in this step
-            const requiredInputs = step.querySelectorAll('[required]');
-
-            requiredInputs.forEach(input => {
-                // Skip disabled inputs
-                if (input.disabled) return;
-
-                const value = input.value.trim();
-                const isEmpty = value === '';
-
-                // Special validation for contact number
-                if (input.id === 'contact_number') {
-                    if (!validatePhoneNumber()) {
-                        isValid = false;
-                        if (!firstError) firstError = input;
-                        input.classList.add('error-border');
-                    } else {
-                        input.classList.remove('error-border');
-                    }
-                } else if (isEmpty) {
-                    isValid = false;
-                    if (!firstError) firstError = input;
-                    input.classList.add('error-border');
-                } else {
-                    input.classList.remove('error-border');
-                }
-            });
-
-            // Scroll to first error if any
-            if (!isValid && firstError) {
-                firstError.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-                firstError.focus();
-
-                // Show error message
-                showPopup('Please fill in all required fields marked with *', 'error');
+            // Check format
+            const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+            if (!datePattern.test(value)) {
+                input.classList.add('error-border');
+                input.classList.remove('success-border');
+                return;
             }
 
-            return isValid;
-        }
+            // Validate date components
+            const [, year, month, day] = value.match(datePattern);
+            const date = new Date(year, month - 1, day);
 
-        function generateCustomLocalControlNumber() {
-            const customNumber = prompt("Enter custom local control number:", "");
-            const lcnInput = document.getElementById('local_control_number');
+            // Check if date is valid
+            if (date.getFullYear() != year ||
+                date.getMonth() != month - 1 ||
+                date.getDate() != day) {
+                input.classList.add('error-border');
+                input.classList.remove('success-border');
+                return;
+            }
 
-            if (customNumber && customNumber.trim() !== "") {
-                lcnInput.value = customNumber.trim();
-                lcnInput.readOnly = false;
-                lcnInput.classList.remove('bg-gray-100');
-                lcnInput.classList.add('bg-yellow-50', 'border-yellow-300');
+            // Date is valid
+            input.classList.add('success-border');
+            input.classList.remove('error-border');
+
+            // Trigger specific validations
+            if (type === 'birthdate') {
+                calculateAgeWithValidation();
+            } else if (type === 'registration') {
+                validateRegistrationDate();
             }
         }
 
-        function showPopup(message, type = "info") {
-            const modal = document.getElementById("popupModal");
-            const box = document.getElementById("popupBox");
-            const title = document.getElementById("popupTitle");
-            const msg = document.getElementById("popupMessage");
-            const closeBtn = document.getElementById("popupCloseBtn");
+        function validateRegistrationDate() {
+            const regDateInput = document.querySelector('#date_of_registration');
+            const value = regDateInput.value;
 
-            // Set message and styles
-            msg.textContent = message;
+            if (!value) {
+                regDateInput.classList.remove('error-border', 'success-border');
+                return;
+            }
 
-            if (type === "success") {
-                title.textContent = "✅ Success";
-                title.className = "text-xl font-semibold mb-3 text-green-600";
-                closeBtn.className = "px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400";
-            } else if (type === "error") {
-                title.textContent = "⚠️ Error";
-                title.className = "text-xl font-semibold mb-3 text-red-600";
-                closeBtn.className = "px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-400";
-            } else if (type === "warning") {
-                title.textContent = "⚠️ Warning";
-                title.className = "text-xl font-semibold mb-3 text-yellow-600";
-                closeBtn.className = "px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400";
+            // Validate date format
+            const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+            if (!datePattern.test(value)) {
+                regDateInput.classList.add('error-border');
+                regDateInput.classList.remove('success-border');
+                return;
+            }
+
+            const [, year, month, day] = value.match(datePattern);
+            const regDate = new Date(year, month - 1, day);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Check if date is valid
+            if (regDate.getFullYear() != year ||
+                regDate.getMonth() != month - 1 ||
+                regDate.getDate() != day) {
+                regDateInput.classList.add('error-border');
+                regDateInput.classList.remove('success-border');
+                return;
+            }
+
+            // Registration date cannot be in the future
+            if (regDate > today) {
+                regDateInput.classList.add('error-border');
+                regDateInput.classList.remove('success-border');
+                showPopup('Registration date cannot be in the future', 'error');
             } else {
-                title.textContent = "ℹ️ Information";
-                title.className = "text-xl font-semibold mb-3 text-blue-600";
-                closeBtn.className = "px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400";
+                regDateInput.classList.add('success-border');
+                regDateInput.classList.remove('error-border');
             }
-
-            // Show modal
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-                box.classList.remove("scale-95", "opacity-0");
-                box.classList.add("scale-100", "opacity-100");
-            }, 10);
-
-            // Close button handler
-            closeBtn.onclick = () => {
-                box.classList.add("scale-95", "opacity-0");
-                setTimeout(() => {
-                    modal.classList.add("hidden");
-
-                    // If success, reset form
-                    if (type === "success") {
-                        document.getElementById("applicantForm").reset();
-                        // Reset to step 1
-                        document.querySelectorAll('.form-step').forEach(step => {
-                            step.classList.remove('active');
-                        });
-                        document.getElementById('step1').classList.add('active');
-                        updateStepIndicators(1);
-
-                        // Reset phone input
-                        if (phoneInput) {
-                            phoneInput.setNumber("");
-                        }
-
-                        // Reset conditional fields
-                        setupConditionalFields();
-                        calculateAge();
-                    }
-                }, 200);
-            };
         }
 
-        async function submitForm() {
-            // Validate step 4
-            if (!validateStep(4)) {
-                return;
-            }
+        // ========== FORM SUBMISSION VALIDATION ==========
 
-            // Validate all required fields in the entire form
+        function validateAndSubmitForm() {
+            // First validate required fields before checking character inputs
             const requiredFields = [
-                'lname', 'fname', 'mname', 'gender', 'b_date', 'age',
+                'lname', 'fname', 'gender', 'b_date', 'age',
                 'civil_status', 'citizenship', 'religion', 'birth_place',
                 'educational_attainment', 'brgy', 'municipality', 'province',
-                'living_arrangement', 'contact_number', 'date_of_registration',
-                'id_number'
+                'living_arrangement', 'date_of_registration', 'id_number'
             ];
 
             let missingFields = [];
+            let firstMissingField = null;
+
+            // Check all required fields first
             requiredFields.forEach(field => {
                 const element = document.querySelector(`[name="${field}"]`);
                 if (element && !element.disabled) {
                     const value = element.value.trim();
                     if (!value && element.required) {
                         missingFields.push(field.replace('_', ' '));
+                        if (!firstMissingField) {
+                            firstMissingField = element;
+                        }
                     }
                 }
             });
@@ -1507,89 +3361,183 @@ if (empty($profile_photo_url)) {
                 }
             });
 
+            // If there are missing fields, show error for those first
             if (missingFields.length > 0) {
-                showPopup(`Please complete the following fields: ${missingFields.join(', ')}`, 'error');
-                return;
-            }
+                showPopup(`Please complete the following required fields: ${missingFields.join(', ')}`, 'error');
 
-            // Validate phone number
-            if (!validatePhoneNumber()) {
-                showPopup('Please enter a valid contact number', 'error');
-                return;
-            }
-
-            // Collect form data
-            const formData = collectFormData();
-
-            // Format phone number
-            if (phoneInput) {
-                formData.contact_number = phoneInput.getNumber();
-            }
-
-            // Show loading
-            const submitBtn = document.querySelector('button[onclick="submitForm()"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
-
-            try {
-                const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/register/applicant.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(formData),
-                    credentials: 'include'
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showPopup(`Application submitted successfully! ID: ${result.id_number || ''}`, 'success');
-                } else {
-                    showPopup(result.error || 'Submission failed. Please try again.', 'error');
+                // Highlight and focus on the first missing field
+                if (firstMissingField) {
+                    firstMissingField.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    firstMissingField.focus();
+                    firstMissingField.classList.add('error-border');
                 }
-            } catch (error) {
-                console.error('Submission error:', error);
-                showPopup('Network error. Please check your connection and try again.', 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+
+                return;
             }
+
+            // Then validate phone number ONLY IF PROVIDED
+            const contactInput = document.querySelector('#contact_number');
+            const contactValue = contactInput ? contactInput.value.trim() : '';
+
+            // Only validate if phone number is provided (not empty)
+            if (contactValue && !validatePhoneNumber()) {
+                contactInput.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                contactInput.focus();
+                return;
+            }
+
+            // Then validate age (but don't show error if other fields are missing)
+            const ageValidation = validateAge();
+            if (!ageValidation.isValid) {
+                showPopup(ageValidation.message, 'error');
+                const birthDateInput = document.querySelector('#b_date');
+                birthDateInput.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                birthDateInput.focus();
+                return;
+            }
+
+            // Finally validate character inputs - EXCLUDE optional fields when empty
+            const fieldsToValidate = [{
+                    id: 'lname',
+                    func: (input) => validateNameInput(input, 'lname')
+                },
+                {
+                    id: 'fname',
+                    func: (input) => validateNameInput(input, 'fname')
+                },
+                {
+                    id: 'mname',
+                    func: (input) => validateNameInput(input, 'mname'),
+                    optional: true
+                },
+                {
+                    id: 'suffix',
+                    func: validateSuffixInput,
+                    optional: true
+                },
+                {
+                    id: 'citizenship',
+                    func: validateCitizenshipInput
+                },
+                {
+                    id: 'religion',
+                    func: validateReligionInput
+                },
+                {
+                    id: 'birth_place',
+                    func: (input) => validatePlaceInput(input, 'birthplace')
+                },
+                {
+                    id: 'ip_group',
+                    func: validateIPGroupInput,
+                    optional: true
+                },
+                {
+                    id: 'house_no',
+                    func: validateHouseNoInput,
+                    optional: true
+                },
+                {
+                    id: 'street',
+                    func: validateStreetInput,
+                    optional: true
+                },
+                {
+                    id: 'income_source',
+                    func: validateIncomeSourceInput,
+                    optional: true
+                },
+                {
+                    id: 'support_type',
+                    func: validateSupportTypeInput,
+                    optional: true
+                },
+                {
+                    id: 'support_cash',
+                    func: validateSupportCashInput,
+                    optional: true
+                },
+                {
+                    id: 'illness_details',
+                    func: validateIllnessDetailsInput,
+                    optional: true
+                },
+                {
+                    id: 'id_number',
+                    func: validateIDNumberInput
+                }
+            ];
+
+            let allValid = true;
+            let firstInvalidField = null;
+
+            fieldsToValidate.forEach(field => {
+                const input = document.getElementById(field.id);
+                if (input && !input.disabled) {
+                    const value = input.value.trim();
+
+                    // For optional fields, only validate if they have content
+                    if (field.optional) {
+                        if (value !== '') {
+                            if (!field.func(input)) {
+                                allValid = false;
+                                if (!firstInvalidField) {
+                                    firstInvalidField = input;
+                                }
+                            }
+                        }
+                        // Optional field is empty - that's fine, clear any errors
+                        else if (value === '') {
+                            input.classList.remove('char-error', 'error-border');
+                            const validationElement = document.getElementById(field.id + '_validation');
+                            if (validationElement) {
+                                validationElement.textContent = '';
+                                validationElement.className = 'char-validation-message';
+                            }
+                        }
+                    }
+                    // For required fields, always validate
+                    else {
+                        if (!field.func(input)) {
+                            allValid = false;
+                            if (!firstInvalidField) {
+                                firstInvalidField = input;
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (!allValid && firstInvalidField) {
+                showPopup('Please correct the invalid characters in the form fields', 'error');
+                firstInvalidField.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                firstInvalidField.focus();
+                return;
+            }
+
+            // If all validations pass, proceed to submit
+            submitForm();
         }
 
-        function collectFormData() {
-            const form = document.getElementById('applicantForm');
-            const formData = new FormData(form);
-            const data = {};
+        // ========== MOBILE DATE FORMAT EXAMPLES ==========
 
-            // Collect all form data
-            formData.forEach((value, key) => {
-                data[key] = value.trim();
+        // Show date format examples on mobile
+        if ('ontouchstart' in window) {
+            document.querySelectorAll('.date-format-example').forEach(example => {
+                example.classList.remove('hidden');
             });
-
-            // Collect radio button values
-            const radioGroups = ['is_pensioner', 'has_permanent_income', 'has_family_support', 'has_existing_illness', 'hospitalized_last6mos'];
-            radioGroups.forEach(group => {
-                const selected = form.querySelector(`input[name="${group}"]:checked`);
-                if (selected) {
-                    data[group] = selected.value;
-                }
-            });
-
-            // Add additional fields
-            data.date_of_registration = document.getElementById('date_of_registration').value;
-            data.id_number = document.getElementById('id_number').value;
-            data.local_control_number = document.getElementById('local_control_number').value;
-
-            // Add admin user info
-            data.admin_user_id = <?php echo json_encode($_SESSION['user_id'] ?? $_SESSION['admin_user_id'] ?? 57); ?>;
-            data.admin_user_name = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>;
-            data.session_context = <?php echo json_encode($ctx ?? ''); ?>;
-            data.request_source = 'admin_register';
-
-            return data;
         }
     </script>
 </body>

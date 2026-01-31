@@ -124,6 +124,9 @@ while ($row = mysqli_fetch_assoc($result)) {
     $stats['validation'][$row['validation']] = $row['count'];
 }
 
+$validated_count = $stats['validation']['Validated'] ?? 0;
+$pending_count = $stats['validation']['For Validation'] ?? 0;
+
 // Age distribution (grouped with specific ranges)
 $query = "SELECT 
             CASE 
@@ -234,9 +237,9 @@ while ($row = mysqli_fetch_assoc($result)) {
 arsort($all_barangays);
 $top_barangays = array_slice($all_barangays, 0, 5, true);
 
-// ========== NEW: BIRTHDAY MONITORING SECTION ==========
+// ========== BIRTHDAY MONITORING SECTION ==========
 // Get today's birthdays
-$today = date('m-d');
+$today_date = date('m-d');
 $query_today = "SELECT 
     a.applicant_id,
     CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) as full_name,
@@ -250,7 +253,7 @@ $query_today = "SELECT
 FROM applicants a
 LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id
 WHERE a.status = 'Active'
-AND DATE_FORMAT(a.birth_date, '%m-%d') = '$today'
+AND DATE_FORMAT(a.birth_date, '%m-%d') = '$today_date'
 AND a.birth_date IS NOT NULL
 AND a.birth_date != '0000-00-00'
 ORDER BY a.last_name, a.first_name";
@@ -282,13 +285,13 @@ WHERE a.status = 'Active'
 AND a.birth_date IS NOT NULL
 AND a.birth_date != '0000-00-00'
 AND (
-    DATE_FORMAT(a.birth_date, '%m-%d') >= '$today'
+    DATE_FORMAT(a.birth_date, '%m-%d') >= '$today_date'
     OR DATE_FORMAT(a.birth_date, '%m-%d') < DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 358 DAY), '%m-%d')
 )
-AND DATE_FORMAT(a.birth_date, '%m-%d') != '$today'
+AND DATE_FORMAT(a.birth_date, '%m-%d') != '$today_date'
 ORDER BY 
     CASE 
-        WHEN DATE_FORMAT(a.birth_date, '%m-%d') >= '$today' 
+        WHEN DATE_FORMAT(a.birth_date, '%m-%d') >= '$today_date' 
         THEN DATE_FORMAT(a.birth_date, '%m-%d')
         ELSE DATE_FORMAT(a.birth_date, '%m-%d') + 365
     END
@@ -338,7 +341,7 @@ FROM applicants
 WHERE status = 'Active'
 AND birth_date IS NOT NULL
 AND birth_date != '0000-00-00'
-AND DATE_FORMAT(birth_date, '%m-%d') >= '$today'
+AND DATE_FORMAT(birth_date, '%m-%d') >= '$today_date'
 AND DATE_FORMAT(birth_date, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '%m-%d')
 GROUP BY milestone
 ORDER BY 
@@ -373,6 +376,23 @@ if ($row = mysqli_fetch_assoc($result_total)) {
 $today_birthday_count = count($birthdays_today);
 $upcoming_birthday_count = count($upcoming_birthdays);
 $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count / $total_with_birthdates) * 100, 1) : 0;
+
+// ========== BIRTHDAY MODAL LOGIC ==========
+// Check if we should show birthday modal today
+$today = date('Y-m-d');
+$show_birthday_modal = false;
+$all_birthdays_today_for_modal = [];
+
+if (count($birthdays_today) > 0) {
+    // Check if we've already shown the modal today
+    if (!isset($_SESSION['birthday_modal_shown']) || $_SESSION['birthday_modal_shown'] !== $today) {
+        $show_birthday_modal = true;
+        $_SESSION['birthday_modal_shown'] = $today;
+
+        // Store ALL birthdays data for modal
+        $all_birthdays_today_for_modal = $birthdays_today;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -389,34 +409,39 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter: 
-                brightness(1.3)      /* Make brighter */
-                contrast(1.2)        /* Increase contrast */
-                saturate(1.5)        /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-            
+
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-            
+
             /* Inner glow effect */
-            box-shadow: 
+            box-shadow:
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-            
+
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-        
+
         @keyframes pulse-glow {
             from {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
+
             to {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -464,6 +489,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -478,9 +504,11 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             0% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -497,6 +525,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
                 transform: scale(1);
             }
+
             to {
                 box-shadow: 0 0 20px rgba(255, 193, 7, 0.7);
                 transform: scale(1.05);
@@ -539,6 +568,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -548,23 +578,21 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
         /* Confetti animation */
         @keyframes confetti-fall {
             0% {
-                transform: translateY(-100vh) rotate(0deg);
+                transform: translateY(-100px) rotate(0deg);
                 opacity: 1;
             }
+
             100% {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
 
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #ffc107;
-            top: -10px;
-            z-index: 9999;
+            z-index: 9998;
             animation: confetti-fall 3s linear forwards;
+            pointer-events: none;
         }
 
         /* Dark mode improvements */
@@ -579,25 +607,31 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             .grid-cols-4 {
                 grid-template-columns: repeat(2, 1fr);
             }
+
             .grid-cols-3 {
                 grid-template-columns: repeat(2, 1fr);
             }
+
             .grid-cols-2 {
                 grid-template-columns: 1fr;
             }
+
             .main-content {
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+
             .chart-container {
                 min-height: 250px;
             }
+
             .sidebar-collapsed main {
                 margin-left: 0;
             }
         }
 
         @media (max-width: 480px) {
+
             .grid-cols-4,
             .grid-cols-3 {
                 grid-template-columns: 1fr;
@@ -621,6 +655,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
@@ -628,40 +663,198 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
         /* Birthday modal styles */
         .birthday-modal {
-            animation: modalSlideUp 0.3s ease-out;
+            animation: modalSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @keyframes modalSlideUp {
+        @keyframes modalSlideIn {
             from {
-                transform: translateY(50px);
+                transform: translateY(-50px) scale(0.9);
                 opacity: 0;
             }
+
             to {
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
                 opacity: 1;
             }
         }
 
         .birthday-avatar {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
+            background: linear-gradient(135deg, #FFC107, #FF9800);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 32px;
             color: white;
-            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            position: relative;
         }
 
         .age-milestone {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
+            background: linear-gradient(135deg, #FFC107, #FF5722);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        /* Add smooth transitions for modal */
+        .birthday-celebration-modal {
+            transition: opacity 0.3s ease;
+        }
+
+        .birthday-celebration-modal .birthday-modal {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Improved chart container */
+        .chart-container {
+            position: relative;
+        }
+
+        .chart-container .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 0.75rem;
+        }
+
+        .dark .chart-container .loading-overlay {
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        .chart-error {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 1px solid #fecaca;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .dark .chart-error {
+            background: linear-gradient(135deg, #2c1a1a 0%, #3c1a1a 100%);
+            border: 1px solid #7f1d1d;
+        }
+
+        .chart-error-icon {
+            font-size: 3rem;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+
+        .dark .chart-error-icon {
+            color: #f87171;
+        }
+
+        .retry-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
+        }
+
+        /* New styles for birthday carousel */
+        .birthday-carousel {
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+        }
+        
+        .birthday-slide {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .birthday-slide.active {
+            display: block;
+        }
+        
+        .birthday-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .birthday-nav:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .birthday-nav.prev {
+            left: 10px;
+        }
+        
+        .birthday-nav.next {
+            right: 10px;
+        }
+        
+        .birthday-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            z-index: 10;
+        }
+        
+        .dark .birthday-nav {
+            background: rgba(55, 65, 81, 0.8);
+            color: white;
+        }
+        
+        .dark .birthday-nav:hover {
+            background: rgba(55, 65, 81, 1);
+        }
+
+        /* Add this to your existing CSS */
+        .birthday-celebration-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
     </style>
     <link rel="stylesheet" href="../css/output.css">
@@ -671,21 +864,132 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Google Charts for birthday monitoring
-        google.charts.load('current', {'packages':['corechart', 'bar']});
-        google.charts.setOnLoadCallback(initializeAllCharts);
-
+        // Enhanced Google Charts loading with better error handling
         let charts = {};
         let isDarkMode = false;
         let originalBarangayData = null;
         let originalBarangayOptions = null;
         let ageChartData = null;
         let birthdayChartData = null;
+        let barangayChartFiltered = false;
+        let googleChartsLoaded = false;
+        let chartsLoading = false;
+        let chartsLoadAttempts = 0;
+        const MAX_CHART_LOAD_ATTEMPTS = 3;
+
+        // Main initialization function
+        function initDashboard() {
+            console.log('Dashboard initialization started');
+            
+            // Load Google Charts first
+            loadGoogleCharts();
+            
+            // Initialize other components
+            initTheme();
+            updateBirthdayCountdown();
+            
+            // Set up periodic countdown updates
+            setInterval(updateBirthdayCountdown, 60000);
+            
+            // Show birthday modal if needed
+            <?php if ($show_birthday_modal && !empty($all_birthdays_today_for_modal)): ?>
+                setTimeout(() => {
+                    const allBirthdays = <?php echo json_encode($all_birthdays_today_for_modal); ?>;
+                    if (allBirthdays && allBirthdays.length > 0) {
+                        showBirthdayCelebration(allBirthdays);
+                    }
+                }, 2000);
+            <?php endif; ?>
+        }
+
+        // Improved Google Charts loading function
+        function loadGoogleCharts() {
+            if (chartsLoading) return;
+            
+            chartsLoading = true;
+            chartsLoadAttempts++;
+            
+            console.log('Loading Google Charts, attempt:', chartsLoadAttempts);
+            
+            // Check if Google Charts is already loaded
+            if (typeof google !== 'undefined' && typeof google.charts !== 'undefined' && typeof google.visualization !== 'undefined') {
+                console.log('Google Charts already loaded');
+                initializeAllCharts();
+                return;
+            }
+            
+            // Set a timeout to detect if charts fail to load
+            const loadTimeout = setTimeout(() => {
+                if (!googleChartsLoaded) {
+                    console.warn('Google Charts load timeout');
+                    handleChartsLoadFailure();
+                }
+            }, 10000); // 10 second timeout
+            
+            // Load Google Charts with error handling
+            window.googleChartsLoadCallback = function() {
+                clearTimeout(loadTimeout);
+                console.log('Google Charts loaded successfully');
+                googleChartsLoaded = true;
+                chartsLoading = false;
+                initializeAllCharts();
+            };
+            
+            // Load with error handling
+            try {
+                google.charts.load('current', {
+                    'packages': ['corechart', 'bar'],
+                    'callback': window.googleChartsLoadCallback
+                });
+            } catch (error) {
+                console.error('Error loading Google Charts:', error);
+                handleChartsLoadFailure();
+            }
+        }
+
+        function handleChartsLoadFailure() {
+            chartsLoading = false;
+            
+            if (chartsLoadAttempts < MAX_CHART_LOAD_ATTEMPTS) {
+                console.log('Retrying Google Charts load...');
+                setTimeout(loadGoogleCharts, 2000);
+            } else {
+                console.error('Failed to load Google Charts after', MAX_CHART_LOAD_ATTEMPTS, 'attempts');
+                showToast('Charts failed to load. Please refresh the page.', 'error');
+                
+                // Show fallback for barangay chart
+                showBarangayChartFallback();
+            }
+        }
 
         function initializeAllCharts() {
-            isDarkMode = document.documentElement.classList.contains('dark');
-            drawCharts();
-            drawBirthdayCharts();
+            try {
+                console.log('Initializing all charts');
+                
+                // Check if Google Charts is properly loaded
+                if (typeof google === 'undefined' || typeof google.visualization === 'undefined') {
+                    console.error('Google Charts not loaded in initializeAllCharts');
+                    handleChartsLoadFailure();
+                    return;
+                }
+                
+                isDarkMode = document.documentElement.classList.contains('dark');
+                drawCharts();
+                drawBirthdayCharts();
+                
+                console.log('All charts initialized successfully');
+                
+                // Hide loading indicators
+                const loadingIndicator = document.getElementById('barangay-chart-loading');
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error initializing charts:', error);
+                showToast('Error loading charts. Please refresh the page.', 'error');
+                handleChartsLoadFailure();
+            }
         }
 
         function drawCharts() {
@@ -748,14 +1052,15 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 });
             } catch (error) {
                 console.error('Error drawing status chart:', error);
+                showChartError('status-chart', error);
             }
 
             // Validation Status Pie Chart
             try {
                 var validationData = google.visualization.arrayToDataTable([
                     ['Validation Status', 'Count'],
-                    ['Validated', <?php echo $validated_count = $stats['validation']['Validated'] ?? 0; ?>],
-                    ['For Validation', <?php echo $pending_count = $stats['validation']['For Validation'] ?? 0; ?>]
+                    ['Validated', <?php echo $validated_count; ?>],
+                    ['For Validation', <?php echo $pending_count; ?>]
                 ]);
 
                 var validationOptions = {
@@ -781,6 +1086,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 });
             } catch (error) {
                 console.error('Error drawing validation chart:', error);
+                showChartError('validation-chart', error);
             }
 
             // Age Distribution 3D Pie Chart
@@ -849,10 +1155,22 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
             } catch (error) {
                 console.error('Error drawing age chart:', error);
+                showChartError('age-chart', error);
             }
 
             // Barangay Distribution Bar Chart
             try {
+                const barangayChartContainer = document.getElementById('barangay-chart');
+                if (!barangayChartContainer) {
+                    console.error('Barangay chart container not found');
+                    return;
+                }
+
+                // Check if the chart already has error display
+                if (barangayChartContainer.querySelector('.chart-error-fallback')) {
+                    return;
+                }
+
                 var barangayData = new google.visualization.DataTable();
                 barangayData.addColumn('string', 'Barangay');
                 barangayData.addColumn('number', 'Count');
@@ -926,7 +1244,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                     focusTarget: 'category'
                 };
 
-                charts.barangay = new google.visualization.ColumnChart(document.getElementById('barangay-chart'));
+                charts.barangay = new google.visualization.ColumnChart(barangayChartContainer);
                 charts.barangay.draw(barangayData, barangayOptions);
 
                 originalBarangayData = barangayData;
@@ -950,414 +1268,745 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
             } catch (error) {
                 console.error('Error drawing barangay chart:', error);
+                showBarangayChartFallback();
             }
         }
 
-        // NEW: Draw birthday charts
+        function showBarangayChartFallback() {
+            const barangayChartContainer = document.getElementById('barangay-chart');
+            if (!barangayChartContainer) return;
+            
+            // Hide loading indicator
+            const loadingIndicator = document.getElementById('barangay-chart-loading');
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+            
+            // Create fallback display
+            barangayChartContainer.innerHTML = `
+                <div class="chart-error-fallback flex flex-col items-center justify-center h-full p-8 text-center">
+                    <i class="fas fa-chart-bar text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400 mb-2">Chart could not be loaded</p>
+                    <button onclick="retryBarangayChart()" class="retry-btn mt-4">
+                        <i class="fas fa-redo mr-2"></i>Retry Loading Chart
+                    </button>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-left">
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Barangay Distribution (Fallback View)</h4>
+                        <div class="space-y-2 max-h-40 overflow-y-auto">
+                            <?php foreach ($all_barangays as $barangay => $count): ?>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600 dark:text-gray-300"><?php echo htmlspecialchars(preg_replace('/^[IVXLCDM]+ - /', '', $barangay)); ?></span>
+                                <span class="font-medium text-gray-900 dark:text-white"><?php echo $count; ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryBarangayChart() {
+            const barangayChartContainer = document.getElementById('barangay-chart');
+            if (!barangayChartContainer) return;
+            
+            // Remove fallback
+            const fallback = barangayChartContainer.querySelector('.chart-error-fallback');
+            if (fallback) {
+                fallback.remove();
+            }
+            
+            // Show loading
+            const loadingIndicator = document.getElementById('barangay-chart-loading');
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'flex';
+            }
+            
+            // Clear previous chart
+            barangayChartContainer.innerHTML = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'barangay-chart-loading';
+            loadingDiv.className = 'absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg';
+            loadingDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading chart...</p>
+                </div>
+            `;
+            barangayChartContainer.appendChild(loadingDiv);
+            
+            // Reload Google Charts
+            chartsLoadAttempts = 0;
+            googleChartsLoaded = false;
+            loadGoogleCharts();
+        }
+
+        function showChartError(chartId, error) {
+            const chartContainer = document.getElementById(chartId);
+            if (chartContainer) {
+                chartContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full p-4 text-center">
+                        <i class="fas fa-exclamation-triangle text-3xl text-yellow-500 mb-2"></i>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Chart temporarily unavailable</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Birthday charts
         function drawBirthdayCharts() {
-            const chartOptions = {
-                backgroundColor: 'transparent',
-                chartArea: {
-                    width: '85%',
-                    height: '75%'
-                },
-                legend: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    position: 'labeled'
-                },
-                tooltip: {
-                    textStyle: {
-                        color: isDarkMode ? '#fff' : '#374151',
-                        fontSize: 12
-                    },
-                    showColorCode: true,
-                    trigger: 'selection'
-                },
-                animation: {
-                    startup: true,
-                    duration: 1000,
-                    easing: 'out'
+            try {
+                if (typeof google === 'undefined' || typeof google.visualization === 'undefined') {
+                    console.warn('Google Charts not available for birthday charts');
+                    return;
                 }
+
+                const chartOptions = {
+                    backgroundColor: 'transparent',
+                    chartArea: {
+                        width: '85%',
+                        height: '75%'
+                    },
+                    legend: {
+                        textStyle: {
+                            color: isDarkMode ? '#374151' : '#374151',
+                            fontSize: 12
+                        },
+                        position: 'labeled'
+                    },
+                    tooltip: {
+                        textStyle: {
+                            color: isDarkMode ? '#374151' : '#374151',
+                            fontSize: 12
+                        },
+                        showColorCode: true,
+                        trigger: 'selection'
+                    },
+                    animation: {
+                        startup: true,
+                        duration: 1000,
+                        easing: 'out'
+                    }
+                };
+
+                // Birthday by Month Chart
+                try {
+                    var birthdayMonthData = new google.visualization.DataTable();
+                    birthdayMonthData.addColumn('string', 'Month');
+                    birthdayMonthData.addColumn('number', 'Birthdays');
+
+                    <?php
+                    $all_months = [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December'
+                    ];
+
+                    if (!empty($birthdays_by_month)) {
+                        echo "birthdayMonthData.addRows([\n";
+                        foreach ($all_months as $month) {
+                            $count = $birthdays_by_month[$month] ?? 0;
+                            echo "['$month', $count],\n";
+                        }
+                        echo "]);";
+                    } else {
+                        echo "birthdayMonthData.addRows([['No Data', 0]]);";
+                    }
+                    ?>
+
+                    var birthdayMonthOptions = {
+                        ...chartOptions,
+                        title: '',
+                        colors: ['#FF9800'],
+                        hAxis: {
+                            title: 'Month',
+                            textStyle: {
+                                color: isDarkMode ? '#fff' : '#4B5563'
+                            }
+                        },
+                        vAxis: {
+                            title: 'Number of Birthdays',
+                            minValue: 0,
+                            textStyle: {
+                                color: isDarkMode ? '#fff' : '#4B5563'
+                            }
+                        }
+                    };
+
+                    charts.birthdayMonth = new google.visualization.ColumnChart(document.getElementById('birthday-month-chart'));
+                    charts.birthdayMonth.draw(birthdayMonthData, birthdayMonthOptions);
+
+                } catch (error) {
+                    console.error('Error drawing birthday month chart:', error);
+                }
+
+                // Milestone Birthdays Chart
+                try {
+                    var milestoneData = new google.visualization.DataTable();
+                    milestoneData.addColumn('string', 'Milestone');
+                    milestoneData.addColumn('number', 'Count');
+
+                    <?php
+                    if (!empty($milestone_birthdays)) {
+                        echo "milestoneData.addRows([\n";
+                        foreach ($milestone_birthdays as $milestone => $count) {
+                            echo "['$milestone', $count],\n";
+                        }
+                        echo "]);";
+                    } else {
+                        echo "milestoneData.addRows([['No Milestones', 0]]);";
+                    }
+                    ?>
+
+                    var milestoneOptions = {
+                        ...chartOptions,
+                        title: '',
+                        pieHole: 0.4,
+                        colors: ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#00BCD4', '#009688'],
+                        pieSliceText: 'value'
+                    };
+
+                    charts.milestone = new google.visualization.PieChart(document.getElementById('milestone-chart'));
+                    charts.milestone.draw(milestoneData, milestoneOptions);
+
+                    google.visualization.events.addListener(charts.milestone, 'select', function() {
+                        const selection = charts.milestone.getSelection();
+                        if (selection.length > 0) {
+                            const item = selection[0];
+                            const milestone = milestoneData.getValue(item.row, 0);
+                            const count = milestoneData.getValue(item.row, 1);
+                            showMilestoneDetails(milestone, count);
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('Error drawing milestone chart:', error);
+                }
+            } catch (error) {
+                console.error('Error in drawBirthdayCharts:', error);
+            }
+        }
+
+        function getFullBarangayName(shortName) {
+            const barangayMap = {
+                'Mapalad': 'I - Mapalad',
+                'Handang Tumulong': 'II - Handang Tumulong',
+                'Silahis ng Pag-asa': 'III - Silahis ng Pag-asa',
+                'Pag-asa ng Bayan': 'IV - Pag-asa ng Bayan',
+                'Bagong Silang': 'V - Bagong Silang',
+                'San Jose': 'VI - San Jose',
+                'Lumang Bayan': 'VII - Lumang Bayan',
+                'Marikit': 'VIII - Marikit',
+                'Tubili': 'IX - Tubili',
+                'Alipaoy': 'X - Alipaoy',
+                'Harison': 'XI - Harison',
+                'Mananao': 'XII - Mananao'
             };
 
-            // Birthday by Month Chart
+            return barangayMap[shortName] || shortName;
+        }
+
+        function filterBarangayChart(barangay) {
+            if (!charts.barangay || !originalBarangayData || !originalBarangayOptions) {
+                showToast('Chart data not available', 'error');
+                return;
+            }
+
             try {
-                var birthdayMonthData = new google.visualization.DataTable();
-                birthdayMonthData.addColumn('string', 'Month');
-                birthdayMonthData.addColumn('number', 'Birthdays');
+                const chartContainer = document.getElementById('barangay-chart');
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.innerHTML = '<div class="flex flex-col items-center"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div><div class="text-sm text-gray-600 dark:text-gray-300">Filtering...</div></div>';
+                chartContainer.parentElement.style.position = 'relative';
+                chartContainer.parentElement.appendChild(loadingOverlay);
 
-                <?php
-                $all_months = [
-                    'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ];
-                
-                if (!empty($birthdays_by_month)) {
-                    echo "birthdayMonthData.addRows([\n";
-                    foreach ($all_months as $month) {
-                        $count = $birthdays_by_month[$month] ?? 0;
-                        echo "['$month', $count],\n";
+                const filteredData = new google.visualization.DataTable();
+                filteredData.addColumn('string', 'Barangay');
+                filteredData.addColumn('number', 'Count');
+
+                const rows = originalBarangayData.getNumberOfRows();
+                let found = false;
+
+                for (let i = 0; i < rows; i++) {
+                    const rowBarangay = originalBarangayData.getValue(i, 0);
+                    const fullBarangayName = getFullBarangayName(rowBarangay);
+
+                    if (fullBarangayName === barangay || rowBarangay === barangay) {
+                        const count = originalBarangayData.getValue(i, 1);
+                        filteredData.addRow([rowBarangay, count]);
+                        found = true;
+                        break;
                     }
-                    echo "]);";
-                } else {
-                    echo "birthdayMonthData.addRows([['No Data', 0]]);";
                 }
-                ?>
 
-                var birthdayMonthOptions = {
-                    ...chartOptions,
-                    title: '',
-                    colors: ['#FF9800'],
+                if (!found) {
+                    showToast('No data found for selected barangay', 'warning');
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+
+                    const filterSelect = document.getElementById('barangay-filter');
+                    if (filterSelect) {
+                        filterSelect.value = 'all';
+                    }
+                    loadingOverlay.remove();
+                    return;
+                }
+
+                const filteredOptions = {
+                    ...originalBarangayOptions,
                     hAxis: {
-                        title: 'Month',
+                        ...originalBarangayOptions.hAxis,
                         textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
+                            ...originalBarangayOptions.hAxis.textStyle,
+                            fontSize: 14
                         }
                     },
                     vAxis: {
-                        title: 'Number of Birthdays',
+                        ...originalBarangayOptions.vAxis,
+                        title: `Number of Seniors (${barangay})`,
                         minValue: 0,
-                        textStyle: {
-                            color: isDarkMode ? '#fff' : '#4B5563'
-                        }
-                    }
+                        maxValue: filteredData.getValue(0, 1) * 1.2
+                    },
+                    bar: {
+                        groupWidth: '60%'
+                    },
+                    colors: ['#3B82F6']
                 };
 
-                charts.birthdayMonth = new google.visualization.ColumnChart(document.getElementById('birthday-month-chart'));
-                charts.birthdayMonth.draw(birthdayMonthData, birthdayMonthOptions);
+                charts.barangay.draw(filteredData, filteredOptions);
+                barangayChartFiltered = true;
+                showToast(`Showing data for ${barangay}`, 'success');
+
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 500);
 
             } catch (error) {
-                console.error('Error drawing birthday month chart:', error);
-            }
+                console.error('Error filtering barangay chart:', error);
+                showToast('Error filtering chart: ' + error.message, 'error');
 
-            // Milestone Birthdays Chart
-            try {
-                var milestoneData = new google.visualization.DataTable();
-                milestoneData.addColumn('string', 'Milestone');
-                milestoneData.addColumn('number', 'Count');
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                if (loadingOverlay) loadingOverlay.remove();
 
-                <?php
-                if (!empty($milestone_birthdays)) {
-                    echo "milestoneData.addRows([\n";
-                    foreach ($milestone_birthdays as $milestone => $count) {
-                        echo "['$milestone', $count],\n";
+                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+                    const filterSelect = document.getElementById('barangay-filter');
+                    if (filterSelect) {
+                        filterSelect.value = 'all';
                     }
-                    echo "]);";
-                } else {
-                    echo "milestoneData.addRows([['No Milestones', 0]]);";
                 }
-                ?>
-
-                var milestoneOptions = {
-                    ...chartOptions,
-                    title: '',
-                    pieHole: 0.4,
-                    colors: ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#00BCD4', '#009688'],
-                    pieSliceText: 'value'
-                };
-
-                charts.milestone = new google.visualization.PieChart(document.getElementById('milestone-chart'));
-                charts.milestone.draw(milestoneData, milestoneOptions);
-
-                google.visualization.events.addListener(charts.milestone, 'select', function() {
-                    const selection = charts.milestone.getSelection();
-                    if (selection.length > 0) {
-                        const item = selection[0];
-                        const milestone = milestoneData.getValue(item.row, 0);
-                        const count = milestoneData.getValue(item.row, 1);
-                        showMilestoneDetails(milestone, count);
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error drawing milestone chart:', error);
             }
         }
 
-        // NEW: Show birthday celebration modal
-        function showBirthdayCelebration(senior) {
-            // Remove any existing modal
+        function filterByBarangay(barangay) {
+            if (!googleChartsLoaded) {
+                showToast('Charts are still loading. Please wait.', 'warning');
+                return;
+            }
+
+            if (barangay === 'all') {
+                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
+                    const chartContainer = document.getElementById('barangay-chart');
+                    const loadingOverlay = document.createElement('div');
+                    loadingOverlay.className = 'loading-overlay';
+                    loadingOverlay.innerHTML = '<div class="flex flex-col items-center"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div><div class="text-sm text-gray-600 dark:text-gray-300">Loading...</div></div>';
+                    chartContainer.parentElement.style.position = 'relative';
+                    chartContainer.parentElement.appendChild(loadingOverlay);
+
+                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
+                    barangayChartFiltered = false;
+                    showToast('Showing all barangays', 'info');
+
+                    setTimeout(() => {
+                        loadingOverlay.remove();
+                    }, 500);
+                }
+            } else {
+                filterBarangayChart(barangay);
+            }
+        }
+        function closeModal(modalId) {
+            const modal = document.querySelector(`.${modalId}`);
+            if (modal) {
+                // Remove any existing slide interval
+                if (window.birthdaySlideInterval) {
+                    clearInterval(window.birthdaySlideInterval);
+                    window.birthdaySlideInterval = null;
+                }
+                
+                // Remove confetti
+                const confettiElements = document.querySelectorAll('.confetti');
+                confettiElements.forEach(el => el.remove());
+                
+                // Remove modal with animation
+                modal.style.opacity = '0';
+                modal.style.transform = 'translateY(-50px) scale(0.9)';
+                
+                // Restore scroll after animation
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.remove();
+                    }
+                    
+                    // Restore body scroll
+                    const scrollY = document.body.style.top;
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.left = '';
+                    document.body.style.right = '';
+                    document.body.style.width = '';
+                    document.body.style.overflow = '';
+                    
+                    if (scrollY) {
+                        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                    }
+                }, 300);
+            }
+        }
+        function closeBirthdayModal() {
+            const modal = document.querySelector('.birthday-celebration-modal');
+            if (modal) {
+                // Remove any existing slide interval
+                if (window.birthdaySlideInterval) {
+                    clearInterval(window.birthdaySlideInterval);
+                    window.birthdaySlideInterval = null;
+                }
+                
+                // Remove confetti
+                const confettiElements = document.querySelectorAll('.confetti');
+                confettiElements.forEach(el => el.remove());
+                
+                // Remove modal with animation
+                modal.style.opacity = '0';
+                modal.style.transform = 'translateY(-50px) scale(0.9)';
+                
+                // Restore scroll after animation
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.remove();
+                    }
+                    
+                    // Restore body scroll
+                    const scrollY = document.body.style.top;
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.left = '';
+                    document.body.style.right = '';
+                    document.body.style.width = '';
+                    document.body.style.overflow = '';
+                    
+                    if (scrollY) {
+                        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                    }
+                }, 300);
+            }
+        }
+        // Birthday celebration modal
+        function showBirthdayCelebration(allBirthdays) {
             const existingModal = document.querySelector('.birthday-celebration-modal');
             if (existingModal) {
                 existingModal.remove();
+                // Restore scroll if modal already exists
+                const scrollY = document.body.style.top;
+                if (scrollY) {
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                }
             }
-
-            // Create confetti effect
+            
+            if (!allBirthdays || !Array.isArray(allBirthdays) || allBirthdays.length === 0) {
+                console.error('Invalid birthday data');
+                showToast('No birthday data available', 'error');
+                return;
+            }
+            
             createConfetti();
-
-            // Create modal
+            
+            // Store current scroll position
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            
             const modal = document.createElement('div');
             modal.className = 'birthday-celebration-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80';
+            modal.id = 'birthday-celebration-modal'; // Add ID for easy targeting
+            modal.style.cssText = 'z-index: 9999; backdrop-filter: blur(4px); transition: opacity 0.3s ease;';
+            
             modal.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden birthday-modal">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden birthday-modal">
                     <div class="relative">
                         <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500"></div>
-                        <div class="p-6 text-center">
-                            <div class="mb-4">
-                                <div class="birthday-avatar mx-auto mb-4">
-                                    <i class="fas fa-birthday-cake"></i>
+                        
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div class="absolute top-0 left-1/4 w-4 h-4 bg-yellow-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="absolute top-4 right-1/3 w-3 h-3 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.5s"></div>
+                            <div class="absolute bottom-8 left-1/3 w-3 h-3 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.8s"></div>
+                        </div>
+                        
+                        <div class="birthday-carousel p-6 pt-8">
+                            <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
+                                🎉 ${allBirthdays.length} Birthday${allBirthdays.length > 1 ? 's' : ''} Today! 🎉
+                            </h3>
+                            
+                            ${allBirthdays.map((senior, index) => {
+                                const age = senior.new_age_today || senior.turning_age || '🎉';
+                                const formattedBirthdate = senior.formatted_birthdate || 
+                                    (senior.birth_date ? new Date(senior.birth_date).toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    }) : 'N/A');
+                                
+                                return `
+                                <div class="birthday-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                                    <div class="text-center">
+                                        <div class="mb-4">
+                                            <div class="birthday-avatar mx-auto mb-4 relative">
+                                                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold">
+                                                    ${senior.full_name ? senior.full_name.charAt(0).toUpperCase() : 'S'}
+                                                </div>
+                                                <div class="absolute -top-2 -right-2 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                                    <span class="text-white text-sm font-bold">${age}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                                Happy Birthday!
+                                            </h4>
+                                            
+                                            <div class="age-milestone mb-4 text-3xl">${age} Years Old!</div>
+                                            
+                                            <p class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                                ${senior.full_name || 'Unknown Senior'}
+                                            </p>
+                                            
+                                            <p class="text-gray-600 dark:text-gray-400 mb-3">
+                                                <i class="fas fa-calendar-day mr-2"></i>${formattedBirthdate}
+                                            </p>
+                                            
+                                            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                                                ${senior.barangay ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700">
+                                                    <i class="fas fa-map-marker-alt mr-2 text-xs"></i>
+                                                    ${senior.barangay}
+                                                </div>
+                                                ` : ''}
+                                                
+                                                ${senior.gender ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
+                                                    <i class="fas ${senior.gender === 'Male' ? 'fa-male' : 'fa-female'} mr-2 text-xs"></i>
+                                                    ${senior.gender}
+                                                </div>
+                                                ` : ''}
+                                                
+                                                ${senior.contact_number ? `
+                                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-700">
+                                                    <i class="fas fa-phone mr-2 text-xs"></i>
+                                                    ${senior.contact_number}
+                                                </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Happy Birthday!</h3>
-                                <div class="age-milestone mb-4">${senior.new_age_today}</div>
-                                <p class="text-lg font-semibold text-gray-700 dark:text-gray-300">${senior.full_name}</p>
-                                <p class="text-gray-600 dark:text-gray-400">${senior.formatted_birthdate}</p>
-                                <div class="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
-                                    <i class="fas fa-map-marker-alt mr-2"></i>
-                                    ${senior.barangay || 'N/A'}
-                                </div>
+                                `;
+                            }).join('')}
+                            
+                            ${allBirthdays.length > 1 ? `
+                            <button class="birthday-nav prev" onclick="changeBirthdaySlide(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="birthday-nav next" onclick="changeBirthdaySlide(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            
+                            <div class="birthday-counter">
+                                <span id="current-slide">1</span> / ${allBirthdays.length}
                             </div>
+                            ` : ''}
                         </div>
                     </div>
-                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end">
-                        <button onclick="closeModal('birthday-celebration')" 
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500 transition-colors">
-                            Close
+                    
+                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
+                        <button onclick="closeBirthdayModal()" 
+                                class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-white bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-lg hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-700 transition-colors flex items-center">
+                            <i class="fas fa-times mr-2"></i> Close
                         </button>
                     </div>
                 </div>
             `;
-
+            
             document.body.appendChild(modal);
-
-            // Add click outside to close
+            
+            // Store scroll position and lock body
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            document.body.style.top = `-${scrollTop}px`;
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+            
+            window.currentBirthdayIndex = 0;
+            window.allBirthdaysData = allBirthdays;
+            window.currentBirthday = allBirthdays[0];
+            
+            // Close modal on background click
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
-                    closeModal('birthday-celebration');
+                    closeBirthdayModal();
                 }
             });
-
-            // Add escape key to close
+            
+            // Close modal on ESC key
             const handleEsc = function(e) {
                 if (e.key === 'Escape') {
-                    closeModal('birthday-celebration');
+                    closeBirthdayModal();
                     document.removeEventListener('keydown', handleEsc);
                 }
             };
             document.addEventListener('keydown', handleEsc);
+            
+            // Auto-advance slides if multiple birthdays
+            if (allBirthdays.length > 1) {
+                window.birthdaySlideInterval = setInterval(() => {
+                    changeBirthdaySlide(1);
+                }, 10000);
+            }
+            
+            // Auto-close after 60 seconds
+            window.birthdayAutoCloseTimeout = setTimeout(() => {
+                closeBirthdayModal();
+            }, 60000);
+        }
+        
+        function changeBirthdaySlide(direction) {
+            const slides = document.querySelectorAll('.birthday-slide');
+            const totalSlides = slides.length;
+            
+            if (totalSlides <= 1) return;
+            
+            if (window.birthdaySlideInterval) {
+                clearInterval(window.birthdaySlideInterval);
+            }
+            
+            let newIndex = window.currentBirthdayIndex + direction;
+            
+            if (newIndex < 0) {
+                newIndex = totalSlides - 1;
+            } else if (newIndex >= totalSlides) {
+                newIndex = 0;
+            }
+            
+            slides[window.currentBirthdayIndex].classList.remove('active');
+            slides[newIndex].classList.add('active');
+            
+            window.currentBirthdayIndex = newIndex;
+            window.currentBirthday = window.allBirthdaysData[newIndex];
+            
+            const counterElement = document.getElementById('current-slide');
+            if (counterElement) {
+                counterElement.textContent = newIndex + 1;
+            }
+            
+            if (totalSlides > 1) {
+                window.birthdaySlideInterval = setInterval(() => {
+                    changeBirthdaySlide(1);
+                }, 10000);
+            }
+        }
+        
+        function restoreScrollPosition() {
+            // First, remove the modal
+            const modal = document.querySelector('.birthday-celebration-modal');
+            if (modal) {
+                modal.remove();
+            }
+            
+            // Remove all event listeners
+            if (window.birthdaySlideInterval) {
+                clearInterval(window.birthdaySlideInterval);
+                window.birthdaySlideInterval = null;
+            }
+            
+            // Remove confetti
+            const confettiElements = document.querySelectorAll('.confetti');
+            confettiElements.forEach(el => el.remove());
+            
+            // Restore scroll
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.width = '';
+            
+            // Reset any inline styles
+            document.body.removeAttribute('style');
+            
+            // Force reflow
+            void document.body.offsetHeight;
         }
 
-        // NEW: Create confetti effect
+        function closeModal(type) {
+            const modal = document.querySelector(`.${type}-modal`);
+            if (modal) {
+                modal.style.opacity = '0';
+                modal.style.transform = 'translateY(-50px) scale(0.9)';
+
+                setTimeout(() => {
+                    restoreScrollPosition();
+                }, 300);
+            } else {
+                restoreScrollPosition();
+            }
+        }
+
         function createConfetti() {
-            const colors = ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5'];
-            
-            for (let i = 0; i < 50; i++) {
+            const colors = ['#FFC107', '#FF9800', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#2196F3', '#4CAF50'];
+
+            for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.width = Math.random() * 12 + 8 + 'px';
+                confetti.style.height = Math.random() * 12 + 8 + 'px';
                 confetti.style.animationDelay = Math.random() * 2 + 's';
-                confetti.style.opacity = Math.random() * 0.5 + 0.5;
-                
+                confetti.style.opacity = Math.random() * 0.7 + 0.3;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
                 document.body.appendChild(confetti);
-                
-                // Remove confetti after animation
+
                 setTimeout(() => {
-                    confetti.remove();
+                    if (confetti.parentNode) {
+                        confetti.remove();
+                    }
                 }, 3000);
             }
         }
 
-        // NEW: Send birthday greeting
-        function sendBirthdayGreeting(applicantId, fullName, phoneNumber) {
-            if (!phoneNumber) {
-                showToast('No phone number available for this senior', 'error');
-                return;
-            }
-
-            showToast(`Sending birthday SMS to ${fullName}...`, 'info');
-            
-            // In a real implementation, you would make an AJAX call to send SMS
-            // For now, we'll simulate it
-            setTimeout(() => {
-                showToast(`Birthday SMS sent to ${fullName}`, 'success');
-                
-                // Log the action
-                fetch('../php/log_birthday_greeting.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        applicant_id: applicantId,
-                        full_name: fullName,
-                        phone_number: phoneNumber,
-                        greeting_type: 'sms',
-                        sent_by: '<?php echo $user_id; ?>'
-                    })
-                });
-            }, 1000);
-        }
-
-        // NEW: Generate birthday certificate
-        function generateBirthdayCertificate(applicantId) {
-            showToast('Generating birthday certificate...', 'info');
-            
-            // Open certificate generation in new window
-            window.open(`./generate_birthday_certificate.php?applicant_id=${applicantId}&session_context=<?php echo $ctx; ?>`, '_blank');
-            
-            // Log the action
-            fetch('../php/log_birthday_greeting.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    applicant_id: applicantId,
-                    greeting_type: 'certificate',
-                    sent_by: '<?php echo $user_id; ?>'
-                })
-            });
-        }
-
-        // NEW: View senior profile
-        function viewSeniorProfile(applicantId) {
-            window.location.href = `./SeniorList/view_senior.php?id=${applicantId}&session_context=<?php echo $ctx; ?>`;
-        }
-
-        // NEW: Show milestone details
-        function showMilestoneDetails(milestone, count) {
-            const modal = document.createElement('div');
-            modal.className = 'milestone-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80';
-            modal.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">${milestone} Birthday</h3>
-                        <button onclick="closeModal('milestone')" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="text-center mb-6">
-                        <div class="text-5xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">${count}</div>
-                        <p class="text-gray-600 dark:text-gray-400">seniors reaching this milestone</p>
-                    </div>
-                    <div class="mb-6">
-                        <button onclick="viewMilestoneSeniors('${milestone}')" 
-                                class="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-users mr-2"></i> View All ${milestone} Seniors
-                        </button>
-                    </div>
-                    <div class="flex justify-end">
-                        <button onclick="closeModal('milestone')" 
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeModal('milestone');
-                }
-            });
-        }
-
-        // NEW: View seniors by milestone
-        function viewMilestoneSeniors(milestone) {
-            const age = milestone.replace('Turning ', '').replace(' Years', '');
-            window.location.href = `./SeniorList/activelist.php?milestone=${age}&session_context=<?php echo $ctx; ?>&filter=milestone`;
-        }
-
-        // NEW: Update all ages
-        function updateAllAges() {
-            showToast('Updating ages for all seniors...', 'info');
-            
-            const btn = document.getElementById('update-ages-btn');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-            btn.disabled = true;
-            
-            fetch('../php/update_ages.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'update_all',
-                    user_id: <?php echo $user_id; ?>
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(`Updated ${data.updated_count} senior ages`, 'success');
-                    // Reload page after 2 seconds to show updated data
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    showToast('Failed to update ages: ' + data.error, 'error');
-                    btn.innerHTML = originalHtml;
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                showToast('Error updating ages', 'error');
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            });
-        }
-
-        // NEW: Send birthday reminders
-        function sendBirthdayReminders() {
-            showToast('Sending birthday reminders...', 'info');
-            
-            fetch('../php/send_birthday_reminders.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'send_reminders',
-                    user_id: <?php echo $user_id; ?>
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(`Sent ${data.sent_count} birthday reminders`, 'success');
-                } else {
-                    showToast('Failed to send reminders: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                showToast('Error sending reminders', 'error');
-            });
-        }
-
-        // Generic close modal function
-        function closeModal(type) {
-            const modal = document.querySelector(`.${type}-modal`);
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        // Existing functions (keep these from original)
         function showValidationDetails(status, count) {
             console.log('Validation details:', status, count);
 
-            // Remove any existing modal
             const existingModal = document.querySelector('.validation-modal');
             if (existingModal) {
                 existingModal.remove();
             }
 
-            // Calculate percentages
             const totalValidation = <?php echo $validated_count + $pending_count; ?>;
             const percentage = totalValidation > 0 ? ((count / totalValidation) * 100).toFixed(1) : 0;
             const otherStatus = status === 'Validated' ? 'For Validation' : 'Validated';
             const otherCount = totalValidation - count;
             const otherPercentage = totalValidation > 0 ? ((otherCount / totalValidation) * 100).toFixed(1) : 0;
 
-            // Create modal
             const modal = document.createElement('div');
             modal.className = 'validation-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
             modal.innerHTML = `
@@ -1392,11 +2041,11 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                             <div class="space-y-2">
                                 <div class="flex justify-between">
                                     <span class="text-gray-600 dark:text-gray-400">${status}:</span>
-                                    <span class="font-medium">${count} (${percentage}%)</span>
+                                    <span class="font-medium dark:text-gray-400">${count} (${percentage}%)</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600 dark:text-gray-400">${otherStatus}:</span>
-                                    <span class="font-medium">${otherCount} (${otherPercentage}%)</span>
+                                    <span class="font-medium dark:text-gray-400">${otherCount} (${otherPercentage}%)</span>
                                 </div>
                             </div>
                         </div>
@@ -1423,14 +2072,12 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
             document.body.appendChild(modal);
 
-            // Add click outside to close
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeModal('validation');
                 }
             });
 
-            // Add escape key to close
             const handleEsc = function(e) {
                 if (e.key === 'Escape') {
                     closeModal('validation');
@@ -1443,17 +2090,14 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
         function showAgeGroupDetails(ageGroup, count) {
             console.log('Age group details:', ageGroup, count);
 
-            // Remove any existing modal
             const existingModal = document.querySelector('.age-modal');
             if (existingModal) {
                 existingModal.remove();
             }
 
-            // Calculate percentage
             const totalSeniors = <?php echo $stats['total'] ?? 0; ?>;
             const percentage = totalSeniors > 0 ? ((count / totalSeniors) * 100).toFixed(1) : 0;
 
-            // Create SIMPLE modal for testing
             const modal = document.createElement('div');
             modal.className = 'age-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
             modal.innerHTML = `
@@ -1500,14 +2144,12 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
             document.body.appendChild(modal);
 
-            // Add click outside to close
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeModal('age');
                 }
             });
 
-            // Add escape key to close
             const handleEsc = function(e) {
                 if (e.key === 'Escape') {
                     closeModal('age');
@@ -1515,84 +2157,6 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 }
             };
             document.addEventListener('keydown', handleEsc);
-        }
-
-        function filterByBarangay(barangay) {
-            if (barangay === 'all') {
-                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
-                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
-                    showToast('Showing all barangays', 'info');
-                }
-            } else {
-                filterBarangayChart(barangay);
-            }
-        }
-
-        function filterBarangayChart(barangay) {
-            if (!charts.barangay || !originalBarangayData || !originalBarangayOptions) {
-                showToast('Chart data not available', 'error');
-                return;
-            }
-
-            try {
-                const filteredData = new google.visualization.DataTable();
-                filteredData.addColumn('string', 'Barangay');
-                filteredData.addColumn('number', 'Count');
-
-                const rows = originalBarangayData.getNumberOfRows();
-                let found = false;
-
-                for (let i = 0; i < rows; i++) {
-                    const rowBarangay = originalBarangayData.getValue(i, 0);
-                    const fullBarangayName = getFullBarangayName(rowBarangay);
-
-                    if (fullBarangayName === barangay) {
-                        const count = originalBarangayData.getValue(i, 1);
-                        filteredData.addRow([rowBarangay, count]);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    showToast('No data found for selected barangay', 'warning');
-                    const filterSelect = document.getElementById('barangay-filter');
-                    if (filterSelect) {
-                        filterSelect.value = 'all';
-                    }
-                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
-                    return;
-                }
-
-                const filteredOptions = {
-                    ...originalBarangayOptions,
-                    hAxis: {
-                        ...originalBarangayOptions.hAxis,
-                        textStyle: {
-                            ...originalBarangayOptions.hAxis.textStyle,
-                            fontSize: 14
-                        }
-                    },
-                    bar: {
-                        groupWidth: '50%'
-                    }
-                };
-
-                charts.barangay.draw(filteredData, filteredOptions);
-                showToast(`Showing data for ${barangay}`, 'info');
-
-            } catch (error) {
-                console.error('Error filtering barangay chart:', error);
-                showToast('Error filtering chart', 'error');
-
-                if (charts.barangay && originalBarangayData && originalBarangayOptions) {
-                    charts.barangay.draw(originalBarangayData, originalBarangayOptions);
-                    const filterSelect = document.getElementById('barangay-filter');
-                    if (filterSelect) {
-                        filterSelect.value = 'all';
-                    }
-                }
-            }
         }
 
         function showToast(message, type = 'info') {
@@ -1634,20 +2198,253 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             showToast('Refreshing dashboard...', 'info');
 
             setTimeout(() => {
-                drawCharts();
-                showToast('Dashboard updated!', 'success');
+                if (googleChartsLoaded) {
+                    drawCharts();
+                    drawBirthdayCharts();
+                    showToast('Dashboard updated!', 'success');
+                } else {
+                    loadGoogleCharts();
+                    showToast('Reloading charts...', 'info');
+                }
                 refreshBtn.innerHTML = originalHtml;
                 refreshBtn.disabled = false;
             }, 1000);
         }
+function showGenderDistribution() {
+    console.log('Gender distribution details');
+    
+    const existingModal = document.querySelector('.gender-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const total = <?php echo $total_gender; ?>;
+    const maleCount = <?php echo $male_count; ?>;
+    const femaleCount = <?php echo $female_count; ?>;
+    
+    const modal = document.createElement('div');
+    modal.className = 'gender-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
+    modal.innerHTML = `
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300" id="gender-modal-content">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Gender Distribution Details</h3>
+                <button onclick="closeModal('gender')" 
+                        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Male Stats -->
+                <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center mr-3">
+                            <i class="fas fa-male text-blue-600 dark:text-blue-300"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900 dark:text-white">Male</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${maleCount} seniors</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">${<?php echo $male_percentage; ?>}%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">of total</div>
+                    </div>
+                </div>
+                
+                <!-- Female Stats -->
+                <div class="flex items-center justify-between p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-800 flex items-center justify-center mr-3">
+                            <i class="fas fa-female text-pink-600 dark:text-pink-300"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900 dark:text-white">Female</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${femaleCount} seniors</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-pink-600 dark:text-pink-400">${<?php echo $female_percentage; ?>}%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">of total</div>
+                    </div>
+                </div>
+                
+                <!-- Total -->
+                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="font-medium text-gray-900 dark:text-white">Total Seniors</div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white">${total}</div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-3">Quick Actions:</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="viewSeniorsByGender('Male')" 
+                                class="flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+                            <i class="fas fa-male mr-2"></i>View Males
+                        </button>
+                        <button onclick="viewSeniorsByGender('Female')" 
+                                class="flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 dark:bg-pink-700 dark:hover:bg-pink-800 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+                            <i class="fas fa-female mr-2"></i>View Females
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 rounded-b-lg flex justify-end space-x-3">
+            <button onclick="closeModal('gender')" 
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500 transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal('gender');
+        }
+    });
+    
+    const handleEsc = function(e) {
+        if (e.key === 'Escape') {
+            closeModal('gender');
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
 
+function showRecentRegistrations() {
+    console.log('Recent registrations details');
+    
+    const existingModal = document.querySelector('.recent-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const recentCount = <?php echo $stats['recent_registrations']; ?>;
+    const total = <?php echo $stats['total']; ?>;
+    const percentage = total > 0 ? ((recentCount / total) * 100).toFixed(1) : 0;
+    
+    const modal = document.createElement('div');
+    modal.className = 'recent-modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 bg-opacity-50';
+    modal.innerHTML = `
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-300" id="recent-modal-content">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Registrations Details</h3>
+                <button onclick="closeModal('recent')" 
+                        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="text-center p-6 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                    <div class="text-5xl font-bold text-purple-600 dark:text-purple-400 mb-2">${recentCount}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">New registrations in last 30 days</div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white">${percentage}%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Of total seniors</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">${(recentCount / 30).toFixed(1)}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Avg. per day</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Registration Trend:</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        <?php if ($stats['recent_registrations'] > 0): ?>
+                            Registration rate is ${(recentCount / 30).toFixed(1)} seniors per day over the last 30 days.
+                        <?php else: ?>
+                            No new registrations in the last 30 days.
+                        <?php endif; ?>
+                    </p>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-3">Quick Actions:</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="viewRecentSeniors()" 
+                                class="flex items-center justify-center px-4 py-3 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+                            <i class="fas fa-users mr-2"></i>View Recently Registered Seniors
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 rounded-b-lg flex justify-end space-x-3">
+            <button onclick="closeModal('recent')" 
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-500 transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal('recent');
+        }
+    });
+    
+    const handleEsc = function(e) {
+        if (e.key === 'Escape') {
+            closeModal('recent');
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
+function viewSeniorsByGender(gender) {
+    console.log('Viewing seniors by gender:', gender);
+    closeModal('gender');
+    showToast(`Loading ${gender} seniors...`, 'info');
+    const encodedGender = encodeURIComponent(gender);
+    window.location.href = `./SeniorList/activelist.php?filter=gender&gender=${encodedGender}&session_context=<?php echo $ctx; ?>`;
+}
+
+function viewRecentSeniors() {
+    console.log('Viewing recent seniors');
+    closeModal('recent');
+    showToast('Loading recently registered seniors...', 'info');
+    window.location.href = `./SeniorList/activelist.php?filter=recent&days=30&session_context=<?php echo $ctx; ?>`;
+}
+
+function closeModal(type) {
+    const modal = document.querySelector(`.${type}-modal`);
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'translateY(-50px) scale(0.9)';
+
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
         // Redraw charts on window resize
         let resizeTimer;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function() {
-                drawCharts();
-                drawBirthdayCharts();
+                if (googleChartsLoaded) {
+                    drawCharts();
+                    drawBirthdayCharts();
+                }
             }, 250);
         });
 
@@ -1656,8 +2453,10 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
                     isDarkMode = document.documentElement.classList.contains('dark');
-                    drawCharts();
-                    drawBirthdayCharts();
+                    if (googleChartsLoaded) {
+                        drawCharts();
+                        drawBirthdayCharts();
+                    }
                 }
             });
         });
@@ -1665,45 +2464,125 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
             attributes: true
         });
 
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if there are birthdays today and show celebration
-            <?php if (count($birthdays_today) > 0): ?>
-                setTimeout(() => {
-                    // Show celebration for the first birthday
-                    const firstBirthday = <?php echo json_encode($birthdays_today[0] ?? null); ?>;
-                    if (firstBirthday) {
-                        showBirthdayCelebration(firstBirthday);
-                    }
-                }, 1000);
-            <?php endif; ?>
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = 'light';
 
-            // Add birthday countdown timer
-            updateBirthdayCountdown();
-            setInterval(updateBirthdayCountdown, 60000); // Update every minute
-        });
+            if (savedTheme) {
+                theme = savedTheme;
+            } else if (systemPrefersDark) {
+                theme = 'dark';
+            }
 
-        // NEW: Update birthday countdown
+            setTheme(theme);
+        }
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+            isDarkMode = theme === 'dark';
+        }
+
+        function viewSeniorsByAge(ageGroup) {
+            console.log('Viewing seniors in age group:', ageGroup);
+            closeModal('age');
+            showToast(`Loading seniors aged ${ageGroup}...`, 'info');
+
+            let minAge = 0;
+            let maxAge = 0;
+
+            if (ageGroup === 'Under 60') {
+                minAge = 0;
+                maxAge = 59;
+            } else if (ageGroup === '90+') {
+                minAge = 90;
+                maxAge = 120;
+            } else {
+                const ages = ageGroup.split('-');
+                minAge = parseInt(ages[0]);
+                maxAge = parseInt(ages[1]);
+            }
+
+            const encodedAgeGroup = encodeURIComponent(ageGroup);
+            window.location.href = `./SeniorList/activelist.php?filter=age&age_group=${encodedAgeGroup}&min_age=${minAge}&max_age=${maxAge}&session_context=<?php echo $ctx; ?>`;
+        }
+
+        function viewSeniorsByValidation(status) {
+            console.log('Viewing seniors with validation status:', status);
+            closeModal('validation');
+            showToast(`Loading ${status} seniors...`, 'info');
+            const encodedStatus = encodeURIComponent(status);
+            window.location.href = `./SeniorList/activelist.php?filter=validation&validation_status=${encodedStatus}&session_context=<?php echo $ctx; ?>`;
+        }
+
+        function resetAgeChart() {
+            try {
+                if (charts.age && ageChartData) {
+                    const ageOptions = {
+                        backgroundColor: 'transparent',
+                        chartArea: {
+                            width: '85%',
+                            height: '75%'
+                        },
+                        title: '',
+                        is3D: true,
+                        colors: ['#3B82F6', '#8B5CF6', '#EC4899', '#10B981', '#F59E0B', '#EF4444', '#6B7280'],
+                        pieSliceText: 'value',
+                        tooltip: {
+                            showColorCode: true,
+                            text: 'percentage'
+                        }
+                    };
+
+                    charts.age.draw(ageChartData, ageOptions);
+                    showToast('Age chart reset', 'info');
+                }
+            } catch (error) {
+                console.error('Error resetting age chart:', error);
+            }
+        }
+
         function updateBirthdayCountdown() {
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
-            
+
             const diff = tomorrow - now;
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            
+
             const countdownElement = document.getElementById('birthday-countdown');
             if (countdownElement) {
                 countdownElement.textContent = `${hours}h ${minutes}m`;
             }
         }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dashboard');
+            initDashboard();
+        });
+
+        // Fallback for failed charts
+        function retryFailedCharts() {
+            console.log('Retrying failed charts');
+            chartsLoadAttempts = 0;
+            googleChartsLoaded = false;
+            loadGoogleCharts();
+        }
     </script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
-    <!-- Navigation (same as before) -->
+    
     <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
         <div class="flex flex-wrap justify-between items-center">
             <div class="flex justify-start items-center">
@@ -1728,7 +2607,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                     <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                         class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                         alt="MSWD LOGO" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">MSWD PALUAN</span>
                 </a>
             </div>
             <div class="flex items-center lg:order-2">
@@ -1779,7 +2658,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
         </div>
     </nav>
 
-    <!-- Sidebar -->
+    
     <aside
         class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidenav" id="drawer-navigation">
@@ -1829,7 +2708,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                     </ul>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="./benefits.php?session_context=<?php echo $ctx; ?>"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <i class="fas fa-gift w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                         <span class="ml-3">Benefits</span>
@@ -1878,14 +2757,10 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                 <p class="text-gray-600 dark:text-gray-400 mt-1">Senior Citizen Management System</p>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- <button onclick="updateAllAges()" id="update-ages-btn"
-                    class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center">
-                    <i class="fas fa-birthday-cake mr-2"></i> Update Ages
+                <button onclick="refreshDashboard()" id="refresh-btn"
+                    class="px-4 py-2 text-sm font-medium text-blue-500 dark:text-indigo-600  bg-gradient-to-r rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center">
+                    <i class="fas fa-sync-alt mr-2"></i> Refresh
                 </button>
-                <button onclick="sendBirthdayReminders()"
-                    class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center">
-                    <i class="fas fa-bell mr-2"></i> Send Reminders
-                </button> -->
                 <span class="text-sm text-gray-500 dark:text-gray-400 hidden md:inline">
                     Today: <?php echo date('F j, Y'); ?>
                 </span>
@@ -1894,40 +2769,42 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
         <!-- Birthday Alert Banner -->
         <?php if (count($birthdays_today) > 0): ?>
-        <div class="mb-6 birthday-card rounded-xl shadow p-4 fade-in">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 mr-4">
-                        <i class="fas fa-birthday-cake text-2xl text-yellow-600 dark:text-yellow-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                            <span class="birthday-badge px-3 py-1 rounded-full bg-yellow-500 text-white text-sm mr-2">
-                                <?php echo count($birthdays_today); ?>
-                            </span>
-                            Birthday<?php echo count($birthdays_today) > 1 ? 's' : ''; ?> Today!
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-400 mt-1">
-                            <?php foreach ($birthdays_today as $index => $senior): ?>
-                                <?php if ($index < 3): ?>
-                                    <span class="font-medium"><?php echo htmlspecialchars($senior['full_name']); ?></span> (turning <?php echo $senior['new_age_today']; ?>)<?php echo $index < min(2, count($birthdays_today) - 1) ? ', ' : ''; ?>
+            <div class="mb-6 birthday-card rounded-xl shadow p-4 fade-in cursor-pointer hover:shadow-lg transition-shadow duration-300"
+                onclick="showBirthdayCelebration(<?php echo htmlspecialchars(json_encode($birthdays_today)); ?>)">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 mr-4">
+                            <i class="fas fa-birthday-cake text-2xl text-yellow-600 dark:text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                <span class="birthday-badge px-3 py-1 rounded-full bg-yellow-500 text-white text-sm mr-2">
+                                    <?php echo count($birthdays_today); ?>
+                                </span>
+                                Birthday<?php echo count($birthdays_today) > 1 ? 's' : ''; ?> Today!
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">
+                                <?php foreach ($birthdays_today as $index => $senior): ?>
+                                    <?php if ($index < 3): ?>
+                                        <span class="font-medium"><?php echo htmlspecialchars($senior['full_name']); ?></span> (turning <?php echo $senior['new_age_today']; ?>)<?php echo $index < min(2, count($birthdays_today) - 1) ? ', ' : ''; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                <?php if (count($birthdays_today) > 3): ?>
+                                    and <?php echo count($birthdays_today) - 3; ?> more...
                                 <?php endif; ?>
-                            <?php endforeach; ?>
-                            <?php if (count($birthdays_today) > 3): ?>
-                                and <?php echo count($birthdays_today) - 3; ?> more...
-                            <?php endif; ?>
-                        </p>
+                            </p>
+                        </div>
                     </div>
+                    <button onclick="window.location.href='./birthdays.php?filter=today&session_context=<?php echo $ctx; ?>'"
+                        class="px-4 py-2 text-sm font-medium text-yellow-500 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 flex items-center">
+                        <i class="fas fa-eye mr-2"></i> View All
+                    </button>
                 </div>
-                <button onclick="window.location.href='./birthdays.php?filter=today&session_context=<?php echo $ctx; ?>'"
-                    class="px-4 py-2 text-sm font-medium text-yellow-500 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 flex items-center">
-                    <i class="fas fa-eye mr-2"></i> View All
-                </button>
             </div>
-        </div>
         <?php endif; ?>
+        
 
-        <!-- Statistics Grid with Birthday Stats -->
+        <!-- Statistics Grid -->
         <div class="mb-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Total Seniors Card -->
@@ -1943,14 +2820,6 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                             <i class="fas fa-users text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">All records</span>
-                            <span class="text-blue-600 dark:text-blue-400 font-medium">
-                                <i class="fas fa-database mr-1"></i>Database
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Today's Birthdays Card -->
@@ -1961,81 +2830,49 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         <div>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Today's Birthdays</p>
                             <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2"><?php echo $today_birthday_count; ?></p>
-                            <?php if ($today_birthday_count > 0): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    <?php echo $birthday_percentage; ?>% of active seniors
-                                </p>
-                            <?php endif; ?>
                         </div>
                         <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 birthday-badge">
                             <i class="fas fa-birthday-cake text-yellow-600 dark:text-yellow-400 text-xl"></i>
                         </div>
                     </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">
-                                <i class="fas fa-clock mr-1"></i>
-                                Next update: <span id="birthday-countdown">24h 0m</span>
-                            </span>
-                            <span class="text-yellow-600 dark:text-yellow-400 font-medium">
-                                <i class="fas fa-calendar-day mr-1"></i>Today
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Upcoming Birthdays Card -->
-                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in upcoming-badge"
+                <!-- Gender Distribution Card -->
+                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in"
                     style="animation-delay: 0.2s; cursor: pointer;"
-                    onclick="window.location.href='./birthdays.php?filter=upcoming&session_context=<?php echo $ctx; ?>'">
+                    onclick="showGenderDistribution()">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Upcoming (7 days)</p>
-                            <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2"><?php echo $upcoming_birthday_count; ?></p>
-                            <?php if (!empty($upcoming_birthdays)): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Next: <?php echo htmlspecialchars($upcoming_birthdays[0]['full_name'] ?? ''); ?>
-                                </p>
-                            <?php endif; ?>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Gender Distribution</p>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <div>
+                                    <p class="text-lg font-bold text-blue-600 dark:text-blue-400"><?php echo $male_percentage; ?>%</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Male</p>
+                                </div>
+                                <div>
+                                    <p class="text-lg font-bold text-pink-600 dark:text-pink-400"><?php echo $female_percentage; ?>%</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Female</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
-                            <i class="fas fa-calendar-alt text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">Next 7 days</span>
-                            <span class="text-blue-600 dark:text-blue-400 font-medium">
-                                <i class="fas fa-arrow-right mr-1"></i>View
-                            </span>
+                        <div class="p-3 rounded-full bg-gradient-to-r from-blue-100 to-pink-100 dark:from-blue-900 dark:to-pink-900">
+                            <i class="fas fa-venus-mars text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600 dark:from-blue-300 dark:to-pink-300 text-xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Milestone Birthdays Card -->
-                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in milestone-badge"
+                <!-- Recent Registrations Card -->
+                <div class="stat-card bg-white rounded-xl shadow p-6 dark:bg-gray-800 fade-in"
                     style="animation-delay: 0.3s; cursor: pointer;"
-                    onclick="window.location.href='./birthdays.php?filter=milestone&session_context=<?php echo $ctx; ?>'">
+                    onclick="showRecentRegistrations()">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Milestone Birthdays</p>
-                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2"><?php echo array_sum($milestone_birthdays); ?></p>
-                            <?php if (!empty($milestone_birthdays)): ?>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    <?php echo array_keys($milestone_birthdays)[0] ?? 'No milestones'; ?>
-                                </p>
-                            <?php endif; ?>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Recent Registrations</p>
+                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2"><?php echo $stats['recent_registrations']; ?></p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Last 30 days</p>
                         </div>
                         <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
-                            <i class="fas fa-medal text-purple-600 dark:text-purple-300 text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500 dark:text-gray-400">60, 65, 70, 75, 80+</span>
-                            <span class="text-purple-600 dark:text-purple-400 font-medium">
-                                <i class="fas fa-star mr-1"></i>Special
-                            </span>
+                            <i class="fas fa-user-plus text-purple-600 dark:text-purple-300 text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -2044,20 +2881,6 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
 
         <!-- Birthday Monitoring Section -->
         <div class="mb-8">
-            <!-- <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Birthday Monitoring</h2>
-                <div class="flex space-x-2">
-                    <a href="./birthdays.php?session_context=<?php echo $ctx; ?>"
-                        class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all duration-200 flex items-center">
-                        <i class="fas fa-calendar-week mr-2"></i> Birthday Calendar
-                    </a>
-                    <a href="./reports/birthday_report.php?session_context=<?php echo $ctx; ?>"
-                        class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 flex items-center">
-                        <i class="fas fa-chart-pie mr-2"></i> Birthday Reports
-                    </a>
-                </div>
-            </div> -->
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Today's Birthdays List -->
                 <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
@@ -2071,7 +2894,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         <?php if (count($birthdays_today) > 0): ?>
                             <?php foreach ($birthdays_today as $senior): ?>
                                 <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition-colors cursor-pointer"
-                                    onclick="showBirthdayCelebration(<?php echo htmlspecialchars(json_encode($senior)); ?>)">
+                                    onclick="showBirthdayCelebration([<?php echo htmlspecialchars(json_encode($senior)); ?>])">
                                     <div class="flex items-center">
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold mr-3">
                                             <?php echo strtoupper(substr($senior['full_name'], 0, 1)); ?>
@@ -2097,18 +2920,9 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                             <div class="text-center py-8">
                                 <i class="fas fa-birthday-cake text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
                                 <p class="text-gray-500 dark:text-gray-400">No birthdays today</p>
-                                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Check upcoming birthdays</p>
                             </div>
                         <?php endif; ?>
                     </div>
-                    <?php if (count($birthdays_today) > 0): ?>
-                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <button onclick="sendBirthdayGreetingsToAll()"
-                                class="w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center">
-                                <i class="fas fa-paper-plane mr-2"></i> Send Greetings to All
-                            </button>
-                        </div>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Upcoming Birthdays -->
@@ -2143,11 +2957,6 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                                         <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
                                             in <?php echo $senior['days_until_birthday']; ?> day<?php echo $senior['days_until_birthday'] != 1 ? 's' : ''; ?>
                                         </div>
-                                        <?php if ($senior['barangay']): ?>
-                                            <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                <?php echo htmlspecialchars($senior['barangay']); ?>
-                                            </div>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -2155,42 +2964,28 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                             <div class="text-center py-8">
                                 <i class="fas fa-calendar-alt text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
                                 <p class="text-gray-500 dark:text-gray-400">No upcoming birthdays</p>
-                                <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Next 7 days</p>
                             </div>
                         <?php endif; ?>
                     </div>
-                    <?php if (count($upcoming_birthdays) > 0): ?>
-                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <a href="./birthdays.php?filter=upcoming&session_context=<?php echo $ctx; ?>"
-                                class="block text-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                View all upcoming birthdays →
-                            </a>
-                        </div>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Birthday Charts -->
                 <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Birthday Analytics</h3>
-                        <div class="flex space-x-2">
-                            <button onclick="drawBirthdayCharts()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
                     </div>
                     <div class="space-y-6">
                         <!-- Birthday by Month Chart -->
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Birthdays by Month</h4>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                <span class="text-xs text-gray-500 dark:text-gray-900">
                                     Total: <?php echo array_sum($birthdays_by_month); ?>
                                 </span>
                             </div>
                             <div id="birthday-month-chart" style="height: 150px;"></div>
                         </div>
-                        
+
                         <!-- Milestone Birthdays Chart -->
                         <div>
                             <div class="flex items-center justify-between mb-2">
@@ -2201,24 +2996,12 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                             </div>
                             <div id="milestone-chart" style="height: 150px;"></div>
                         </div>
-                        
-                        <!-- Quick Stats -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div class="text-lg font-bold text-gray-900 dark:text-white"><?php echo $total_with_birthdates; ?></div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">With Birthdates</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div class="text-lg font-bold text-green-600 dark:text-green-400"><?php echo $birthday_percentage; ?>%</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400">Birthday Rate</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Original Charts Section (keep as is) -->
+        <!-- Original Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Age Distribution Chart -->
             <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800 chart-container">
@@ -2230,15 +3013,12 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                     <div class="flex space-x-2">
                         <button onclick="resetAgeChart()"
                             class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                            data-tooltip="Reset chart selection">
+                            title="Reset chart selection">
                             <i class="fas fa-redo"></i>
                         </button>
                     </div>
                 </div>
                 <div id="age-chart" style="height: 300px;"></div>
-                <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                    <i class="fas fa-info-circle mr-2"></i>Click on a segment to view details
-                </div>
             </div>
 
             <!-- Status Distribution Chart -->
@@ -2248,32 +3028,8 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Status Distribution</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Active, Inactive, and Deceased status</p>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-300">
-                            Active: <?php echo $active_count; ?>
-                        </span>
-                        <button onclick="window.location.href='./SeniorList/activelist.php?session_context=<?php echo $ctx; ?>'"
-                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                            data-tooltip="View all">
-                            <i class="fas fa-external-link-alt"></i>
-                        </button>
-                    </div>
                 </div>
                 <div id="status-chart" style="height: 300px;"></div>
-                <div class="mt-4 grid grid-cols-3 gap-2">
-                    <div class="text-center p-2 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                        <div class="text-lg font-bold text-green-600 dark:text-green-400"><?php echo $active_percentage; ?>%</div>
-                        <div class="text-xs text-gray-600 dark:text-gray-400">Active</div>
-                    </div>
-                    <div class="text-center p-2 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
-                        <div class="text-lg font-bold text-yellow-600 dark:text-yellow-400"><?php echo $inactive_percentage; ?>%</div>
-                        <div class="text-xs text-gray-600 dark:text-gray-400">Inactive</div>
-                    </div>
-                    <div class="text-center p-2 bg-red-50 dark:bg-red-900/30 rounded-lg">
-                        <div class="text-lg font-bold text-red-600 dark:text-red-400"><?php echo $deceased_percentage; ?>%</div>
-                        <div class="text-xs text-gray-600 dark:text-gray-400">Deceased</div>
-                    </div>
-                </div>
             </div>
 
             <!-- Validation Status Chart -->
@@ -2283,30 +3039,11 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Validation Status</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Document validation progress</p>
                     </div>
-                    <?php
-                    $validated_count = $stats['validation']['Validated'] ?? 0;
-                    $pending_count = $stats['validation']['For Validation'] ?? 0;
-                    $total_validation = $validated_count + $pending_count;
-                    $validation_rate = $total_validation > 0 ? round(($validated_count / $total_validation) * 100, 1) : 0;
-                    ?>
-                    <div class="relative w-16 h-16">
-                        <svg class="w-full h-full" viewBox="0 0 36 36">
-                            <path class="text-gray-200 dark:text-gray-700" stroke-width="3" fill="none"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="text-green-600 dark:text-green-400" stroke-width="3" stroke-dasharray="<?php echo $validation_rate; ?>, 100" stroke-linecap="round" fill="none"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <text x="18" y="22" class="text-xs font-bold fill-current text-gray-900 dark:text-white" text-anchor="middle"><?php echo $validation_rate; ?>%</text>
-                        </svg>
-                    </div>
                 </div>
                 <div id="validation-chart" style="height: 250px;"></div>
             </div>
 
-            <!-- Barangay Distribution -->
+            <!-- Barangay Distribution Chart - FIXED -->
             <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800 chart-container">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -2314,7 +3051,7 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         <p class="text-sm text-gray-500 dark:text-gray-400">Senior citizens per barangay</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <div class="relative" data-tooltip="Filter by barangay">
+                        <div class="relative">
                             <select id="barangay-filter" onchange="filterByBarangay(this.value)"
                                 class="appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option value="all">All Barangays</option>
@@ -2328,139 +3065,19 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                         </div>
                     </div>
                 </div>
-                <div id="barangay-chart" style="height: 300px;"></div>
-                <div class="mt-4">
-                    <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Top 5 Barangays:</div>
-                    <div class="flex flex-wrap gap-2">
-                        <?php $counter = 0; ?>
-                        <?php foreach ($top_barangays as $barangay => $count): ?>
-                            <?php if ($count > 0 && $counter < 5): ?>
-                                <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                                    <?php echo str_replace(['I - ', 'II - ', 'III - ', 'IV - ', 'V - ', 'VI - ', 'VII - ', 'VIII - ', 'IX - ', 'X - ', 'XI - ', 'XII - '], '', $barangay); ?>: <?php echo $count; ?>
-                                </span>
-                                <?php $counter++; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+
+                <!-- Chart container with fallback -->
+                <div id="barangay-chart" style="height: 300px; min-height: 300px; position: relative;">
+                    <!-- Loading indicator -->
+                    <div id="barangay-chart-loading" class="absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Loading chart...</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Quick Stats and Actions -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
-                <div class="space-y-3">
-                    <a href="register.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center justify-between p-4 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-all duration-200 hover:translate-x-2">
-                        <div class="flex items-center">
-                            <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-800 mr-3">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <span>Register New Senior</span>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="./birthdays.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center justify-between p-4 text-sm font-medium text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 transition-all duration-200 hover:translate-x-2">
-                        <div class="flex items-center">
-                            <div class="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-800 mr-3">
-                                <i class="fas fa-birthday-cake"></i>
-                            </div>
-                            <span>Birthday Management</span>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="./SeniorList/activelist.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center justify-between p-4 text-sm font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800 transition-all duration-200 hover:translate-x-2">
-                        <div class="flex items-center">
-                            <div class="p-2 rounded-lg bg-green-100 dark:bg-green-800 mr-3">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <span>View Active Seniors</span>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="./benefits.php?session_context=<?php echo $ctx; ?>"
-                        class="flex items-center justify-between p-4 text-sm font-medium text-purple-700 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900 dark:text-purple-300 dark:hover:bg-purple-800 transition-all duration-200 hover:translate-x-2">
-                        <div class="flex items-center">
-                            <div class="p-2 rounded-lg bg-purple-100 dark:bg-purple-800 mr-3">
-                                <i class="fas fa-gift"></i>
-                            </div>
-                            <span>Manage Benefits</span>
-                        </div>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- System Status -->
-            <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Status</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-gray-700 dark:text-gray-300">Database Connection</span>
-                        </div>
-                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">Active</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-gray-700 dark:text-gray-300">Age Update Service</span>
-                        </div>
-                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">
-                            <?php echo date('H:i'); ?>
-                        </span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-gray-700 dark:text-gray-300">Birthday Monitoring</span>
-                        </div>
-                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">Active</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-gray-700 dark:text-gray-300">Last Age Update</span>
-                        </div>
-                        <span class="text-gray-600 dark:text-gray-400 text-sm">Today, 02:00 AM</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Updates -->
-            <div class="bg-white rounded-xl shadow p-6 dark:bg-gray-800">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Updates</h3>
-                    <button onclick="refreshDashboard()" id="refresh-btn" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-                <div class="space-y-4">
-                    <div class="border-l-4 border-yellow-500 pl-4 py-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">Birthday monitoring activated</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Just now</p>
-                    </div>
-                    <div class="border-l-4 border-blue-500 pl-4 py-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">New birthday celebration feature</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Today</p>
-                    </div>
-                    <div class="border-l-4 border-green-500 pl-4 py-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">Age auto-update implemented</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">1 day ago</p>
-                    </div>
-                    <div class="border-l-4 border-purple-500 pl-4 py-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">Milestone birthday tracking</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">3 days ago</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Footer Stats -->
         <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -2481,57 +3098,10 @@ $birthday_percentage = $total_with_birthdates > 0 ? round(($today_birthday_count
                     <div class="text-sm text-gray-500 dark:text-gray-400">Current Year</div>
                 </div>
             </div>
-        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="../js/tailwind.config.js"></script>
-    <script>
-        // Initialize theme
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            let theme = 'light';
-
-            if (savedTheme) {
-                theme = savedTheme;
-            } else if (systemPrefersDark) {
-                theme = 'dark';
-            }
-
-            setTheme(theme);
-        }
-
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        initTheme();
-
-        // Send birthday greetings to all
-        function sendBirthdayGreetingsToAll() {
-            showToast('Sending birthday greetings to all celebrants...', 'info');
-            
-            <?php foreach ($birthdays_today as $senior): ?>
-                setTimeout(() => {
-                    sendBirthdayGreeting(
-                        <?php echo $senior['applicant_id']; ?>,
-                        '<?php echo addslashes($senior['full_name']); ?>',
-                        '<?php echo addslashes($senior['contact_number'] ?? ''); ?>'
-                    );
-                }, <?php echo (array_search($senior, $birthdays_today) * 1000) + 1000; ?>);
-            <?php endforeach; ?>
-            
-            setTimeout(() => {
-                showToast('All birthday greetings sent successfully!', 'success');
-            }, <?php echo (count($birthdays_today) * 1000) + 2000; ?>);
-        }
-    </script>
 </body>
+
 </html>

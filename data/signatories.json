@@ -1,0 +1,26 @@
+{
+    "osca_head": [
+        {
+            "id": 1,
+            "name": "EVELYN V. BELTRAN",
+            "status": "active"
+        },
+        {
+            "id": 2,
+            "name": "ROSALINA V. BARRALES",
+            "status": "active"
+        }
+    ],
+    "municipal_mayor": [
+        {
+            "id": 4,
+            "name": "MERIAM E. LEYCANO-QUIJANO",
+            "status": "active"
+        },
+        {
+            "id": 5,
+            "name": "MICHAEL D. DIAZ",
+            "status": "active"
+        }
+    ]
+}

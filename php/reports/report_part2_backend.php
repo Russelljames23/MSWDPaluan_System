@@ -51,7 +51,7 @@ class Part2ReportAPI
                     a.suffix,
                     a.gender,
                     a.birth_date,
-                    a.current_age,
+                    a.age,
                     ad.barangay,
                     a.date_created
                 FROM applicants a 
@@ -97,7 +97,7 @@ class Part2ReportAPI
                     'id' => $row['applicant_id'],
                     'name' => $fullName,
                     'date_of_birth' => $dateOfBirth,
-                    'age' => $row['current_age'] ?? 'N/A',
+                    'age' => $row['age'] ?? 'N/A',
                     'sex' => !empty($row['gender']) ? substr(strtoupper($row['gender']), 0, 1) : 'N/A',
                     'barangay' => $row['barangay'] ?? 'Not Specified',
                     'date_created' => $row['date_created']

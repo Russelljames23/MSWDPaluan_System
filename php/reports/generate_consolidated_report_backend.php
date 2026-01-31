@@ -199,8 +199,7 @@ class ConsolidatedReportAPI
                 $params[] = $month;
             }
 
-            $sql .= " ORDER BY a.date_created DESC, a.last_name, a.first_name 
-                 LIMIT 100";
+            $sql .= " ORDER BY a.date_created DESC, a.last_name, a.first_name";
 
             error_log("Part 2 Query (Updated): $sql");
             error_log("Part 2 Parameters: " . json_encode($params));

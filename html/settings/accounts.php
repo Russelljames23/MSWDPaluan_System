@@ -68,34 +68,39 @@ if (empty($profile_photo_url)) {
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter: 
-                brightness(1.3)      /* Make brighter */
-                contrast(1.2)        /* Increase contrast */
-                saturate(1.5)        /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
+            filter:
+                brightness(1.3)
+                /* Make brighter */
+                contrast(1.2)
+                /* Increase contrast */
+                saturate(1.5)
+                /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)
+                /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-            
+
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-            
+
             /* Inner glow effect */
-            box-shadow: 
+            box-shadow:
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-            
+
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-        
+
         @keyframes pulse-glow {
             from {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
+
             to {
-                box-shadow: 
+                box-shadow:
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
@@ -613,8 +618,8 @@ if (empty($profile_photo_url)) {
                                 <!-- Close Button (top-right) -->
                                 <div class="absolute top-2 right-2 group w-fit h-fit">
                                     <button type="button"
-                                        class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white "
-                                        data-dismiss-target="#toast-default" aria-label="Close1">
+                                        onclick="removeModalBackdrops(); window.location.reload();"
+                                        class="text-gray-400 hover:text-gray-900 cursor-pointer inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white">
                                         <span class="sr-only">Close</span>
                                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                             fill="none" viewBox="0 0 14 14">
@@ -622,7 +627,6 @@ if (empty($profile_photo_url)) {
                                                 stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                         </svg>
                                     </button>
-                                    <!-- Tooltip -->
                                     <span
                                         class="absolute -top-7 right-1/2 translate-x-1/2 hidden group-hover:block px-2 py-1 text-[14px] text-gray-900">
                                         Close
@@ -763,7 +767,7 @@ if (empty($profile_photo_url)) {
                                 </h3>
                                 <button type="button"
                                     class="text-gray-400 cursor-pointer bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    data-modal-hide="defaultModal"> <!-- Changed from data-modal-toggle to data-modal-hide -->
+                                    onclick="window.accountsManager.closeModal()"> <!-- Added onclick handler -->
                                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -893,51 +897,13 @@ if (empty($profile_photo_url)) {
     <script>
         // Fix DOMContentLoaded check
         document.addEventListener('DOMContentLoaded', function() {
-
-            // Fix sidebar toggle - check if elements exist
+            // Fix sidebar toggle
             let sidebar = document.querySelector(".sidebar");
             let closeBtn = document.querySelector("#btn");
 
             if (closeBtn && sidebar) {
                 closeBtn.addEventListener("click", () => {
                     sidebar.classList.toggle("open");
-                });
-            }
-
-            // Fix edit/cancel buttons - check if elements exist
-            const editBtn = document.getElementById("editBtn");
-            const cancelBtn = document.getElementById("cancelBtn");
-            const updateBtn = document.getElementById("updateBtn");
-
-            if (editBtn) {
-                editBtn.addEventListener("click", () => {
-                    // Show inputs and hide labels
-                    const labels = document.querySelectorAll(".profile-label");
-                    const inputs = document.querySelectorAll(".profile-input");
-
-                    labels.forEach((lbl) => lbl.classList.add("hidden"));
-                    inputs.forEach((inp) => inp.classList.remove("hidden"));
-
-                    // Toggle buttons
-                    editBtn.classList.add("hidden");
-                    if (cancelBtn) cancelBtn.classList.remove("hidden");
-                    if (updateBtn) updateBtn.classList.remove("hidden");
-                });
-            }
-
-            if (cancelBtn) {
-                cancelBtn.addEventListener("click", () => {
-                    // Hide inputs and show labels
-                    const labels = document.querySelectorAll(".profile-label");
-                    const inputs = document.querySelectorAll(".profile-input");
-
-                    labels.forEach((lbl) => lbl.classList.remove("hidden"));
-                    inputs.forEach((inp) => inp.classList.add("hidden"));
-
-                    // Toggle buttons
-                    cancelBtn.classList.add("hidden");
-                    if (updateBtn) updateBtn.classList.add("hidden");
-                    if (editBtn) editBtn.classList.remove("hidden");
                 });
             }
 
@@ -948,7 +914,6 @@ if (empty($profile_photo_url)) {
         class AccountsManager {
             constructor() {
                 this.accounts = [];
-                this.modal = null;
                 this.isLoading = false;
                 this.searchTimeout = null;
                 this.init();
@@ -956,23 +921,11 @@ if (empty($profile_photo_url)) {
 
             init() {
                 this.setupEventListeners();
-                this.initModal();
                 this.loadAccounts();
             }
 
-            initModal() {
-                try {
-                    const modalElement = document.getElementById('defaultModal');
-                    if (modalElement && typeof Modal !== 'undefined') {
-                        this.modal = new Modal(modalElement);
-                    }
-                } catch (error) {
-                    console.warn('Modal initialization failed:', error);
-                }
-            }
-
             setupEventListeners() {
-                // Search functionality with debounce
+                // Search functionality
                 const searchInput = document.getElementById('simple-search');
                 if (searchInput) {
                     searchInput.addEventListener('input', (e) => {
@@ -989,54 +942,47 @@ if (empty($profile_photo_url)) {
                     });
                 }
 
-                // Add account button - show modal
-                const addAccountBtn = document.getElementById('defaultModalButton');
-                if (addAccountBtn) {
-                    addAccountBtn.addEventListener('click', () => {
-                        this.openModal();
-                    });
-                }
-
-                // Remove data-dismiss-target attribute that causes error
-                const dismissButtons = document.querySelectorAll('[data-dismiss-target]');
-                dismissButtons.forEach(button => {
-                    button.removeAttribute('data-dismiss-target');
-                    button.addEventListener('click', () => {
+                // Close modal buttons - Enhanced to handle both Flowbite and custom modals
+                const closeButtons = document.querySelectorAll('[data-modal-hide="defaultModal"], [aria-label="Close1"], [data-modal-toggle="defaultModal"]');
+                closeButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
                         this.closeModal();
+                        removeModalBackdrops();
                     });
                 });
 
-                // Fix close button
-                const closeAccountBtn = document.querySelector('[aria-label="Close1"]');
-                if (closeAccountBtn) {
-                    closeAccountBtn.addEventListener('click', () => {
-                        const accountSection = document.getElementById('accountSection');
-                        if (accountSection) {
-                            accountSection.classList.add('hidden');
-                        }
-                        const accountLink = document.querySelector('#accounts');
-                        if (accountLink) {
-                            accountLink.classList.remove('active-link');
-                        }
-                    });
-                }
-
-                // Close modal on escape key
+                // Also handle Escape key
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.isModalOpen()) {
+                    if (e.key === 'Escape') {
                         this.closeModal();
+                        removeModalBackdrops();
                     }
                 });
 
-                // Real-time form validation
+                // Form validation
                 this.setupFormValidation();
+            }
+
+            // Add this to the init method
+            init() {
+                this.setupEventListeners();
+                this.loadAccounts();
+
+                // Initialize Flowbite modals if available
+                if (typeof Modal !== 'undefined') {
+                    const modalElement = document.getElementById('defaultModal');
+                    if (modalElement) {
+                        this.modal = new Modal(modalElement);
+                    }
+                }
             }
 
             setupFormValidation() {
                 const form = document.querySelector('#defaultModal form');
                 if (!form) return;
 
-                // Password confirmation validation
+                // Password confirmation
                 const password = document.getElementById('password');
                 const confirmPassword = document.getElementById('confirm-password');
 
@@ -1073,65 +1019,48 @@ if (empty($profile_photo_url)) {
                 }, 300);
             }
 
-            isModalOpen() {
-                const modal = document.getElementById('defaultModal');
-                return modal && !modal.classList.contains('hidden');
-            }
-
             openModal() {
-                if (this.modal) {
-                    this.modal.show();
-                } else {
-                    const modalElement = document.getElementById('defaultModal');
-                    if (modalElement) {
-                        modalElement.classList.remove('hidden');
-                        modalElement.setAttribute('aria-hidden', 'false');
-                        document.body.style.overflow = 'hidden';
-                    }
+                const modal = document.getElementById('defaultModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
                 }
             }
 
             closeModal() {
-                // Use Flowbite modal if available
-                if (this.modal) {
-                    this.modal.hide();
-                }
+                const modal = document.getElementById('defaultModal');
+                if (modal) {
+                    // Use Flowbite's modal hide method if available
+                    if (typeof FlowbiteInstances !== 'undefined' && FlowbiteInstances.Modal && FlowbiteInstances.Modal['defaultModal']) {
+                        FlowbiteInstances.Modal['defaultModal'].hide();
+                    } else {
+                        // Fallback method
+                        modal.classList.add('hidden');
+                        modal.setAttribute('aria-hidden', 'true');
 
-                // Manual cleanup
-                const modalElement = document.getElementById('defaultModal');
-                if (modalElement) {
-                    modalElement.classList.add('hidden');
-                    modalElement.setAttribute('aria-hidden', 'true');
-                }
+                        // Remove modal backdrop
+                        const backdrops = document.querySelectorAll('[modal-backdrop]');
+                        backdrops.forEach(backdrop => backdrop.remove());
 
-                this.removeAllBackdrops();
-                this.resetForm();
-                document.body.style.overflow = 'auto';
+                        // Remove modal classes from body
+                        document.body.classList.remove('overflow-hidden');
+                    }
+
+                    this.resetForm();
+                }
             }
 
-            removeAllBackdrops() {
-                const backdropSelectors = [
-                    '[modal-backdrop]',
-                    '.modal-backdrop',
-                    '.fixed.inset-0',
-                    '.bg-gray-900',
-                    '.bg-opacity-50'
-                ];
 
-                backdropSelectors.forEach(selector => {
-                    document.querySelectorAll(selector).forEach(element => element.remove());
-                });
-            }
 
             resetForm() {
                 const form = document.querySelector('#defaultModal form');
                 if (form) {
                     form.reset();
-                    // Clear validation states
+                    // Reset validation states
                     form.querySelectorAll(':invalid').forEach(element => {
                         element.setCustomValidity('');
                     });
-                    // Reset gender selection
+                    // Reset gender to Female (default)
                     const femaleRadio = document.getElementById('default-radio-2');
                     if (femaleRadio) femaleRadio.checked = true;
                 }
@@ -1144,26 +1073,7 @@ if (empty($profile_photo_url)) {
                 this.showLoadingState();
 
                 try {
-                    // First, test the API
-                    const testUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?test=1';
-                    const testResponse = await fetch(testUrl);
-                    const testText = await testResponse.text();
-
-                    console.log('API test response:', testText);
-
-                    // Try to parse as JSON
-                    try {
-                        const testData = JSON.parse(testText);
-                        console.log('API test parsed:', testData);
-                    } catch (e) {
-                        console.error('API test returned non-JSON:', testText.substring(0, 100));
-                        throw new Error('API returned HTML instead of JSON. Check PHP errors.');
-                    }
-
-                    // Now fetch accounts
                     const apiUrl = '/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?action=get_accounts';
-                    console.log('Fetching accounts from:', apiUrl);
-
                     const response = await fetch(apiUrl, {
                         method: 'GET',
                         headers: {
@@ -1173,18 +1083,10 @@ if (empty($profile_photo_url)) {
                     });
 
                     console.log('Response status:', response.status);
-                    console.log('Response headers:', response.headers);
 
-                    // Get raw response text
+                    // First get the text
                     const text = await response.text();
                     console.log('Raw response (first 500 chars):', text.substring(0, 500));
-
-                    // Check if response is HTML (contains <html>, <!DOCTYPE, etc.)
-                    if (text.trim().startsWith('<!') || text.includes('<html') || text.includes('<!DOCTYPE')) {
-                        console.error('API returned HTML instead of JSON');
-                        console.error('Full response:', text);
-                        throw new Error('Server returned HTML page instead of JSON. Check for PHP errors or incorrect endpoint.');
-                    }
 
                     // Try to parse as JSON
                     let data;
@@ -1192,8 +1094,8 @@ if (empty($profile_photo_url)) {
                         data = JSON.parse(text);
                     } catch (e) {
                         console.error('JSON parse error:', e);
-                        console.error('Problematic text:', text.substring(0, 200));
-                        throw new Error('Invalid JSON response from server: ' + e.message);
+                        console.error('Problematic text:', text);
+                        throw new Error('Invalid JSON response from server');
                     }
 
                     console.log('Parsed data:', data);
@@ -1223,15 +1125,15 @@ if (empty($profile_photo_url)) {
                 const tbody = document.querySelector('#deceasedTable tbody');
                 if (tbody) {
                     tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="px-4 py-3 text-center">
-                        <div class="flex justify-center items-center">
-                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                            <span class="ml-2">Loading accounts...</span>
-                        </div>
-                    </td>
-                </tr>
-            `;
+                    <tr>
+                        <td colspan="7" class="px-4 py-3 text-center">
+                            <div class="flex justify-center items-center">
+                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                                <span class="ml-2">Loading accounts...</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 }
             }
 
@@ -1245,66 +1147,56 @@ if (empty($profile_photo_url)) {
 
                 if (accounts.length === 0) {
                     tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                        <div class="flex flex-col items-center">
-                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                            </svg>
-                            <span class="text-lg">No accounts found</span>
-                        </div>
-                    </td>
-                </tr>
-            `;
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                                </svg>
+                                <span class="text-lg">No accounts found</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                     return;
                 }
 
                 tbody.innerHTML = accounts.map(account => `
-            <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                <td class="px-4 py-3 items-center text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        account.user_type === 'Admin 1' ? 'bg-purple-100 text-purple-800' :
-                        account.user_type === 'Admin 2' ? 'bg-blue-100 text-blue-800' :
-                        'bg-green-100 text-green-800'
-                    }">
-                        ${this.escapeHtml(account.user_type)}
-                    </span>
-                </td>
-                <td class="px-4 py-3 items-center text-center font-medium text-gray-900 dark:text-white">
-                    ${this.escapeHtml(account.fullname)}
-                </td>
-                <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.username)}</td>
-                <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.birthdate)}</td>
-                <td class="px-4 py-3 items-center text-center">
-                    <span class="inline-flex items-center">
-                        ${account.gender === 'Male' ? 
-                            '<svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>' :
-                            '<svg class="w-4 h-4 mr-1 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>'
-                        }
-                        ${this.escapeHtml(account.gender)}
-                    </span>
-                </td>
-                <td class="px-4 py-3">${this.escapeHtml(account.contact_no)}</td>
-                <td class="px-4 py-3">
-                    <div class="flex items-center justify-end space-x-2">
-                        <button onclick="window.accountsManager.editAccount(${account.id})" 
-                                class="p-1 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded transition-colors"
-                                title="Edit account">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </button>
-                        <button onclick="window.accountsManager.deleteAccount(${account.id})" 
-                                class="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded transition-colors"
-                                title="Delete account">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+                <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td class="px-4 py-3 items-center text-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${account.user_type === 'Admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
+                            ${this.escapeHtml(account.user_type)}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 items-center text-center font-medium text-gray-900 dark:text-white">
+                        ${this.escapeHtml(account.fullname)}
+                    </td>
+                    <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.username)}</td>
+                    <td class="px-4 py-3 items-center text-center">${this.escapeHtml(account.birthdate)}</td>
+                    <td class="px-4 py-3 items-center text-center">
+                        <span class="inline-flex items-center">
+                            ${account.gender === 'Male' ? 
+                                '<svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>' :
+                                '<svg class="w-4 h-4 mr-1 text-pink-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>'
+                            }
+                            ${this.escapeHtml(account.gender)}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">${this.escapeHtml(account.contact_no)}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center justify-end space-x-2">
+                           
+                            <button onclick="window.accountsManager.deleteAccount(${account.id})" 
+                                    class="p-1 text-red-600 hover:text-red-900 hover:bg-red-50 rounded transition-colors"
+                                    title="Delete account">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
             }
 
             filterAccounts(searchTerm) {
@@ -1333,9 +1225,22 @@ if (empty($profile_photo_url)) {
                 }
 
                 this.isLoading = true;
-                this.showNotification('Creating account...', 'info');
+
+                // Show loading state on button
+                const submitBtn = document.querySelector('#defaultModal form [type="submit"]');
+                const originalText = submitBtn ? submitBtn.innerHTML : 'Submit';
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Creating...';
+                    submitBtn.disabled = true;
+                }
 
                 try {
+                    // Add created_by from session (if available)
+                    accountData.created_by = <?php echo isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'null'; ?>;
+
+                    // Log what we're sending
+                    console.log('Sending account data:', accountData);
+
                     const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
                         method: 'POST',
                         headers: {
@@ -1344,16 +1249,70 @@ if (empty($profile_photo_url)) {
                         body: JSON.stringify(accountData)
                     });
 
-                    const result = await this.parseResponse(response);
+                    console.log('Response status:', response.status);
 
-                    if (response.ok) {
-                        this.handleCreateSuccess(result, accountData);
+                    // Get response as text first
+                    const responseText = await response.text();
+                    console.log('Raw response text:', responseText);
+
+                    let result;
+                    try {
+                        result = JSON.parse(responseText);
+                        console.log('Parsed result:', result);
+                    } catch (error) {
+                        console.error('Failed to parse JSON:', responseText);
+
+                        // If it's HTML, try to extract error
+                        if (responseText.includes('<html') || responseText.includes('<!DOCTYPE')) {
+                            console.error('Server returned HTML instead of JSON');
+                            throw new Error('Server error occurred. Check PHP error logs.');
+                        } else {
+                            throw new Error('Invalid server response: ' + responseText.substring(0, 100));
+                        }
+                    }
+
+                    if (result.success === true) {
+                        let message = result.message || 'Account created successfully';
+
+                        if (result.email_sent === true) {
+                            message += ' and email sent with credentials';
+                            this.showNotification(message, 'success');
+                        } else if (result.email_sent === false) {
+                            this.showNotification('Account created successfully. Please provide credentials to the user manually.', 'warning');
+                        } else {
+                            this.showNotification(message, 'success');
+                        }
+
+                        // Close modal first
+                        this.closeModal();
+
+                        // Clear any remaining modal backdrops (prevents black overlay)
+                        document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+
+                        // Force reload the entire page after a short delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+
                     } else {
+                        // Show error from server
                         this.showNotification(result.message || 'Error creating account', 'error');
+
+                        // Re-enable button on error
+                        if (submitBtn) {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }
                     }
                 } catch (error) {
                     console.error('Error creating account:', error);
-                    this.showNotification('Error creating account: ' + error.message, 'error');
+                    this.showNotification('Error: ' + error.message, 'error');
+
+                    // Re-enable button on error
+                    if (submitBtn) {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
                 } finally {
                     this.isLoading = false;
                 }
@@ -1378,7 +1337,7 @@ if (empty($profile_photo_url)) {
 
             validateFormData(data) {
                 const requiredFields = ['lastname', 'firstname', 'email', 'username', 'password', 'user_type'];
-                const missingFields = requiredFields.filter(field => !data[field]);
+                const missingFields = requiredFields.filter(field => !data[field] || data[field].trim() === '');
 
                 if (missingFields.length > 0) {
                     return {
@@ -1414,37 +1373,14 @@ if (empty($profile_photo_url)) {
                 };
             }
 
-            async parseResponse(response) {
-                const text = await response.text();
-
-                if (!text.trim()) {
-                    throw new Error('Server returned empty response');
-                }
-
-                try {
-                    return JSON.parse(text);
-                } catch (error) {
-                    console.error('Failed to parse JSON:', text);
-                    throw new Error('Server returned invalid response');
-                }
+            getSelectedGender() {
+                const maleRadio = document.getElementById('default-radio-1');
+                return maleRadio && maleRadio.checked ? 'Male' : 'Female';
             }
 
-            handleCreateSuccess(result, accountData) {
-                let message = 'Account created successfully';
-                let messageType = 'success';
-
-                if (result.email_sent) {
-                    message += ` and credentials sent to ${accountData.email}`;
-                } else {
-                    message += ` (but email notification failed - please provide credentials manually)`;
-                    messageType = 'warning'; // Use warning instead of error
-                }
-
-                this.showNotification(message, messageType);
-                this.closeModal();
-
-                // Reload accounts after a short delay
-                setTimeout(() => this.loadAccounts(), 1000);
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
             }
 
             async deleteAccount(accountId) {
@@ -1456,19 +1392,25 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
+                    const response = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php?id=${accountId}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            id: accountId
-                        })
+                        }
                     });
 
-                    const result = await response.json();
+                    const text = await response.text();
+                    console.log('Delete response:', text);
 
-                    if (response.ok) {
+                    let result;
+                    try {
+                        result = JSON.parse(text);
+                    } catch (error) {
+                        console.error('Failed to parse delete response:', text);
+                        throw new Error('Invalid server response');
+                    }
+
+                    if (response.ok && result.success) {
                         this.showNotification('Account deleted successfully', 'success');
                         this.loadAccounts();
                     } else {
@@ -1476,26 +1418,15 @@ if (empty($profile_photo_url)) {
                     }
                 } catch (error) {
                     console.error('Error deleting account:', error);
-                    this.showNotification('Error deleting account', 'error');
+                    this.showNotification('Error deleting account: ' + error.message, 'error');
                 }
             }
 
             editAccount(accountId) {
                 const account = this.accounts.find(acc => acc.id == accountId);
                 if (account) {
-                    // For now, show a notification - implement edit modal later
                     this.showNotification(`Edit functionality for ${account.fullname} will be implemented soon`, 'info');
                 }
-            }
-
-            getSelectedGender() {
-                const maleRadio = document.getElementById('default-radio-1');
-                return maleRadio && maleRadio.checked ? 'Male' : 'Female';
-            }
-
-            isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
             }
 
             showNotification(message, type = 'info') {
@@ -1504,21 +1435,22 @@ if (empty($profile_photo_url)) {
 
                 const notification = document.createElement('div');
                 notification.className = `custom-notification fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
-            type === 'success' ? 'bg-green-500' : 
-            type === 'error' ? 'bg-red-500' : 
-            'bg-blue-500'
-        } text-white max-w-sm`;
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 
+                type === 'warning' ? 'bg-yellow-500' :
+                'bg-blue-500'
+            } text-white max-w-sm`;
 
                 notification.innerHTML = `
-            <div class="flex items-center">
-                <span class="flex-1">${message}</span>
-                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-        `;
+                <div class="flex items-center">
+                    <span class="flex-1">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
 
                 document.body.appendChild(notification);
 
@@ -1539,8 +1471,56 @@ if (empty($profile_photo_url)) {
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             }
+
+            async debugCreateAccount() {
+                // Use this for debugging - shows the actual raw response
+                const accountData = this.getFormData();
+                accountData.created_by = <?php echo json_encode($_SESSION['user_id'] ?? null); ?>;
+
+                console.log('Debug - Sending:', accountData);
+
+                try {
+                    const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts_api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(accountData)
+                    });
+
+                    const text = await response.text();
+                    console.log('Debug - Raw response:', text);
+
+                    try {
+                        const json = JSON.parse(text);
+                        console.log('Debug - Parsed JSON:', json);
+                    } catch (e) {
+                        console.log('Debug - Not valid JSON');
+                    }
+
+                    // Show raw response in alert for debugging
+                    alert('Response: ' + text.substring(0, 500));
+
+                } catch (error) {
+                    console.error('Debug error:', error);
+                }
+            }
+        }
+
+        function removeModalBackdrops() {
+            // Remove all modal backdrops
+            document.querySelectorAll('.modal-backdrop, [modal-backdrop], .fixed.inset-0.bg-gray-900').forEach(el => {
+                if (el.classList.contains('bg-opacity-50') || el.classList.contains('dark:bg-opacity-80')) {
+                    el.remove();
+                }
+            });
+
+            // Reset body styles
+            document.body.style.overflow = 'auto';
+            document.body.classList.remove('overflow-hidden');
         }
     </script>
+
     <script>
         // Theme Switcher
         document.addEventListener('DOMContentLoaded', function() {

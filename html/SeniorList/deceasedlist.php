@@ -281,22 +281,24 @@ if (empty($profile_photo_url)) {
             </div>
         </aside>
 
-        <main class="p-4 md:ml-64 pt-20">
-            <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-                <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+        <!-- Main Content -->
+        <main class="p-2 sm:p-4 md:ml-64 pt-16 sm:pt-20 flex-1">
+            <section class="bg-gray-50 dark:bg-gray-900 p-2 sm:p-3 md:p-5">
+                <div class="mx-auto max-w-screen-xl px-2 sm:px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
-                        <div
-                            class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                            <h4 class="text-xl font-medium dark:text-white">Deceased List</h4>
-                            <div class="flex flex-row justify-between mt-2">
-                                <!-- Search  -->
-                                <div class="w-full md:w-1/2">
+                        <!-- Header Section -->
+                        <div class="flex flex-col space-y-3 md:space-y-0 md:space-x-4 p-3 sm:p-4">
+                            <h4 class="text-lg sm:text-xl font-medium dark:text-white">Deceased List</h4>
+
+                            <!-- Search and Filter Controls -->
+                            <div class="flex flex-col sm:flex-row justify-between gap-3 mt-2">
+                                <!-- Search -->
+                                <div class="w-full sm:w-1/2">
                                     <form class="flex items-center">
                                         <label for="deceased-search" class="sr-only">Search</label>
                                         <div class="relative w-full">
-                                            <div
-                                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg aria-hidden="true" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400"
                                                     fill="currentColor" viewbox="0 0 20 20"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 
@@ -305,19 +307,20 @@ if (empty($profile_photo_url)) {
                                                 </svg>
                                             </div>
                                             <input type="text" id="deceased-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                            focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2
+                                            focus:ring-primary-500 focus:border-primary-500 block w-full pl-9 sm:pl-10 p-2
                                             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                             dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                 placeholder="Search deceased..." />
                                         </div>
                                     </form>
                                 </div>
-                                <!-- Filter  -->
-                                <div class="relative w-full md:w-auto">
-                                    <button id="filterDropdownButton" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium 
+
+                                <!-- Filter -->
+                                <div class="relative w-full sm:w-auto">
+                                    <button id="filterDropdownButton" class="w-full sm:w-auto flex items-center justify-center py-2 px-3 sm:px-4 text-sm font-medium 
                                     text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 
                                     hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 
-                                    dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+                                    dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                             class="h-4 w-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 
@@ -326,25 +329,25 @@ if (empty($profile_photo_url)) {
                                             6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                                         </svg>
                                         Filter
-                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                        <svg class="ml-2 w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2"
                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </button>
 
-                                    <!-- Dropdown -->
+                                    <!-- Filter Dropdown -->
                                     <div id="filterDropdownMenu"
-                                        class="hidden absolute z-10 mt-2 w-44 bg-white rounded-lg shadow dark:bg-gray-800">
+                                        class="hidden absolute z-10 mt-2 w-full sm:w-44 bg-white rounded-lg shadow dark:bg-gray-800">
                                         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                             <li>
                                                 <button data-filter="az"
-                                                    class="block w-full cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
+                                                    class="block w-full cursor-pointer px-4 py-3 sm:py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-left touch-target">
                                                     A–Z
                                                 </button>
                                             </li>
                                             <li>
                                                 <button data-filter="recent"
-                                                    class="block w-full px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-left">
+                                                    class="block w-full px-4 py-3 sm:py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-left touch-target">
                                                     Recently Deceased
                                                 </button>
                                             </li>
@@ -354,60 +357,65 @@ if (empty($profile_photo_url)) {
                             </div>
                         </div>
 
-                        <!-- Table -->
-                        <div class="">
-                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
+                        <!-- Table Container -->
+                        <div class="responsive-table-container overflow-x-auto">
+                            <table id="deceasedTable" class="w-full text-xs sm:text-sm text-left text-gray-700 dark:text-gray-400 ">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th class="px-4 py-3">No.</th>
-                                        <th class="px-4 py-3">Name</th>
-                                        <th class="px-4 py-3">Birthdate</th>
-                                        <th class="px-4 py-3">Age</th>
-                                        <th class="px-4 py-3">Gender</th>
-                                        <th class="px-4 py-3">Civil Status</th>
-                                        <th class="px-4 py-3">Date of Death</th>
-                                        <th class="px-4 py-3">Status</th>
-                                        <th class="px-4 py-3">Action</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">No.</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Name</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Birthdate</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Age</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Gender</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Civil Status</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Date of Death</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Status</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 table-cell">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="deceasedBody"></tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination -->
                         <nav id="deceasedPagination" class="flex flex-col md:flex-row justify-between items-start md:items-center 
-                            space-y-3 md:space-y-0 p-3" aria-label="Table navigation"></nav>
+                            space-y-3 md:space-y-0 p-3 pagination-container" aria-label="Table navigation">
+                        </nav>
                     </div>
                 </div>
             </section>
-            <!-- PopUp Message  -->
+
+            <!-- Popup Modal -->
             <div id="popupModal"
-                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center dark:text-white justify-center hidden z-50">
+                class="fixed inset-0 bg-gray-600/50 bg-opacity-50 flex items-center dark:text-white justify-center hidden z-50 p-4">
                 <div id="popupBox"
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-80 p-4">
-                    <h2 id="popupTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Title</h2>
-                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-white mb-4">Message</p>
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 transition-all duration-200 w-full max-w-sm sm:max-w-md p-4 sm:p-6">
+                    <h2 id="popupTitle" class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">Title</h2>
+                    <p id="popupMessage" class="text-sm text-gray-700 dark:text-white mb-4 sm:mb-5">Message</p>
                     <div class="flex justify-end">
                         <button id="popupCloseBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            class="px-4 py-2 sm:py-2.5 bg-blue-600 cursor-pointer text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 touch-target">
                             OK
                         </button>
                     </div>
                 </div>
             </div>
-            <!--  Confirmation Modal -->
+
+            <!-- Confirmation Modal -->
             <div id="confirmModal"
-                class="fixed inset-0 bg-gray-600/50 bg-opacity-40 hidden flex z-50 items-center justify-center">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
+                class="fixed inset-0 bg-gray-600/50 bg-opacity-40 hidden flex z-50 items-center justify-center p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md p-4 sm:p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out"
                     id="confirmBox">
-                    <h2 id="confirmTitle" class="text-xl font-semibold mb-3 text-gray-800">Please Confirm</h2>
-                    <p id="confirmMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+                    <h2 id="confirmTitle" class="text-lg sm:text-xl font-semibold mb-3 text-gray-800">Please Confirm</h2>
+                    <p id="confirmMessage" class="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base"></p>
                     <div class="flex justify-center gap-3">
                         <button id="confirmCancelBtn"
-                            class="px-4 py-1 bg-blue-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            class="px-4 py-2 bg-blue-600 cursor-pointer text-white text-sm rounded-sm font-medium hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-300 touch-target">
                             Cancel
                         </button>
                         <button id="confirmOkBtn"
-                            class="px-4 py-1 bg-green-600 cursor-pointer text-white text-xs rounded-sm font-medium hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400">
+                            class="px-4 py-2 bg-green-600 cursor-pointer text-white text-sm rounded-sm font-medium hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400 touch-target">
                             Confirm
                         </button>
                     </div>
@@ -488,8 +496,8 @@ if (empty($profile_photo_url)) {
 
                 msg.textContent = message;
 
-                title.className = "text-xl font-semibold mb-3";
-                msg.style.color = "#333333";
+                title.className = "text-xl font-semibold mb-3 dark:text-green-400";
+                // msg.style.color = "#333333";
 
                 if (type === "success") {
                     title.textContent = "✅ Success";

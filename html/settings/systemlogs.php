@@ -780,10 +780,10 @@ if (empty($profile_photo_url)) {
                     </ul>
                 </div>
                 <!-- history log -->
-                <section id="historySection" class="bg-gray-50 dark:bg-gray-900 w-full">
+                <section id="historySection" class="bg-gray-50 dark:bg-gray-900 w-full overflow-x-auto">
                     <div class="mx-auto max-w-screen-xl ">
                         <!-- Stats Overview Cards -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
+                        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-2">
                                 <div class="flex items-center">
                                     <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
@@ -839,7 +839,7 @@ if (empty($profile_photo_url)) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Main Container with Overlay Support -->
                         <div class="relative">

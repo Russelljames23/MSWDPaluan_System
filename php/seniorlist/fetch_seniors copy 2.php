@@ -65,8 +65,6 @@ try {
     $age_group = $_GET['age_group'] ?? '';
     $min_age = $_GET['min_age'] ?? 0;
     $max_age = $_GET['max_age'] ?? 0;
-    $gender_filter = $_GET['gender'] ?? '';
-    $recent_days = $_GET['recent_days'] ?? 0;
     $milestone_age = $_GET['milestone_age'] ?? null;
 
     $conditions = [];
@@ -120,18 +118,6 @@ try {
         }
     }
 
-    // --- Gender filter (from dashboard) ---
-    if ($filter_type === 'gender' && !empty($gender_filter)) {
-        $conditions[] = "a.gender = ?";
-        $params[] = $gender_filter;
-    }
-
-    // --- Recent registrations filter ---
-    if ($filter_type === 'recent' && !empty($recent_days)) {
-        $conditions[] = "a.date_created >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
-        $params[] = $recent_days;
-    }
-
     // --- Milestone filter ---
     if ($filter_type === 'milestone' && !empty($milestone_age)) {
         $conditions[] = "YEAR(CURDATE()) - YEAR(a.birth_date) + 1 = ?";
@@ -164,6 +150,7 @@ try {
     if ($debug_mode) error_log("Total records found: " . $total);
 
     // --- Fetch paginated data ---
+    // Simplified query without @rownum variable
     $query = "
         SELECT 
             ROW_NUMBER() OVER (ORDER BY a.date_created DESC) AS rownum,
@@ -224,8 +211,7 @@ try {
         $response['debug'] = [
             "query" => $query,
             "params" => $params,
-            "row_count" => count($rows),
-            "filter_type" => $filter_type
+            "row_count" => count($rows)
         ];
     }
 

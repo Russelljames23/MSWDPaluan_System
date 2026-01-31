@@ -105,12 +105,82 @@ if (empty($profile_photo_url)) {
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
         }
-    </style>
-    <link rel="stylesheet" href="../css/output.css">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+
+        /* Responsive fixes - preserve original design */
+        @media (max-width: 768px) {
+            .responsive-padding {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+
+            .responsive-table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .responsive-table {
+                min-width: 640px;
+            }
+
+            .responsive-text {
+                font-size: 0.875rem !important;
+            }
+
+            .responsive-heading {
+                font-size: 1.25rem !important;
+            }
+
+            .responsive-modal {
+                padding: 0.5rem !important;
+                margin: 0.5rem !important;
+            }
+
+            .responsive-modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .responsive-table {
+                min-width: 500px;
+            }
+
+            .responsive-text-sm {
+                font-size: 0.8125rem !important;
+            }
+
+            .responsive-button {
+                padding: 0.375rem 0.75rem !important;
+                font-size: 0.8125rem !important;
+            }
+
+            .responsive-icon {
+                width: 1rem !important;
+                height: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .responsive-table {
+                min-width: 400px;
+            }
+
+            .responsive-hide-text {
+                display: none;
+            }
+
+            .responsive-show-icon {
+                display: inline-block !important;
+            }
+        }
+
+        /* Prevent horizontal overflow */
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
         /* Make sure the ordered list numbers show even with flex items */
         #benefitsList {
             counter-reset: benefit-counter;
@@ -140,7 +210,23 @@ if (empty($profile_photo_url)) {
             /* Tailwind gray-700 */
             font-weight: 600;
         }
+
+        /* Touch-friendly sizes for mobile */
+        @media (max-width: 768px) {
+
+            button,
+            [role="button"],
+            a[href] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
     </style>
+
+    <link rel="stylesheet" href="../css/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 
@@ -192,21 +278,11 @@ if (empty($profile_photo_url)) {
                 </div>
                 <!-- UserProfile -->
                 <div class="flex items-center lg:order-2">
-                    <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class="p-2 mr-1 text-gray-500 rounded-lg md:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">Toggle search</span>
-                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
-                    </button>
                     <button type="button"
-                        class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        class="flex mx-3 w-8 h-8 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-8 h-8 rounded-full object-cover"
+                        <img class="w-full h-full rounded-full object-cover"
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
@@ -416,13 +492,13 @@ if (empty($profile_photo_url)) {
             <div class="flex items-center flex-row">
                 <div class="border border-b-0">
                     <a href="#" type="button" class="cursor-pointer">
-                        <h4 class="text-xl font-medium text-blue-700 px-2">Benefits</h4>
+                        <h4 class="text-xl font-medium text-blue-700 px-2 responsive-text">Benefits</h4>
                     </a>
                 </div>
                 <div class="flex items-center flex-row border dark:text-white border-t-0 border-r-0 border-l-0 w-full">
                     <div class="">
-                        <a href="staff_beneficiary.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
-                            <h4 class="text-xl font-medium dark:text-blue px-2">Beneficiaries</h4>
+                        <a href="./staff_beneficiary.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
+                            <h4 class="text-xl font-medium dark:text-blue px-2 responsive-text">Beneficiaries</h4>
                         </a>
                     </div>
                 </div>
@@ -431,7 +507,7 @@ if (empty($profile_photo_url)) {
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div>
-                            <p class="text-2xl font-semibold px-5 mt-5 text-gray-900 dark:text-white">Benefits</p>
+                            <p class="text-2xl font-semibold px-5 mt-5 text-gray-900 dark:text-white responsive-heading">Benefits</p>
                         </div>
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
@@ -458,29 +534,30 @@ if (empty($profile_photo_url)) {
                             <div
                                 class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                                 <button type="button" id="defaultModalButton" data-modal-target="defaultModal"
-                                    data-modal-toggle="defaultModal" class=" flex items-center justify-center cursor-pointer text-white bg-blue-700
+                                    data-modal-toggle="defaultModal" class="flex items-center justify-center cursor-pointer text-white bg-blue-700
                                     hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600
-                                    dark:hover:bg-blue-700">
-                                    <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                                    dark:hover:bg-blue-700 responsive-button">
+                                    <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clip-rule="evenodd" fill-rule="evenodd"
                                             d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>
-                                    Add Benefits
+                                    <span class="responsive-hide-text">Add Benefits</span>
+                                    <span class="responsive-show-icon" style="display: none;">Add</span>
                                 </button>
                                 <!-- Filter -->
                                 <div class="relative flex items-center space-x-3 w-full md:w-auto">
                                     <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                        class="w-full md:w-auto cursor-pointer flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        class="w-full md:w-auto cursor-pointer flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 responsive-button"
                                         type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                            class="h-4 w-4 mr-2 text-gray-400 responsive-icon" viewbox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd"
                                                 d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                                 clip-rule="evenodd" />
                                         </svg>
                                         Filter
-                                        <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        <svg class="-mr-1 ml-1.5 w-5 h-5 responsive-icon" fill="currentColor" viewbox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd"
                                                 d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
@@ -499,8 +576,8 @@ if (empty($profile_photo_url)) {
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <div class="overflow-x-auto responsive-table-container">
+                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 responsive-table">
                                 <thead class="text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">List of Benefits</th>
@@ -509,12 +586,12 @@ if (empty($profile_photo_url)) {
                                 </thead>
                                 <tbody>
                                     <tr class="border-b dark:border-gray-700 dark:text-white">
-                                        <td class="px-4 py-3">Availed of Social Pension</td>
+                                        <td class="px-4 py-3 responsive-text">Availed of Social Pension</td>
                                         <td class="px-15 py-3 flex items-center justify-end">
                                             <button id="apple-imac-27-dropdown-button"
                                                 class="inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                                 type="button">
-                                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                                <svg class="w-6 h-6 text-gray-800 dark:text-white responsive-icon" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd"
@@ -526,7 +603,7 @@ if (empty($profile_photo_url)) {
                                             <button id="apple-imac-27-dropdown-button"
                                                 class="inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                                 type="button">
-                                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                                <svg class="w-6 h-6 text-gray-800 dark:text-white responsive-icon" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd"
@@ -549,8 +626,8 @@ if (empty($profile_photo_url)) {
             </section>
             <!-- Benefits modal -->
             <div id="defaultModal" tabindex="-1" aria-hidden="true"
-                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-                <div class="relative p-4 w-138 max-w-xl h-full md:h-auto">
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full responsive-modal">
+                <div class="relative p-4 w-138 max-w-xl h-full md:h-auto responsive-modal-content">
                     <!-- Modal content -->
                     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <!-- Modal header -->
@@ -583,8 +660,8 @@ if (empty($profile_photo_url)) {
                                             class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="Type benefit here">
                                     </div>
-                                    <button type="button" id="benefitBtn" class="flex items-center justify-center px-4 py-2.6 h-10.5 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <button type="button" id="benefitBtn" class="flex items-center justify-center px-4 py-2.6 h-10.5 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 responsive-button">
+                                        <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                         </svg>
                                         Add
@@ -601,8 +678,8 @@ if (empty($profile_photo_url)) {
 
                                 </div>
                                 <div class="flex justify-end w-full">
-                                    <button type="submit" class="flex items-center justify-center px-4 py-2 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <button type="submit" class="flex items-center justify-center px-4 py-2 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 responsive-button">
+                                        <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                         </svg>
                                         Save

@@ -18,7 +18,7 @@ try {
     die("Database connection failed. Please try again later.");
 }
 
-// Fetch current user data
+// Fetch current user data - ADD THIS
 $user_id = $_SESSION['user_id'] ?? 0;
 $user_data = [];
 
@@ -33,7 +33,7 @@ if ($user_id && $pdo) {
     }
 }
 
-// Prepare full name
+// Prepare full name - ADD THIS
 $full_name = '';
 if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     $full_name = $user_data['firstname'] . ' ' . $user_data['lastname'];
@@ -42,7 +42,7 @@ if (!empty($user_data['firstname']) && !empty($user_data['lastname'])) {
     }
 }
 
-// Get profile photo URL
+// Get profile photo URL - ADD THIS
 $profile_photo_url = '';
 if (!empty($user_data['profile_photo'])) {
     $profile_photo_url = '../../' . $user_data['profile_photo'];
@@ -51,11 +51,10 @@ if (!empty($user_data['profile_photo'])) {
     }
 }
 
-// Fallback to avatar if no profile photo
+// Fallback to avatar if no profile photo - ADD THIS
 if (empty($profile_photo_url)) {
     $profile_photo_url = 'https://ui-avatars.com/api/?name=' . urlencode($full_name) . '&background=3b82f6&color=fff&size=128';
 }
-
 // Get applicant ID from URL
 $applicant_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -68,7 +67,7 @@ if ($applicant_id <= 0) {
 $senior_data = [];
 
 try {
-    // Reuse existing connection instead of creating new one
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Fetch main applicant information
@@ -136,45 +135,16 @@ try {
     $stmt->execute([$applicant_id]);
     $senior_data['benefits'] = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-    // FIXED: Replace the problematic view with a direct query
-    try {
-        // Try to fetch from program_services directly
-        $stmt = $pdo->prepare("
-            SELECT 
-                ps.*,
-                b.benefit_name,
-                CASE 
-                    WHEN ps.program_type = 'DSWD' AND ps.service_category LIKE 'AICS_%' THEN 'National'
-                    WHEN ps.program_type = 'Local' AND ps.service_category LIKE 'AICS_%' THEN 'Local'
-                    ELSE 'Other'
-                END as benefit_type,
-                CASE 
-                    WHEN ps.service_category = 'AICS_Food' THEN 'Food'
-                    WHEN ps.service_category = 'AICS_Burial' THEN 'Burial'
-                    WHEN ps.service_category = 'AICS_Medical' THEN 'Medical'
-                    WHEN ps.service_category = 'AICS_Transpo' THEN 'Transpo'
-                    WHEN ps.service_category = 'SocPen' THEN 'Socpen'
-                    WHEN ps.service_category = 'Pantawid' THEN 'Pantawid'
-                    WHEN ps.service_category = 'Livelihood' THEN 'Livelihood'
-                    ELSE ps.service_category
-                END as benefit_category,
-                ps.date_received as received_date
-            FROM program_services ps
-            LEFT JOIN benefits b ON ps.benefit_id = b.id
-            WHERE ps.applicant_id = ? 
-            ORDER BY ps.date_received DESC
-        ");
-        $stmt->execute([$applicant_id]);
-        $senior_data['all_benefits'] = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-    } catch (PDOException $e) {
-        // If program_services table doesn't exist, fallback to benefits_distribution
-        error_log("Error fetching program services: " . $e->getMessage());
-        $senior_data['all_benefits'] = $senior_data['benefits'];
-    }
+    // Fetch benefits from program_services table for the comprehensive view
+    $stmt = $pdo->prepare("
+        SELECT * FROM senior_benefits_view 
+        WHERE applicant_id = ? 
+        ORDER BY received_date DESC
+    ");
+    $stmt->execute([$applicant_id]);
+    $senior_data['all_benefits'] = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 } catch (PDOException $e) {
-    // More detailed error for debugging
-    error_log("Database error in senior_demographic.php: " . $e->getMessage());
-    die("Database error. Please contact administrator.");
+    die("Connection failed: " . $e->getMessage());
 }
 
 // Helper functions
@@ -250,46 +220,36 @@ $age = calculateAge($birth_date);
 // Get benefits by category for the demographic table
 function getBenefitsByCategory($benefits, $program_type, $service_category)
 {
-    if (empty($benefits)) return '';
-
-    foreach ($benefits as $benefit) {
-        if (
-            isset($benefit['program_type']) && $benefit['program_type'] == $program_type &&
-            isset($benefit['service_category']) && $benefit['service_category'] == $service_category
-        ) {
-            return '✓';
-        }
-    }
-    return '';
+    $filtered = array_filter($benefits, function ($benefit) use ($program_type, $service_category) {
+        return $benefit['program_type'] == $program_type && $benefit['service_category'] == $service_category;
+    });
+    return !empty($filtered) ? '✓' : '';
 }
-
-// Get benefits from alternative source if all_benefits is empty
-$benefits_source = !empty($senior_data['all_benefits']) ? $senior_data['all_benefits'] : $senior_data['benefits'];
 
 // Categorize benefits
 $national_aics = [
-    'Food' => getBenefitsByCategory($benefits_source, 'DSWD', 'AICS_Food'),
-    'Burial' => getBenefitsByCategory($benefits_source, 'DSWD', 'AICS_Burial'),
-    'Medical' => getBenefitsByCategory($benefits_source, 'DSWD', 'AICS_Medical'),
-    'Transpo' => getBenefitsByCategory($benefits_source, 'DSWD', 'AICS_Transpo')
+    'Food' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'AICS_Food'),
+    'Burial' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'AICS_Burial'),
+    'Medical' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'AICS_Medical'),
+    'Transpo' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'AICS_Transpo')
 ];
 
 $national_other = [
-    'SocPen' => getBenefitsByCategory($benefits_source, 'DSWD', 'SocPen'),
-    'Pantawid' => getBenefitsByCategory($benefits_source, 'DSWD', 'Pantawid'),
-    'Livelihood' => getBenefitsByCategory($benefits_source, 'DSWD', 'Livelihood')
+    'SocPen' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'SocPen'),
+    'Pantawid' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'Pantawid'),
+    'Livelihood' => getBenefitsByCategory($senior_data['all_benefits'], 'DSWD', 'Livelihood')
 ];
 
 $local_aics = [
-    'Food' => getBenefitsByCategory($benefits_source, 'Local', 'AICS_Food'),
-    'Burial' => getBenefitsByCategory($benefits_source, 'Local', 'AICS_Burial'),
-    'Medical' => getBenefitsByCategory($benefits_source, 'Local', 'AICS_Medical'),
-    'Transpo' => getBenefitsByCategory($benefits_source, 'Local', 'AICS_Transpo')
+    'Food' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'AICS_Food'),
+    'Burial' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'AICS_Burial'),
+    'Medical' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'AICS_Medical'),
+    'Transpo' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'AICS_Transpo')
 ];
 
 $local_other = [
-    'SocPen' => getBenefitsByCategory($benefits_source, 'Local', 'SocPen'),
-    'Livelihood' => getBenefitsByCategory($benefits_source, 'Local', 'Livelihood')
+    'SocPen' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'SocPen'),
+    'Livelihood' => getBenefitsByCategory($senior_data['all_benefits'], 'Local', 'Livelihood')
 ];
 ?>
 <!DOCTYPE html>
@@ -306,45 +266,49 @@ $local_other = [
     <style>
         /* Enhanced logo styling for page display */
         .highlighted-logo {
-            filter:
-                brightness(1.3)
-                /* Make brighter */
-                contrast(1.2)
-                /* Increase contrast */
-                saturate(1.5)
-                /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)
-                /* Blue glow */
+            filter: 
+                brightness(1.3)      /* Make brighter */
+                contrast(1.2)        /* Increase contrast */
+                saturate(1.5)        /* Make colors more vibrant */
+                drop-shadow(0 0 8px #3b82f6)  /* Blue glow */
                 drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-
+            
             /* Optional border */
             border: 3px solid rgba(59, 130, 246, 0.4);
             border-radius: 12px;
-
+            
             /* Inner glow effect */
-            box-shadow:
+            box-shadow: 
                 inset 0 0 10px rgba(255, 255, 255, 0.6),
                 0 0 20px rgba(59, 130, 246, 0.5);
-
+            
             /* Animation for extra attention */
             animation: pulse-glow 2s infinite alternate;
         }
-
+        
         @keyframes pulse-glow {
             from {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 10px rgba(255, 255, 255, 0.6),
                     0 0 15px rgba(59, 130, 246, 0.5);
             }
-
             to {
-                box-shadow:
+                box-shadow: 
                     inset 0 0 15px rgba(255, 255, 255, 0.8),
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
         }
+    </style>
+    <link rel="stylesheet" href="../css/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .print-only {
+            display: none;
+        }
 
-        /* Improved table styling */
         .demographic-table {
             width: 100%;
             border-collapse: collapse;
@@ -357,19 +321,23 @@ $local_other = [
             padding: 3px 4px;
             vertical-align: top;
             text-align: center;
-            min-width: 20px;
         }
 
-        .demographic-table th {
-            /* background-color: #f8f9fa; */
+        /* .demographic-table th {
+            background-color: #f3f4f6;
             font-weight: 600;
-            white-space: nowrap;
         }
 
         .demographic-table .section-header {
-            /* background-color: #e9ecef; */
+            background-color: #e5e7eb;
             font-weight: bold;
+            text-align: left;
         }
+
+        .demographic-table .sub-header {
+            background-color: #f9fafb;
+            font-weight: 500;
+        } */
 
         @media print {
             .no-print {
@@ -396,11 +364,6 @@ $local_other = [
             }
         }
     </style>
-    <link rel="stylesheet" href="../css/output.css">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -642,7 +605,7 @@ $local_other = [
                                 <p class="text-gray-600 dark:text-gray-400 mt-1">
                                     <i class="fas fa-id-card mr-2"></i>
                                     <?php if (!empty(getArrayValue($senior_data['applicant'], 'control_number'))): ?>
-                                          Control #: <?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'control_number')); ?> |
+                                        Control #: <?php echo htmlspecialchars(getArrayValue($senior_data['applicant'], 'control_number')); ?> |
                                     <?php endif; ?>
                                     ID #: <?php echo formatEmpty(getArrayValue($senior_data['registration'], 'id_number')); ?>
                                 </p>
@@ -712,7 +675,7 @@ $local_other = [
                                 <th colspan="2" rowspan="1">Involvement in Community Activities</th>
                                 <th colspan="8" rowspan="1">Problems/Needs Commonly Encountered</th>
                             </tr>
-                            <tr class="section-header">
+                            <tr class="sub-header">
                                 <th rowspan="3">Last Name</th>
                                 <th rowspan="3">Suffix</th>
                                 <th rowspan="3">First Name</th>
@@ -755,7 +718,7 @@ $local_other = [
                                 <th rowspan="3">Identify Others Specific Needs</th>
                                 <th rowspan="3">Remarks</th>
                             </tr>
-                            <tr class="section-header">
+                            <tr class="sub-header">
                                 <th colspan="4">AICS</th>
                                 <th rowspan="2">Socpen</th>
                                 <th rowspan="2">Pantawid</th>
@@ -764,7 +727,7 @@ $local_other = [
                                 <th colspan="2">Socpen</th>
                                 <th rowspan="2">Livelihood</th>
                             </tr>
-                            <tr class="section-header">
+                            <tr class="sub-header">
                                 <th>Food</th>
                                 <th>Burial</th>
                                 <th>Medical</th>
@@ -956,7 +919,7 @@ $local_other = [
                                         ?>
                                     </p>
                                 </div>
-                                <div>
+                                 <div>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">Contact Number</p>
                                     <p class="font-medium text-gray-900 dark:text-white"><?php echo formatEmpty(getArrayValue($senior_data['applicant'], 'contact_number')); ?></p>
                                 </div>
@@ -1295,6 +1258,7 @@ $local_other = [
         </main>
     </div>
 
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -1302,7 +1266,8 @@ $local_other = [
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="../../js/tailwind.config.js"></script>
     <script>
-        // Theme initialization
+        // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
+        // Initialize theme from localStorage or system preference
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1317,6 +1282,7 @@ $local_other = [
             setTheme(theme);
         }
 
+        // Function to set theme
         function setTheme(theme) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -1327,6 +1293,7 @@ $local_other = [
             }
         }
 
+        // Listen for theme changes from other pages
         window.addEventListener('storage', function(e) {
             if (e.key === 'theme') {
                 const theme = e.newValue;
@@ -1334,13 +1301,14 @@ $local_other = [
             }
         });
 
+        // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
             if (!localStorage.getItem('theme')) {
                 setTheme(e.matches ? 'dark' : 'light');
             }
         });
 
-        // Initialize theme on page load
+        // Initialize theme on page load (BEFORE DOMContentLoaded)
         initTheme();
     </script>
 
@@ -1409,25 +1377,48 @@ $local_other = [
                 worksheet.addRow([]);
                 worksheet.addRow([]);
 
-                // Create multi-level headers
+                // Create multi-level headers that match the HTML table exactly
+                // Row 9: Main headers with colspan
                 const mainHeaders = [
-                    'Province', 'Municipality', 'Barangay',
+                    // Province (2 columns colspan)
+                    'Province',
+                    // Municipality (2 columns colspan)
+                    'Municipality',
+                    // Barangay (2 columns colspan)
+                    'Barangay',
+                    // NAME (4 columns colspan)
                     'NAME', '', '', '',
+                    // DOUBLE ENTRY IDENTIFIER (1 column)
                     'DOUBLE ENTRY IDENTIFIER',
+                    // BIRTH DATE (3 columns colspan)
                     'BIRTH DATE', '', '',
+                    // OTHER INFORMATION (5 columns colspan)
                     'OTHER INFORMATION', '', '', '', '',
+                    // STATUS (1 column)
                     'STATUS',
+                    // Program and Services Received from DSWD (14 columns colspan)
                     'Program and Services Received from DSWD', '', '', '', '', '', '', '', '', '', '', '', '', '',
+                    // Other Pensions (4 columns colspan)
                     'Other Pensions', '', '', '',
+                    // IP Group (1 column)
                     'IP Group',
+                    // Educational Attainment (1 column)
                     'Educational Attainment',
+                    // ID NUMBERS (6 columns colspan)
                     'ID NUMBERS', '', '', '', '', '',
+                    // Monthly Income (1 column)
                     'Monthly Income',
+                    // Source of Income (2 columns colspan)
                     'Source of Income', '',
+                    // Assets & Properties (2 columns colspan)
                     'Assets & Properties', '',
+                    // Living/Residing with (2 columns colspan)
                     'Living/Residing with', '',
+                    // Specialization/Skills (2 columns colspan)
                     'Specialization/Skills', '',
+                    // Involvement in Community Activities (2 columns colspan)
                     'Involvement in Community Activities', '',
+                    // Problems/Needs Commonly Encountered (8 columns colspan)
                     'Problems/Needs Commonly Encountered', '', '', '', '', '', '', ''
                 ];
 
@@ -1484,6 +1475,671 @@ $local_other = [
                     };
                 });
 
+                // Row 10: Sub-headers
+                const subHeaders = [
+                    // Province (empty - already covered by colspan)
+                    '',
+                    // Municipality (empty)
+                    '',
+                    // Barangay (empty)
+                    '',
+                    // NAME sub-headers
+                    'Last Name', 'Suffix', 'First Name', 'Middle Name',
+                    // DOUBLE ENTRY IDENTIFIER (empty - rowspan 4)
+                    '',
+                    // BIRTH DATE sub-headers
+                    'Year', 'Month', 'Day',
+                    // OTHER INFORMATION sub-headers
+                    'Age', 'Sex', 'Place of Birth', 'Civil Status', 'Religion',
+                    // STATUS (empty - rowspan 4)
+                    '',
+                    // Program and Services - National (7 columns)
+                    'National', '', '', '', '', '', '',
+                    // Program and Services - Local (7 columns)
+                    'Local', '', '', '', '', '', '',
+                    // Other Pensions sub-headers
+                    'SSS', 'GSIS', 'PVAO', 'Insurance',
+                    // IP Group (empty - rowspan 4)
+                    '',
+                    // Educational Attainment (empty - rowspan 4)
+                    '',
+                    // ID NUMBERS sub-headers
+                    'OSCA', 'TIN', 'PHILHEALTH', 'GSIS', 'SSS', 'Others',
+                    // Monthly Income (empty - rowspan 4)
+                    '',
+                    // Source of Income sub-headers
+                    'Selection', 'Remark',
+                    // Assets & Properties sub-headers
+                    'Selection', 'Remark',
+                    // Living/Residing with sub-headers
+                    'Selection', 'Remark',
+                    // Specialization/Skills sub-headers
+                    'Selection', 'Remark',
+                    // Involvement in Community Activities sub-headers
+                    'Selection', 'Remark',
+                    // Problems/Needs sub-headers
+                    'Economic', 'Social Emotional', 'Health', 'Health', 'Housing', 'Community Services', 'Identify Others Specific Needs', 'Remarks'
+                ];
+
+                const subHeaderRow = worksheet.addRow(subHeaders);
+                subHeaderRow.height = 25;
+
+                // Style sub-header row
+                subHeaderRow.eachCell((cell, colNumber) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFF2F2F2'
+                        } // Light gray for sub-headers
+                    };
+                    cell.font = {
+                        bold: true,
+                        color: {
+                            argb: 'FF000000'
+                        },
+                        name: 'Calibri',
+                        size: 9
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        bottom: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        left: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        right: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        }
+                    };
+                });
+
+                // Row 11: Third level headers
+                const thirdHeaders = [
+                    // Province (empty)
+                    '',
+                    // Municipality (empty)
+                    '',
+                    // Barangay (empty)
+                    '',
+                    // NAME (empty - already have sub-headers)
+                    '', '', '', '',
+                    // DOUBLE ENTRY IDENTIFIER (empty)
+                    '',
+                    // BIRTH DATE (empty)
+                    '', '', '',
+                    // OTHER INFORMATION (empty)
+                    '', '', '', '', '',
+                    // STATUS (empty)
+                    '',
+                    // National AICS headers
+                    'AICS', '', '', '', 'Socpen', 'Pantawid', 'Livelihood',
+                    // Local AICS headers
+                    'AICS', '', '', '', 'Socpen', 'Socpen', 'Livelihood',
+                    // Other Pensions (empty)
+                    '', '', '', '',
+                    // IP Group (empty)
+                    '',
+                    // Educational Attainment (empty)
+                    '',
+                    // ID NUMBERS (empty)
+                    '', '', '', '', '', '',
+                    // Monthly Income (empty)
+                    '',
+                    // Source of Income (empty)
+                    '', '',
+                    // Assets & Properties (empty)
+                    '', '',
+                    // Living/Residing with (empty)
+                    '', '',
+                    // Specialization/Skills (empty)
+                    '', '',
+                    // Involvement in Community Activities (empty)
+                    '', '',
+                    // Problems/Needs - Health sub-header
+                    '', '', 'Illness', 'Disability', '', '', '', ''
+                ];
+
+                const thirdHeaderRow = worksheet.addRow(thirdHeaders);
+                thirdHeaderRow.height = 20;
+
+                // Style third header row
+                thirdHeaderRow.eachCell((cell, colNumber) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFF8F8F8'
+                        } // Very light gray
+                    };
+                    cell.font = {
+                        bold: true,
+                        color: {
+                            argb: 'FF000000'
+                        },
+                        name: 'Calibri',
+                        size: 8
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        bottom: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        left: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        right: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        }
+                    };
+                });
+
+                // Row 12: Fourth level headers (AICS details)
+                const fourthHeaders = [
+                    // Province (empty)
+                    '',
+                    // Municipality (empty)
+                    '',
+                    // Barangay (empty)
+                    '',
+                    // NAME (empty)
+                    '', '', '', '',
+                    // DOUBLE ENTRY IDENTIFIER (empty)
+                    '',
+                    // BIRTH DATE (empty)
+                    '', '', '',
+                    // OTHER INFORMATION (empty)
+                    '', '', '', '', '',
+                    // STATUS (empty)
+                    '',
+                    // National AICS details
+                    'Food', 'Burial', 'Medical', 'Transport', '', '', '',
+                    // Local AICS details
+                    'Food', 'Burial', 'Medical', 'Transport', 'Prov', 'Munis', '',
+                    // Other Pensions (empty)
+                    '', '', '', '',
+                    // IP Group (empty)
+                    '',
+                    // Educational Attainment (empty)
+                    '',
+                    // ID NUMBERS (empty)
+                    '', '', '', '', '', '',
+                    // Monthly Income (empty)
+                    '',
+                    // Source of Income (empty)
+                    '', '',
+                    // Assets & Properties (empty)
+                    '', '',
+                    // Living/Residing with (empty)
+                    '', '',
+                    // Specialization/Skills (empty)
+                    '', '',
+                    // Involvement in Community Activities (empty)
+                    '', '',
+                    // Problems/Needs (empty)
+                    '', '', '', '', '', '', '', ''
+                ];
+
+                const fourthHeaderRow = worksheet.addRow(fourthHeaders);
+                fourthHeaderRow.height = 20;
+
+                // Style fourth header row
+                fourthHeaderRow.eachCell((cell, colNumber) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFCFCFC'
+                        } // Almost white
+                    };
+                    cell.font = {
+                        color: {
+                            argb: 'FF000000'
+                        },
+                        name: 'Calibri',
+                        size: 8
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                        wrapText: true
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        bottom: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        left: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        },
+                        right: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FF000000'
+                            }
+                        }
+                    };
+                });
+
+                // Now add the data row
+                const dataRow = worksheet.addRow([
+                    // Province (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['address'], 'province')); ?>',
+
+                    // Municipality (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['address'], 'municipality')); ?>',
+
+                    // Barangay (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['address'], 'barangay')); ?>',
+
+                    // NAME Columns (4 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'last_name')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'suffix')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'first_name')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'middle_name')); ?>',
+
+                    // DOUBLE ENTRY IDENTIFIER
+                    '<?php echo addslashes(getArrayValue($senior_data['registration'], 'local_control_number')); ?>',
+
+                    // BIRTH DATE (3 columns)
+                    '<?php echo $birth_year; ?>',
+                    '<?php echo $birth_month; ?>',
+                    '<?php echo $birth_day; ?>',
+
+                    // OTHER INFORMATION (5 columns)
+                    '<?php echo $age; ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'gender')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'birth_place')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'civil_status')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'religion')); ?>',
+
+                    // STATUS
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'status')); ?>',
+
+                    // Program and Services Received from DSWD - NATIONAL (7 columns)
+                    '<?php echo $national_aics['Food']; ?>',
+                    '<?php echo $national_aics['Burial']; ?>',
+                    '<?php echo $national_aics['Medical']; ?>',
+                    '<?php echo $national_aics['Transpo']; ?>',
+                    '<?php echo $national_other['SocPen']; ?>',
+                    '<?php echo $national_other['Pantawid']; ?>',
+                    '<?php echo $national_other['Livelihood']; ?>',
+
+                    // Program and Services Received from DSWD - LOCAL (7 columns)
+                    '<?php echo $local_aics['Food']; ?>',
+                    '<?php echo $local_aics['Burial']; ?>',
+                    '<?php echo $local_aics['Medical']; ?>',
+                    '<?php echo $local_aics['Transpo']; ?>',
+                    '<?php echo $local_other['SocPen']; ?>',
+                    '<?php echo $local_other['SocPen']; ?>',
+                    '<?php echo $local_other['Livelihood']; ?>',
+
+                    // Other Pensions (4 columns)
+                    '<?php echo getArrayValue($senior_data['economic'], 'has_sss') ? 'Yes' : 'No'; ?>',
+                    '<?php echo getArrayValue($senior_data['economic'], 'has_gsis') ? 'Yes' : 'No'; ?>',
+                    '<?php echo getArrayValue($senior_data['economic'], 'has_pvao') ? 'Yes' : 'No'; ?>',
+                    '<?php echo getArrayValue($senior_data['economic'], 'has_insurance') ? 'Yes' : 'No'; ?>',
+
+                    // IP Group
+                    '<?php echo addslashes(getArrayValue($senior_data['demographic'], 'ip_group')); ?>',
+
+                    // Educational Attainment
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'educational_attainment')); ?>',
+
+                    // ID NUMBERS (6 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['registration'], 'id_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'tin_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'philhealth_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'gsis_number')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'sss_number')); ?>',
+                    '<?php
+                        $other_pension = '';
+                        if (
+                            getArrayValue($senior_data['economic'], 'is_pensioner') &&
+                            getArrayValue($senior_data['economic'], 'pension_source') == 'Others'
+                        ) {
+                            $other_pension = "Yes";
+                        }
+                        echo addslashes($other_pension ?: "No");
+                        ?>',
+
+                    // Monthly Income
+                    '<?php
+                        $income = getArrayValue($senior_data['economic'], 'monthly_income');
+                        echo $income ? "₱" . number_format($income, 2) : "Not specified";
+                        ?>',
+
+                    // Source of Income (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'income_source')); ?>',
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'income_source_detail')); ?>',
+
+                    // Assets & Properties (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['economic'], 'assets_properties')); ?>',
+                    '',
+
+                    // Living/Residing with (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'living_arrangement')); ?>',
+                    '',
+
+                    // Specialization/Skills (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'specialization_skills')); ?>',
+                    '',
+
+                    // Involvement in Community Activities (2 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'community_involvement')); ?>',
+                    '',
+
+                    // Problems/Needs Commonly Encountered (8 columns)
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'problems_needs')); ?>',
+                    '',
+                    '<?php echo getArrayValue($senior_data['health'], 'has_existing_illness') ? "Yes" : "No"; ?>',
+                    '<?php echo getArrayValue($senior_data['health'], 'has_disability') ? "Yes" : "No"; ?>',
+                    '',
+                    '',
+                    '',
+                    '<?php echo addslashes(getArrayValue($senior_data['applicant'], 'remarks')); ?>'
+                ]);
+
+                // Style data row
+                dataRow.eachCell((cell, colNumber) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {
+                            argb: 'FFFFFFFF'
+                        } // White background
+                    };
+                    cell.font = {
+                        color: {
+                            argb: 'FF000000'
+                        },
+                        name: 'Calibri',
+                        size: 10
+                    };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center'
+                    };
+                    cell.border = {
+                        top: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        bottom: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        left: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        },
+                        right: {
+                            style: 'thin',
+                            color: {
+                                argb: 'FFD9D9D9'
+                            }
+                        }
+                    };
+                });
+
+                // Set column widths
+                worksheet.columns = [{
+                        width: 10
+                    }, // Province (2)
+                    {
+                        width: 10
+                    }, // Municipality (2)
+                    {
+                        width: 10
+                    }, // Barangay (2)
+                    {
+                        width: 12
+                    }, {
+                        width: 6
+                    }, {
+                        width: 12
+                    }, {
+                        width: 12
+                    }, // Name (4)
+                    {
+                        width: 15
+                    }, // Double Entry
+                    {
+                        width: 6
+                    }, {
+                        width: 8
+                    }, {
+                        width: 6
+                    }, // Birth Date (3)
+                    {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 15
+                    }, {
+                        width: 10
+                    }, {
+                        width: 12
+                    }, // Other Info (5)
+                    {
+                        width: 8
+                    }, // Status
+                    {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 8
+                    }, {
+                        width: 8
+                    }, // National (7)
+                    {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 8
+                    }, // Local (7)
+                    {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 6
+                    }, {
+                        width: 8
+                    }, // Other Pensions (4)
+                    {
+                        width: 12
+                    }, // IP Group
+                    {
+                        width: 15
+                    }, // Educational Attainment
+                    {
+                        width: 10
+                    }, {
+                        width: 10
+                    }, {
+                        width: 10
+                    }, {
+                        width: 10
+                    }, {
+                        width: 10
+                    }, {
+                        width: 10
+                    }, // ID Numbers (6)
+                    {
+                        width: 12
+                    }, // Monthly Income
+                    {
+                        width: 12
+                    }, {
+                        width: 12
+                    }, // Source of Income (2)
+                    {
+                        width: 15
+                    }, {
+                        width: 10
+                    }, // Assets (2)
+                    {
+                        width: 12
+                    }, {
+                        width: 10
+                    }, // Living (2)
+                    {
+                        width: 15
+                    }, {
+                        width: 10
+                    }, // Skills (2)
+                    {
+                        width: 15
+                    }, {
+                        width: 10
+                    }, // Activities (2)
+                    {
+                        width: 12
+                    }, {
+                        width: 12
+                    }, {
+                        width: 8
+                    }, {
+                        width: 8
+                    }, {
+                        width: 8
+                    }, {
+                        width: 12
+                    }, {
+                        width: 15
+                    }, {
+                        width: 15
+                    } // Problems/Needs (8)
+                ];
+
+                // Merge cells for colspan headers
+                // Province merge (A9:B9)
+                worksheet.mergeCells(`A10`);
+                // Municipality merge (C10:D10)
+                worksheet.mergeCells(`B10`);
+                // Barangay merge (E10:F10)
+                worksheet.mergeCells(`C10`);
+                // NAME merge (G10:J10)
+                worksheet.mergeCells(`D10:G10`);
+                // BIRTH DATE merge (L10:N10)
+                worksheet.mergeCells(`I10:K10`);
+                // OTHER INFORMATION merge (O10:S10)
+                worksheet.mergeCells(`L10:P10`);
+                // Program and Services merge (U10:AH10)
+                worksheet.mergeCells(`R10:AE10`);
+                // Other Pensions merge (AI10:AL10)
+                worksheet.mergeCells(`AF10:AI10`);
+                // ID NUMBERS merge (AO10:AT10)
+                worksheet.mergeCells(`AL10:AQ10`);
+                // Source of Income merge (AV10:AW10)
+                worksheet.mergeCells(`AS10:AT10`);
+                // Assets merge (AX10:AY10)
+                worksheet.mergeCells(`AU10:AV10`);
+                // Living merge (AZ10:BA10)
+                worksheet.mergeCells(`AW10:AX10`);
+                // Skills merge (BB10:BC10)
+                worksheet.mergeCells(`AY10:AZ10`);
+                // Activities merge (BD10:BE10)
+                worksheet.mergeCells(`BA10:BB10`);
+                // Problems/Needs merge (BF10:BM10)
+                worksheet.mergeCells(`BC10:BJ10`);
+
+                // Merge cells for National/Local headers
+                // National merge (U10:AA10)
+                worksheet.mergeCells(`U11:AA11`);
+                // Local merge (AB11:AH11)
+                worksheet.mergeCells(`AB11:AH11`);
+
+                // Merge AICS headers
+                // National AICS merge (U11:X11)
+                worksheet.mergeCells(`U12:X12`);
+                // Local AICS merge (AB12:AE12)
+                worksheet.mergeCells(`AB12:AE12`);
+                // Local Socpen merge (AF12:AG12)
+                worksheet.mergeCells(`AF12:AG12`);
+
+                // Merge Health header (BH10:BI10)
+                worksheet.mergeCells(`BH11:BI11`);
+
+                // Merge data row cells for colspan
+                worksheet.mergeCells(`A${dataRow.number}`); // Province
+                worksheet.mergeCells(`C${dataRow.number}`); // Municipality
+                worksheet.mergeCells(`E${dataRow.number}`); // Barangay
+
                 // Generate filename
                 const fileName = `Senior_Demographic_<?php echo $applicant_id; ?>_<?php echo addslashes(getArrayValue($senior_data['applicant'], 'last_name')); ?>_<?php echo date("Y-m-d"); ?>.xlsx`;
 
@@ -1503,24 +2159,12 @@ $local_other = [
             }
         }
 
+        // Update your existing exportToExcel button to use this function
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize dropdowns
-            const dropdowns = document.querySelectorAll('[data-dropdown-toggle]');
-            dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function() {
-                const openDropdowns = document.querySelectorAll('[data-dropdown-toggle][aria-expanded="true"]');
-                openDropdowns.forEach(dropdown => {
-                    dropdown.setAttribute('aria-expanded', 'false');
-                    const targetId = dropdown.getAttribute('data-dropdown-toggle');
-                    const target = document.getElementById(targetId.replace('#', ''));
-                    if (target) target.classList.add('hidden');
-                });
+            // Replace the old exportToExcel function calls
+            const exportButtons = document.querySelectorAll('[onclick*="exportToExcel"]');
+            exportButtons.forEach(button => {
+                button.onclick = exportToExcel;
             });
         });
     </script>

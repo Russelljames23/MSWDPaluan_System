@@ -1,14 +1,19 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
+// MSWDPALUAN_SYSTEM-MAIN/php/accounts/accounts.php
 
-// Set headers first to prevent any output before headers
+// Enable error reporting for debugging (turn off in production)
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Don't output errors to browser
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_errors.log');
+
+// Start output buffering to prevent stray output
+ob_start();
+
+// Set JSON headers FIRST
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 // Handle preflight OPTIONS request
@@ -17,13 +22,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-// Fix the include paths based on your file structure
-$base_dir = dirname(__FILE__);
-include_once $base_dir . '/database.php';
-include_once $base_dir . '/User.php';
-include_once $base_dir . '/EmailSender.php';
+// Define base path
+$base_dir = __DIR__;
 
-class AccountsHandler
+// Include required files with proper error handling
+try {
+    // Check if files exist before including
+    $database_file = $base_dir . '/database.php';
+    $user_file = $base_dir . '/User.php';
+    $email_sender_file = $base_dir . '/EmailSender.php';
+
+    if (!file_exists($database_file)) {
+        throw new Exception("Database file not found: " . $database_file);
+    }
+
+    if (!file_exists($user_file)) {
+        throw new Exception("User file not found: " . $user_file);
+    }
+
+    if (!file_exists($email_sender_file)) {
+        throw new Exception("EmailSender file not found: " . $email_sender_file);
+    }
+
+    require_once $database_file;
+    require_once $user_file;
+    require_once $email_sender_file;
+} catch (Exception $e) {
+    sendJsonResponse([
+        'success' => false,
+        'error' => 'Failed to load required files: ' . $e->getMessage()
+    ], 500);
+}
+
+// Helper function to send JSON response
+function sendJsonResponse($data, $statusCode = 200)
+{
+    // Clear any previous output
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    http_response_code($statusCode);
+    echo json_encode($data);
+    exit;
+}
+
+// Handle test request
+if (isset($_GET['test'])) {
+    sendJsonResponse([
+        'status' => 'success',
+        'message' => 'Accounts API is working',
+        'timestamp' => date('Y-m-d H:i:s'),
+        'path' => __DIR__
+    ]);
+}
+
+class AccountsAPIHandler
 {
     private $database;
     private $db;
@@ -38,8 +92,10 @@ class AccountsHandler
             $this->user = new User($this->db);
             $this->emailSender = new EmailSender();
         } catch (Exception $e) {
-            error_log("Initialization failed: " . $e->getMessage());
-            $this->sendErrorResponse("Initialization failed: " . $e->getMessage());
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Database connection failed: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -48,94 +104,178 @@ class AccountsHandler
         try {
             $method = $_SERVER['REQUEST_METHOD'];
 
+            // Get action from GET or POST
+            $action = $_GET['action'] ?? '';
+
             switch ($method) {
                 case 'GET':
-                    $this->handleGet();
+                    $this->handleGet($action);
                     break;
+
                 case 'POST':
-                    $this->handlePost();
+                    $this->handlePost($action);
                     break;
-                case 'PUT':
-                    $this->handlePut();
-                    break;
+
                 case 'DELETE':
-                    $this->handleDelete();
+                    $this->handleDelete($action);
                     break;
+
                 default:
-                    $this->sendErrorResponse("Method not allowed.", 405);
+                    sendJsonResponse([
+                        'success' => false,
+                        'error' => 'Method not allowed'
+                    ], 405);
                     break;
             }
         } catch (Exception $e) {
-            error_log("AccountsHandler Error: " . $e->getMessage());
-            $this->sendErrorResponse("Server error: " . $e->getMessage());
+            error_log("API Error: " . $e->getMessage());
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Server error: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    private function handleGet()
+    private function handleGet($action)
     {
-        if (isset($_GET['action']) && $_GET['action'] == 'get_accounts') {
-            try {
-                $stmt = $this->user->read();
-
-                if ($stmt === false) {
-                    $this->sendErrorResponse("Error reading accounts from database");
-                    return;
-                }
-
-                $num = $stmt->rowCount();
-                $accounts_arr = array();
-                $accounts_arr["records"] = array();
-
-                if ($num > 0) {
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $account_item = array(
-                            "id" => $row['id'],
-                            "lastname" => $row['lastname'],
-                            "firstname" => $row['firstname'],
-                            "middlename" => $row['middlename'],
-                            "fullname" => $row['lastname'] . ', ' . $row['firstname'] . ($row['middlename'] ? ' ' . $row['middlename'] : ''),
-                            "birthdate" => $row['birthdate'] ? date('m/d/Y', strtotime($row['birthdate'])) : '',
-                            "gender" => $row['gender'],
-                            "email" => $row['email'],
-                            "contact_no" => $row['contact_no'],
-                            "address" => $row['address'],
-                            "username" => $row['username'],
-                            "user_type" => $row['user_type'],
-                            "status" => $row['status'],
-                            "created_by" => ($row['creator_fname'] && $row['creator_lname']) ? $row['creator_fname'] . ' ' . $row['creator_lname'] : 'System',
-                            "created_at" => $row['created_at']
-                        );
-                        array_push($accounts_arr["records"], $account_item);
-                    }
-                }
-
-                $this->sendSuccessResponse($accounts_arr);
-            } catch (Exception $e) {
-                error_log("Error in handleGet: " . $e->getMessage());
-                $this->sendErrorResponse("Error fetching accounts: " . $e->getMessage());
-            }
+        if ($action === 'get_accounts') {
+            $this->getAccounts();
         } else {
-            $this->sendErrorResponse("Invalid action parameter");
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Invalid action for GET request'
+            ], 400);
         }
     }
 
-    private function handlePost()
+    private function handlePost($action)
     {
         // Get raw POST data
         $input = file_get_contents("php://input");
 
         if (empty($input)) {
-            $this->sendErrorResponse("No data received");
-            return;
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'No data received'
+            ], 400);
         }
 
         $data = json_decode($input, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->sendErrorResponse("Invalid JSON data: " . json_last_error_msg());
-            return;
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Invalid JSON data: ' . json_last_error_msg()
+            ], 400);
         }
 
+        // Check if this is a create action
+        if ($action === 'create' || (isset($data['action']) && $data['action'] === 'create')) {
+            $this->createAccount($data);
+        } else {
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Invalid action for POST request'
+            ], 400);
+        }
+    }
+
+    private function handleDelete($action)
+    {
+        $input = file_get_contents("php://input");
+
+        if (empty($input)) {
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'No data received'
+            ], 400);
+        }
+
+        $data = json_decode($input, true);
+
+        if (empty($data['id'])) {
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Account ID is required'
+            ], 400);
+        }
+
+        if ($action === 'delete' || (isset($data['action']) && $data['action'] === 'delete')) {
+            $this->deleteAccount($data['id']);
+        } else {
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Invalid action for DELETE request'
+            ], 400);
+        }
+    }
+
+    private function getAccounts()
+    {
+        try {
+            // Query to get all active users
+            $query = "
+                SELECT 
+                    id,
+                    lastname,
+                    firstname,
+                    middlename,
+                    birthdate,
+                    gender,
+                    email,
+                    contact_no,
+                    address,
+                    username,
+                    user_type,
+                    status,
+                    created_at,
+                    updated_at
+                FROM users 
+                WHERE status = 'active'
+                ORDER BY lastname, firstname
+            ";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+
+            $accounts = [];
+
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $accounts[] = [
+                    'id' => (int)$row['id'],
+                    'lastname' => $row['lastname'] ?? '',
+                    'firstname' => $row['firstname'] ?? '',
+                    'middlename' => $row['middlename'] ?? '',
+                    'fullname' => trim($row['lastname'] . ', ' . $row['firstname'] . ' ' . ($row['middlename'] ?? '')),
+                    'birthdate' => !empty($row['birthdate']) ? date('m/d/Y', strtotime($row['birthdate'])) : '',
+                    'gender' => $row['gender'] ?? '',
+                    'email' => $row['email'] ?? '',
+                    'contact_no' => $row['contact_no'] ?? '',
+                    'address' => $row['address'] ?? '',
+                    'username' => $row['username'] ?? '',
+                    'user_type' => $row['user_type'] ?? '',
+                    'status' => $row['status'] ?? '',
+                    'created_at' => $row['created_at'] ?? '',
+                    'updated_at' => $row['updated_at'] ?? ''
+                ];
+            }
+
+            sendJsonResponse([
+                'success' => true,
+                'count' => count($accounts),
+                'records' => $accounts
+            ]);
+        } catch (Exception $e) {
+            error_log("Error in getAccounts: " . $e->getMessage());
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Database error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function createAccount($data)
+    {
         // Validate required fields
         $required_fields = ['lastname', 'firstname', 'email', 'username', 'password', 'user_type'];
         $missing_fields = [];
@@ -147,14 +287,18 @@ class AccountsHandler
         }
 
         if (!empty($missing_fields)) {
-            $this->sendErrorResponse("Unable to create account. Required fields are missing: " . implode(', ', $missing_fields));
-            return;
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Required fields are missing: ' . implode(', ', $missing_fields)
+            ], 400);
         }
 
         // Validate email format
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->sendErrorResponse("Invalid email format.");
-            return;
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Invalid email format'
+            ], 400);
         }
 
         try {
@@ -170,178 +314,94 @@ class AccountsHandler
             $this->user->username = $data['username'];
             $this->user->password = $data['password'];
             $this->user->user_type = $data['user_type'];
-            $this->user->created_by = !empty($data['created_by']) ? $data['created_by'] : null;
+            $this->user->created_by = $data['created_by'] ?? null;
 
             // Check if username already exists
             if ($this->user->usernameExists()) {
-                $this->sendErrorResponse("Username already exists.");
-                return;
+                sendJsonResponse([
+                    'success' => false,
+                    'error' => 'Username already exists'
+                ], 400);
             }
 
             // Check if email already exists
             if ($this->user->emailExists()) {
-                $this->sendErrorResponse("Email already exists.");
-                return;
+                sendJsonResponse([
+                    'success' => false,
+                    'error' => 'Email already exists'
+                ], 400);
             }
 
             // Create the user
-            $createResult = $this->user->create();
-
-            if ($createResult) {
+            if ($this->user->create()) {
                 // Send email with credentials
-                $emailSent = $this->sendCredentialsEmail(
-                    $data['email'],
-                    $data['firstname'] . ' ' . $data['lastname'],
-                    $data['username'],
-                    $data['password'],
-                    $data['user_type']
-                );
+                $emailSent = false;
+                try {
+                    $emailSent = $this->emailSender->sendAccountCredentials(
+                        $data['email'],
+                        $data['firstname'] . ' ' . $data['lastname'],
+                        $data['username'],
+                        $data['password'],
+                        $data['user_type']
+                    );
+                } catch (Exception $e) {
+                    error_log("Email sending failed: " . $e->getMessage());
+                }
 
-                $response = array(
-                    "message" => "Account was created successfully.",
-                    "email_sent" => $emailSent,
-                    "email_message" => $emailSent ? "Credentials sent to " . $data['email'] : "Failed to send email to " . $data['email'],
-                    "account_id" => $this->db->lastInsertId()
-                );
-
-                $this->sendSuccessResponse($response, 201);
+                sendJsonResponse([
+                    'success' => true,
+                    'message' => 'Account created successfully',
+                    'email_sent' => $emailSent,
+                    'account_id' => $this->db->lastInsertId()
+                ], 201);
             } else {
-                $this->sendErrorResponse("Unable to create account. Database error occurred.");
+                sendJsonResponse([
+                    'success' => false,
+                    'error' => 'Unable to create account. Database error occurred.'
+                ], 500);
             }
         } catch (Exception $e) {
-            error_log("Error in handlePost: " . $e->getMessage());
-            $this->sendErrorResponse("Error creating account: " . $e->getMessage());
+            error_log("Error in createAccount: " . $e->getMessage());
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Error creating account: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    private function sendCredentialsEmail($toEmail, $toName, $username, $password, $userType)
+    private function deleteAccount($accountId)
     {
         try {
-            // Test SMTP connection first
-            if (!$this->emailSender->testConnection()) {
-                error_log("SMTP connection test failed for: " . $toEmail);
-                return false;
-            }
-
-            // Send the email
-            $result = $this->emailSender->sendAccountCredentials($toEmail, $toName, $username, $password, $userType);
-
-            if ($result) {
-                error_log("Credentials email sent successfully to: " . $toEmail);
-            } else {
-                error_log("Failed to send credentials email to: " . $toEmail);
-            }
-
-            return $result;
-        } catch (Exception $e) {
-            error_log("Exception in sendCredentialsEmail: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    private function handlePut()
-    {
-        $input = file_get_contents("php://input");
-
-        if (empty($input)) {
-            $this->sendErrorResponse("No data received");
-            return;
-        }
-
-        $data = json_decode($input, true);
-
-        if (empty($data['id'])) {
-            $this->sendErrorResponse("Unable to update account. ID is required.");
-            return;
-        }
-
-        try {
-            $this->user->id = $data['id'];
-            $this->user->lastname = $data['lastname'] ?? '';
-            $this->user->firstname = $data['firstname'] ?? '';
-            $this->user->middlename = $data['middlename'] ?? '';
-            $this->user->birthdate = !empty($data['birthdate']) ? date('Y-m-d', strtotime($data['birthdate'])) : null;
-            $this->user->gender = $data['gender'] ?? 'Male';
-            $this->user->email = $data['email'] ?? '';
-            $this->user->contact_no = $data['contact_no'] ?? '';
-            $this->user->address = $data['address'] ?? '';
-            $this->user->username = $data['username'] ?? '';
-            $this->user->user_type = $data['user_type'] ?? '';
-            $this->user->status = $data['status'] ?? 'active';
-
-            // Check for duplicate username/email excluding current user
-            if ($this->user->usernameExists($data['id'])) {
-                $this->sendErrorResponse("Username already exists.");
-                return;
-            }
-
-            if ($this->user->emailExists($data['id'])) {
-                $this->sendErrorResponse("Email already exists.");
-                return;
-            }
-
-            if ($this->user->update()) {
-                $this->sendSuccessResponse(array("message" => "Account was updated."));
-            } else {
-                $this->sendErrorResponse("Unable to update account.");
-            }
-        } catch (Exception $e) {
-            error_log("Error in handlePut: " . $e->getMessage());
-            $this->sendErrorResponse("Error updating account: " . $e->getMessage());
-        }
-    }
-
-    private function handleDelete()
-    {
-        $input = file_get_contents("php://input");
-
-        if (empty($input)) {
-            $this->sendErrorResponse("No data received");
-            return;
-        }
-
-        $data = json_decode($input, true);
-
-        if (empty($data['id'])) {
-            $this->sendErrorResponse("Unable to delete account. ID is required.");
-            return;
-        }
-
-        try {
-            $this->user->id = $data['id'];
+            $this->user->id = $accountId;
 
             if ($this->user->delete()) {
-                $this->sendSuccessResponse(array("message" => "Account was deleted."));
+                sendJsonResponse([
+                    'success' => true,
+                    'message' => 'Account deleted successfully'
+                ]);
             } else {
-                $this->sendErrorResponse("Unable to delete account.");
+                sendJsonResponse([
+                    'success' => false,
+                    'error' => 'Unable to delete account'
+                ], 500);
             }
         } catch (Exception $e) {
-            error_log("Error in handleDelete: " . $e->getMessage());
-            $this->sendErrorResponse("Error deleting account: " . $e->getMessage());
+            error_log("Error in deleteAccount: " . $e->getMessage());
+            sendJsonResponse([
+                'success' => false,
+                'error' => 'Error deleting account: ' . $e->getMessage()
+            ], 500);
         }
-    }
-
-    private function sendSuccessResponse($data, $statusCode = 200)
-    {
-        http_response_code($statusCode);
-        echo json_encode($data);
-        exit;
-    }
-
-    private function sendErrorResponse($message, $statusCode = 400)
-    {
-        http_response_code($statusCode);
-        echo json_encode(array("message" => $message));
-        exit;
     }
 }
 
-// Handle the request
+// Instantiate and handle the request
 try {
-    $handler = new AccountsHandler();
-    $handler->handleRequest();
+    $api = new AccountsAPIHandler();
+    $api->handleRequest();
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(array("message" => "Server error: " . $e->getMessage()));
-    exit;
+    sendJsonResponse([
+        'success' => false,
+        'error' => 'Failed to initialize API handler: ' . $e->getMessage()
+    ], 500);
 }
