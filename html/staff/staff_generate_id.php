@@ -1026,7 +1026,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-4 py-3 w-12">
-                                        <input id="master-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input id="master-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-white border border-gray-400 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-white dark:border-gray-600">
                                     </th>
                                     <th scope="col" class="px-4 py-3">No.</th>
                                     <th scope="col" class="px-4 py-3">Name</th>
@@ -1066,7 +1066,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                             data-barangay="<?php echo htmlspecialchars($senior['barangay'] ?? ''); ?>"
                                             data-validation="<?php echo htmlspecialchars($senior['validation'] ?? ''); ?>">
                                             <td class="px-4 py-3">
-                                                <input type="checkbox" class="senior-checkbox w-4 h-4  text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                                <input type="checkbox" class="senior-checkbox w-4 h-4  text-blue-600 bg-white border border-gray-400 rounded focus:ring-blue-500"
                                                     data-id="<?php echo htmlspecialchars($senior['applicant_id']); ?>"
                                                     data-name="<?php echo htmlspecialchars($senior['full_name']); ?>"
                                                     data-birthdate="<?php echo htmlspecialchars($senior['birth_date'] ?? ''); ?>"
@@ -1080,7 +1080,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                     data-local-control="<?php echo htmlspecialchars($senior['local_control_number'] ?? ''); ?>">
                                             </td>
                                             <td class="px-4 py-3"><?php echo $global_index; ?></td>
-                                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white w-[250px]">
                                                 <?php echo htmlspecialchars($senior['full_name']); ?>
                                             </td>
                                             <td class="px-4 py-3">
@@ -1102,18 +1102,18 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($senior['barangay'] ?? 'N/A'); ?></td>
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($senior['id_number'] ?? 'N/A'); ?></td>
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($date_issued_display); ?></td>
-                                            <td class="px-4 py-3">
+                                            <td class=" py-3 w-[200px]">
                                                 <span class="px-2 py-1 text-xs rounded <?php echo ($senior['validation'] === 'Validated') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                     <?php echo htmlspecialchars($senior['validation'] ?? 'Unknown'); ?>
                                                 </span>
                                             </td>
-                                            <td class="px-4 py-3">
+                                            <td class="px-4 py-3 w-[350px]">
                                                 <?php
                                                 // Check if ID has been printed for this senior
                                                 $idStatus = checkIfIDPrinted($senior['applicant_id']);
                                                 if ($idStatus && $idStatus['status'] === 'Printed' && $idStatus['is_active'] == 1):
                                                 ?>
-                                                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full" title="Printed on <?php echo date('m/d/Y', strtotime($idStatus['print_date'])); ?>">
+                                                    <span class="px-2 py-1 text-xs text-center w bg-green-100 text-green-800 rounded-full" title="Printed on <?php echo date('m/d/Y', strtotime($idStatus['print_date'])); ?>">
                                                         ✅ Printed
                                                     </span>
                                                 <?php elseif ($idStatus && $idStatus['status'] === 'Reissued'): ?>
@@ -1306,6 +1306,65 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="../../js/staff_tailwind.config.js"></script>
+    <script src="../../js/staff_theme.js"></script>
+    <script>
+        // ---------- THEME INITIALIZATION ----------
+        (function() {
+            const StaffTheme = {
+                init: function() {
+                    const savedTheme = localStorage.getItem('staff_theme');
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                    let theme = 'light';
+                    if (savedTheme) {
+                        theme = savedTheme;
+                    } else if (systemPrefersDark) {
+                        theme = 'dark';
+                    }
+
+                    this.set(theme);
+                    return theme;
+                },
+
+                set: function(theme) {
+                    const root = document.documentElement;
+                    const wasDark = root.classList.contains('dark');
+                    const isDark = theme === 'dark';
+
+                    if (isDark && !wasDark) {
+                        root.classList.add('dark');
+                        localStorage.setItem('staff_theme', 'dark');
+                    } else if (!isDark && wasDark) {
+                        root.classList.remove('dark');
+                        localStorage.setItem('staff_theme', 'light');
+                    }
+
+                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
+                }
+            };
+
+            StaffTheme.init();
+
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'staff_theme') {
+                    const theme = e.newValue;
+                    const currentIsDark = document.documentElement.classList.contains('dark');
+                    const newIsDark = theme === 'dark';
+
+                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
+                        StaffTheme.set(theme);
+                    }
+                }
+            });
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('staff_theme')) {
+                    StaffTheme.set(e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
+    </script>
     <script>
         // ---------- RESPONSIVE ENHANCEMENTS ----------
 
@@ -1380,45 +1439,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
             }
         });
 
-        // ---------- THEME INITIALIZATION ----------
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            let theme = 'light';
-            if (savedTheme) {
-                theme = savedTheme;
-            } else if (systemPrefersDark) {
-                theme = 'dark';
-            }
-
-            setTheme(theme);
-        }
-
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'theme') {
-                const theme = e.newValue;
-                setTheme(theme);
-            }
-        });
-
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            if (!localStorage.getItem('theme')) {
-                setTheme(e.matches ? 'dark' : 'light');
-            }
-        });
-
-        initTheme();
+        
     </script>
     <script>
         // Global variables - KEPT THE SAME

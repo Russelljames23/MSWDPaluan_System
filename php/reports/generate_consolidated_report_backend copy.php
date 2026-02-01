@@ -1,5 +1,5 @@
 <?php
-// generate_consolidated_report_backend.php - FIXED VERSION
+// generate_consolidated_report_backend.php - UPDATED VERSION
 require_once "../db.php";
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -39,8 +39,8 @@ class ConsolidatedReportAPI
             // PART 1: Number of Registered Senior Citizens
             $part1 = $this->getPart1Data($year, $month);
 
-            // PART 2: Newly Registered Senior Citizens (For Validation)
-            $part2 = $this->getPart2Data($year, $month);
+            // PART 2: Newly Registered Senior Citizens - Use a more reliable query
+            $part2 = $this->getNewlyRegisteredData($year, $month);
 
             // PART 3: Number of Pensioners per Barangay
             $part3 = $this->getPart3Data($year, $month);
@@ -88,25 +88,25 @@ class ConsolidatedReportAPI
         }
     }
 
-    private function getPart2Data($year, $month)
+    private function getNewlyRegisteredData($year, $month)
     {
         try {
-            // Use EXACT SAME logic as report_part2_backend.php
+            // Based on the diagnostic, use the exact query structure from report_part2_backend.php
             $sql = "SELECT 
-                    a.applicant_id,
-                    a.last_name,
-                    a.first_name,
-                    a.middle_name,
-                    a.suffix,
-                    a.gender,
-                    a.birth_date,
-                    a.age,
-                    COALESCE(ad.barangay, 'Not Specified') as barangay,
-                    a.date_created
-                FROM applicants a 
-                LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id 
-                WHERE a.validation = 'For Validation'
-                AND a.status = 'Active'";
+                a.applicant_id,
+                a.last_name,
+                a.first_name,
+                a.middle_name,
+                a.suffix,
+                a.gender,
+                a.birth_date,
+                a.current_age,
+                ad.barangay,
+                a.date_created
+            FROM applicants a 
+            LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id 
+            WHERE a.validation = 'For Validation'
+            AND a.status = 'Active'";
 
             $params = [];
 
@@ -119,14 +119,182 @@ class ConsolidatedReportAPI
                 $params[] = $month;
             }
 
-            $sql .= " ORDER BY a.date_created DESC, a.last_name, a.first_name";
+            $sql .= " ORDER BY a.date_created DESC
+                 LIMIT 100";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute($params);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Format results exactly like the working backend
             $formattedResults = [];
             foreach ($results as $index => $row) {
+                $middleInitial = !empty($row['middle_name']) ? substr($row['middle_name'], 0, 1) . '.' : '';
+                $suffix = !empty($row['suffix']) ? ' ' . $row['suffix'] : '';
+                $fullName = trim($row['last_name'] . ', ' . $row['first_name'] . ' ' . $middleInitial . $suffix);
+
+                $dateOfBirth = 'N/A';
+                if (!empty($row['birth_date']) && $row['birth_date'] != '0000-00-00') {
+                    $dateOfBirth = date('m-d-Y', strtotime($row['birth_date']));
+                }
+
+                $formattedResults[] = [
+                    'name' => $fullName,
+                    'date_of_birth' => $dateOfBirth,
+                    'age' => $row['current_age'] ?? 'N/A',
+                    'sex' => !empty($row['gender']) ? substr(strtoupper($row['gender']), 0, 1) : 'N/A',
+                    'barangay' => $row['barangay'] ?? 'Not Specified'
+                ];
+            }
+
+            error_log("Part 2: Found " . count($formattedResults) . " records for $year-$month");
+
+            return [
+                'data' => $formattedResults,
+                'count' => count($formattedResults)
+            ];
+        } catch (PDOException $e) {
+            error_log("Error in getNewlyRegisteredData: " . $e->getMessage());
+
+            // If there's truly no data, return empty array
+            return [
+                'data' => [],
+                'count' => 0
+            ];
+        }
+    }
+
+    private function getPart2Data($year, $month)
+    {
+        try {
+            // Use the same logic as the working report_part2_backend.php
+            $sql = "SELECT 
+                a.applicant_id,
+                a.last_name,
+                a.first_name,
+                a.middle_name,
+                a.suffix,
+                a.gender,
+                a.date_of_birth as birth_date,
+                YEAR(CURDATE()) - YEAR(a.date_of_birth) - 
+                (DATE_FORMAT(CURDATE(), '%m%d') < DATE_FORMAT(a.date_of_birth, '%m%d')) as current_age,
+                COALESCE(ad.barangay, 'Not Specified') as barangay,
+                a.date_created
+            FROM applicants a 
+            LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id 
+            WHERE a.status = 'Active' 
+            AND a.validation = 'For Validation'";  // Changed from using registration details
+
+            $params = [];
+
+            // Apply year filter if provided - using date_created instead of date_of_registration
+            if ($year !== null) {
+                $sql .= " AND YEAR(a.date_created) = ?";
+                $params[] = $year;
+            }
+
+            // Apply month filter if provided
+            if ($month !== null) {
+                $sql .= " AND MONTH(a.date_created) = ?";
+                $params[] = $month;
+            }
+
+            $sql .= " ORDER BY a.date_created DESC, a.last_name, a.first_name";
+
+            error_log("Part 2 Query (Updated): $sql");
+            error_log("Part 2 Parameters: " . json_encode($params));
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute($params);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            error_log("Part 2 Results Count: " . count($results));
+
+            // If still no results, try alternative queries
+            if (empty($results)) {
+                error_log("No results with For Validation status. Trying alternative queries...");
+
+                // Try query 2: Check if there are any active applicants at all
+                $altSql1 = "SELECT 
+                    a.applicant_id,
+                    a.last_name,
+                    a.first_name,
+                    a.middle_name,
+                    a.suffix,
+                    a.gender,
+                    a.date_of_birth,
+                    TIMESTAMPDIFF(YEAR, a.date_of_birth, CURDATE()) as age,
+                    COALESCE(ad.barangay, 'Not Specified') as barangay,
+                    a.date_created
+                FROM applicants a 
+                LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id 
+                WHERE a.status = 'Active'";
+
+                $altParams1 = [];
+                if ($year !== null) {
+                    $altSql1 .= " AND YEAR(a.date_created) = ?";
+                    $altParams1[] = $year;
+                }
+                if ($month !== null) {
+                    $altSql1 .= " AND MONTH(a.date_created) = ?";
+                    $altParams1[] = $month;
+                }
+                $altSql1 .= " ORDER BY a.date_created DESC LIMIT 20";
+
+                $altStmt1 = $this->conn->prepare($altSql1);
+                $altStmt1->execute($altParams1);
+                $altResults1 = $altStmt1->fetchAll(PDO::FETCH_ASSOC);
+
+                error_log("Alternative Query 1 (all active) results: " . count($altResults1));
+
+                if (!empty($altResults1)) {
+                    $results = $altResults1;
+                } else {
+                    // Try query 3: Check applicant_registration_details table directly
+                    $altSql2 = "SELECT 
+                        a.applicant_id,
+                        a.last_name,
+                        a.first_name,
+                        a.middle_name,
+                        a.suffix,
+                        a.gender,
+                        a.date_of_birth,
+                        TIMESTAMPDIFF(YEAR, a.date_of_birth, CURDATE()) as age,
+                        COALESCE(ad.barangay, 'Not Specified') as barangay,
+                        ard.date_of_registration
+                    FROM applicants a 
+                    LEFT JOIN addresses ad ON a.applicant_id = ad.applicant_id 
+                    LEFT JOIN applicant_registration_details ard ON a.applicant_id = ard.applicant_id 
+                    WHERE a.status = 'Active' 
+                    AND ard.date_of_registration IS NOT NULL";
+
+                    $altParams2 = [];
+                    if ($year !== null) {
+                        $altSql2 .= " AND YEAR(ard.date_of_registration) = ?";
+                        $altParams2[] = $year;
+                    }
+                    if ($month !== null) {
+                        $altSql2 .= " AND MONTH(ard.date_of_registration) = ?";
+                        $altParams2[] = $month;
+                    }
+                    $altSql2 .= " ORDER BY ard.date_of_registration DESC LIMIT 20";
+
+                    $altStmt2 = $this->conn->prepare($altSql2);
+                    $altStmt2->execute($altParams2);
+                    $altResults2 = $altStmt2->fetchAll(PDO::FETCH_ASSOC);
+
+                    error_log("Alternative Query 2 (registration details) results: " . count($altResults2));
+
+                    if (!empty($altResults2)) {
+                        $results = $altResults2;
+                    }
+                }
+            }
+
+            // Format the results
+            $formattedResults = [];
+            foreach ($results as $index => $row) {
+                // Build full name
                 $middleInitial = !empty($row['middle_name']) ? substr(trim($row['middle_name']), 0, 1) . '.' : '';
                 $suffix = !empty($row['suffix']) ? ' ' . trim($row['suffix']) : '';
                 $fullName = trim(
@@ -135,20 +303,24 @@ class ConsolidatedReportAPI
                         $middleInitial . $suffix
                 );
 
+                // Format date of birth
                 $dateOfBirth = 'N/A';
-                if (!empty($row['birth_date']) && $row['birth_date'] != '0000-00-00') {
-                    $dateOfBirth = date('m-d-Y', strtotime($row['birth_date']));
+                $birthDate = $row['birth_date'] ?? $row['date_of_birth'] ?? null;
+                if (!empty($birthDate) && $birthDate != '0000-00-00') {
+                    $dateOfBirth = date('m-d-Y', strtotime($birthDate));
                 }
 
+                // Format gender
                 $genderCode = 'U';
                 if (!empty($row['gender'])) {
                     $gender = strtoupper(trim($row['gender']));
                     $genderCode = ($gender == 'MALE' || $gender == 'M') ? 'M' : (($gender == 'FEMALE' || $gender == 'F') ? 'F' : 'U');
                 }
 
-                $age = $row['age'] ?? 'N/A';
-                if ($age === 'N/A' && !empty($row['birth_date']) && $row['birth_date'] != '0000-00-00') {
-                    $birthDateObj = new DateTime($row['birth_date']);
+                // Calculate age if not already calculated
+                $age = $row['current_age'] ?? $row['age'] ?? 'N/A';
+                if ($age === 'N/A' && !empty($birthDate) && $birthDate != '0000-00-00') {
+                    $birthDateObj = new DateTime($birthDate);
                     $today = new DateTime();
                     $age = $today->diff($birthDateObj)->y;
                 }
@@ -164,258 +336,30 @@ class ConsolidatedReportAPI
 
             return [
                 'data' => $formattedResults,
-                'count' => count($formattedResults)
+                'count' => count($formattedResults),
+                'debug' => [
+                    'query_params' => ['year' => $year, 'month' => $month],
+                    'raw_count' => count($results),
+                    'formatted_count' => count($formattedResults)
+                ]
             ];
         } catch (PDOException $e) {
             error_log("Error in getPart2Data: " . $e->getMessage());
+            error_log("Error Trace: " . $e->getTraceAsString());
+
+            // Return empty data with error info
             return [
                 'data' => [],
-                'count' => 0
+                'count' => 0,
+                'error' => $e->getMessage()
             ];
         }
     }
 
-    private function getBenefitsData($year, $month)
-    {
-        try {
-            // Use the EXACT SAME logic as report_benefits_backend.php
-            $benefits = $this->getAllBenefits();
-
-            $benefitsData = [];
-            $totalMale = 0;
-            $totalFemale = 0;
-            $totalOverall = 0;
-
-            // First, add OSCA ID (New) which is handled specially
-            $oscaRow = $this->getOSCAData('OSCA ID (New)', $year, $month);
-            if ($oscaRow) {
-                $displayName = $this->formatBenefitDisplayName('OSCA ID (New)');
-                $benefitsData[$displayName] = [
-                    'male' => $oscaRow['male_count'] ?? 0,
-                    'female' => $oscaRow['female_count'] ?? 0,
-                    'total' => $oscaRow['total_count'] ?? 0
-                ];
-
-                $totalMale += $oscaRow['male_count'] ?? 0;
-                $totalFemale += $oscaRow['female_count'] ?? 0;
-                $totalOverall += $oscaRow['total_count'] ?? 0;
-            }
-
-            // Then process all other benefits from the database
-            foreach ($benefits as $benefit) {
-                $benefitName = trim($benefit['benefit_name']);
-
-                // Skip OSCA ID (New) since we already added it
-                if ($benefitName === 'OSCA ID (New)') {
-                    continue;
-                }
-
-                // Get data for this benefit
-                $row = $this->getBenefitData($benefitName, $year, $month);
-
-                $maleCount = $row['male_count'] ?? 0;
-                $femaleCount = $row['female_count'] ?? 0;
-                $totalCount = $row['total_count'] ?? 0;
-
-                // Format display name
-                $displayName = $this->formatBenefitDisplayName($benefitName);
-
-                // Check if this benefit already exists
-                if (isset($benefitsData[$displayName])) {
-                    // Merge counts for duplicate benefits
-                    $benefitsData[$displayName]['male'] += $maleCount;
-                    $benefitsData[$displayName]['female'] += $femaleCount;
-                    $benefitsData[$displayName]['total'] += $totalCount;
-                } else {
-                    $benefitsData[$displayName] = [
-                        'male' => $maleCount,
-                        'female' => $femaleCount,
-                        'total' => $totalCount
-                    ];
-                }
-
-                $totalMale += $maleCount;
-                $totalFemale += $femaleCount;
-                $totalOverall += $totalCount;
-            }
-
-            // Add totals row
-            $benefitsData['TOTAL NUMBER OF SENIOR CITIZENS SERVED'] = [
-                'male' => $totalMale,
-                'female' => $totalFemale,
-                'total' => $totalOverall
-            ];
-
-            return $benefitsData;
-        } catch (PDOException $e) {
-            error_log("Error in getBenefitsData: " . $e->getMessage());
-            return $this->getDefaultBenefitsData();
-        }
-    }
-
-    private function formatBenefitDisplayName($benefitName)
-    {
-        if ($benefitName === 'LSP Non Pensioners') {
-            return 'LSP Non Pensioners';
-        }
-
-        if ($benefitName === 'OSCA ID (New)') {
-            return 'Total # of SC Availed of OSCA ID (New)';
-        }
-
-        if (strpos($benefitName, 'Total # of SC Availed of ') === 0) {
-            return $benefitName;
-        }
-
-        if (strpos($benefitName, 'SC Availed of ') === 0) {
-            return 'Total # of ' . $benefitName;
-        }
-
-        if (strpos($benefitName, 'SC ') === 0) {
-            return 'Total # of ' . $benefitName;
-        }
-
-        return 'Total # of SC Availed of ' . $benefitName;
-    }
-
-    private function getAllBenefits()
-    {
-        $sql = "SELECT id, benefit_name FROM benefits ORDER BY id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    private function getDefaultBenefitsData()
-    {
-        $defaultBenefits = [
-            'Total # of SC Availed of OSCA ID (New)',
-            'Total # of SC Availed of SP',
-            'Total # of SC Availed of LSP (SSS/GSIS)',
-            'LSP Non Pensioners',
-            'Total # of SC Availed of AICS',
-            'Total # of SC Availed of Birthday Gift',
-            'Total # of SC Availed of Milestone',
-            'Total # of Bedridden SC',
-            'Total # of SC Availed of Burial Assistance',
-            'Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair',
-            'Total # of SC Centenarian Awardee (Php.50,000.00)',
-            'Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)',
-            'Total # of SC Availed of Christmas Gift',
-            'Total # of SC Availed of wheelchair',
-            'Total # of SC Availed of eye glass',
-            'Total # of SC Availed of bike',
-            'Total # of SC Availed of ball'
-        ];
-
-        $benefitsData = [];
-        foreach ($defaultBenefits as $benefit) {
-            $benefitsData[$benefit] = [
-                'male' => 0,
-                'female' => 0,
-                'total' => 0
-            ];
-        }
-
-        $benefitsData['TOTAL NUMBER OF SENIOR CITIZENS SERVED'] = [
-            'male' => 0,
-            'female' => 0,
-            'total' => 0
-        ];
-
-        return $benefitsData;
-    }
-
-    private function getOSCAData($benefitType, $year = null, $month = null)
-    {
-        $sql = "SELECT 
-                COUNT(DISTINCT CASE WHEN a.gender = 'Male' THEN igl.applicant_id END) as male_count,
-                COUNT(DISTINCT CASE WHEN a.gender = 'Female' THEN igl.applicant_id END) as female_count,
-                COUNT(DISTINCT igl.applicant_id) as total_count,
-                0 as total_amount
-            FROM id_generation_logs igl 
-            JOIN applicants a ON igl.applicant_id = a.applicant_id 
-            WHERE igl.status = 'Printed'
-            AND igl.generation_date IS NOT NULL 
-            AND igl.generation_date != '0000-00-00'";
-
-        $params = [];
-
-        if ($year !== null) {
-            $sql .= " AND YEAR(igl.generation_date) = ?";
-            $params[] = $year;
-        }
-        if ($month !== null) {
-            $sql .= " AND MONTH(igl.generation_date) = ?";
-            $params[] = $month;
-        }
-
-        $stmt = $this->conn->prepare($sql);
-
-        if ($params) {
-            $stmt->execute($params);
-        } else {
-            $stmt->execute();
-        }
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            $row['benefit_name'] = $benefitType;
-            return $row;
-        }
-
-        return [
-            'benefit_name' => $benefitType,
-            'male_count' => 0,
-            'female_count' => 0,
-            'total_count' => 0,
-            'total_amount' => 0
-        ];
-    }
-
-    private function getBenefitData($benefitType, $year = null, $month = null)
-    {
-        $sql = "SELECT 
-                COUNT(DISTINCT CASE WHEN a.gender = 'Male' THEN bd.applicant_id END) as male_count,
-                COUNT(DISTINCT CASE WHEN a.gender = 'Female' THEN bd.applicant_id END) as female_count,
-                COUNT(DISTINCT bd.applicant_id) as total_count,
-                COALESCE(SUM(bd.amount), 0) as total_amount
-            FROM benefits_distribution bd 
-            JOIN applicants a ON bd.applicant_id = a.applicant_id 
-            WHERE bd.benefit_name LIKE ?";
-
-        $params = ["%$benefitType%"];
-
-        if ($year !== null) {
-            $sql .= " AND YEAR(bd.distribution_date) = ?";
-            $params[] = $year;
-        }
-        if ($month !== null) {
-            $sql .= " AND MONTH(bd.distribution_date) = ?";
-            $params[] = $month;
-        }
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute($params);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            $row['benefit_name'] = $benefitType;
-            return $row;
-        }
-
-        return [
-            'benefit_name' => $benefitType,
-            'male_count' => 0,
-            'female_count' => 0,
-            'total_count' => 0,
-            'total_amount' => 0
-        ];
-    }
+    // ... [Keep all other methods the same as before] ...
 
     private function getPart1Data($year, $month)
-    {
+    { // This uses the same logic as report_backend.php
         $barangays = $this->getAllBarangays();
 
         $data = [];
@@ -443,7 +387,6 @@ class ConsolidatedReportAPI
             'totals' => $totals
         ];
     }
-
     private function getPart3Data($year, $month)
     {
         try {
@@ -655,8 +598,13 @@ class ConsolidatedReportAPI
     private function getPart7to9Data($year, $month)
     {
         try {
+            // Get PhilHealth count
             $philhealthCount = $this->getStatisticCount('philhealth', $year, $month);
+
+            // Get booklets count
             $bookletsCount = $this->getStatisticCount('booklets', $year, $month);
+
+            // Get activities
             $activities = $this->getActivities($year, $month);
 
             return [
@@ -671,6 +619,71 @@ class ConsolidatedReportAPI
                 'booklets_count' => 0,
                 'activities' => []
             ];
+        }
+    }
+
+    private function getBenefitsData($year, $month)
+    {
+        try {
+            $benefitTypes = [
+                'OSCA ID (New)',
+                'Social Pension',
+                'LSP (SSS/GSIS)',
+                'LSP Non Pensioners',
+                'AICS',
+                'Birthday Gift',
+                'Milestone',
+                'Bedridden SC',
+                'Burial Assistance',
+                'Medical Assistance Php.5,000.00',
+                'Centenarian Awardee (Php.50,000.00)',
+                'Medical Assistance Php.1,000.00',
+                'Christmas Gift'
+            ];
+
+            $benefits = [];
+
+            foreach ($benefitTypes as $benefitType) {
+                if ($benefitType === 'OSCA ID (New)') {
+                    $data = $this->getOSCAData($benefitType, $year, $month);
+                } else {
+                    $data = $this->getBenefitDistributionData($benefitType, $year, $month);
+                }
+
+                $benefits[$benefitType] = [
+                    'male' => $data['male_count'] ?? 0,
+                    'female' => $data['female_count'] ?? 0,
+                    'total' => $data['total_count'] ?? 0
+                ];
+            }
+
+            return $benefits;
+        } catch (PDOException $e) {
+            error_log("Error in getBenefitsData: " . $e->getMessage());
+
+            // Return empty benefits structure
+            $benefits = [];
+            $benefitTypes = [
+                'OSCA ID (New)',
+                'Social Pension',
+                'LSP (SSS/GSIS)',
+                'LSP Non Pensioners',
+                'AICS',
+                'Birthday Gift',
+                'Milestone',
+                'Bedridden SC',
+                'Burial Assistance',
+                'Medical Assistance Php.5,000.00',
+                'Centenarian Awardee (Php.50,000.00)',
+                'Medical Assistance Php.1,000.00',
+                'Christmas Gift'
+            ];
+
+            foreach ($benefitTypes as $benefitType) {
+                $benefits[$benefitType] = ['male' => 0, 'female' => 0, 'total' => 0];
+            }
+
+            return $benefits;
         }
     }
 
@@ -794,6 +807,60 @@ class ConsolidatedReportAPI
             return [];
         }
     }
+
+    private function getOSCAData($benefitType, $year = null, $month = null)
+    {
+        $sql = "SELECT 
+                COUNT(DISTINCT CASE WHEN a.gender = 'Male' THEN igl.applicant_id END) as male_count,
+                COUNT(DISTINCT CASE WHEN a.gender = 'Female' THEN igl.applicant_id END) as female_count,
+                COUNT(DISTINCT igl.applicant_id) as total_count
+            FROM id_generation_logs igl 
+            JOIN applicants a ON igl.applicant_id = a.applicant_id 
+            WHERE igl.status = 'Printed' 
+            AND igl.generation_date IS NOT NULL 
+            AND igl.generation_date != '0000-00-00'";
+
+        $params = [];
+
+        if ($year !== null) {
+            $sql .= " AND YEAR(igl.generation_date) = ?";
+            $params[] = $year;
+        }
+        if ($month !== null) {
+            $sql .= " AND MONTH(igl.generation_date) = ?";
+            $params[] = $month;
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function getBenefitDistributionData($benefitType, $year = null, $month = null)
+    {
+        $sql = "SELECT 
+                COUNT(DISTINCT CASE WHEN a.gender = 'Male' THEN bd.applicant_id END) as male_count,
+                COUNT(DISTINCT CASE WHEN a.gender = 'Female' THEN bd.applicant_id END) as female_count,
+                COUNT(DISTINCT bd.applicant_id) as total_count
+            FROM benefits_distribution bd 
+            JOIN applicants a ON bd.applicant_id = a.applicant_id 
+            WHERE bd.benefit_name LIKE ?";
+
+        $params = ["%$benefitType%"];
+
+        if ($year !== null) {
+            $sql .= " AND YEAR(bd.distribution_date) = ?";
+            $params[] = $year;
+        }
+        if ($month !== null) {
+            $sql .= " AND MONTH(bd.distribution_date) = ?";
+            $params[] = $month;
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 
 // Handle request
@@ -811,6 +878,8 @@ try {
         if ($year !== null && ($year < 1900 || $year > date('Y') + 1)) {
             $year = null;
         }
+
+        error_log("Consolidated Report Request: Year=$year, Month=$month");
 
         $result = $api->getAllReportData($year, $month);
         echo json_encode($result);

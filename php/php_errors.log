@@ -6674,3 +6674,1209 @@
 [31-Jan-2026 11:41:59 Asia/Manila] Using user_id from session: 67
 [31-Jan-2026 11:41:59 Asia/Manila] Resolved User ID: 67, User Name: Marianne Ygay
 [31-Jan-2026 11:41:59 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 323, Type: REGISTER_SENIOR, User: 67, Time: 2026-01-31 11:41:59
+[31-Jan-2026 14:58:36 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:58:36 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:58:36 Asia/Manila] Update Benefit - Input received: {"id":"1","benefit_name":"SC Availed of SP","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:58:36 Asia/Manila] Update Benefit - Current: Total # of SC Availed of SP, New: SC Availed of SP
+[31-Jan-2026 21:58:37 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:58:37 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:58:37 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:58:37 Asia/Manila] Logger Current Time: 2026-01-31 21:58:37
+[31-Jan-2026 21:58:37 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:37 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:37 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:37 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:37 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:37 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:37 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:37 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:37 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:37 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:37 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:37 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:37 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:37 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:37 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:58:37 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 328, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:58:37
+[31-Jan-2026 14:58:46 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:58:46 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:58:46 Asia/Manila] Update Benefit - Input received: {"id":"4","benefit_name":"SC Availed of AICS","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:58:46 Asia/Manila] Update Benefit - Current: Total # of SC Availed of AICS, New: SC Availed of AICS
+[31-Jan-2026 21:58:46 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:58:46 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:58:46 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:58:46 Asia/Manila] Logger Current Time: 2026-01-31 21:58:46
+[31-Jan-2026 21:58:46 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:46 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:46 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:46 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:46 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:46 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:46 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:46 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:46 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:46 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:46 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:46 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:46 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:46 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:46 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:58:46 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 329, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:58:46
+[31-Jan-2026 14:58:55 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:58:55 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:58:55 Asia/Manila] Update Benefit - Input received: {"id":"13","benefit_name":"Christmas Gift","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:58:55 Asia/Manila] Update Benefit - Current: Total # of SC Availed of Christmas Gift, New: Christmas Gift
+[31-Jan-2026 21:58:55 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:58:55 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:58:55 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:58:55 Asia/Manila] Logger Current Time: 2026-01-31 21:58:55
+[31-Jan-2026 21:58:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:55 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:55 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:55 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:55 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:55 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:55 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:58:55 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:58:55 Asia/Manila] Session context: admin
+[31-Jan-2026 21:58:55 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:58:55 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:58:55 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:58:55 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:58:55 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:58:55 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 330, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:58:55
+[31-Jan-2026 14:59:00 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:00 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:00 Asia/Manila] Delete Benefit - Raw input: {"id":"12","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:00 Asia/Manila] Delete Benefit - Parsed input: Array
+(
+    [id] => 12
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 21:59:00 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:00 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:00 Asia/Manila] Logger Current Time: 2026-01-31 21:59:00
+[31-Jan-2026 21:59:00 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:00 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:00 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:00 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:00 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:00 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:00 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:00 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:00 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:00 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:00 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:00 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:00 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:00 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:00 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:00 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 331, Type: ERROR, User: 57, Time: 2026-01-31 21:59:00
+[31-Jan-2026 14:59:06 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:06 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:06 Asia/Manila] Update Benefit - Input received: {"id":"11","benefit_name":"SC (Provision Of Medical Assistance) Php.1,000.00","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:06 Asia/Manila] Update Benefit - Current: Total # of SC (Provision Of Medical Assistance) Php.1,000.00, New: SC (Provision Of Medical Assistance) Php.1,000.00
+[31-Jan-2026 21:59:06 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:06 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:06 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:06 Asia/Manila] Logger Current Time: 2026-01-31 21:59:06
+[31-Jan-2026 21:59:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:06 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:06 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:06 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:06 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:06 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:06 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:06 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:06 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:06 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:06 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:06 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:06 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 332, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:06
+[31-Jan-2026 14:59:15 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:15 Europe/Berlin] Delete Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:15 Asia/Manila] Delete Benefit - Raw input: {"id":"13","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:15 Asia/Manila] Delete Benefit - Parsed input: Array
+(
+    [id] => 13
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 21:59:15 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:15 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:15 Asia/Manila] Logger Current Time: 2026-01-31 21:59:15
+[31-Jan-2026 21:59:15 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:15 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:15 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:15 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:15 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:15 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:15 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:15 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:15 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:15 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:15 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:15 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:15 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:15 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:15 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:15 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 333, Type: ERROR, User: 57, Time: 2026-01-31 21:59:15
+[31-Jan-2026 14:59:22 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:22 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:22 Asia/Manila] Update Benefit - Input received: {"id":"12","benefit_name":"SC Availed of Christmas Gift","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:22 Asia/Manila] Update Benefit - Current: Total # of SC Availed of Christmas Gift, New: SC Availed of Christmas Gift
+[31-Jan-2026 21:59:22 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:22 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:22 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:22 Asia/Manila] Logger Current Time: 2026-01-31 21:59:22
+[31-Jan-2026 21:59:22 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:22 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:22 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:22 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:22 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:22 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:22 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:22 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:22 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:22 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:22 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:22 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:22 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:22 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:22 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:22 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 334, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:22
+[31-Jan-2026 14:59:31 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:31 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:31 Asia/Manila] Update Benefit - Input received: {"id":"10","benefit_name":"SC Centenarian Awardee (Php.50,000.00)","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:31 Asia/Manila] Update Benefit - Current: Total # of SC Centenarian Awardee (Php.50,000.00), New: SC Centenarian Awardee (Php.50,000.00)
+[31-Jan-2026 21:59:31 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:31 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:31 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:31 Asia/Manila] Logger Current Time: 2026-01-31 21:59:31
+[31-Jan-2026 21:59:31 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:31 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:31 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:31 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:31 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:31 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:31 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:31 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:31 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:31 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:31 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:31 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:31 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:31 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:31 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:31 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 335, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:31
+[31-Jan-2026 14:59:38 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:38 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:38 Asia/Manila] Update Benefit - Input received: {"id":"9","benefit_name":"SC Availed Medical Assistance Php.5,000.00 with wheel chair","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:38 Asia/Manila] Update Benefit - Current: Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair, New: SC Availed Medical Assistance Php.5,000.00 with wheel chair
+[31-Jan-2026 21:59:38 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:38 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:38 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:38 Asia/Manila] Logger Current Time: 2026-01-31 21:59:38
+[31-Jan-2026 21:59:38 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:38 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:38 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:38 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:38 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:38 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:38 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:38 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:38 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:38 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:38 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:38 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:38 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:38 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:38 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:38 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 336, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:38
+[31-Jan-2026 14:59:45 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:45 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:45 Asia/Manila] Update Benefit - Input received: {"id":"8","benefit_name":"SC Availed of Burial Assistance","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:45 Asia/Manila] Update Benefit - Current: Total # of SC Availed of Burial Assistance, New: SC Availed of Burial Assistance
+[31-Jan-2026 21:59:45 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:45 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:45 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:45 Asia/Manila] Logger Current Time: 2026-01-31 21:59:45
+[31-Jan-2026 21:59:45 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:45 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:45 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:45 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:45 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:45 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:45 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:45 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:45 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:45 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:45 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:45 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:45 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:45 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:45 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:45 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 337, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:45
+[31-Jan-2026 14:59:52 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:52 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:52 Asia/Manila] Update Benefit - Input received: {"id":"7","benefit_name":"Bedridden SC","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:52 Asia/Manila] Update Benefit - Current: Total # of Bedridden SC, New: Bedridden SC
+[31-Jan-2026 21:59:52 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:52 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:52 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:52 Asia/Manila] Logger Current Time: 2026-01-31 21:59:52
+[31-Jan-2026 21:59:52 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:52 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:52 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:52 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:52 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:52 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:52 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:52 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:52 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:52 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:52 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:52 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:52 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:52 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:52 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:52 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 338, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:52
+[31-Jan-2026 14:59:59 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 14:59:59 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 21:59:59 Asia/Manila] Update Benefit - Input received: {"id":"6","benefit_name":"SC Availed of Milestone","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 21:59:59 Asia/Manila] Update Benefit - Current: Total # of SC Availed of Milestone, New: SC Availed of Milestone
+[31-Jan-2026 21:59:59 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 21:59:59 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 21:59:59 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 21:59:59 Asia/Manila] Logger Current Time: 2026-01-31 21:59:59
+[31-Jan-2026 21:59:59 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:59 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:59 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:59 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:59 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:59 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:59 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:59 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 21:59:59 Asia/Manila] Session data available: YES
+[31-Jan-2026 21:59:59 Asia/Manila] Session context: admin
+[31-Jan-2026 21:59:59 Asia/Manila] Session user_id: 57
+[31-Jan-2026 21:59:59 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 21:59:59 Asia/Manila] Found session context: admin
+[31-Jan-2026 21:59:59 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 21:59:59 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 21:59:59 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 339, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 21:59:59
+[31-Jan-2026 15:00:06 Europe/Berlin] Error fetching user details: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:00:06 Europe/Berlin] Update Benefit - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:00:07 Asia/Manila] Update Benefit - Input received: {"id":"5","benefit_name":"SC Availed of Birthday Gift","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:00:07 Asia/Manila] Update Benefit - Current: Total # of SC Availed of Birthday Gift, New: SC Availed of Birthday Gift
+[31-Jan-2026 22:00:07 Asia/Manila] Update Benefit - Affected rows: 1
+[31-Jan-2026 22:00:07 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:00:07 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:00:07 Asia/Manila] Logger Current Time: 2026-01-31 22:00:07
+[31-Jan-2026 22:00:07 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:00:07 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:00:07 Asia/Manila] Session context: admin
+[31-Jan-2026 22:00:07 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:00:07 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:00:07 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:00:07 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:00:07 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:00:07 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:00:07 Asia/Manila] Session context: admin
+[31-Jan-2026 22:00:07 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:00:07 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:00:07 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:00:07 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:00:07 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:00:07 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 340, Type: UPDATE_BENEFIT, User: 57, Time: 2026-01-31 22:00:07
+[31-Jan-2026 15:02:07 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [name] => SC Availed of SP
+                    [amount] => 200
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:02:07 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:02:07 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:02:07 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"1","name":"SC Availed of SP","amount":200}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:02:07 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:02:07 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:02:07 Asia/Manila] Logger Current Time: 2026-01-31 22:02:07
+[31-Jan-2026 22:02:07 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:02:07 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:02:07 Asia/Manila] Session context: admin
+[31-Jan-2026 22:02:07 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:02:07 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:02:07 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:02:07 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:02:07 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:02:07 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:02:07 Asia/Manila] Session context: admin
+[31-Jan-2026 22:02:07 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:02:07 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:02:07 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:02:07 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:02:07 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:02:07 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 341, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:02:07
+[31-Jan-2026 15:26:29 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 103
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 500
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:26:29 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:26:29 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:26:29 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["103"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":500,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:26:30 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:26:30 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:26:30 Asia/Manila] Logger Current Time: 2026-01-31 22:26:30
+[31-Jan-2026 22:26:30 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:26:30 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:26:30 Asia/Manila] Session context: admin
+[31-Jan-2026 22:26:30 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:26:30 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:26:30 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:26:30 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:26:30 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:26:30 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:26:30 Asia/Manila] Session context: admin
+[31-Jan-2026 22:26:30 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:26:30 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:26:30 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:26:30 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:26:30 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:26:30 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 342, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:26:30
+[31-Jan-2026 15:26:46 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 12
+                    [name] => SC Availed of Christmas Gift
+                    [amount] => 200
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:26:46 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:26:46 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:26:46 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"12","name":"SC Availed of Christmas Gift","amount":200,"isBurial":false}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:26:46 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:26:46 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:26:46 Asia/Manila] Logger Current Time: 2026-01-31 22:26:46
+[31-Jan-2026 22:26:46 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:26:46 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:26:46 Asia/Manila] Session context: admin
+[31-Jan-2026 22:26:46 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:26:46 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:26:46 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:26:46 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:26:46 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:26:46 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:26:46 Asia/Manila] Session context: admin
+[31-Jan-2026 22:26:46 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:26:46 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:26:46 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:26:46 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:26:46 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:26:46 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 343, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:26:46
+[31-Jan-2026 15:28:17 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 99
+            [1] => 111
+            [2] => 110
+            [3] => 109
+            [4] => 108
+            [5] => 107
+            [6] => 106
+            [7] => 105
+            [8] => 104
+            [9] => 102
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 13
+                    [name] => Christmas Gift
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:28:17 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:28:17 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:28:17 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["99","111","110","109","108","107","106","105","104","102"],"benefits":[{"id":"13","name":"Christmas Gift","amount":100,"isBurial":false}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:28:17 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:28:17 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:28:17 Asia/Manila] Logger Current Time: 2026-01-31 22:28:17
+[31-Jan-2026 22:28:17 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:28:18 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:28:18 Asia/Manila] Session context: admin
+[31-Jan-2026 22:28:18 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:28:18 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:28:18 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:28:18 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:28:18 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:28:18 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:28:18 Asia/Manila] Session context: admin
+[31-Jan-2026 22:28:18 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:28:18 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:28:18 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:28:18 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:28:18 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:28:18 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 344, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:28:18
+[31-Jan-2026 15:38:36 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 104
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => LSP Non Pensioners
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:38:36 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:38:36 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:38:36 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["104"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":100,"isBurial":false}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:38:36 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:38:36 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:38:36 Asia/Manila] Logger Current Time: 2026-01-31 22:38:36
+[31-Jan-2026 22:38:36 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:38:36 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:38:36 Asia/Manila] Session context: admin
+[31-Jan-2026 22:38:36 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:38:36 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:38:36 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:38:36 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:38:36 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:38:36 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:38:36 Asia/Manila] Session context: admin
+[31-Jan-2026 22:38:36 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:38:36 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:38:36 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:38:36 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:38:36 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:38:36 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 345, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:38:36
+[31-Jan-2026 15:38:55 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 86
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 11
+                    [name] => SC (Provision Of Medical Assistance) Php.1,000.00
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+)
+
+[31-Jan-2026 15:38:55 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:38:55 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:38:55 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["86"],"benefits":[{"id":"11","name":"SC (Provision Of Medical Assistance) Php.1,000.00","amount":100,"isBurial":false}],"date":"2026-01-31","session_context":"admin","admin_user_id":57}
+[31-Jan-2026 22:38:55 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:38:55 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:38:55 Asia/Manila] Logger Current Time: 2026-01-31 22:38:55
+[31-Jan-2026 22:38:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:38:55 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:38:55 Asia/Manila] Session context: admin
+[31-Jan-2026 22:38:55 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:38:55 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:38:55 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:38:55 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:38:55 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:38:55 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:38:55 Asia/Manila] Session context: admin
+[31-Jan-2026 22:38:55 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:38:55 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:38:55 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:38:55 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:38:55 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:38:55 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 346, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:38:55
+[31-Jan-2026 15:44:29 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 103
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 200
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[31-Jan-2026 15:44:29 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:44:29 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:44:29 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["103"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":200,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57,"check_existing":true}
+[31-Jan-2026 22:44:29 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:44:29 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:44:29 Asia/Manila] Logger Current Time: 2026-01-31 22:44:29
+[31-Jan-2026 22:44:29 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:29 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:29 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:29 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:29 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:29 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:29 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:29 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:29 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:29 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:29 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:29 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:29 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:29 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:29 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:44:29 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 347, Type: ERROR, User: 57, Time: 2026-01-31 22:44:29
+[31-Jan-2026 22:44:29 Asia/Manila] Error adding benefits: Deceased seniors should only receive burial benefits once: Da Vincisss Lenardosss already received SC Availed of Burial Assistance on 2026-01-31
+[31-Jan-2026 15:44:48 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 41
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 100
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[31-Jan-2026 15:44:48 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:44:48 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:44:48 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["41"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":100,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57,"check_existing":true}
+[31-Jan-2026 22:44:48 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:44:48 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:44:48 Asia/Manila] Logger Current Time: 2026-01-31 22:44:48
+[31-Jan-2026 22:44:48 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:48 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:48 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:48 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:48 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:48 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:48 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:48 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:48 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:48 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:48 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:48 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:48 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:48 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:48 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:44:48 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 348, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-01-31 22:44:48
+[31-Jan-2026 15:44:57 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 41
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 100
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[31-Jan-2026 15:44:57 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:44:57 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:44:57 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["41"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":100,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57,"check_existing":true}
+[31-Jan-2026 22:44:57 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:44:57 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:44:57 Asia/Manila] Logger Current Time: 2026-01-31 22:44:57
+[31-Jan-2026 22:44:57 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:57 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:57 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:57 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:57 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:57 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:57 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:57 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:44:57 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:44:57 Asia/Manila] Session context: admin
+[31-Jan-2026 22:44:57 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:44:57 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:44:57 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:44:57 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:44:57 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:44:57 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 349, Type: ERROR, User: 57, Time: 2026-01-31 22:44:57
+[31-Jan-2026 22:44:57 Asia/Manila] Error adding benefits: Deceased seniors should only receive burial benefits once: Dexter Ygay already received SC Availed of Burial Assistance on 2026-01-31
+[31-Jan-2026 15:45:16 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 41
+            [1] => 40
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 200
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[31-Jan-2026 15:45:16 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:45:16 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:45:16 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["41","40"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":200,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57,"check_existing":true}
+[31-Jan-2026 22:45:16 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:45:16 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:45:16 Asia/Manila] Logger Current Time: 2026-01-31 22:45:16
+[31-Jan-2026 22:45:16 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:45:16 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:45:16 Asia/Manila] Session context: admin
+[31-Jan-2026 22:45:16 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:45:16 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:45:16 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:45:16 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:45:16 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:45:16 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:45:16 Asia/Manila] Session context: admin
+[31-Jan-2026 22:45:16 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:45:16 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:45:16 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:45:16 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:45:16 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:45:16 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 350, Type: ERROR, User: 57, Time: 2026-01-31 22:45:16
+[31-Jan-2026 22:45:16 Asia/Manila] Error adding benefits: Deceased seniors should only receive burial benefits once: Dexter Ygay already received SC Availed of Burial Assistance on 2026-01-31
+[31-Jan-2026 15:45:21 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 41
+            [1] => 40
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 200
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-01-31
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[31-Jan-2026 15:45:21 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[31-Jan-2026 15:45:21 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[31-Jan-2026 22:45:21 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["41","40"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":200,"isBurial":true}],"date":"2026-01-31","session_context":"admin","admin_user_id":57,"check_existing":true}
+[31-Jan-2026 22:45:21 Asia/Manila] === ActivityLogger Started ===
+[31-Jan-2026 22:45:21 Asia/Manila] Logger Timezone: Asia/Manila
+[31-Jan-2026 22:45:21 Asia/Manila] Logger Current Time: 2026-01-31 22:45:21
+[31-Jan-2026 22:45:21 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:45:21 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:45:21 Asia/Manila] Session context: admin
+[31-Jan-2026 22:45:21 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:45:21 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:45:21 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:45:21 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:45:21 Asia/Manila] === ActivityLogger: resolveUserId ===
+[31-Jan-2026 22:45:21 Asia/Manila] Session data available: YES
+[31-Jan-2026 22:45:21 Asia/Manila] Session context: admin
+[31-Jan-2026 22:45:21 Asia/Manila] Session user_id: 57
+[31-Jan-2026 22:45:21 Asia/Manila] Session staff_user_id: 67
+[31-Jan-2026 22:45:21 Asia/Manila] Found session context: admin
+[31-Jan-2026 22:45:21 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[31-Jan-2026 22:45:21 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[31-Jan-2026 22:45:21 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 351, Type: ERROR, User: 57, Time: 2026-01-31 22:45:21
+[31-Jan-2026 22:45:21 Asia/Manila] Error adding benefits: Deceased seniors should only receive burial benefits once: Dexter Ygay already received SC Availed of Burial Assistance on 2026-01-31
+[01-Feb-2026 04:25:23 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 103
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 8
+                    [name] => SC Availed of Burial Assistance
+                    [amount] => 100
+                    [isBurial] => 1
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 04:25:23 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 04:25:23 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[01-Feb-2026 11:25:23 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["103"],"benefits":[{"id":"8","name":"SC Availed of Burial Assistance","amount":100,"isBurial":true}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[01-Feb-2026 11:25:23 Asia/Manila] === ActivityLogger Started ===
+[01-Feb-2026 11:25:23 Asia/Manila] Logger Timezone: Asia/Manila
+[01-Feb-2026 11:25:23 Asia/Manila] Logger Current Time: 2026-02-01 11:25:23
+[01-Feb-2026 11:25:23 Asia/Manila] === ActivityLogger: resolveUserId ===
+[01-Feb-2026 11:25:23 Asia/Manila] Session data available: YES
+[01-Feb-2026 11:25:23 Asia/Manila] Session context: admin
+[01-Feb-2026 11:25:23 Asia/Manila] Session user_id: 57
+[01-Feb-2026 11:25:23 Asia/Manila] Session staff_user_id: none
+[01-Feb-2026 11:25:23 Asia/Manila] Found session context: admin
+[01-Feb-2026 11:25:23 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[01-Feb-2026 11:25:23 Asia/Manila] === ActivityLogger: resolveUserId ===
+[01-Feb-2026 11:25:23 Asia/Manila] Session data available: YES
+[01-Feb-2026 11:25:23 Asia/Manila] Session context: admin
+[01-Feb-2026 11:25:23 Asia/Manila] Session user_id: 57
+[01-Feb-2026 11:25:23 Asia/Manila] Session staff_user_id: none
+[01-Feb-2026 11:25:23 Asia/Manila] Found session context: admin
+[01-Feb-2026 11:25:23 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[01-Feb-2026 11:25:23 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[01-Feb-2026 11:25:23 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 353, Type: ERROR, User: 57, Time: 2026-02-01 11:25:23
+[01-Feb-2026 11:25:23 Asia/Manila] Error adding benefits: Deceased seniors should only receive burial benefits once: Da Vincisss Lenardosss already received SC Availed of Burial Assistance on 2026-01-31
+[01-Feb-2026 16:56:06 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 2
+                    [name] => SC Availed of LSP (SSS/GSIS)
+                    [amount] => 200
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 16:56:06 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 16:56:06 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[01-Feb-2026 23:56:06 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"2","name":"SC Availed of LSP (SSS/GSIS)","amount":200,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[01-Feb-2026 23:56:06 Asia/Manila] === ActivityLogger Started ===
+[01-Feb-2026 23:56:06 Asia/Manila] Logger Timezone: Asia/Manila
+[01-Feb-2026 23:56:06 Asia/Manila] Logger Current Time: 2026-02-01 23:56:06
+[01-Feb-2026 23:56:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[01-Feb-2026 23:56:06 Asia/Manila] Session data available: YES
+[01-Feb-2026 23:56:06 Asia/Manila] Session context: admin
+[01-Feb-2026 23:56:06 Asia/Manila] Session user_id: 57
+[01-Feb-2026 23:56:06 Asia/Manila] Session staff_user_id: none
+[01-Feb-2026 23:56:06 Asia/Manila] Found session context: admin
+[01-Feb-2026 23:56:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[01-Feb-2026 23:56:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[01-Feb-2026 23:56:06 Asia/Manila] Session data available: YES
+[01-Feb-2026 23:56:06 Asia/Manila] Session context: admin
+[01-Feb-2026 23:56:06 Asia/Manila] Session user_id: 57
+[01-Feb-2026 23:56:06 Asia/Manila] Session staff_user_id: none
+[01-Feb-2026 23:56:06 Asia/Manila] Found session context: admin
+[01-Feb-2026 23:56:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[01-Feb-2026 23:56:06 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[01-Feb-2026 23:56:06 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 355, Type: ADD_BENEFITS_TO_BENEFICIARIES, User: 57, Time: 2026-02-01 23:56:06
+[01-Feb-2026 18:19:26 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [name] => SC Availed of SP
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 18:19:26 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 18:19:26 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[02-Feb-2026 01:19:26 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"1","name":"SC Availed of SP","amount":100,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[02-Feb-2026 01:19:26 Asia/Manila] === ActivityLogger Started ===
+[02-Feb-2026 01:19:26 Asia/Manila] Logger Timezone: Asia/Manila
+[02-Feb-2026 01:19:26 Asia/Manila] Logger Current Time: 2026-02-02 01:19:26
+[02-Feb-2026 01:19:26 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:19:26 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:19:26 Asia/Manila] Session context: admin
+[02-Feb-2026 01:19:26 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:19:26 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:19:26 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:19:26 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:19:26 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:19:26 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:19:26 Asia/Manila] Session context: admin
+[02-Feb-2026 01:19:26 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:19:26 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:19:26 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:19:26 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:19:26 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[02-Feb-2026 01:19:26 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 357, Type: ERROR, User: 57, Time: 2026-02-02 01:19:26
+[02-Feb-2026 01:19:26 Asia/Manila] Error adding benefits: Some benefits already exist for this date: Russell Jamesssas Tadalansada (SC Availed of LSP (SSS/GSIS))
+[01-Feb-2026 18:19:43 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 14
+                    [name] => wheelchair
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 18:19:43 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 18:19:43 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[02-Feb-2026 01:19:43 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"14","name":"wheelchair","amount":100,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[02-Feb-2026 01:19:43 Asia/Manila] === ActivityLogger Started ===
+[02-Feb-2026 01:19:43 Asia/Manila] Logger Timezone: Asia/Manila
+[02-Feb-2026 01:19:43 Asia/Manila] Logger Current Time: 2026-02-02 01:19:43
+[02-Feb-2026 01:19:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:19:43 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:19:43 Asia/Manila] Session context: admin
+[02-Feb-2026 01:19:43 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:19:43 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:19:43 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:19:43 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:19:43 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:19:43 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:19:43 Asia/Manila] Session context: admin
+[02-Feb-2026 01:19:43 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:19:43 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:19:43 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:19:43 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:19:43 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[02-Feb-2026 01:19:43 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 358, Type: ERROR, User: 57, Time: 2026-02-02 01:19:43
+[02-Feb-2026 01:19:43 Asia/Manila] Error adding benefits: Some benefits already exist for this date: Russell Jamesssas Tadalansada (SC Availed of LSP (SSS/GSIS))
+[01-Feb-2026 18:20:04 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => LSP Non Pensioners
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 18:20:04 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 18:20:04 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[02-Feb-2026 01:20:04 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":100,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[02-Feb-2026 01:20:04 Asia/Manila] === ActivityLogger Started ===
+[02-Feb-2026 01:20:04 Asia/Manila] Logger Timezone: Asia/Manila
+[02-Feb-2026 01:20:04 Asia/Manila] Logger Current Time: 2026-02-02 01:20:04
+[02-Feb-2026 01:20:04 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:04 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:04 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:04 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:04 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:04 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:04 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:04 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:04 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:04 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:04 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:04 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:04 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:04 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:04 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[02-Feb-2026 01:20:04 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 359, Type: ERROR, User: 57, Time: 2026-02-02 01:20:04
+[02-Feb-2026 01:20:04 Asia/Manila] Error adding benefits: Some benefits already exist for this date: Russell Jamesssas Tadalansada (SC Availed of LSP (SSS/GSIS))
+[01-Feb-2026 18:20:06 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => LSP Non Pensioners
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 18:20:06 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 18:20:06 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[02-Feb-2026 01:20:06 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":100,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[02-Feb-2026 01:20:06 Asia/Manila] === ActivityLogger Started ===
+[02-Feb-2026 01:20:06 Asia/Manila] Logger Timezone: Asia/Manila
+[02-Feb-2026 01:20:06 Asia/Manila] Logger Current Time: 2026-02-02 01:20:06
+[02-Feb-2026 01:20:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:06 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:06 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:06 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:06 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:06 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:06 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:06 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:06 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:06 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:06 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:06 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:06 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:06 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[02-Feb-2026 01:20:06 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 360, Type: ERROR, User: 57, Time: 2026-02-02 01:20:06
+[02-Feb-2026 01:20:06 Asia/Manila] Error adding benefits: Some benefits already exist for this date: Russell Jamesssas Tadalansada (SC Availed of LSP (SSS/GSIS))
+[01-Feb-2026 18:20:57 Europe/Berlin] Add Benefits - JSON data received: Array
+(
+    [applicant_ids] => Array
+        (
+            [0] => 111
+        )
+
+    [benefits] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [name] => LSP Non Pensioners
+                    [amount] => 100
+                    [isBurial] => 
+                )
+
+        )
+
+    [date] => 2026-02-01
+    [session_context] => admin
+    [admin_user_id] => 57
+    [check_existing] => 1
+)
+
+[01-Feb-2026 18:20:57 Europe/Berlin] Error fetching user details: Unknown column 'role_name' in 'field list'
+[01-Feb-2026 18:20:57 Europe/Berlin] Add Benefits - User Info: ID=57, Name=Unknown User, Type=Admin, Context=admin
+[02-Feb-2026 01:20:57 Asia/Manila] Add Benefits - Raw input: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":100,"isBurial":false}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"check_existing":true}
+[02-Feb-2026 01:20:57 Asia/Manila] === ActivityLogger Started ===
+[02-Feb-2026 01:20:57 Asia/Manila] Logger Timezone: Asia/Manila
+[02-Feb-2026 01:20:57 Asia/Manila] Logger Current Time: 2026-02-02 01:20:57
+[02-Feb-2026 01:20:57 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:57 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:57 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:57 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:57 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:57 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:57 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:57 Asia/Manila] === ActivityLogger: resolveUserId ===
+[02-Feb-2026 01:20:57 Asia/Manila] Session data available: YES
+[02-Feb-2026 01:20:57 Asia/Manila] Session context: admin
+[02-Feb-2026 01:20:57 Asia/Manila] Session user_id: 57
+[02-Feb-2026 01:20:57 Asia/Manila] Session staff_user_id: none
+[02-Feb-2026 01:20:57 Asia/Manila] Found session context: admin
+[02-Feb-2026 01:20:57 Asia/Manila] Using admin ID from session[admin_user_id]: 57
+[02-Feb-2026 01:20:57 Asia/Manila] Resolved User ID: 57, User Name: Russell James Tadalan
+[02-Feb-2026 01:20:57 Asia/Manila] ActivityLogger: Log inserted successfully! ID: 361, Type: ERROR, User: 57, Time: 2026-02-02 01:20:57
+[02-Feb-2026 01:20:57 Asia/Manila] Error adding benefits: Some benefits already exist for this date: Russell Jamesssas Tadalansada (SC Availed of LSP (SSS/GSIS))
+[02-Feb-2026 01:26:19 Asia/Manila] [2026-02-02 01:26:19] Add Benefits Request: POST from ::1
+[02-Feb-2026 01:26:19 Asia/Manila] Raw input received: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":100}],"date":"2026-02-01","session_context":"admin","admin_user_id":57,"admin_user_name":"Russell James Poblete Tadalan"}
+[02-Feb-2026 01:26:19 Asia/Manila] Error fetching user details: Unknown column 'role_name' in 'field list'
+[02-Feb-2026 01:26:19 Asia/Manila] User Info - ID: 57, Name: Russell James Poblete Tadalan, Type: Admin, Context: admin
+[02-Feb-2026 01:26:19 Asia/Manila] Error adding benefits: Unknown column 'added_by' in 'field list'
+[02-Feb-2026 01:32:54 Asia/Manila] [2026-02-02 01:32:54] Add Benefits Request: POST from ::1
+[02-Feb-2026 01:32:54 Asia/Manila] Raw input received: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":200}],"date":"2026-02-01","admin_user_id":57,"admin_user_name":"Russell James Poblete Tadalan"}
+[02-Feb-2026 01:32:54 Asia/Manila] Error fetching user details: Unknown column 'role_name' in 'field list'
+[02-Feb-2026 01:32:54 Asia/Manila] User Info - ID: 57, Name: Russell James Poblete Tadalan, Type: Admin, Context: admin
+[02-Feb-2026 01:32:54 Asia/Manila] [2026-02-02 01:32:54] Benefits added successfully by Russell James Poblete Tadalan (ID: 57, Type: Admin) - Applicants: 1, Benefits added: 1, Total amount: ₱200.00
+[02-Feb-2026 01:34:21 Asia/Manila] [2026-02-02 01:34:21] Add Benefits Request: POST from ::1
+[02-Feb-2026 01:34:21 Asia/Manila] Raw input received: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":150}],"date":"2026-02-01","admin_user_id":57,"admin_user_name":"Russell James Poblete Tadalan"}
+[02-Feb-2026 01:34:21 Asia/Manila] Error fetching user details: Unknown column 'role_name' in 'field list'
+[02-Feb-2026 01:34:21 Asia/Manila] User Info - ID: 57, Name: Russell James Poblete Tadalan, Type: Admin, Context: admin
+[02-Feb-2026 01:34:40 Asia/Manila] [2026-02-02 01:34:40] Add Benefits Request: POST from ::1
+[02-Feb-2026 01:34:40 Asia/Manila] Raw input received: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":150}],"date":"2026-01-01","admin_user_id":57,"admin_user_name":"Russell James Poblete Tadalan"}
+[02-Feb-2026 01:34:40 Asia/Manila] Error fetching user details: Unknown column 'role_name' in 'field list'
+[02-Feb-2026 01:34:40 Asia/Manila] User Info - ID: 57, Name: Russell James Poblete Tadalan, Type: Admin, Context: admin
+[02-Feb-2026 01:34:40 Asia/Manila] [2026-02-02 01:34:40] Benefits added successfully by Russell James Poblete Tadalan (ID: 57, Type: Admin) - Applicants: 1, Benefits added: 1, Total amount: ₱150.00
+[02-Feb-2026 01:35:44 Asia/Manila] [2026-02-02 01:35:44] Add Benefits Request: POST from ::1
+[02-Feb-2026 01:35:44 Asia/Manila] Raw input received: {"applicant_ids":["111"],"benefits":[{"id":"3","name":"LSP Non Pensioners","amount":150}],"date":"2026-01-30","admin_user_id":57,"admin_user_name":"Russell James Poblete Tadalan"}
+[02-Feb-2026 01:35:44 Asia/Manila] Error fetching user details: Unknown column 'role_name' in 'field list'
+[02-Feb-2026 01:35:44 Asia/Manila] User Info - ID: 57, Name: Russell James Poblete Tadalan, Type: Admin, Context: admin
+[02-Feb-2026 01:35:44 Asia/Manila] [2026-02-02 01:35:44] Benefits added successfully by Russell James Poblete Tadalan (ID: 57, Type: Admin) - Applicants: 1, Benefits added: 1, Total amount: ₱150.00

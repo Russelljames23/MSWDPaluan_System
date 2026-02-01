@@ -407,10 +407,239 @@ if (empty($profile_photo_url)) {
                                     </tr>
                                 </thead>
                                 <tbody id="benefitsBody" class="block max-h-80 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                                    <!-- Benefits will be dynamically inserted here -->
+                                    <!-- All benefit types will be listed here with dynamic data -->
                                     <tr class="flex w-full font-semibold">
-                                        <td colspan="4" class="px-4 py-8 w-full text-center border border-gray-300 dark:border-gray-600">
-                                            Loading benefits data...
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of OSCA ID (New)
+                                        </td>
+                                        <td id="oscaMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="oscaFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="oscaTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of SP
+                                        </td>
+                                        <td id="spMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="spFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="spTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of LSP (SSS/GSIS)
+                                        </td>
+                                        <td id="lspMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="lspFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="lspTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-t-0 border-r-0 text-left-20 border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            LSP Non Pensioners
+                                        </td>
+                                        <td id="lspNonMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="lspNonFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 border-t-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="lspNonTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border-t-0 border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of AICS
+                                        </td>
+                                        <td id="aicsMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="aicsFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="aicsTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Birthday Gift
+                                        </td>
+                                        <td id="birthdayMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="birthdayFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="birthdayTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Milestone
+                                        </td>
+                                        <td id="milestoneMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="milestoneFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="milestoneTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of Bedridden SC
+                                        </td>
+                                        <td id="bedriddenMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="bedriddenFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="bedriddenTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Burial Assistance
+                                        </td>
+                                        <td id="burialMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="burialFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="burialTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair
+                                        </td>
+                                        <td id="medical5kMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="medical5kFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="medical5kTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Centenarian Awardee (Php.50,000.00)
+                                        </td>
+                                        <td id="centenarianMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="centenarianFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="centenarianTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)
+                                        </td>
+                                        <td id="medical1kMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="medical1kFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="medical1kTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                    <tr class="flex w-full font-semibold">
+                                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
+                                            style="font-family: 'Times New Roman', Times, serif;">
+                                            Total # of SC Availed of Christmas Gift
+                                        </td>
+                                        <td id="christmasMale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="christmasFemale"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
+                                        </td>
+                                        <td id="christmasTotal"
+                                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
+                                            Loading...
                                         </td>
                                     </tr>
                                 </tbody>
@@ -547,6 +776,62 @@ if (empty($profile_photo_url)) {
             const currentYear = <?php echo isset($currentYear) && $currentYear ? json_encode($currentYear) : 'null'; ?>;
             const currentMonth = <?php echo isset($currentMonth) && $currentMonth ? json_encode($currentMonth) : 'null'; ?>;
 
+            // Map of benefit names to their element IDs and search patterns
+            const benefitMap = {
+                'OSCA ID (New)': {
+                    ids: ['oscaMale', 'oscaFemale', 'oscaTotal'],
+                    pattern: 'OSCA ID (New)'
+                },
+                'Social Pension': {
+                    ids: ['spMale', 'spFemale', 'spTotal'],
+                    patterns: ['Social Pension', 'SP']
+                },
+                'LSP (SSS/GSIS)': {
+                    ids: ['lspMale', 'lspFemale', 'lspTotal'],
+                    patterns: ['LSP (SSS/GSIS)', 'LSP', 'SSS', 'GSIS']
+                },
+                'LSP Non Pensioners': {
+                    ids: ['lspNonMale', 'lspNonFemale', 'lspNonTotal'],
+                    patterns: ['LSP Non Pensioners', 'Non Pensioners']
+                },
+                'AICS': {
+                    ids: ['aicsMale', 'aicsFemale', 'aicsTotal'],
+                    patterns: ['AICS']
+                },
+                'Birthday Gift': {
+                    ids: ['birthdayMale', 'birthdayFemale', 'birthdayTotal'],
+                    patterns: ['Birthday Gift', 'Birthday']
+                },
+                'Milestone': {
+                    ids: ['milestoneMale', 'milestoneFemale', 'milestoneTotal'],
+                    patterns: ['Milestone']
+                },
+                'Bedridden SC': {
+                    ids: ['bedriddenMale', 'bedriddenFemale', 'bedriddenTotal'],
+                    patterns: ['Bedridden SC', 'Bedridden']
+                },
+                'Burial Assistance': {
+                    ids: ['burialMale', 'burialFemale', 'burialTotal'],
+                    patterns: ['Burial Assistance', 'Burial']
+                },
+                'Medical Assistance Php.5,000.00': {
+                    ids: ['medical5kMale', 'medical5kFemale', 'medical5kTotal'],
+                    patterns: ['Medical Assistance Php.5,000.00', '5,000.00']
+                },
+                'Centenarian Awardee (Php.50,000.00)': {
+                    ids: ['centenarianMale', 'centenarianFemale', 'centenarianTotal'],
+                    patterns: ['Centenarian Awardee', 'Php.50,000.00']
+                },
+                'Medical Assistance Php.1,000.00': {
+                    ids: ['medical1kMale', 'medical1kFemale', 'medical1kTotal'],
+                    patterns: ['Medical Assistance Php.1,000.00', '1,000.00', 'Brgy.Mananao']
+                },
+                'Christmas Gift': {
+                    ids: ['christmasMale', 'christmasFemale', 'christmasTotal'],
+                    patterns: ['Christmas Gift', 'Christmas']
+                }
+            };
+
             // Load data when page is ready
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('DOM loaded. Loading benefits data...');
@@ -605,127 +890,67 @@ if (empty($profile_photo_url)) {
                 }
             }
 
-            // Function to create dynamic display names based on benefit name
-            function getDisplayName(benefitName) {
-                // Special cases
-                if (benefitName === 'LSP Non Pensioners') {
-                    return 'LSP Non Pensioners';
-                }
+            // Function to display benefits report in the table
+            function displayBenefitsReport(data) {
+                // Reset all cells to 0 first
+                Object.values(benefitMap).forEach(benefit => {
+                    const [maleId, femaleId, totalId] = benefit.ids;
+                    const maleElement = document.getElementById(maleId);
+                    const femaleElement = document.getElementById(femaleId);
+                    const totalElement = document.getElementById(totalId);
 
-                if (benefitName === 'OSCA ID (New)') {
-                    return 'Total # of SC Availed of OSCA ID (New)';
-                }
-
-                // Check if it already starts with "Total # of SC Availed of"
-                if (benefitName.startsWith('Total # of SC Availed of ')) {
-                    return benefitName;
-                }
-
-                // Check if it starts with "SC Availed of"
-                if (benefitName.startsWith('SC Availed of ')) {
-                    return 'Total # of ' + benefitName;
-                }
-
-                // Check if it starts with "SC "
-                if (benefitName.startsWith('SC ')) {
-                    return 'Total # of ' + benefitName;
-                }
-
-                // Default: Add the full prefix
-                return 'Total # of SC Availed of ' + benefitName;
-            }
-
-            // Function to create a safe element ID from benefit name
-            function createElementId(benefitName) {
-                return benefitName
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '_')
-                    .replace(/_+/g, '_')
-                    .replace(/^_+|_+$/g, '')
-                    .replace(/sc_/g, '')
-                    .replace(/availed_of_/g, '')
-                    .replace(/phps_/g, '')
-                    .replace(/php_/g, '')
-                    .replace(/total_#_of_/g, '')
-                    .replace(/[._]/g, '_');
-            }
-
-            // Function to create table rows for all benefits
-            function createBenefitRows(data) {
-                const tbody = document.getElementById('benefitsBody');
-                if (!tbody) {
-                    console.error('Table body not found!');
-                    return;
-                }
-
-                // Clear existing rows
-                tbody.innerHTML = '';
-
-                if (!data || !data.data || data.data.length === 0) {
-                    // Show message if no data
-                    const noDataRow = document.createElement('tr');
-                    noDataRow.className = 'flex w-full font-semibold';
-                    noDataRow.innerHTML = `
-                        <td colspan="4" class="px-4 py-8 w-full text-center border border-gray-300 dark:border-gray-600">
-                            No benefits data found
-                        </td>
-                    `;
-                    tbody.appendChild(noDataRow);
-                    console.log('No benefits data found in response');
-                    return;
-                }
-
-                console.log(`Creating rows for ${data.data.length} benefits from database`);
-                console.log('Benefits list:', data.data.map(b => b.benefit_name));
-
-                // Create rows for each benefit
-                data.data.forEach((benefit, index) => {
-                    const benefitName = benefit.benefit_name;
-                    const displayName = getDisplayName(benefitName);
-                    const elementId = createElementId(benefitName);
-
-                    const maleId = elementId + '_male';
-                    const femaleId = elementId + '_female';
-                    const totalId = elementId + '_total';
-
-                    // Create row HTML
-                    const row = document.createElement('tr');
-                    row.className = 'flex w-full font-semibold';
-                    row.innerHTML = `
-                        <td class="px-4 py-3 w-[40%] border-b-0 border-l-0 border-r-0 text-left border border-gray-300 dark:border-gray-600"
-                            style="font-family: 'Times New Roman', Times, serif;">
-                            ${displayName}
-                        </td>
-                        <td id="${maleId}"
-                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                            ${benefit.male_count || 0}
-                        </td>
-                        <td id="${femaleId}"
-                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                            ${benefit.female_count || 0}
-                        </td>
-                        <td id="${totalId}"
-                            class="px-4 py-3 w-[20%] border-b-0 border-r-0 text-center border border-gray-300 dark:border-gray-600">
-                            ${benefit.total_count || 0}
-                        </td>
-                    `;
-
-                    tbody.appendChild(row);
-                    console.log(`Created row for: ${benefitName} (M: ${benefit.male_count}, F: ${benefit.female_count}, T: ${benefit.total_count})`);
+                    if (maleElement) maleElement.textContent = '0';
+                    if (femaleElement) femaleElement.textContent = '0';
+                    if (totalElement) totalElement.textContent = '0';
                 });
 
-                // Also show summary
-                console.log(`Total benefits count: ${data.total_count || 0}`);
-                console.log(`Total amount: ${data.total_amount || 0}`);
-            }
+                // Check if we have data
+                if (!data.data || data.data.length === 0) {
+                    console.log('No benefits data found');
+                    return;
+                }
 
-            // Function to display benefits report
-            function displayBenefitsReport(data) {
-                console.log('Displaying benefits report with', data.data?.length, 'benefits');
-                console.log('Filters:', data.filters);
+                console.log('Processing', data.data.length, 'benefit records');
 
-                // Always create dynamic rows based on data from database
-                createBenefitRows(data);
+                // Update each benefit type with actual data
+                data.data.forEach(item => {
+                    if (!item || !item.benefit_name) return;
+
+                    const benefitName = item.benefit_name;
+
+                    // Find which benefit this matches
+                    Object.keys(benefitMap).forEach(benefitKey => {
+                        const benefit = benefitMap[benefitKey];
+
+                        // Check if this item matches any pattern for this benefit
+                        let matches = false;
+
+                        if (benefit.pattern) {
+                            // For OSCA ID which has exact match
+                            matches = (benefitName === benefit.pattern);
+                        } else if (benefit.patterns) {
+                            // For other benefits, check if any pattern matches
+                            matches = benefit.patterns.some(pattern =>
+                                benefitName.includes(pattern)
+                            );
+                        }
+
+                        if (matches) {
+                            const [maleId, femaleId, totalId] = benefit.ids;
+
+                            // Update the cells with actual data
+                            const maleElement = document.getElementById(maleId);
+                            const femaleElement = document.getElementById(femaleId);
+                            const totalElement = document.getElementById(totalId);
+
+                            if (maleElement) maleElement.textContent = item.male_count || 0;
+                            if (femaleElement) femaleElement.textContent = item.female_count || 0;
+                            if (totalElement) totalElement.textContent = item.total_count || 0;
+
+                            console.log(`Updated ${benefitKey}: Male=${item.male_count}, Female=${item.female_count}, Total=${item.total_count}`);
+                        }
+                    });
+                });
             }
 
             // Update summary statistics
@@ -802,6 +1027,7 @@ if (empty($profile_photo_url)) {
 
             // Utility functions
             function showLoading() {
+                // All cells already show "Loading..." initially
                 console.log('Loading benefits data...');
 
                 // Add a small visual indicator
@@ -827,20 +1053,19 @@ if (empty($profile_photo_url)) {
                 const tbody = document.getElementById('benefitsBody');
                 if (tbody) {
                     const errorRow = document.createElement('tr');
-                    errorRow.className = 'flex w-full font-semibold';
                     errorRow.innerHTML = `
-                        <td colspan="4" class="px-4 py-8 w-full text-center text-red-500 border border-gray-300 dark:border-gray-600">
-                            <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
-                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
-                            <p class="text-lg">${message}</p>
-                            <button onclick="window.location.reload()" 
-                                class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                Retry
-                            </button>
-                        </td>
-                    `;
+                    <td colspan="4" class="px-4 py-8 text-center text-red-500">
+                        <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" 
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <p class="text-lg">${message}</p>
+                        <button onclick="window.location.reload()" 
+                            class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Retry
+                        </button>
+                    </td>
+                `;
                     tbody.appendChild(errorRow);
                 }
             }

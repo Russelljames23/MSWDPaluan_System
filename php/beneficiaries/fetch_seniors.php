@@ -14,8 +14,8 @@ try {
         throw new Exception("Database connection not established");
     }
 
-    // Log for debugging
-    $debug_mode = isset($_GET['debug']) && $_GET['debug'] === 'true';
+    // Log for debugging - ALWAYS ON for now
+    $debug_mode = true; // Always enable for debugging
 
     if ($debug_mode) {
         error_log("fetch_seniors.php accessed with mode: " . ($_GET['mode'] ?? 'none'));
@@ -57,7 +57,7 @@ try {
 
     $search = trim($_GET['search'] ?? '');
     $barangays = !empty($_GET['barangays']) ? explode(',', $_GET['barangays']) : [];
-    $status = $_GET['status'] ?? 'all';
+    $status = $_GET['status'] ?? 'all'; // Default: all statuses
 
     // Filter parameters
     $filter_type = $_GET['filter_type'] ?? '';
@@ -65,13 +65,24 @@ try {
     $age_group = $_GET['age_group'] ?? '';
     $min_age = $_GET['min_age'] ?? 0;
     $max_age = $_GET['max_age'] ?? 0;
+    $gender_filter = $_GET['gender'] ?? '';
+    $recent_days = $_GET['recent_days'] ?? 0;
     $milestone_age = $_GET['milestone_age'] ?? null;
+
+    // Benefit type filter (for beneficiaries page)
+    $benefit_types = !empty($_GET['benefit_types']) ? explode(',', $_GET['benefit_types']) : [];
 
     $conditions = [];
     $params = [];
 
-    // --- Filter: Active applicants only ---
-    $conditions[] = "a.status = 'Active'";
+    // --- Status filter ---
+    if ($status !== 'all') {
+        $conditions[] = "a.status = ?";
+        $params[] = $status;
+    } else {
+        // Include all statuses (Active, Deceased)
+        $conditions[] = "a.status IN ('Active', 'Deceased')";
+    }
 
     // --- Search filter ---
     if ($search !== '') {
@@ -88,19 +99,11 @@ try {
         $params = array_merge($params, $barangays);
     }
 
-    // --- Status filter ---
-    if ($status !== 'all') {
+    // --- SIMPLIFIED Validation filter ---
+    if (!empty($_GET['validation_status']) && $_GET['validation_status'] !== 'all') {
         $conditions[] = "a.validation = ?";
-        $params[] = $status;
-    }
-
-    // --- Validation status filter (from dashboard) ---
-    if ($filter_type === 'validation' && !empty($validation_status)) {
-        $conditions[] = "a.validation = ?";
-        $params[] = $validation_status;
-
-        // Also set the status filter for the UI
-        $status = $validation_status; // This will override the dropdown filter
+        $params[] = $_GET['validation_status'];
+        if ($debug_mode) error_log("Applying validation filter: " . $_GET['validation_status']);
     }
 
     // --- Age group filter ---
@@ -118,10 +121,50 @@ try {
         }
     }
 
+    // --- Gender filter (from dashboard) ---
+    if ($filter_type === 'gender' && !empty($gender_filter)) {
+        $conditions[] = "a.gender = ?";
+        $params[] = $gender_filter;
+    }
+
+    // --- Recent registrations filter ---
+    if ($filter_type === 'recent' && !empty($recent_days)) {
+        $conditions[] = "a.date_created >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
+        $params[] = $recent_days;
+    }
+
     // --- Milestone filter ---
     if ($filter_type === 'milestone' && !empty($milestone_age)) {
         $conditions[] = "YEAR(CURDATE()) - YEAR(a.birth_date) + 1 = ?";
         $params[] = $milestone_age;
+    }
+
+    // --- Benefit type filter (for beneficiaries page) ---
+    if (!empty($benefit_types)) {
+        // Join with benefits_distribution table
+        $benefitPlaceholders = implode(',', array_fill(0, count($benefit_types), '?'));
+        $conditions[] = "a.applicant_id IN (
+            SELECT DISTINCT applicant_id 
+            FROM benefits_distribution 
+            WHERE benefit_id IN ($benefitPlaceholders)
+        )";
+        $params = array_merge($params, $benefit_types);
+    }
+
+    // --- Mode: with_benefits (for beneficiaries page) ---
+    $benefit_join = "";
+    if ($mode === 'with_benefits') {
+        $benefit_join = "
+            LEFT JOIN (
+                SELECT 
+                    applicant_id,
+                    COUNT(*) as benefit_count,
+                    SUM(amount) as total_benefits,
+                    GROUP_CONCAT(DISTINCT bd.benefit_id) as benefit_ids
+                FROM benefits_distribution bd
+                GROUP BY applicant_id
+            ) b ON a.applicant_id = b.applicant_id
+        ";
     }
 
     $where = count($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
@@ -131,12 +174,14 @@ try {
         SELECT COUNT(DISTINCT a.applicant_id) 
         FROM applicants a
         LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id
+        $benefit_join
         $where
     ";
 
     if ($debug_mode) {
         error_log("Count query: " . $countQuery);
         error_log("Count params: " . print_r($params, true));
+        error_log("Where clause: " . $where);
     }
 
     $countStmt = $conn->prepare($countQuery);
@@ -150,7 +195,15 @@ try {
     if ($debug_mode) error_log("Total records found: " . $total);
 
     // --- Fetch paginated data ---
-    // Simplified query without @rownum variable
+    $benefit_fields = "";
+    if ($mode === 'with_benefits') {
+        $benefit_fields = "
+            , COALESCE(b.benefit_count, 0) as benefit_count
+            , COALESCE(b.total_benefits, 0) as total_benefits
+            , b.benefit_ids
+        ";
+    }
+
     $query = "
         SELECT 
             ROW_NUMBER() OVER (ORDER BY a.date_created DESC) AS rownum,
@@ -166,14 +219,19 @@ try {
             a.validation,
             a.status,
             a.control_number
+            $benefit_fields
         FROM applicants a
         LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id
+        $benefit_join
         $where
         ORDER BY a.date_created DESC
         LIMIT $limit OFFSET $offset
     ";
 
-    if ($debug_mode) error_log("Main query: " . $query);
+    if ($debug_mode) {
+        error_log("Main query: " . $query);
+        error_log("Final params: " . print_r($params, true));
+    }
 
     $stmt = $conn->prepare($query);
     if (!$stmt) {
@@ -191,6 +249,39 @@ try {
         foreach ($rows as $index => &$row) {
             $row['rownum'] = $startNum + $index;
         }
+    }
+
+    // --- Mode: for_print ---
+    if ($mode === 'for_print' && !empty($_GET['ids'])) {
+        $ids = explode(',', $_GET['ids']);
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $printQuery = "
+            SELECT 
+                CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) AS full_name,
+                DATE_FORMAT(a.birth_date, '%Y-%m-%d') as birth_date,
+                a.current_age AS age,
+                a.gender,
+                a.civil_status,
+                ad.barangay,
+                DATE_FORMAT(a.date_created, '%Y-%m-%d') as date_created,
+                a.validation,
+                a.status
+            FROM applicants a
+            LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id
+            WHERE a.applicant_id IN ($placeholders)
+            ORDER BY a.last_name, a.first_name
+        ";
+
+        $printStmt = $conn->prepare($printQuery);
+        $printStmt->execute($ids);
+        $rows = $printStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            "success" => true,
+            "seniors" => $rows
+        ]);
+        exit;
     }
 
     // --- Pagination metadata ---
@@ -211,7 +302,11 @@ try {
         $response['debug'] = [
             "query" => $query,
             "params" => $params,
-            "row_count" => count($rows)
+            "row_count" => count($rows),
+            "filter_type" => $filter_type,
+            "status_filter" => $status,
+            "validation_status" => $validation_status,
+            "benefit_types" => $benefit_types
         ];
     }
 

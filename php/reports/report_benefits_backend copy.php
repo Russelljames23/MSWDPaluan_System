@@ -18,37 +18,50 @@ class BenefitsReportAPI
     public function getBenefitsSummary($year = null, $month = null)
     {
         try {
-            // Get all benefits from the benefits table
-            $benefits = $this->getAllBenefits();
+            // Define all the benefit types we want to track
+            $benefitTypes = [
+                'OSCA ID (New)' => 'id',
+                'Social Pension' => 'benefit',
+                'LSP (SSS/GSIS)' => 'benefit',
+                'LSP Non Pensioners' => 'benefit',
+                'AICS' => 'benefit',
+                'Birthday Gift' => 'benefit',
+                'Milestone' => 'benefit',
+                'Bedridden SC' => 'benefit',
+                'Burial Assistance' => 'benefit',
+                'Medical Assistance Php.5,000.00' => 'benefit',
+                'Centenarian Awardee (Php.50,000.00)' => 'benefit',
+                'Medical Assistance Php.1,000.00' => 'benefit',
+                'Christmas Gift' => 'benefit'
+            ];
 
             $results = [];
             $totalCount = 0;
             $totalAmount = 0;
 
-            // First, add OSCA ID (New) which is handled specially
-            $oscaRow = $this->getOSCAData('OSCA ID (New)', $year, $month);
-            if ($oscaRow) {
-                $results[] = $oscaRow;
-                $totalCount += $oscaRow['total_count'];
-                $totalAmount += $oscaRow['total_amount'];
-            }
-
-            // Then process all other benefits from the database
-            foreach ($benefits as $benefit) {
-                $benefitName = trim($benefit['benefit_name']);
-                $benefitId = $benefit['id'];
-
-                // Skip OSCA ID (New) since we already added it
-                if ($benefitName === 'OSCA ID (New)') {
-                    continue;
+            foreach ($benefitTypes as $benefitType => $source) {
+                if ($source === 'id') {
+                    // Handle OSCA ID (New) from ID generation tables
+                    $row = $this->getOSCAData($benefitType, $year, $month);
+                } else {
+                    // Handle other benefits from benefits_distribution table
+                    $row = $this->getBenefitData($benefitType, $year, $month);
                 }
 
-                // Get data for this benefit
-                $row = $this->getBenefitData($benefitName, $year, $month);
-
-                $results[] = $row;
-                $totalCount += $row['total_count'];
-                $totalAmount += $row['total_amount'];
+                if ($row) {
+                    $results[] = $row;
+                    $totalCount += $row['total_count'];
+                    $totalAmount += $row['total_amount'];
+                } else {
+                    // Add zero counts if no data found
+                    $results[] = [
+                        'benefit_name' => $benefitType,
+                        'male_count' => 0,
+                        'female_count' => 0,
+                        'total_count' => 0,
+                        'total_amount' => 0
+                    ];
+                }
             }
 
             return [
@@ -59,8 +72,7 @@ class BenefitsReportAPI
                 'filters' => [
                     'year' => $year,
                     'month' => $month
-                ],
-                'benefits_count' => count($benefits)
+                ]
             ];
         } catch (PDOException $e) {
             error_log("Database error in getBenefitsSummary: " . $e->getMessage());
@@ -70,14 +82,6 @@ class BenefitsReportAPI
                 'error_details' => $e->getMessage()
             ];
         }
-    }
-
-    private function getAllBenefits()
-    {
-        $sql = "SELECT id, benefit_name FROM benefits ORDER BY id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function getOSCAData($benefitType, $year = null, $month = null)
@@ -123,24 +127,16 @@ class BenefitsReportAPI
             return $row;
         }
 
-        // Return zero counts if no data found
-        return [
-            'benefit_name' => $benefitType,
-            'male_count' => 0,
-            'female_count' => 0,
-            'total_count' => 0,
-            'total_amount' => 0
-        ];
+        return null;
     }
 
     private function getBenefitData($benefitType, $year = null, $month = null)
     {
-        // Use LIKE search to match benefits (same as old version)
         $sql = "SELECT 
                 COUNT(DISTINCT CASE WHEN a.gender = 'Male' THEN bd.applicant_id END) as male_count,
                 COUNT(DISTINCT CASE WHEN a.gender = 'Female' THEN bd.applicant_id END) as female_count,
                 COUNT(DISTINCT bd.applicant_id) as total_count,
-                COALESCE(SUM(bd.amount), 0) as total_amount
+                SUM(bd.amount) as total_amount
             FROM benefits_distribution bd 
             JOIN applicants a ON bd.applicant_id = a.applicant_id 
             WHERE bd.benefit_name LIKE ?";
@@ -168,14 +164,7 @@ class BenefitsReportAPI
             return $row;
         }
 
-        // Return zero counts if no data found
-        return [
-            'benefit_name' => $benefitType,
-            'male_count' => 0,
-            'female_count' => 0,
-            'total_count' => 0,
-            'total_amount' => 0
-        ];
+        return null;
     }
 
     public function getAvailableYears()

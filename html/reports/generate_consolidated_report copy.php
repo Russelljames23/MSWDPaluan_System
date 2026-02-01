@@ -224,49 +224,7 @@ error_log("Final status - HasData: " . ($hasData ? 'Yes' : 'No') .
     ", Total Seniors: " . ($reportData['part1']['totals']['overall'] ?? 0));
 
 ?>
-<?php
-// Helper function to sort benefits in the same order as benefits report
-function sortBenefitsForDisplay($benefits)
-{
-    // Define the exact order as shown in your example
-    $preferredOrder = [
-        'Total # of SC Availed of OSCA ID (New)',
-        'Total # of SC Availed of SP',
-        'Total # of SC Availed of LSP (SSS/GSIS)',
-        'LSP Non Pensioners',
-        'Total # of SC Availed of AICS',
-        'Total # of SC Availed of Birthday Gift',
-        'Total # of SC Availed of Milestone',
-        'Total # of Bedridden SC',
-        'Total # of SC Availed of Burial Assistance',
-        'Total # of SC Availed Medical Assistance Php.5,000.00 with wheel chair',
-        'Total # of SC Centenarian Awardee (Php.50,000.00)',
-        'Total # of SC (Provision Of Medical Assistance) Php.1,000.00 (Brgy.Mananao)',
-        'Total # of SC Availed of Christmas Gift',
-        'Total # of SC Availed of wheelchair',
-        'Total # of SC Availed of eye glass',
-        'Total # of SC Availed of bike',
-        'Total # of SC Availed of ball'
-    ];
 
-    // Get benefit names that are in our preferred order
-    $sorted = [];
-    foreach ($preferredOrder as $benefitName) {
-        if (isset($benefits[$benefitName])) {
-            $sorted[] = $benefitName;
-        }
-    }
-
-    // Add any other benefits that aren't in our preferred order
-    foreach (array_keys($benefits) as $benefitName) {
-        if (!in_array($benefitName, $sorted)) {
-            $sorted[] = $benefitName;
-        }
-    }
-
-    return $sorted;
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -274,51 +232,6 @@ function sortBenefitsForDisplay($benefits)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data of Senior Citizen <?php echo $year ?: date('Y'); ?></title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
-    <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
-    <style>
-        /* Enhanced logo styling for page display */
-        .highlighted-logo {
-            filter:
-                brightness(1.3)
-                /* Make brighter */
-                contrast(1.2)
-                /* Increase contrast */
-                saturate(1.5)
-                /* Make colors more vibrant */
-                drop-shadow(0 0 8px #3b82f6)
-                /* Blue glow */
-                drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-
-            /* Optional border */
-            border: 3px solid rgba(59, 130, 246, 0.4);
-            border-radius: 12px;
-
-            /* Inner glow effect */
-            box-shadow:
-                inset 0 0 10px rgba(255, 255, 255, 0.6),
-                0 0 20px rgba(59, 130, 246, 0.5);
-
-            /* Animation for extra attention */
-            animation: pulse-glow 2s infinite alternate;
-        }
-
-        @keyframes pulse-glow {
-            from {
-                box-shadow:
-                    inset 0 0 10px rgba(255, 255, 255, 0.6),
-                    0 0 15px rgba(59, 130, 246, 0.5);
-            }
-
-            to {
-                box-shadow:
-                    inset 0 0 15px rgba(255, 255, 255, 0.8),
-                    0 0 25px rgba(59, 130, 246, 0.8);
-            }
-        }
-    </style>
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -631,57 +544,48 @@ function sortBenefitsForDisplay($benefits)
                 <tbody>
                     <?php
                     $benefitData = $reportData['benefits'] ?? [];
+                    $benefitTypes = [
+                        'OSCA ID (New)',
+                        'Social Pension',
+                        'LSP (SSS/GSIS)',
+                        'LSP Non Pensioners',
+                        'AICS',
+                        'Birthday Gift',
+                        'Milestone',
+                        'Bedridden SC',
+                        'Burial Assistance',
+                        'Medical Assistance Php.5,000.00',
+                        'Centenarian Awardee (Php.50,000.00)',
+                        'Medical Assistance Php.1,000.00',
+                        'Christmas Gift'
+                    ];
 
-                    // Debug: Log what we received
-                    error_log("Benefits data received: " . json_encode(array_keys($benefitData)));
+                    $totalMale = 0;
+                    $totalFemale = 0;
+                    $totalOverall = 0;
 
-                    // Separate total row from other benefits
-                    $totalRow = null;
-                    $otherBenefits = [];
-
-                    foreach ($benefitData as $benefitName => $benefitInfo) {
-                        if ($benefitName === 'TOTAL NUMBER OF SENIOR CITIZENS SERVED') {
-                            $totalRow = $benefitInfo;
+                    foreach ($benefitTypes as $benefit) {
+                        if (isset($benefitData[$benefit])) {
+                            $benefitInfo = $benefitData[$benefit];
+                            $maleCount = is_array($benefitInfo) ? ($benefitInfo['male'] ?? 0) : 0;
+                            $femaleCount = is_array($benefitInfo) ? ($benefitInfo['female'] ?? 0) : 0;
+                            $totalCount = is_array($benefitInfo) ? ($benefitInfo['total'] ?? 0) : $benefitInfo;
                         } else {
-                            $otherBenefits[$benefitName] = $benefitInfo;
+                            $maleCount = 0;
+                            $femaleCount = 0;
+                            $totalCount = 0;
                         }
-                    }
 
-                    // Sort benefits to match the benefits report order
-                    $sortedBenefits = sortBenefitsForDisplay($otherBenefits);
-
-                    // Display all benefits
-                    foreach ($sortedBenefits as $benefitName) {
-                        if (!isset($otherBenefits[$benefitName])) continue;
-
-                        $benefitInfo = $otherBenefits[$benefitName];
-                        $maleCount = is_array($benefitInfo) ? ($benefitInfo['male'] ?? 0) : 0;
-                        $femaleCount = is_array($benefitInfo) ? ($benefitInfo['female'] ?? 0) : 0;
-                        $totalCount = is_array($benefitInfo) ? ($benefitInfo['total'] ?? 0) : $benefitInfo;
+                        $totalMale += $maleCount;
+                        $totalFemale += $femaleCount;
+                        $totalOverall += $totalCount;
 
                         echo "<tr>";
-                        echo "<td>" . htmlspecialchars($benefitName) . "</td>";
+                        echo "<td>" . htmlspecialchars($benefit) . "</td>";
                         echo "<td>" . number_format($maleCount) . "</td>";
                         echo "<td>" . number_format($femaleCount) . "</td>";
                         echo "<td>" . number_format($totalCount) . "</td>";
                         echo "</tr>";
-                    }
-
-                    // Display total row
-                    if ($totalRow) {
-                        $totalMale = $totalRow['male'] ?? 0;
-                        $totalFemale = $totalRow['female'] ?? 0;
-                        $totalOverall = $totalRow['total'] ?? 0;
-                    } else {
-                        // Calculate totals if not provided
-                        $totalMale = 0;
-                        $totalFemale = 0;
-                        $totalOverall = 0;
-                        foreach ($otherBenefits as $benefitInfo) {
-                            $totalMale += is_array($benefitInfo) ? ($benefitInfo['male'] ?? 0) : 0;
-                            $totalFemale += is_array($benefitInfo) ? ($benefitInfo['female'] ?? 0) : 0;
-                            $totalOverall += is_array($benefitInfo) ? ($benefitInfo['total'] ?? 0) : $benefitInfo;
-                        }
                     }
                     ?>
                     <tr class="total-row">
@@ -692,17 +596,6 @@ function sortBenefitsForDisplay($benefits)
                     </tr>
                 </tbody>
             </table>
-
-
-            <?php
-            // Debug info (remove in production)
-            if (isset($_GET['debug'])) {
-                echo '<div style="font-size: 10px; color: gray; margin-top: 10px;">';
-                echo 'Benefits count: ' . count($otherBenefits) . '<br>';
-                echo 'OSCA ID included: ' . (isset($otherBenefits['Total # of SC Availed of OSCA ID (New)']) ? 'Yes' : 'No');
-                echo '</div>';
-            }
-            ?>
         </div>
 
         <!-- PAGE 2: Part I -->

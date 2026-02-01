@@ -1025,7 +1025,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                             <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-4 py-3 w-12">
-                                        <input id="master-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <input id="master-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-white border border-gray-400 dark:bg-white rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2  dark:border-gray-600">
                                     </th>
                                     <th scope="col" class="px-4 py-3">No.</th>
                                     <th scope="col" class="px-4 py-3">Name</th>
@@ -1065,7 +1065,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                             data-barangay="<?php echo htmlspecialchars($senior['barangay'] ?? ''); ?>"
                                             data-validation="<?php echo htmlspecialchars($senior['validation'] ?? ''); ?>">
                                             <td class="px-4 py-3">
-                                                <input type="checkbox" class="senior-checkbox w-4 h-4  text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                                <input type="checkbox" class="senior-checkbox w-4 h-4  text-blue-600 bg-white border border-gray-400 rounded focus:ring-blue-500"
                                                     data-id="<?php echo htmlspecialchars($senior['applicant_id']); ?>"
                                                     data-name="<?php echo htmlspecialchars($senior['full_name']); ?>"
                                                     data-birthdate="<?php echo htmlspecialchars($senior['birth_date'] ?? ''); ?>"
@@ -1079,7 +1079,7 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                     data-local-control="<?php echo htmlspecialchars($senior['local_control_number'] ?? ''); ?>">
                                             </td>
                                             <td class="px-4 py-3"><?php echo $global_index; ?></td>
-                                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                                            <td class="px-4 py-3 font-medium text-gray-900 dark:text-white w-[250px]">
                                                 <?php echo htmlspecialchars($senior['full_name']); ?>
                                             </td>
                                             <td class="px-4 py-3">
@@ -1101,12 +1101,12 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($senior['barangay'] ?? 'N/A'); ?></td>
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($senior['id_number'] ?? 'N/A'); ?></td>
                                             <td class="px-4 py-3"><?php echo htmlspecialchars($date_issued_display); ?></td>
-                                            <td class="py-3 w-[150px]">
+                                            <td class="px-4 py-3 w-[250px]">
                                                 <span class="px-2 py-1 text-xs rounded <?php echo ($senior['validation'] === 'Validated') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                     <?php echo htmlspecialchars($senior['validation'] ?? 'Unknown'); ?>
                                                 </span>
                                             </td>
-                                            <td class="px-4 py-3 w-[200px]">
+                                            <td class="px-4 py-3 w-[350px]">
                                                 <?php
                                                 // Check if ID has been printed for this senior
                                                 $idStatus = checkIfIDPrinted($senior['applicant_id']);
