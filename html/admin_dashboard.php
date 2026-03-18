@@ -1429,14 +1429,22 @@ if (count($birthdays_today) > 0) {
                         hAxis: {
                             title: 'Month',
                             textStyle: {
+<<<<<<< HEAD
                                 color: isDarkMode ? '#fff' : '#fff'
+=======
+                                color: isDarkMode ? '#fff' : '#4B5563'
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
                             }
                         },
                         vAxis: {
                             title: 'Number of Birthdays',
                             minValue: 0,
                             textStyle: {
+<<<<<<< HEAD
                                 color: isDarkMode ? '#fff' : '#fff'
+=======
+                                color: isDarkMode ? '#fff' : '#4B5563'
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
                             }
                         }
                     };
@@ -2979,7 +2987,11 @@ function closeModal(type) {
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Birthdays by Month</h4>
+<<<<<<< HEAD
                                 <span class="text-xs text-gray-500 dark:text-white">
+=======
+                                <span class="text-xs text-gray-500 dark:text-gray-900">
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
                                     Total: <?php echo array_sum($birthdays_by_month); ?>
                                 </span>
                             </div>

@@ -295,6 +295,10 @@ $allBarangays = $barangaysStmt->fetchAll(PDO::FETCH_COLUMN);
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="apple-touch-icon" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
     <style>
         /* Birthday specific styles */
         .birthday-badge {
@@ -446,6 +450,10 @@ $allBarangays = $barangaysStmt->fetchAll(PDO::FETCH_COLUMN);
             }
         }
     </style>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
     <link rel="stylesheet" href="../css/output.css">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

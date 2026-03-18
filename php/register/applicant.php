@@ -345,7 +345,11 @@ try {
     $requiredFields = [
         'lname' => 'Last Name',
         'fname' => 'First Name',
+<<<<<<< HEAD
         'mname' => 'Middle Name',
+=======
+        // 'mname' => 'Middle Name',
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
         'gender' => 'Gender',
         'b_date' => 'Birthdate',
         'civil_status' => 'Civil Status',
@@ -356,8 +360,8 @@ try {
         'living_arrangement' => 'Living Arrangement',
         'brgy' => 'Barangay',
         'municipality' => 'Municipality',
-        'province' => 'Province',
-        'id_number' => 'ID Number'
+        'province' => 'Province'
+        // 'id_number' => 'ID Number'
     ];
 
     $missingFields = [];

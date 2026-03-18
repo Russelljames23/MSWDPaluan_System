@@ -1106,7 +1106,11 @@ $ctx = isset($_GET['session_context']) ? urlencode($_GET['session_context']) : '
                                                     <?php echo htmlspecialchars($senior['validation'] ?? 'Unknown'); ?>
                                                 </span>
                                             </td>
+<<<<<<< HEAD
                                             <td class="py-3 w-[350px]">
+=======
+                                            <td class="px-4 py-3 w-[350px]">
+>>>>>>> 91996c69dbfd06ca590a5822c19d0848ba81f243
                                                 <?php
                                                 // Check if ID has been printed for this senior
                                                 $idStatus = checkIfIDPrinted($senior['applicant_id']);
