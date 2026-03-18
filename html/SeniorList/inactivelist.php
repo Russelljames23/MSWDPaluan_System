@@ -350,7 +350,7 @@ if (empty($profile_photo_url)) {
                         </div>
 
                         <!-- Table -->
-                        <div class="">
+                        <div class="overflow-x">
                             <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -484,8 +484,8 @@ if (empty($profile_photo_url)) {
 
                 msg.textContent = message;
 
-                title.className = "text-xl font-semibold mb-3";
-                msg.style.color = "#333333";
+                title.className = "text-xl font-semibold mb-3 dark:text-green-400";
+                // msg.style.color = "#333333";
 
                 if (type === "success") {
                     title.textContent = "✅ Success";

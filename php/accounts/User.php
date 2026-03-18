@@ -25,37 +25,40 @@ class User
         $this->conn = $db;
     }
 
-    // Create user
-    // In User.php - update the create method
     public function create()
     {
         try {
+            error_log("User::create() called for user: " . $this->username);
+
             $query = "INSERT INTO " . $this->table_name . " 
-            SET lastname=:lastname, firstname=:firstname, middlename=:middlename, 
-                birthdate=:birthdate, gender=:gender, email=:email, contact_no=:contact_no, 
-                address=:address, username=:username, password=:password, 
-                user_type=:user_type, status='active', 
-                created_by=:created_by, 
-                created_at=NOW()";
+        SET lastname=:lastname, firstname=:firstname, middlename=:middlename, 
+            birthdate=:birthdate, gender=:gender, email=:email, contact_no=:contact_no, 
+            address=:address, username=:username, password=:password, 
+            user_type=:user_type, status='active', 
+            created_by=:created_by, 
+            created_at=NOW()";
 
             $stmt = $this->conn->prepare($query);
 
             if (!$stmt) {
-                error_log("Prepare failed: " . implode(", ", $this->conn->errorInfo()));
+                $errorInfo = $this->conn->errorInfo();
+                error_log("Prepare failed: " . print_r($errorInfo, true));
                 return false;
             }
 
-            // Sanitize and bind
+            // Sanitize
             $this->lastname = htmlspecialchars(strip_tags($this->lastname));
             $this->firstname = htmlspecialchars(strip_tags($this->firstname));
             $this->middlename = htmlspecialchars(strip_tags($this->middlename));
             $this->email = htmlspecialchars(strip_tags($this->email));
             $this->username = htmlspecialchars(strip_tags($this->username));
-            $this->password = password_hash($this->password, PASSWORD_DEFAULT);
 
-            // Log the values being inserted (remove this in production)
-            error_log("Creating user with: " . $this->username . ", " . $this->email);
+            // Hash password
+            $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
+            error_log("Creating user: " . $this->username . ", Email: " . $this->email);
+
+            // Bind parameters
             $stmt->bindParam(":lastname", $this->lastname);
             $stmt->bindParam(":firstname", $this->firstname);
             $stmt->bindParam(":middlename", $this->middlename);
@@ -65,29 +68,68 @@ class User
             $stmt->bindParam(":contact_no", $this->contact_no);
             $stmt->bindParam(":address", $this->address);
             $stmt->bindParam(":username", $this->username);
-            $stmt->bindParam(":password", $this->password);
+            $stmt->bindParam(":password", $password_hash);
             $stmt->bindParam(":user_type", $this->user_type);
 
-            // Handle created_by - if no valid user, set to NULL
+            // Handle created_by - allow NULL
             if (empty($this->created_by)) {
                 $stmt->bindValue(":created_by", null, PDO::PARAM_NULL);
             } else {
                 $stmt->bindParam(":created_by", $this->created_by);
             }
 
+            // Execute
             $result = $stmt->execute();
 
             if ($result) {
-                error_log("User created successfully: " . $this->username);
+                $this->id = $this->conn->lastInsertId();
+                error_log("✓ User created successfully. ID: " . $this->id);
                 return true;
             } else {
                 $errorInfo = $stmt->errorInfo();
-                error_log("Execute failed: " . implode(", ", $errorInfo));
+
+                // Check if it's a duplicate entry error (user was actually created)
+                if (isset($errorInfo[1]) && $errorInfo[1] == 1062) {
+                    // Duplicate entry - user already exists
+                    error_log("Duplicate entry error. Checking if user exists...");
+
+                    // Try to get the existing user ID
+                    $checkStmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+                    $checkStmt->execute([$this->username, $this->email]);
+                    $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($existingUser) {
+                        $this->id = $existingUser['id'];
+                        error_log("✓ User already exists with ID: " . $this->id);
+                        return true; // Return true even though it's a duplicate
+                    }
+                }
+
+                error_log("✗ Execute failed: " . print_r($errorInfo, true));
                 return false;
             }
         } catch (PDOException $e) {
-            error_log("PDO Exception in User::create: " . $e->getMessage());
-            error_log("SQL State: " . $e->getCode());
+            error_log("PDO Exception in User::create: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+
+            // Check if it's a duplicate entry
+            if ($e->getCode() == 23000) { // SQLSTATE for integrity constraint violation
+                error_log("Duplicate entry detected. Checking if user exists...");
+
+                try {
+                    $checkStmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+                    $checkStmt->execute([$this->username, $this->email]);
+                    $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($existingUser) {
+                        $this->id = $existingUser['id'];
+                        error_log("✓ User already exists with ID: " . $this->id);
+                        return true;
+                    }
+                } catch (Exception $checkError) {
+                    error_log("Error checking for existing user: " . $checkError->getMessage());
+                }
+            }
+
             return false;
         } catch (Exception $e) {
             error_log("General Exception in User::create: " . $e->getMessage());
@@ -179,10 +221,7 @@ class User
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":id", $this->id);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        return $stmt->execute();
     }
 
     // Delete user
@@ -192,9 +231,6 @@ class User
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        return $stmt->execute();
     }
 }

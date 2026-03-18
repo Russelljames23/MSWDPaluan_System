@@ -59,7 +59,8 @@ if (empty($profile_photo_url)) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Benefits</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
@@ -105,13 +106,82 @@ if (empty($profile_photo_url)) {
                     0 0 25px rgba(59, 130, 246, 0.8);
             }
         }
-    </style>
-    <link rel="stylesheet" href="../css/output.css">
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+
+        /* Responsive fixes - preserve original design */
+        @media (max-width: 768px) {
+            .responsive-padding {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+
+            .responsive-table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .responsive-table {
+                min-width: 640px;
+            }
+
+            .responsive-text {
+                font-size: 0.875rem !important;
+            }
+
+            .responsive-heading {
+                font-size: 1.25rem !important;
+            }
+
+            .responsive-modal {
+                padding: 0.5rem !important;
+                margin: 0.5rem !important;
+            }
+
+            .responsive-modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .responsive-table {
+                min-width: 500px;
+            }
+
+            .responsive-text-sm {
+                font-size: 0.8125rem !important;
+            }
+
+            .responsive-button {
+                padding: 0.375rem 0.75rem !important;
+                font-size: 0.8125rem !important;
+            }
+
+            .responsive-icon {
+                width: 1rem !important;
+                height: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .responsive-table {
+                min-width: 400px;
+            }
+
+            .responsive-hide-text {
+                display: none;
+            }
+
+            .responsive-show-icon {
+                display: inline-block !important;
+            }
+        }
+
+        /* Prevent horizontal overflow */
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
         /* Make sure the ordered list numbers show even with flex items */
         #benefitsList {
             counter-reset: benefit-counter;
@@ -141,7 +211,23 @@ if (empty($profile_photo_url)) {
             /* Tailwind gray-700 */
             font-weight: 600;
         }
+
+        /* Touch-friendly sizes for mobile */
+        @media (max-width: 768px) {
+
+            button,
+            [role="button"],
+            a[href] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
     </style>
+
+    <link rel="stylesheet" href="../css/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 
@@ -171,15 +257,15 @@ if (empty($profile_photo_url)) {
                         <img src="/MSWDPALUAN_SYSTEM-MAIN/img/MSWD_LOGO-removebg-preview.png"
                             class="mr-3 h-10 border border-gray-50 rounded-full py-1.5 px-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                             alt="MSWD LOGO" />
-                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MSWD PALUAN</span>
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white responsive-text">MSWD PALUAN</span>
                     </a>
                 </div>
                 <div class="flex items-center lg:order-2">
                     <button type="button"
-                        class="flex mx-3 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        class="flex mx-3 h-8 w-8 cursor-pointer text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-8 h-8 rounded-full object-cover"
+                        <img class="w-full h-full rounded-full object-cover"
                             src="<?php echo htmlspecialchars($profile_photo_url); ?>"
                             alt="user photo" />
                     </button>
@@ -233,21 +319,21 @@ if (empty($profile_photo_url)) {
                         <a href="./admin_dashboard.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <i class="fas fa-tachometer-alt w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Dashboard</span>
+                            <span class="ml-3 responsive-text">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="./register.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <i class="fas fa-user-plus w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Register</span>
+                            <span class="ml-3 responsive-text">Register</span>
                         </a>
                     </li>
                     <li>
                         <button type="button" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages"
                             class="flex items-center cursor-pointer p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                             <i class="fas fa-list w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="flex-1 ml-3 text-left whitespace-nowrap">Master List</span>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap responsive-text">Master List</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <ul id="dropdown-pages" class="hidden py-2 space-y-2">
@@ -275,21 +361,21 @@ if (empty($profile_photo_url)) {
                         <a href="#"
                             class="flex items-center p-2 text-base font-medium text-blue-700 rounded-lg dark:text-white bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-600 group">
                             <i class="fas fa-gift w-6 h-6 text-blue-700 dark:text-white group-hover:text-blue-800 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Benefits</span>
+                            <span class="ml-3 responsive-text">Benefits</span>
                         </a>
                     </li>
                     <li>
                         <a href="./generate_id.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <i class="fas fa-id-card w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Generate ID</span>
+                            <span class="ml-3 responsive-text">Generate ID</span>
                         </a>
                     </li>
                     <li>
                         <a href="./reports/report.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <i class="fas fa-chart-bar w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Report</span>
+                            <span class="ml-3 responsive-text">Report</span>
                         </a>
                     </li>
                 </ul>
@@ -298,14 +384,14 @@ if (empty($profile_photo_url)) {
                         <a href="./archived.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <i class="fas fa-archive w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Archived</span>
+                            <span class="ml-3 responsive-text">Archived</span>
                         </a>
                     </li>
                     <li>
                         <a href="/MSWDPALUAN_SYSTEM-MAIN/html/settings/profile.php?session_context=<?php echo $ctx; ?>"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                             <i class="fas fa-cog w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                            <span class="ml-3">Settings</span>
+                            <span class="ml-3 responsive-text">Settings</span>
                         </a>
                     </li>
                 </ul>
@@ -316,13 +402,13 @@ if (empty($profile_photo_url)) {
             <div class="flex items-center flex-row">
                 <div class="border border-b-0">
                     <a href="#" type="button" class="cursor-pointer">
-                        <h4 class="text-xl font-medium text-blue-700 px-2">Benefits</h4>
+                        <h4 class="text-xl font-medium text-blue-700 px-2 responsive-text">Benefits</h4>
                     </a>
                 </div>
                 <div class="flex items-center flex-row border dark:text-white border-t-0 border-r-0 border-l-0 w-full">
                     <div class="">
                         <a href="./beneficiary.php?session_context=<?php echo $ctx; ?>" type="button" class="cursor-pointer">
-                            <h4 class="text-xl font-medium dark:text-blue px-2">Beneficiaries</h4>
+                            <h4 class="text-xl font-medium dark:text-blue px-2 responsive-text">Beneficiaries</h4>
                         </a>
                     </div>
                 </div>
@@ -331,7 +417,7 @@ if (empty($profile_photo_url)) {
                 <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                         <div>
-                            <p class="text-2xl font-semibold px-5 mt-5 text-gray-900 dark:text-white">Benefits</p>
+                            <p class="text-2xl font-semibold px-5 mt-5 text-gray-900 dark:text-white responsive-heading">Benefits</p>
                         </div>
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
@@ -358,29 +444,30 @@ if (empty($profile_photo_url)) {
                             <div
                                 class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                                 <button type="button" id="defaultModalButton" data-modal-target="defaultModal"
-                                    data-modal-toggle="defaultModal" class=" flex items-center justify-center cursor-pointer text-white bg-blue-700
+                                    data-modal-toggle="defaultModal" class="flex items-center justify-center cursor-pointer text-white bg-blue-700
                                     hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600
-                                    dark:hover:bg-blue-700">
-                                    <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                                    dark:hover:bg-blue-700 responsive-button">
+                                    <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clip-rule="evenodd" fill-rule="evenodd"
                                             d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>
-                                    Add Benefits
+                                    <span class="responsive-hide-text">Add Benefits</span>
+                                    <span class="responsive-show-icon" style="display: none;">Add</span>
                                 </button>
                                 <!-- Filter -->
                                 <div class="relative flex items-center space-x-3 w-full md:w-auto">
                                     <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                        class="w-full md:w-auto cursor-pointer flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        class="w-full md:w-auto cursor-pointer flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 responsive-button"
                                         type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            class="h-4 w-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                            class="h-4 w-4 mr-2 text-gray-400 responsive-icon" viewbox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd"
                                                 d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                                 clip-rule="evenodd" />
                                         </svg>
                                         Filter
-                                        <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        <svg class="-mr-1 ml-1.5 w-5 h-5 responsive-icon" fill="currentColor" viewbox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd"
                                                 d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
@@ -399,8 +486,8 @@ if (empty($profile_photo_url)) {
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <div class="overflow-x-auto responsive-table-container">
+                            <table id="deceasedTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 responsive-table">
                                 <thead class="text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-white">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">List of Benefits</th>
@@ -409,12 +496,12 @@ if (empty($profile_photo_url)) {
                                 </thead>
                                 <tbody>
                                     <tr class="border-b dark:border-gray-700 dark:text-white">
-                                        <td class="px-4 py-3">Availed of Social Pension</td>
+                                        <td class="px-4 py-3 responsive-text">Availed of Social Pension</td>
                                         <td class="px-15 py-3 flex items-center justify-end">
                                             <button id="apple-imac-27-dropdown-button"
                                                 class="inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                                 type="button">
-                                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                                <svg class="w-6 h-6 text-gray-800 dark:text-white responsive-icon" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd"
@@ -426,7 +513,7 @@ if (empty($profile_photo_url)) {
                                             <button id="apple-imac-27-dropdown-button"
                                                 class="inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                                 type="button">
-                                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                                <svg class="w-6 h-6 text-gray-800 dark:text-white responsive-icon" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd"
@@ -449,8 +536,8 @@ if (empty($profile_photo_url)) {
             </section>
             <!-- Benefits modal -->
             <div id="defaultModal" tabindex="-1" aria-hidden="true"
-                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-                <div class="relative p-4 w-138 max-w-xl h-full md:h-auto">
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full responsive-modal">
+                <div class="relative p-4 w-138 max-w-xl h-full md:h-auto responsive-modal-content">
                     <!-- Modal content -->
                     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <!-- Modal header -->
@@ -483,8 +570,8 @@ if (empty($profile_photo_url)) {
                                             class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="Type benefit here">
                                     </div>
-                                    <button type="button" id="benefitBtn" class="flex items-center justify-center px-4 py-2.6 h-10.5 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <button type="button" id="benefitBtn" class="flex items-center justify-center px-4 py-2.6 h-10.5 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 responsive-button">
+                                        <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                         </svg>
                                         Add
@@ -501,8 +588,8 @@ if (empty($profile_photo_url)) {
 
                                 </div>
                                 <div class="flex justify-end w-full">
-                                    <button type="submit" class="flex items-center justify-center px-4 py-2 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <button type="submit" class="flex items-center justify-center px-4 py-2 text-sm font-medium cursor-pointer text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 responsive-button">
+                                        <svg class="h-3.5 w-3.5 mr-2 responsive-icon" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                         </svg>
                                         Save
@@ -584,6 +671,25 @@ if (empty($profile_photo_url)) {
 
         // Initialize theme on page load (BEFORE DOMContentLoaded)
         initTheme();
+
+        // Responsive text handling
+        function handleResponsiveText() {
+            const width = window.innerWidth;
+            const hideTextElements = document.querySelectorAll('.responsive-hide-text');
+            const showIconElements = document.querySelectorAll('.responsive-show-icon');
+
+            if (width <= 480) {
+                hideTextElements.forEach(el => el.style.display = 'none');
+                showIconElements.forEach(el => el.style.display = 'inline');
+            } else {
+                hideTextElements.forEach(el => el.style.display = 'inline');
+                showIconElements.forEach(el => el.style.display = 'none');
+            }
+        }
+
+        // Handle responsive layout on load and resize
+        window.addEventListener('load', handleResponsiveText);
+        window.addEventListener('resize', handleResponsiveText);
     </script>
     <script>
         function benefits() {
@@ -814,7 +920,7 @@ if (empty($profile_photo_url)) {
         });
     </script>
 
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // DOM Elements
@@ -893,7 +999,7 @@ if (empty($profile_photo_url)) {
                                 const row = document.createElement("tr");
                                 row.classList.add("border-b", "border-gray-200", "text-gray-700", "dark:border-gray-700", "dark:text-white");
                                 row.innerHTML = `
-                                <td class="px-4 py-3 text-gray-700 dark:text-white">${benefit.benefit_name}</td>
+                                <td class="px-4 py-3 text-gray-700 dark:text-white responsive-text">${benefit.benefit_name}</td>
                                 <td class="px-15 py-3 flex items-center justify-end space-x-2">
                                     <button class="edit-btn inline-flex items-center cursor-pointer p-0.5 text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white" data-id="${benefit.id}" type="button" title="Edit">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-10 10A2 2 0 016 16H4a1 1 0 01-1-1v-2a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0z"/></svg>

@@ -65,7 +65,7 @@ if (empty($profile_photo_url)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Active List</title>
+    <title>Senior - Active List</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/MSWDPALUAN_SYSTEM-MAIN/img/paluan.png">
@@ -115,6 +115,7 @@ if (empty($profile_photo_url)) {
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -390,17 +391,34 @@ if (empty($profile_photo_url)) {
             <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
                 <div class="mx-auto max-w-screen-5xl">
                     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg">
-                        <div class="flex flex-col md:flex-col justify-between space-y-3 md:space-y-0 md:space-y-4 p-4">
-                            <div class="flex flex-row justify-between items-center">
-                                <h4 class="text-xl font-medium dark:text-white">Active List</h4>
-                                <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
-                                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                    type="button">
-                                    <i class="fas fa-table mr-2"></i>Master List
-                                </button>
+                        <div class="flex flex-col space-y-3 md:space-y-0 md:space-y-4 p-3 md:p-4">
+                            <!-- Title and Main Buttons -->
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mobile-header">
+                                <div class="flex-1">
+                                    <h4 class="text-lg md:text-xl font-medium dark:text-white">Active List</h4>
+                                </div>
+                                <div class="flex flex-row gap-2 md:gap-5 items-center action-buttons">
+                                    <button onclick="window.location.href='masterlist.php?session_context=<?php echo $ctx; ?>'"
+                                        class="flex items-center justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-white cursor-pointer bg-green-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-green-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
+                                        type="button">
+                                        <i class="fas fa-table mr-2"></i>
+                                        <span class="hidden md:inline">Master List</span>
+                                        <span class="md:hidden">Master</span>
+                                    </button>
+                                    <!-- PRINT BUTTON -->
+                                    <button onclick="window.open('staff_print_validation_list.php?session_context=<?php echo $ctx; ?>', '_blank')"
+                                        class="flex items-center justify-center px-3 py-2 text-xs md:text-sm font-medium text-white cursor-pointer bg-purple-700 border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-purple-600 hover:text-white dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
+                                        type="button" title="Print For Validation List">
+                                        <i class="fas fa-print mr-2"></i>
+                                        <span class="hidden md:inline">Print Validation List</span>
+                                        <span class="md:hidden">Print</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex flex-row justify-between">
-                                <div class="w-full md:w-1/2">
+
+                            <!-- Search and Filter Section -->
+                            <div class="flex flex-col md:flex-row justify-between items-center w-full gap-3 filter-section mobile-header">
+                                <div class="w-full mobile-search">
                                     <form class="flex items-center">
                                         <label for="simple-search" class="sr-only">Search</label>
                                         <div class="relative w-full">
@@ -416,33 +434,33 @@ if (empty($profile_photo_url)) {
                                             </div>
                                             <input type="text" id="simple-search"
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search" required="">
+                                                placeholder="Search" required>
                                         </div>
                                     </form>
                                 </div>
-                                <div class="flex flex-row gap-5">
+                                <div class="flex w-full flex-row gap-2  md:gap-5 items-center justify-end">
                                     <!-- Update Pension Status Button (Initially Hidden) -->
-                                    <div id="openModalbtn" class="flex flex-row gap-2 hidden">
+                                    <div id="openModalbtn" class="md:w-auto flex flex-row gap-2 hidden ">
                                         <button id="bulkPensionBtn"
-                                            class="px-3 py-2 cursor-pointer text-xs  font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-                                            Update Pension Status
+                                            class="px-3 py-2 cursor-pointer text-xs md:text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 touch-target">
+                                            <span class="hidden md:inline">Update Pension Status</span>
+                                            <span class="md:hidden">Update Status</span>
                                         </button>
                                     </div>
-
                                     <!-- Status Filter -->
-                                    <div class="relative w-full md:w-auto">
+                                    <div class="  md:w-auto">
                                         <select id="statusFilter"
-                                            class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer appearance-none pr-8">
+                                            class="flex items-center justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 cursor-pointer appearance-none pr-8 touch-target">
                                             <option value="all">All Status</option>
                                             <option value="For Validation">For Validation</option>
                                             <option value="Validated">Validated</option>
                                         </select>
                                     </div>
                                     <!-- Filter -->
-                                    <div class="relative w-full md:w-auto">
+                                    <div class="  md:w-auto">
                                         <!-- Filter Button -->
                                         <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                                            class="flex items-center cursor-pointer justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                            class="flex items-center cursor-pointer justify-center w-full px-3 py-2 text-xs md:text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 touch-target"
                                             type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                                 class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -450,7 +468,8 @@ if (empty($profile_photo_url)) {
                                                     d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            Address
+                                            <span class="hidden md:inline">Address</span>
+                                            <span class="md:hidden">Filter</span>
                                             <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path clip-rule="evenodd" fill-rule="evenodd"
@@ -460,11 +479,11 @@ if (empty($profile_photo_url)) {
 
                                         <!-- Dynamic Dropdown -->
                                         <div id="filterDropdown"
-                                            class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+                                            class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700 dropdown-mobile">
                                             <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
                                                 Barangay
                                             </h6>
-                                            <ul id="barangayList" class="space-y-2 text-sm"
+                                            <ul id="barangayList" class="space-y-2 text-sm max-h-60 overflow-y-auto"
                                                 aria-labelledby="dropdownDefault">
                                                 <li class="text-gray-400 text-sm text-center">Loading...</li>
                                             </ul>
@@ -473,7 +492,7 @@ if (empty($profile_photo_url)) {
                                 </div>
                             </div>
                         </div>
-                        <div class="">
+                        <div class="overflow-x-auto">
                             <table id="deceasedTable" class="w-full text-sm text-left text-gray-700 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -517,7 +536,7 @@ if (empty($profile_photo_url)) {
 
                     <p class="mb-2 text-gray-700 dark:text-gray-200">Select applicants to update:</p>
                     <div id="multiApplicantList"
-                        class="max-h-60 overflow-y-auto mb-4 border rounded p-2 dark:border-gray-600">
+                        class="max-h-60 overflow-y-auto mb-4 border dark:text-white rounded p-2 dark:border-gray-600">
                         <!-- Applicants checkboxes and control number inputs will be added dynamically -->
                     </div>
 
@@ -689,52 +708,72 @@ if (empty($profile_photo_url)) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    <script src="../../js/tailwind.config.js"></script>
+    <script src="../../js/staff_tailwind.config.js"></script>
+    <script src="../../js/staff_theme.js"></script>
     <script>
         // ---------- THEME INITIALIZATION (MUST BE OUTSIDE DOMContentLoaded) ----------
         // Initialize theme from localStorage or system preference
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-            let theme = 'light';
-            if (savedTheme) {
-                theme = savedTheme;
-            } else if (systemPrefersDark) {
-                theme = 'dark';
-            }
+        // STAFF-SPECIFIC THEME FUNCTIONS for register.php
+        (function() {
+            // Use the same StaffTheme namespace
+            const StaffTheme = {
+                init: function() {
+                    const savedTheme = localStorage.getItem('staff_theme');
+                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-            setTheme(theme);
-        }
+                    let theme = 'light';
+                    if (savedTheme) {
+                        theme = savedTheme;
+                    } else if (systemPrefersDark) {
+                        theme = 'dark';
+                    }
 
-        // Function to set theme
-        function setTheme(theme) {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
+                    this.set(theme);
+                    return theme;
+                },
 
-        // Listen for theme changes from other pages
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'theme') {
-                const theme = e.newValue;
-                setTheme(theme);
-            }
-        });
+                set: function(theme) {
+                    const root = document.documentElement;
+                    const wasDark = root.classList.contains('dark');
+                    const isDark = theme === 'dark';
 
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            if (!localStorage.getItem('theme')) {
-                setTheme(e.matches ? 'dark' : 'light');
-            }
-        });
+                    if (isDark && !wasDark) {
+                        root.classList.add('dark');
+                        localStorage.setItem('staff_theme', 'dark');
+                    } else if (!isDark && wasDark) {
+                        root.classList.remove('dark');
+                        localStorage.setItem('staff_theme', 'light');
+                    }
 
-        // Initialize theme on page load (BEFORE DOMContentLoaded)
-        initTheme();
+                    // Dispatch event for staff components
+                    window.dispatchEvent(new CustomEvent('staffThemeChanged'));
+                }
+            };
+
+            // Initialize theme
+            StaffTheme.init();
+
+            // Listen for storage events
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'staff_theme') {
+                    const theme = e.newValue;
+                    const currentIsDark = document.documentElement.classList.contains('dark');
+                    const newIsDark = theme === 'dark';
+
+                    if ((newIsDark && !currentIsDark) || (!newIsDark && currentIsDark)) {
+                        StaffTheme.set(theme);
+                    }
+                }
+            });
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('staff_theme')) {
+                    StaffTheme.set(e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -873,10 +912,10 @@ if (empty($profile_photo_url)) {
                 tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-gray-400">Loading...</td></tr>`;
 
                 try {
-                    // Get staff user ID from PHP session
-                    const staffUserId = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
-                    const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff'); ?>;
-                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}&session_context=staff&staff_user_id=${staffUserId}`);
+                    // Get admin user ID from PHP session
+                    const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
+                    const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin'); ?>;
+                    const res = await fetch(`/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php?applicant_id=${applicantId}&session_context=admin&admin_user_id=${adminUserId}`);
                     const data = await res.json();
 
                     tbody.innerHTML = "";
@@ -942,10 +981,20 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    // Determine if we're in staff or admin context
+                    // Determine context based on current page
                     const isStaffPage = window.location.pathname.includes('staff_');
                     const sessionContext = isStaffPage ? 'staff' : 'admin';
-                    const userId = <?php echo json_encode($_SESSION['user_id'] ?? 0); ?>;
+
+                    // Get user ID based on context
+                    let userId, userField;
+                    if (isStaffPage) {
+                        userId = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
+                        userField = 'staff_user_id';
+                    } else {
+                        userId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
+                        userField = 'admin_user_id';
+                    }
+
                     const res = await fetch("/MSWDPALUAN_SYSTEM-MAIN/php/seniorlist/senior_illness.php", {
                         method: "POST",
                         headers: {
@@ -956,9 +1005,10 @@ if (empty($profile_photo_url)) {
                             illness_name,
                             illness_date,
                             session_context: sessionContext,
-                            [isStaffPage ? 'staff_user_id' : 'admin_user_id']: userId
+                            [userField]: userId
                         }),
                     });
+
                     const data = await res.json();
 
                     if (data.success) {
@@ -1201,8 +1251,9 @@ if (empty($profile_photo_url)) {
                                 senior.validation === "For Validation" ? "text-red-600" :
                                 "text-red-600";
 
-                            const createdAt = senior.date_created ? new Date(senior.date_created).toLocaleDateString() : "";
-                            const modifiedAt = senior.date_modified ? new Date(senior.date_modified).toLocaleDateString() : "";
+                            // const createdAt = senior.date_created ? new Date(senior.date_created).toLocaleDateString() : "";
+                            // const modifiedAt = senior.date_modified ? new Date(senior.date_modified).toLocaleDateString() : "";
+                            // const birthdate = senior.birth_date ? new Date(senior.birth_date).toLocaleDateString() : "";
 
                             const buttonId = `dropdownBtn-${index}`;
                             const dropdownId = `dropdownMenu-${index}`;
@@ -1226,8 +1277,8 @@ if (empty($profile_photo_url)) {
                             <td>${senior.gender || ""}</td>
                             <td>${senior.civil_status || ""}</td>
                             <td>${senior.barangay || ""}</td>
-                            <td>${createdAt}</td>
-                            <td>${modifiedAt}</td>
+                            <td>${senior.date_created}</td>
+                            <td>${senior.date_modified}</td>
                             <td id="${statusCellId}" class="${statusColor}">${senior.validation}</td>
                             <td class="relative">
                                 <button id="${buttonId}" 
@@ -1341,72 +1392,138 @@ if (empty($profile_photo_url)) {
                 }
 
                 let html = `
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
-                    <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
-                    <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
-                </span>
-                <ul class="inline-flex items-stretch -space-x-px">
-            `;
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+            Showing <span class="font-semibold text-gray-900 dark:text-white">${start}</span> –
+            <span class="font-semibold text-gray-900 dark:text-white">${end}</span> of
+            <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>
+        </span>
+        <ul class="inline-flex items-stretch -space-x-px">
+    `;
 
                 // Previous Button with Tooltip
                 html += `
-                <li>
-                    <div class="relative group inline-flex items-center justify-center">
-                        <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
-                            class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
-                            hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
-                                01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
-                                011.414 0z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-                        <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                            text-xs text-black text-center font-medium w-[95px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                            Previous page
-                        </span>
-                    </div>
-                </li>
-            `;
+        <li>
+            <div class="relative group inline-flex items-center justify-center">
+                <button ${currentPage === 1 ? "disabled" : ""} data-nav="prev"
+                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 ml-0 text-gray-500 bg-white rounded-l-sm border border-gray-300 
+                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 
+                        01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 
+                        011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                    text-xs text-black text-center font-medium w-[95px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                    Previous page
+                </span>
+            </div>
+        </li>
+    `;
 
-                // Page Numbers
-                for (let i = 1; i <= totalPages; i++) {
+                // Always show page 1
+                html += `
+        <li>
+            <button data-page="1"
+                class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                ${1 === currentPage
+            ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+            : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                1
+            </button>
+        </li>
+    `;
+
+                // Determine which pages to show
+                let startPage = Math.max(2, currentPage - 1);
+                let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+                // Adjust if we're near the beginning
+                if (currentPage <= 3) {
+                    startPage = 2;
+                    endPage = Math.min(4, totalPages - 1);
+                }
+
+                // Adjust if we're near the end
+                if (currentPage >= totalPages - 2) {
+                    startPage = Math.max(2, totalPages - 3);
+                    endPage = totalPages - 1;
+                }
+
+                // Show ellipsis after page 1 if needed
+                if (startPage > 2) {
                     html += `
-                    <li>
-                        <button data-page="${i}"
-                            class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
-                            ${i === currentPage
-                        ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                        : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
-                            ${i}
-                        </button>
-                    </li>
-                `;
+            <li>
+                <span class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                    ...
+                </span>
+            </li>
+        `;
+                }
+
+                // Show middle pages (pages 2-4)
+                for (let i = startPage; i <= endPage; i++) {
+                    html += `
+            <li>
+                <button data-page="${i}"
+                    class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                    ${i === currentPage
+                ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                    ${i}
+                </button>
+            </li>
+        `;
+                }
+
+                // Show ellipsis before last page if needed
+                if (endPage < totalPages - 1) {
+                    html += `
+            <li>
+                <span class="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                    ...
+                </span>
+            </li>
+        `;
+                }
+
+                // Show last page if there is one (and it's not page 1)
+                if (totalPages > 1) {
+                    html += `
+            <li>
+                <button data-page="${totalPages}"
+                    class="flex items-center justify-center text-sm py-2 px-3 leading-tight 
+                    ${totalPages === currentPage
+                ? 'z-10 text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                : 'text-gray-500 cursor-pointer bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}">
+                    ${totalPages}
+                </button>
+            </li>
+        `;
                 }
 
                 // Next Button with Tooltip
                 html += `
-                <li>
-                    <div class="relative group inline-flex items-center justify-center">
-                        <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
-                            class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
-                            hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
-                                011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
-                                01-1.414 0z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-                        <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
-                            text-xs text-black text-center font-medium w-[74px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
-                            Next page
-                        </span>
-                    </div>
-                </li>
-            </ul>`;
+        <li>
+            <div class="relative group inline-flex items-center justify-center">
+                <button ${currentPage === totalPages ? "disabled" : ""} data-nav="next"
+                    class="flex cursor-pointer items-center justify-center h-full py-[7px] px-2 text-gray-500 bg-white rounded-r-sm border border-gray-300 
+                    hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 
+                        011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 
+                        01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <span class="absolute bottom-full mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 
+                    text-xs text-black text-center font-medium w-[74px] dark:bg-gray-700 px-2 py-1 rounded shadow-lg">
+                    Next page
+                </span>
+            </div>
+        </li>
+    </ul>`;
 
                 paginationNav.innerHTML = html;
 
@@ -1499,8 +1616,8 @@ if (empty($profile_photo_url)) {
                         // Create checkbox with unique ID for countdown updates
                         const checkboxId = `modal-checkbox-${id}`;
                         multiList.insertAdjacentHTML("beforeend", `
-                            <div class="mb-2 p-2 border rounded dark:border-gray-600 applicant-item" data-applicant-id="${id}">
-                                <label class="flex items-center space-x-2 mb-1" id="label-${id}">
+                            <div class="mb-2 p-2 border rounded dark:border-gray-600 dark:text-white applicant-item" data-applicant-id="${id}">
+                                <label class="flex items-center dark:text-white space-x-2 mb-1" id="label-${id}">
                                     <input type="checkbox" 
                                         class="multiApplicantCheckbox" 
                                         value="${id}" 
@@ -1512,7 +1629,7 @@ if (empty($profile_photo_url)) {
                                     </span>
                                 </label>
                                 <div class="control-number-input mt-1 ml-6 ${multiSelect.value === 'Validated' ? '' : 'hidden'}">
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                    <label class="block text-xs text-gray-600 dark:text-gray-200 mb-1">
                                         Control Number:
                                     </label>
                                     <input type="text" 
@@ -1907,22 +2024,22 @@ if (empty($profile_photo_url)) {
                 }
 
                 try {
-                    console.log('📤 Sending mark inactive request for staff...');
+                    console.log('📤 Sending mark inactive request for admin...');
 
-                    // For STAFF context - get staff user data from PHP
-                    const staffUserId = <?php echo json_encode($_SESSION['staff_user_id'] ?? $_SESSION['user_id'] ?? 0); ?>;
-                    const staffUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Staff User'); ?>;
+                    // For ADMIN context - get admin user data from PHP
+                    const adminUserId = <?php echo json_encode($_SESSION['admin_user_id'] ?? $_SESSION['user_id'] ?? 57); ?>;
+                    const adminUserName = <?php echo json_encode($_SESSION['fullname'] ?? $_SESSION['username'] ?? 'Admin User'); ?>;
 
                     const data = {
                         applicant_id: applicantId,
                         date_of_inactive: date_of_inactive,
                         reason: reason,
-                        session_context: 'staff',
-                        staff_user_id: staffUserId,
-                        staff_user_name: staffUserName
+                        session_context: 'admin',
+                        admin_user_id: adminUserId,
+                        admin_user_name: adminUserName
                     };
 
-                    console.log('Staff data being sent:', data);
+                    console.log('Admin data being sent:', data);
 
                     const response = await fetch('/MSWDPALUAN_SYSTEM-MAIN/php/activelist/mark_inactive.php', {
                         method: 'POST',

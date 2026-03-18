@@ -1,5 +1,6 @@
 <?php
 // UserSessionManager.php
+date_default_timezone_set('Asia/Manila');
 class UserSessionManager
 {
     private static $instance = null;

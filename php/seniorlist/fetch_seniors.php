@@ -1,23 +1,54 @@
-
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-include '../db.php';
+
+// Start output buffering
+ob_start();
 
 try {
+    // Include database connection - use relative path
+    require_once __DIR__ . '/db.php';
+
+    // Check if connection was established
+    if (!isset($conn) || !$conn) {
+        throw new Exception("Database connection not established");
+    }
+
+    // Log for debugging
+    $debug_mode = isset($_GET['debug']) && $_GET['debug'] === 'true';
+
+    if ($debug_mode) {
+        error_log("fetch_seniors.php accessed with mode: " . ($_GET['mode'] ?? 'none'));
+        error_log("GET parameters: " . print_r($_GET, true));
+    }
+
     $mode = $_GET['mode'] ?? 'seniors';
 
     // --- Fetch barangays only ---
     if ($mode === 'barangays') {
+        if ($debug_mode) error_log("Fetching barangays");
+
         $stmt = $conn->query("
             SELECT DISTINCT barangay 
             FROM addresses 
             WHERE barangay IS NOT NULL AND barangay != '' 
             ORDER BY barangay ASC
         ");
-        echo json_encode($stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        if (!$stmt) {
+            throw new Exception("Failed to fetch barangays: " . ($conn->errorInfo()[2] ?? 'Unknown error'));
+        }
+
+        $barangays = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if ($debug_mode) error_log("Found " . count($barangays) . " barangays");
+
+        echo json_encode($barangays);
         exit;
     }
+
+    // --- For seniors list ---
+    if ($debug_mode) error_log("Fetching seniors list");
 
     // --- Pagination setup ---
     $page = max(1, intval($_GET['page'] ?? 1));
@@ -26,7 +57,17 @@ try {
 
     $search = trim($_GET['search'] ?? '');
     $barangays = !empty($_GET['barangays']) ? explode(',', $_GET['barangays']) : [];
-    $status = $_GET['status'] ?? 'all'; // Get status filter
+    $status = $_GET['status'] ?? 'all';
+
+    // Filter parameters
+    $filter_type = $_GET['filter_type'] ?? '';
+    $validation_status = $_GET['validation_status'] ?? '';
+    $age_group = $_GET['age_group'] ?? '';
+    $min_age = $_GET['min_age'] ?? 0;
+    $max_age = $_GET['max_age'] ?? 0;
+    $gender_filter = $_GET['gender'] ?? '';
+    $recent_days = $_GET['recent_days'] ?? 0;
+    $milestone_age = $_GET['milestone_age'] ?? null;
 
     $conditions = [];
     $params = [];
@@ -44,8 +85,8 @@ try {
 
     // --- Barangay filter ---
     if (!empty($barangays)) {
-        $in = implode(',', array_fill(0, count($barangays), '?'));
-        $conditions[] = "ad.barangay IN ($in)";
+        $placeholders = implode(',', array_fill(0, count($barangays), '?'));
+        $conditions[] = "ad.barangay IN ($placeholders)";
         $params = array_merge($params, $barangays);
     }
 
@@ -55,65 +96,153 @@ try {
         $params[] = $status;
     }
 
+    // --- Validation status filter (from dashboard) ---
+    if ($filter_type === 'validation' && !empty($validation_status)) {
+        $conditions[] = "a.validation = ?";
+        $params[] = $validation_status;
+
+        // Also set the status filter for the UI
+        $status = $validation_status; // This will override the dropdown filter
+    }
+
+    // --- Age group filter ---
+    if ($filter_type === 'age' && !empty($age_group)) {
+        if ($age_group === '90+') {
+            $conditions[] = "a.current_age >= ?";
+            $params[] = $min_age;
+        } else if ($age_group === 'Under 60') {
+            $conditions[] = "a.current_age < ?";
+            $params[] = $min_age;
+        } else if ($min_age > 0 && $max_age > 0) {
+            $conditions[] = "a.current_age BETWEEN ? AND ?";
+            $params[] = $min_age;
+            $params[] = $max_age;
+        }
+    }
+
+    // --- Gender filter (from dashboard) ---
+    if ($filter_type === 'gender' && !empty($gender_filter)) {
+        $conditions[] = "a.gender = ?";
+        $params[] = $gender_filter;
+    }
+
+    // --- Recent registrations filter ---
+    if ($filter_type === 'recent' && !empty($recent_days)) {
+        $conditions[] = "a.date_created >= DATE_SUB(CURDATE(), INTERVAL ? DAY)";
+        $params[] = $recent_days;
+    }
+
+    // --- Milestone filter ---
+    if ($filter_type === 'milestone' && !empty($milestone_age)) {
+        $conditions[] = "YEAR(CURDATE()) - YEAR(a.birth_date) + 1 = ?";
+        $params[] = $milestone_age;
+    }
+
     $where = count($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
     // --- Get total count ---
-    $countStmt = $conn->prepare("
-        SELECT COUNT(*) 
+    $countQuery = "
+        SELECT COUNT(DISTINCT a.applicant_id) 
         FROM applicants a
         LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id
         $where
-    ");
+    ";
+
+    if ($debug_mode) {
+        error_log("Count query: " . $countQuery);
+        error_log("Count params: " . print_r($params, true));
+    }
+
+    $countStmt = $conn->prepare($countQuery);
+    if (!$countStmt) {
+        throw new Exception("Failed to prepare count query");
+    }
+
     $countStmt->execute($params);
     $total = (int)$countStmt->fetchColumn();
+
+    if ($debug_mode) error_log("Total records found: " . $total);
 
     // --- Fetch paginated data ---
     $query = "
         SELECT 
-            (@rownum := @rownum + 1) AS rownum,
+            ROW_NUMBER() OVER (ORDER BY a.date_created DESC) AS rownum,
             a.applicant_id,
             CONCAT(a.last_name, ', ', a.first_name, ' ', COALESCE(a.middle_name, '')) AS full_name,
-            a.birth_date,
-            a.age,
+            DATE_FORMAT(a.birth_date, '%Y-%m-%d') as birth_date,
+            a.current_age AS age,
             a.gender,
             a.civil_status,
             ad.barangay,
-            a.date_created,
-            a.date_modified,
+            DATE_FORMAT(a.date_created, '%Y-%m-%d') as date_created,
+            DATE_FORMAT(a.date_modified, '%Y-%m-%d') as date_modified,
             a.validation,
             a.status,
             a.control_number
         FROM applicants a
-        LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id,
-        (SELECT @rownum := ?) r
+        LEFT JOIN addresses ad ON ad.applicant_id = a.applicant_id
         $where
         ORDER BY a.date_created DESC
         LIMIT $limit OFFSET $offset
     ";
 
-    $stmt = $conn->prepare($query);
-    $stmt->bindValue(1, $offset, PDO::PARAM_INT);
+    if ($debug_mode) error_log("Main query: " . $query);
 
-    foreach ($params as $i => $val) {
-        $stmt->bindValue($i + 2, $val);
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        throw new Exception("Failed to prepare main query");
     }
 
-    $stmt->execute();
+    $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    if ($debug_mode) error_log("Rows fetched: " . count($rows));
+
+    // Manually calculate rownum if ROW_NUMBER() doesn't work
+    if (empty($rows[0]['rownum'])) {
+        $startNum = $offset + 1;
+        foreach ($rows as $index => &$row) {
+            $row['rownum'] = $startNum + $index;
+        }
+    }
+
     // --- Pagination metadata ---
-    $start = $offset + 1;
+    $start = $total ? ($offset + 1) : 0;
     $end = min($offset + $limit, $total);
     $totalPages = ceil($total / $limit);
 
-    echo json_encode([
+    $response = [
+        "success" => true,
         "total_records" => $total,
         "total_pages" => $totalPages,
-        "start" => $total ? $start : 0,
-        "end" => $total ? $end : 0,
+        "start" => $start,
+        "end" => $end,
         "seniors" => $rows
-    ]);
+    ];
+
+    if ($debug_mode) {
+        $response['debug'] = [
+            "query" => $query,
+            "params" => $params,
+            "row_count" => count($rows),
+            "filter_type" => $filter_type
+        ];
+    }
+
+    echo json_encode($response);
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
+    $errorOutput = ob_get_clean();
+
+    error_log("fetch_seniors.php error: " . $e->getMessage());
+    error_log("Trace: " . $e->getTraceAsString());
+
+    echo json_encode([
+        "success" => false,
+        "error" => "Database error occurred",
+        "message" => $e->getMessage(),
+        "output_buffer" => $errorOutput
+    ]);
 }
+
+ob_end_flush();

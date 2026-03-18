@@ -3,6 +3,11 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+// Set timezone at the VERY BEGINNING of the script
+if (date_default_timezone_get() != 'Asia/Manila') {
+    date_default_timezone_set('Asia/Manila');
+}
+
 // Error handling
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -26,7 +31,8 @@ function sendJsonError($message, $code = 400) {
     echo json_encode([
         "success" => false,
         "error" => $message,
-        "timestamp" => date('Y-m-d H:i:s')
+        "timestamp" => date('Y-m-d H:i:s'),
+        "timezone" => date_default_timezone_get()
     ]);
     exit;
 }
@@ -36,7 +42,8 @@ function sendJsonSuccess($message, $data = []) {
     echo json_encode(array_merge([
         "success" => true,
         "message" => $message,
-        "timestamp" => date('Y-m-d H:i:s')
+        "timestamp" => date('Y-m-d H:i:s'),
+        "timezone" => date_default_timezone_get()
     ], $data));
     exit;
 }
@@ -94,7 +101,7 @@ if (strlen($reason) > 255) {
 }
 
 // =========================================================
-// SIMPLIFIED AND RELIABLE CONTEXT DETECTION
+// ENHANCED TIMEZONE-AWARE CONTEXT DETECTION
 // =========================================================
 function detectUserContext($data)
 {
@@ -102,11 +109,12 @@ function detectUserContext($data)
     $userId = 0;
     $userName = 'Unknown';
     
-    error_log("=== START detectUserContext (mark_inactive.php) ===");
-    error_log("Received data: " . print_r($data, true));
-    error_log("Session data: " . print_r($_SESSION, true));
+    // Log timezone info
+    error_log("=== START detectUserContext ===");
+    error_log("Server Timezone: " . date_default_timezone_get());
+    error_log("Current Time: " . date('Y-m-d H:i:s'));
     
-    // 1. FIRST PRIORITY: Check for explicit context in REQUEST DATA
+    // 1. Check for explicit context in REQUEST DATA
     if (isset($data['session_context'])) {
         $context = $data['session_context'];
         error_log("Context from request data: " . $context);
@@ -116,7 +124,6 @@ function detectUserContext($data)
         
         // Get user ID based on context from request
         if ($context === 'staff') {
-            // Staff context
             if (isset($data['staff_user_id']) && !empty($data['staff_user_id'])) {
                 $userId = (int)$data['staff_user_id'];
                 error_log("Using staff_user_id from request: " . $userId);
@@ -126,7 +133,6 @@ function detectUserContext($data)
                 error_log("Using staff_user_name from request: " . $userName);
             }
         } else {
-            // Admin context
             if (isset($data['admin_user_id']) && !empty($data['admin_user_id'])) {
                 $userId = (int)$data['admin_user_id'];
                 error_log("Using admin_user_id from request: " . $userId);
@@ -138,7 +144,7 @@ function detectUserContext($data)
         }
     }
     
-    // 2. SECOND PRIORITY: Check session for already determined context
+    // 2. Check session for already determined context
     elseif (isset($_SESSION['session_context'])) {
         $context = $_SESSION['session_context'];
         error_log("Context from session: " . $context);
@@ -157,7 +163,7 @@ function detectUserContext($data)
         }
     }
     
-    // 3. THIRD PRIORITY: Fallback to user_id from session
+    // 3. Fallback to user_id from session
     if ($userId === 0 && isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
         $userId = (int)$_SESSION['user_id'];
         error_log("Using fallback user_id from session: " . $userId);
@@ -250,7 +256,6 @@ function detectUserContext($data)
     ];
     
     error_log("Final user info: " . print_r($userInfo, true));
-    error_log("Session data after detection: " . print_r($_SESSION, true));
     error_log("=== END detectUserContext ===");
     
     return $userInfo;
@@ -266,7 +271,7 @@ $userName = $userInfo['user_name'];
 if (class_exists('ActivityLogger')) {
     $logger = new ActivityLogger($conn);
 } else {
-    // Create minimal logger for debugging
+    // Create enhanced logger with timezone awareness
     class SimpleLogger
     {
         private $conn;
@@ -278,8 +283,10 @@ if (class_exists('ActivityLogger')) {
         
         public function log($type, $desc, $details = null)
         {
-            // Log to file for debugging
-            $logMessage = date('Y-m-d H:i:s') . " - Activity: $type - $desc";
+            // Log to file for debugging with timezone info
+            $currentTime = date('Y-m-d H:i:s');
+            $timezone = date_default_timezone_get();
+            $logMessage = "$currentTime [$timezone] - Activity: $type - $desc";
             if ($details) {
                 $logMessage .= " - Details: " . json_encode($details);
             }
@@ -293,6 +300,7 @@ if (class_exists('ActivityLogger')) {
                     $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
                     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 
+                    // Use MySQL's NOW() which respects the database timezone
                     $query = "INSERT INTO activity_logs 
                              (user_id, activity_type, description, activity_details, ip_address, user_agent, created_at) 
                              VALUES (?, ?, ?, ?, ?, ?, NOW())";
@@ -329,7 +337,7 @@ if (empty($ids)) {
     sendJsonError("No valid applicant IDs provided");
 }
 
-// Validate date format
+// Validate date format and ensure it's in correct timezone
 $date_of_inactive = $data['date_of_inactive'];
 if (!strtotime($date_of_inactive)) {
     sendJsonError("Invalid date format for inactive date");
@@ -365,7 +373,7 @@ try {
         throw new Exception("Some applicants are already inactive: " . implode(', ', $inactiveNames));
     }
     
-    // Update all applicants
+    // Update all applicants - Use MySQL's NOW() for server-side timestamp
     $sql = "
         UPDATE applicants 
         SET status = 'Inactive', 
@@ -396,8 +404,10 @@ try {
 
     $applicantControlNumbers = array_filter(array_column($applicantsInfo, 'control_number'));
 
-    // Log the activity with proper context
-    // IMPORTANT FIX: Use correct activity type based on context
+    // Log the activity with proper context and timezone info
+    $currentDateTime = date('Y-m-d H:i:s');
+    $serverTimezone = date_default_timezone_get();
+    
     if ($context === 'staff') {
         $activityType = 'STAFF_MARK_INACTIVE';
         $description = "Staff marked " . count($ids) . " senior(s) as inactive";
@@ -417,7 +427,8 @@ try {
         'marked_by' => $userName,
         'marked_by_id' => $userId,
         'user_context' => $context,
-        'marked_at' => date('Y-m-d H:i:s'),
+        'marked_at' => $currentDateTime,
+        'server_timezone' => $serverTimezone,
         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
         'updated_count' => $updatedCount,
         'previous_status' => array_column($applicantsInfo, 'status'),
@@ -427,12 +438,12 @@ try {
     // Log the activity
     if ($logger) {
         $logger->log($activityType, $description, $logDetails);
-        error_log("Activity logged successfully: $activityType");
+        error_log("Activity logged successfully: $activityType at $currentDateTime ($serverTimezone)");
     } else {
         error_log("WARNING: Logger not available for activity: $activityType");
     }
     
-    // Return success response
+    // Return success response with timezone info
     sendJsonSuccess("Senior(s) successfully marked as inactive", [
         'updated_count' => $updatedCount,
         'applicant_ids' => $ids,
@@ -441,7 +452,9 @@ try {
         'marked_by_id' => $userId,
         'context' => $context,
         'log_type' => $activityType,
-        'logged_as' => $context === 'staff' ? 'Staff' : 'Admin'
+        'logged_as' => $context === 'staff' ? 'Staff' : 'Admin',
+        'server_time' => $currentDateTime,
+        'server_timezone' => $serverTimezone
     ]);
     
 } catch (PDOException $e) {
@@ -450,7 +463,8 @@ try {
         $conn->rollBack();
     }
     
-    // Log error with proper context
+    // Log error with proper context and timezone
+    $currentTime = date('Y-m-d H:i:s');
     if ($logger) {
         $errorActivityType = ($context === 'staff') ? 'STAFF_ERROR' : 'ERROR';
         $logger->log($errorActivityType, 'Failed to mark senior(s) as inactive', [
@@ -459,11 +473,13 @@ try {
             'reason_attempted' => $reason,
             'marked_by' => $userName,
             'marked_by_id' => $userId,
-            'context' => $context
+            'context' => $context,
+            'error_time' => $currentTime,
+            'timezone' => date_default_timezone_get()
         ]);
     }
     
-    error_log("Database error in mark_inactive.php: " . $e->getMessage());
+    error_log("[$currentTime] Database error in mark_inactive.php: " . $e->getMessage());
     sendJsonError("Database error: " . $e->getMessage(), 500);
     
 } catch (Exception $e) {
@@ -473,6 +489,7 @@ try {
     }
     
     // Log error with proper context
+    $currentTime = date('Y-m-d H:i:s');
     if ($logger) {
         $errorActivityType = ($context === 'staff') ? 'STAFF_ERROR' : 'ERROR';
         $logger->log($errorActivityType, 'Failed to mark senior(s) as inactive', [
@@ -481,11 +498,12 @@ try {
             'reason_attempted' => $reason,
             'marked_by' => $userName,
             'marked_by_id' => $userId,
-            'context' => $context
+            'context' => $context,
+            'error_time' => $currentTime
         ]);
     }
     
-    error_log("Error in mark_inactive.php: " . $e->getMessage());
+    error_log("[$currentTime] Error in mark_inactive.php: " . $e->getMessage());
     sendJsonError($e->getMessage(), 400);
 }
 

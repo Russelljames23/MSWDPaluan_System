@@ -581,7 +581,7 @@ $conn->close();
             width: 78px;
             background: #fff;
             transition: all 0.4s ease;
-            z-index: 40;
+            z-index: 10;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 

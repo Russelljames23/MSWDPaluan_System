@@ -392,7 +392,7 @@
             submitBtn.disabled = true;
             showLoading(true);
 
-            fetch('php/login/login_backend.php', {
+            fetch('./php/login/login_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -606,7 +606,7 @@
             const sessionContext = generateSessionContext();
             storeSessionContext(sessionContext, userType);
 
-            fetch('php/login/login_backend.php', {
+            fetch('./php/login/login_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -713,7 +713,7 @@
             // Get current session context
             const sessionContext = getCurrentSessionContext();
 
-            fetch('php/login/verify_code_backend.php', {
+            fetch('./php/login/verify_code_backend.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -780,7 +780,7 @@
         function resendVerificationCode() {
             showLoading(true);
 
-            fetch('php/login/resend_verification_code.php', {
+            fetch('./php/login/resend_verification_code.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
